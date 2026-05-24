@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers.health import router as health_router
 from routers.holidays import router as holidays_router
+from routers.psc import router as psc_router
 from schemas.common import success_response
 
 
@@ -34,3 +35,4 @@ def root() -> dict[str, object]:
 
 app.include_router(health_router, prefix="/v1")
 app.include_router(holidays_router, prefix="/v1")
+app.include_router(psc_router, prefix="/v1")
