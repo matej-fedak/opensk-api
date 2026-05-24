@@ -1,93 +1,112 @@
 # OpenSK API
 
-> Transforming Slovak public data into a single, unified API.
+OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-OpenSK API is an open-source community project that aggregates Slovak public APIs into one clean, developer-friendly interface. Official government APIs are fragmented, poorly documented, and inconsistent — OpenSK API fixes that.
+Status: MVP release `v0.1.0`.
 
----
+No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
-## Available Endpoints
+## MVP Status
 
-> 🚧 This project is in early development. Endpoints are being added.
-
-| Endpoint | Description | Status |
+| Endpoint | Status | Notes |
 |---|---|---|
-| `GET /v1/holidays/{year}` | Slovak public holidays by year | 🔜 Planned |
-| `GET /v1/zip/{code}` | Postal code lookup | 🔜 Planned |
-| `GET /v1/banks` | List of Slovak banks and bank codes | 🔜 Planned |
-| `GET /v1/companies/{ico}` | Company lookup via ORSR | 🔜 Planned |
-| `GET /v1/iban/validate/{iban}` | IBAN validation | 🔜 Planned |
+| `GET /` | Working | Project info |
+| `GET /v1/health` | Working | Health check |
+| `GET /v1/holidays/2026` | Working | Static holiday dataset |
+| `GET /v1/psc/81101` | Working | Static PSC seed dataset |
+| `/docs` | Working | Swagger UI |
+| `/openapi.json` | Working | OpenAPI schema |
 
----
+## Implemented Endpoints
 
-## Usage
+| Endpoint | Description |
+|---|---|
+| `GET /` | Project metadata and docs link |
+| `GET /v1/health` | Basic service health |
+| `GET /v1/holidays/{year}` | Slovak public holidays by year |
+| `GET /v1/psc/{psc}` | Slovak postal code lookup |
 
-All endpoints return JSON. No API key required.
+## Planned Endpoints
 
-```bash
-# Get Slovak public holidays for 2026
-curl https://opensk-api.fly.dev/v1/holidays/2026
+| Endpoint | Description |
+|---|---|
+| `GET /v1/banks` | Slovak bank list |
+| `GET /v1/companies/{ico}` | Company lookup |
+| `GET /v1/iban/validate/{iban}` | IBAN validation |
+| `GET /v1/municipalities` | Municipality data |
 
-# Look up a postal code
-curl https://opensk-api.fly.dev/v1/zip/81101
+## Response Envelope
 
-# Validate an IBAN
-curl https://opensk-api.fly.dev/v1/iban/validate/SK3112000000198742637541
+```json
+{
+  "data": {},
+  "metadata": {
+    "source": "OpenSK API",
+    "lastUpdated": "YYYY-MM-DD",
+    "version": "v1"
+  },
+  "error": null
+}
 ```
 
----
+## Examples
 
-## Motivation
+```bash
+curl http://127.0.0.1:8000/
+curl http://127.0.0.1:8000/v1/health
+curl http://127.0.0.1:8000/v1/holidays/2026
+curl http://127.0.0.1:8000/v1/psc/81101
+```
 
-Slovakia publishes valuable public data through various government APIs and portals. The problem: each source has different authentication, response formats, pagination styles, and documentation quality. Developers waste hours integrating what should be simple lookups.
+Swagger docs: `http://127.0.0.1:8000/docs`
 
-OpenSK API is inspired by [BrasilAPI](https://github.com/BrasilAPI/BrasilAPI) — a community project that unified Brazilian public data into one clean interface.
+## Local Development
 
----
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+python -m pytest
+```
 
-## Tech Stack
+## Deployment
 
-- **Python** + **FastAPI**
-- **SQLite** for static datasets (postal codes, bank codes)
-- **Redis** for caching upstream API responses
-- Deployed on **Fly.io**
+Render is the recommended MVP host because it is simple, GitHub-based, and gives the app a public HTTPS URL. The app is still a standard FastAPI project, so it can move later to Fly.io, Koyeb, Railway, Vercel, or Cloudflare with minimal changes.
 
----
+### Manual Render Setup
+
+1. Create a new Render Web Service.
+2. Connect the GitHub repository.
+3. Use the Python environment.
+4. Build command: `pip install -r requirements.txt`
+5. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+
+### Smoke Tests After Deploy
+
+```bash
+curl https://<your-render-url>/
+curl https://<your-render-url>/v1/health
+curl https://<your-render-url>/v1/holidays/2026
+curl https://<your-render-url>/v1/psc/81101
+open https://<your-render-url>/docs
+```
+
+The free Render instance may sleep when idle and can cold-start on the first request.
+
+## Data Notes
+
+- Holiday and PSC responses currently use static seed datasets.
+- The PSC dataset is intentionally limited and does not claim national coverage.
+- Dataset source and license attribution must be checked per dataset before adding or publishing new data.
+- Do not assume any dataset is official government data unless the source explicitly says so.
 
 ## Contributing
 
-Contributions are welcome. The most valuable contributions are **new endpoints** — if you know of a Slovak public data source that should be included, open an issue or submit a PR.
+Contributions are welcome, especially new data sources that can be added with clear attribution and licensing.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on adding new endpoints.
-
-### Running locally
-
-```bash
-git clone https://github.com/matej-fedak/opensk-api
-cd opensk-api
-pip install -r requirements.txt
-uvicorn main:app --reload
-```
-
----
-
-## Roadmap
-
-- [ ] Public holidays
-- [ ] Postal codes
-- [ ] Bank codes
-- [ ] Company registry (ORSR)
-- [ ] IBAN validation
-- [ ] VAT number validation (VIES)
-- [ ] Municipality data
-- [ ] MCP server wrapper
-
----
+See `CONTRIBUTING.md` for contribution guidance.
 
 ## License
 
-MIT — see [LICENSE](LICENSE)
-
----
-
-*Created by [@matej-fedak](https://github.com/matej-fedak). Inspired by [BrasilAPI](https://github.com/BrasilAPI/BrasilAPI).*
+The code in this repository is licensed under MIT. See `LICENSE`.
