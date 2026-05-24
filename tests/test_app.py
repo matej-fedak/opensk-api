@@ -22,7 +22,13 @@ def test_docs_or_openapi_is_available() -> None:
     docs_response = client.get("/docs")
     openapi_response = client.get("/openapi.json")
 
-    assert docs_response.status_code == 200 or openapi_response.status_code == 200
+    assert docs_response.status_code == 200
+    assert openapi_response.status_code == 200
+
+    schema = openapi_response.json()
+    assert "/v1/health" in schema["paths"]
+    assert "/v1/holidays/{year}" in schema["paths"]
+    assert "/v1/psc/{psc}" in schema["paths"]
 
 
 def test_health_returns_enveloped_response() -> None:

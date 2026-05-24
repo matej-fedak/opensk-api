@@ -8,7 +8,7 @@ from schemas.common import success_response
 router = APIRouter(prefix="/health", tags=["health"])
 
 
-@router.get("")
+@router.get("", summary="Service health", description="Returns a simple health check payload with a UTC timestamp.")
 def health() -> dict[str, object]:
     now = datetime.now(UTC)
     return success_response(

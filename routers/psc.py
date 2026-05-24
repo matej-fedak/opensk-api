@@ -13,7 +13,11 @@ from services.psc_service import (
 router = APIRouter(prefix="/psc", tags=["psc"])
 
 
-@router.get("/{psc}")
+@router.get(
+    "/{psc}",
+    summary="Postal code lookup",
+    description="Looks up a Slovak postal code in the static PSC seed dataset.",
+)
 def get_psc(psc: str) -> dict[str, object]:
     try:
         psc_data = lookup_psc(psc)

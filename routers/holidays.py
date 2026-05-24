@@ -17,7 +17,11 @@ def load_holidays() -> dict[str, list[dict[str, str]]]:
         return json.load(file)
 
 
-@router.get("/{year}")
+@router.get(
+    "/{year}",
+    summary="Holiday calendar by year",
+    description="Returns Slovak public holidays for the requested year from the static seed dataset.",
+)
 def get_holidays(year: int) -> dict[str, object]:
     holidays_data = load_holidays()
     year_key = str(year)

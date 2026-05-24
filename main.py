@@ -9,7 +9,18 @@ from routers.psc import router as psc_router
 from schemas.common import success_response
 
 
-app = FastAPI(title="OpenSK API", version="0.1.0")
+app = FastAPI(
+    title="OpenSK API",
+    description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
+    version="0.1.0",
+    contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
+    license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
+    openapi_tags=[
+        {"name": "health", "description": "Basic service health checks."},
+        {"name": "holidays", "description": "Static Slovak public holiday data."},
+        {"name": "psc", "description": "Static Slovak postal code lookups."},
+    ],
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,7 +31,7 @@ app.add_middleware(
 )
 
 
-@app.get("/")
+@app.get("/", summary="Project info", description="Returns basic project metadata and the documentation URL.")
 def root() -> dict[str, object]:
     return success_response(
         data={
