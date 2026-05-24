@@ -1,7 +1,10 @@
 import json
+from datetime import date
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
+
+from schemas.common import error_detail, success_response
 
 
 router = APIRouter(prefix="/holidays", tags=["holidays"])
@@ -15,14 +18,22 @@ def load_holidays() -> dict[str, list[dict[str, str]]]:
 
 
 @router.get("/{year}")
-def get_holidays(year: int) -> list[dict[str, str]]:
+def get_holidays(year: int) -> dict[str, object]:
     holidays_data = load_holidays()
     year_key = str(year)
 
     if year_key not in holidays_data:
         raise HTTPException(
             status_code=404,
-            detail=f"No holiday data available for year {year}",
+            detail=error_detail(
+                code="NOT_FOUND",
+                message=f"No holiday data available for year {year}",
+                message_sk=f"Nie sú dostupné sviatky pre rok {year}",
+            ),
         )
 
-    return holidays_data[year_key]
+    return success_response(
+        data=holidays_data[year_key],
+        source="OpenSK API static dataset",
+        last_updated=date.today().isoformat(),
+    )

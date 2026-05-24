@@ -46,3 +46,11 @@ def error_response(
         },
         "error": error,
     }
+
+
+def error_detail(code: str, message: str, message_sk: str) -> dict[str, str]:
+    return {
+        "code": code,
+        "message": message,
+        "messageSk": message_sk,
+    }
