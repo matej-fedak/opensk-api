@@ -2,6 +2,8 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
+Status: MVP release `v0.1.0`.
+
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
 ## MVP Status
