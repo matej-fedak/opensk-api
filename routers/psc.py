@@ -1,8 +1,12 @@
-from datetime import date
+from fastapi import APIRouter, HTTPException, Response
 
-from fastapi import APIRouter, HTTPException
-
-from schemas.common import error_detail, success_response
+from schemas.common import (
+    API_SOURCE,
+    PSC_LAST_UPDATED,
+    STATIC_CACHE_CONTROL,
+    error_detail,
+    success_response,
+)
 from services.psc_service import (
     PSCInvalidFormatError,
     PSCNotFoundError,
@@ -18,7 +22,7 @@ router = APIRouter(prefix="/psc", tags=["psc"])
     summary="Postal code lookup",
     description="Looks up a Slovak postal code in the static PSC seed dataset.",
 )
-def get_psc(psc: str) -> dict[str, object]:
+def get_psc(psc: str, response: Response) -> dict[str, object]:
     try:
         psc_data = lookup_psc(psc)
     except PSCInvalidFormatError:
@@ -29,6 +33,7 @@ def get_psc(psc: str) -> dict[str, object]:
                 message="PSC must be a 5-digit Slovak postal code",
                 message_sk="PSČ musí byť 5-ciferné slovenské poštové číslo",
             ),
+            headers={"Cache-Control": STATIC_CACHE_CONTROL},
         )
     except PSCNotFoundError:
         normalized = psc.replace(" ", "")
@@ -39,10 +44,12 @@ def get_psc(psc: str) -> dict[str, object]:
                 message=f"No PSC data available for {normalized}",
                 message_sk=f"Pre PSČ {normalized} nie sú dostupné údaje",
             ),
+            headers={"Cache-Control": STATIC_CACHE_CONTROL},
         )
 
+    response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
         data=psc_data,
-        source="OpenSK API static PSC seed dataset",
-        last_updated=date.today().isoformat(),
+        source=f"{API_SOURCE} static PSC seed dataset",
+        last_updated=PSC_LAST_UPDATED,
     )
