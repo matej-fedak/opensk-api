@@ -1,15 +1,21 @@
 # Changelog
 
+## v0.2.0
+
+- Added `GET /v1/banks` and `GET /v1/banks/{code}` from a static Slovak bank seed dataset.
+- Added `GET /v1/iban/validate/{iban}` for local Slovak IBAN validation and bank resolution.
+- Documented the new endpoints and dataset limitations.
+
+## Unreleased
+
+- No additional public data endpoints planned.
+
 ## v0.1.1
 
 - Fixed README deployment URLs and markdown formatting.
 - Added consistent enveloped API error responses.
 - Added stable dataset freshness metadata for holidays and PSC.
 - Added `Cache-Control` headers for static dataset endpoints.
-
-## Unreleased
-
-- No new public data endpoints added.
 
 ## v0.1.0
 
