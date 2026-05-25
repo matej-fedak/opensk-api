@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.1.1
+
+- Fixed README deployment URLs and markdown formatting.
+- Added consistent enveloped API error responses.
+- Added stable dataset freshness metadata for holidays and PSC.
+- Added `Cache-Control` headers for static dataset endpoints.
+
+## Unreleased
+
+- No new public data endpoints added.
+
 ## v0.1.0
 
 - Added `GET /v1/health` for basic service checks.
