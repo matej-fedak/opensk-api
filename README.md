@@ -87,11 +87,11 @@ Render is the recommended MVP host because it is simple, GitHub-based, and gives
 ### Smoke Tests After Deploy
 
 ```bash
-curl https://<your-render-url>/
-curl https://<your-render-url>/v1/health
-curl https://<your-render-url>/v1/holidays/2026
-curl https://<your-render-url>/v1/psc/81101
-open https://<your-render-url>/docs
+curl https://opensk-api.onrender.com/
+curl https://opensk-api.onrender.com/v1/health
+curl https://opensk-api.onrender.com/v1/holidays/2026
+curl https://opensk-api.onrender.com/v1/psc/81101
+open https://opensk-api.onrender.com/docs
 ```
 
 The free Render instance may sleep when idle and can cold-start on the first request.
