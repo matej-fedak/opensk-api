@@ -26,6 +26,8 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
+    assert "/v1/banks" in schema["paths"]
+    assert "/v1/banks/{code}" in schema["paths"]
     assert "/v1/health" in schema["paths"]
     assert "/v1/holidays/{year}" in schema["paths"]
     assert "/v1/psc/{psc}" in schema["paths"]
@@ -44,6 +46,49 @@ def test_health_returns_enveloped_response() -> None:
     assert "lastUpdated" in body["metadata"]
     assert body["data"]["status"] == "ok"
     assert "timestamp" in body["data"]
+
+
+def test_banks_list_returns_enveloped_response() -> None:
+    response = client.get("/v1/banks")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert isinstance(body["data"], list)
+    assert any(bank["code"] == "0900" for bank in body["data"])
+    assert body["metadata"]["source"] == "OpenSK API static banks dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-05-25"
+    assert body["error"] is None
+
+
+def test_known_bank_code_returns_enveloped_response() -> None:
+    response = client.get("/v1/banks/1100")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "1100"
+    assert body["data"]["name"] == "Tatra banka, a.s."
+    assert body["metadata"]["source"] == "OpenSK API static banks dataset"
+    assert body["error"] is None
+
+
+def test_invalid_bank_code_returns_400() -> None:
+    response = client.get("/v1/banks/11A0")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+    assert body["error"]["message"] == "Bank code must be 4 digits"
+
+
+def test_unknown_bank_code_returns_404() -> None:
+    response = client.get("/v1/banks/9999")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+    assert body["error"]["message"] == "No bank data available for 9999"
 
 
 def test_holidays_2026_returns_enveloped_response() -> None:

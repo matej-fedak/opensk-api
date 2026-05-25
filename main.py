@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from routers.banks import router as banks_router
 from routers.health import router as health_router
 from routers.holidays import router as holidays_router
 from routers.psc import router as psc_router
@@ -20,6 +21,7 @@ app = FastAPI(
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
         {"name": "health", "description": "Basic service health checks."},
+        {"name": "banks", "description": "Static Slovak bank data and lookup endpoints."},
         {"name": "holidays", "description": "Static Slovak public holiday data."},
         {"name": "psc", "description": "Static Slovak postal code lookups."},
     ],
@@ -88,5 +90,6 @@ def root() -> dict[str, object]:
 
 
 app.include_router(health_router, prefix="/v1")
+app.include_router(banks_router, prefix="/v1")
 app.include_router(holidays_router, prefix="/v1")
 app.include_router(psc_router, prefix="/v1")
