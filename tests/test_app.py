@@ -6,6 +6,20 @@ from main import app
 client = TestClient(app)
 
 
+def build_valid_slovak_iban(bank_code: str, account_number: str) -> str:
+    bban = f"{bank_code}{account_number}"
+    provisional = f"SK00{bban}"
+    rearranged = f"{bban}SK00"
+    numeric = "".join(str(ord(character) - 55) if character.isalpha() else character for character in rearranged)
+
+    remainder = 0
+    for digit in numeric:
+        remainder = (remainder * 10 + int(digit)) % 97
+
+    check_digits = 98 - remainder
+    return f"SK{check_digits:02d}{bban}"
+
+
 def test_root_returns_project_info() -> None:
     response = client.get("/")
 
@@ -89,6 +103,53 @@ def test_unknown_bank_code_returns_404() -> None:
     assert body["data"] is None
     assert body["error"]["code"] == "NOT_FOUND"
     assert body["error"]["message"] == "No bank data available for 9999"
+
+
+def test_valid_slovak_iban_returns_enveloped_response() -> None:
+    iban = build_valid_slovak_iban("0900", "0000000000000001")
+    response = client.get(f"/v1/iban/validate/{iban}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["normalizedIban"] == iban
+    assert body["data"]["countryCode"] == "SK"
+    assert body["data"]["supportedCountry"] is True
+    assert body["data"]["checksumValid"] is True
+    assert body["data"]["valid"] is True
+    assert body["data"]["bankCode"] == "0900"
+    assert body["data"]["bankName"] == "Slovenská sporiteľňa, a.s."
+
+
+def test_invalid_checksum_iban_returns_validation_result() -> None:
+    iban = "SK0009000000000000000001"
+    response = client.get(f"/v1/iban/validate/{iban}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["normalizedIban"] == iban
+    assert body["data"]["supportedCountry"] is True
+    assert body["data"]["checksumValid"] is False
+    assert body["data"]["valid"] is False
+
+
+def test_unsupported_country_iban_returns_validation_result() -> None:
+    response = client.get("/v1/iban/validate/CZ6508000000192000145399")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["countryCode"] == "CZ"
+    assert body["data"]["supportedCountry"] is False
+    assert body["data"]["valid"] is False
+
+
+def test_iban_spaces_are_normalized() -> None:
+    iban = build_valid_slovak_iban("1100", "0000000000000002")
+    formatted = f"{iban[:4]} {iban[4:8]} {iban[8:12]} {iban[12:16]} {iban[16:20]} {iban[20:]}"
+    response = client.get(f"/v1/iban/validate/{formatted.replace(' ', '%20')}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["normalizedIban"] == iban
 
 
 def test_holidays_2026_returns_enveloped_response() -> None:
