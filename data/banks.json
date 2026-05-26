@@ -1,0 +1,34 @@
+{
+  "metadata": {
+    "source": "Manual MVP seed dataset compiled from publicly listed Slovak bank identifiers. Not exhaustive.",
+    "license": "Informational seed data only. Verify against an authoritative source before production use.",
+    "lastUpdated": "2026-05-25"
+  },
+  "banks": [
+    {
+      "code": "0200",
+      "name": "Všeobecná úverová banka, a.s.",
+      "country": "Slovakia"
+    },
+    {
+      "code": "0900",
+      "name": "Slovenská sporiteľňa, a.s.",
+      "country": "Slovakia"
+    },
+    {
+      "code": "1100",
+      "name": "Tatra banka, a.s.",
+      "country": "Slovakia"
+    },
+    {
+      "code": "5600",
+      "name": "Prima banka Slovensko, a.s.",
+      "country": "Slovakia"
+    },
+    {
+      "code": "7500",
+      "name": "Československá obchodná banka, a.s.",
+      "country": "Slovakia"
+    }
+  ]
+}

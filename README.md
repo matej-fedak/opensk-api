@@ -2,15 +2,18 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.1.0`.
+Status: MVP release `v0.2.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
 ## MVP Status
 
 | Endpoint | Status | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `GET /` | Working | Project info |
+| `GET /v1/banks` | Working | Static bank list |
+| `GET /v1/banks/1100` | Working | Static bank lookup |
+| `GET /v1/iban/validate/SK...` | Working | Slovak IBAN validation |
 | `GET /v1/health` | Working | Health check |
 | `GET /v1/holidays/2026` | Working | Static holiday dataset |
 | `GET /v1/psc/81101` | Working | Static PSC seed dataset |
@@ -20,8 +23,11 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 ## Implemented Endpoints
 
 | Endpoint | Description |
-|---|---|
+| --- | --- |
 | `GET /` | Project metadata and docs link |
+| `GET /v1/banks` | List Slovak banks |
+| `GET /v1/banks/{code}` | Slovak bank lookup |
+| `GET /v1/iban/validate/{iban}` | Slovak IBAN validation |
 | `GET /v1/health` | Basic service health |
 | `GET /v1/holidays/{year}` | Slovak public holidays by year |
 | `GET /v1/psc/{psc}` | Slovak postal code lookup |
@@ -29,10 +35,8 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 ## Planned Endpoints
 
 | Endpoint | Description |
-|---|---|
-| `GET /v1/banks` | Slovak bank list |
+| --- | --- |
 | `GET /v1/companies/{ico}` | Company lookup |
-| `GET /v1/iban/validate/{iban}` | IBAN validation |
 | `GET /v1/municipalities` | Municipality data |
 
 ## Response Envelope
@@ -49,10 +53,15 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 }
 ```
 
+Error responses use the same envelope with `data: null` and a structured error object.
+
 ## Examples
 
 ```bash
 curl http://127.0.0.1:8000/
+curl http://127.0.0.1:8000/v1/banks
+curl http://127.0.0.1:8000/v1/banks/1100
+curl http://127.0.0.1:8000/v1/iban/validate/SK0009000000000000000001
 curl http://127.0.0.1:8000/v1/health
 curl http://127.0.0.1:8000/v1/holidays/2026
 curl http://127.0.0.1:8000/v1/psc/81101
@@ -85,11 +94,11 @@ Render is the recommended MVP host because it is simple, GitHub-based, and gives
 ### Smoke Tests After Deploy
 
 ```bash
-curl https://<opensk-api.onrender.com>/
-curl https://<opensk-api.onrender.com>/v1/health
-curl https://<opensk-api.onrender.com>/v1/holidays/2026
-curl https://<opensk-api.onrender.com>/v1/psc/81101
-open https://<opensk-api.onrender.com>/docs
+curl https://opensk-api.onrender.com/
+curl https://opensk-api.onrender.com/v1/health
+curl https://opensk-api.onrender.com/v1/holidays/2026
+curl https://opensk-api.onrender.com/v1/psc/81101
+open https://opensk-api.onrender.com/docs
 ```
 
 The free Render instance may sleep when idle and can cold-start on the first request.
@@ -97,6 +106,9 @@ The free Render instance may sleep when idle and can cold-start on the first req
 ## Data Notes
 
 - Holiday and PSC responses currently use static seed datasets.
+- Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
+- Banks use a small static seed dataset and IBAN validation runs locally without network access.
+- The bank dataset is intentionally incomplete and should not be presented as exhaustive.
 - The PSC dataset is intentionally limited and does not claim national coverage.
 - Dataset source and license attribution must be checked per dataset before adding or publishing new data.
 - Do not assume any dataset is official government data unless the source explicitly says so.

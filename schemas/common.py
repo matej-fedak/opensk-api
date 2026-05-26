@@ -1,5 +1,11 @@
-from datetime import date
 from typing import Any, TypedDict
+
+
+API_SOURCE = "OpenSK API"
+BANKS_LAST_UPDATED = "2026-05-25"
+HOLIDAYS_LAST_UPDATED = "2026-05-25"
+PSC_LAST_UPDATED = "2026-05-25"
+STATIC_CACHE_CONTROL = "public, max-age=86400"
 
 
 class Metadata(TypedDict):
@@ -24,7 +30,7 @@ def success_response(
         "data": data,
         "metadata": {
             "source": source,
-            "lastUpdated": last_updated or date.today().isoformat(),
+            "lastUpdated": last_updated,
             "version": version,
         },
         "error": None,
@@ -41,7 +47,7 @@ def error_response(
         "data": None,
         "metadata": {
             "source": source,
-            "lastUpdated": last_updated or date.today().isoformat(),
+            "lastUpdated": last_updated,
             "version": version,
         },
         "error": error,
