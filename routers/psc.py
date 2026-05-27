@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Query, Response
 
 from schemas.common import (
     API_SOURCE,
+    PSC_GEOGRAPHY_SOURCE,
     PSC_LAST_UPDATED,
     STATIC_CACHE_CONTROL,
     error_detail,
@@ -22,9 +23,27 @@ router = APIRouter(prefix="/psc", tags=["psc"])
     summary="Postal code lookup",
     description="Looks up a Slovak postal code in the static PSC seed dataset.",
 )
-def get_psc(psc: str, response: Response) -> dict[str, object]:
+def get_psc(
+    psc: str,
+    response: Response,
+    include: str | None = Query(default=None, description="Optional response expansion. Supported value: geography."),
+) -> dict[str, object]:
+    include_geography = False
+    if include is not None:
+        if include != "geography":
+            raise HTTPException(
+                status_code=400,
+                detail=error_detail(
+                    code="INVALID_FORMAT",
+                    message="include must be omitted or set to geography",
+                    message_sk="Parameter include musí byť vynechaný alebo nastavený na geography",
+                ),
+                headers={"Cache-Control": STATIC_CACHE_CONTROL},
+            )
+        include_geography = True
+
     try:
-        psc_data = lookup_psc(psc)
+        psc_data = lookup_psc(psc, include_geography=include_geography)
     except PSCInvalidFormatError:
         raise HTTPException(
             status_code=400,
@@ -48,8 +67,11 @@ def get_psc(psc: str, response: Response) -> dict[str, object]:
         )
 
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
+    source = f"{API_SOURCE} static PSC seed dataset"
+    if include_geography:
+        source = PSC_GEOGRAPHY_SOURCE
     return success_response(
         data=psc_data,
-        source=f"{API_SOURCE} static PSC seed dataset",
+        source=source,
         last_updated=PSC_LAST_UPDATED,
     )
