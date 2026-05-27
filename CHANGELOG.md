@@ -8,7 +8,16 @@
 
 ## Unreleased
 
-- No additional public data endpoints planned.
+- Added geography foundation with regions, districts, and municipalities endpoints.
+- Added static geography datasets and lookup services.
+- Added geography coverage notes and API documentation updates.
+
+## v0.3.0
+
+- Added `GET /v1/regions` and `GET /v1/regions/{code}`.
+- Added `GET /v1/districts` and `GET /v1/districts/{code}`, including `regionCode` filtering.
+- Added `GET /v1/municipalities` and `GET /v1/municipalities/{code}`, including `regionCode` and `districtCode` filtering.
+- Added static geography datasets with honest seed/full coverage notes.
 
 ## v0.1.1
 

@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "source": "Manual geography seed dataset compiled from public Slovak administrative division references. Municipality coverage is seed-only and incomplete.",
+    "license": "Informational seed data only. Verify against an authoritative source before production use.",
+    "lastUpdated": "2026-05-27",
+    "complete": false
+  },
+  "municipalities": [
+    {
+      "code": "528595",
+      "name": "Bratislava - Staré Mesto",
+      "districtCode": "SK0101",
+      "regionCode": "SK010",
+      "country": "SK"
+    }
+  ]
+}

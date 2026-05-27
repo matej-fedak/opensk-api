@@ -7,17 +7,20 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from routers.banks import router as banks_router
+from routers.districts import router as districts_router
 from routers.health import router as health_router
 from routers.holidays import router as holidays_router
 from routers.iban import router as iban_router
+from routers.municipalities import router as municipalities_router
 from routers.psc import router as psc_router
+from routers.regions import router as regions_router
 from schemas.common import API_SOURCE, error_detail, error_response, success_response
 
 
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="0.2.0",
+    version="0.3.0",
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
@@ -25,6 +28,9 @@ app = FastAPI(
         {"name": "banks", "description": "Static Slovak bank data and lookup endpoints."},
         {"name": "iban", "description": "IBAN validation and bank resolution."},
         {"name": "holidays", "description": "Static Slovak public holiday data."},
+        {"name": "regions", "description": "Static Slovak regions dataset."},
+        {"name": "districts", "description": "Static Slovak districts dataset."},
+        {"name": "municipalities", "description": "Static Slovak municipalities dataset."},
         {"name": "psc", "description": "Static Slovak postal code lookups."},
     ],
 )
@@ -96,3 +102,6 @@ app.include_router(banks_router, prefix="/v1")
 app.include_router(iban_router, prefix="/v1")
 app.include_router(holidays_router, prefix="/v1")
 app.include_router(psc_router, prefix="/v1")
+app.include_router(regions_router, prefix="/v1")
+app.include_router(districts_router, prefix="/v1")
+app.include_router(municipalities_router, prefix="/v1")

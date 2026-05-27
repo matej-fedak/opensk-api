@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "source": "Manual geography seed dataset compiled from public Slovak administrative division references. Seed coverage only.",
+    "license": "Informational seed data only. Verify against an authoritative source before production use.",
+    "lastUpdated": "2026-05-27",
+    "complete": false
+  },
+  "districts": [
+    {
+      "code": "SK0101",
+      "name": "Bratislava I",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0102",
+      "name": "Bratislava II",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0103",
+      "name": "Bratislava III",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0104",
+      "name": "Bratislava IV",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0105",
+      "name": "Bratislava V",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0521",
+      "name": "Košice I",
+      "regionCode": "SK052",
+      "country": "SK"
+    },
+    {
+      "code": "SK0522",
+      "name": "Košice II",
+      "regionCode": "SK052",
+      "country": "SK"
+    },
+    {
+      "code": "SK0523",
+      "name": "Košice III",
+      "regionCode": "SK052",
+      "country": "SK"
+    },
+    {
+      "code": "SK0524",
+      "name": "Košice IV",
+      "regionCode": "SK052",
+      "country": "SK"
+    }
+  ]
+}

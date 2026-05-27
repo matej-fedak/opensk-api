@@ -44,6 +44,12 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/banks/{code}" in schema["paths"]
     assert "/v1/health" in schema["paths"]
     assert "/v1/holidays/{year}" in schema["paths"]
+    assert "/v1/regions" in schema["paths"]
+    assert "/v1/regions/{code}" in schema["paths"]
+    assert "/v1/districts" in schema["paths"]
+    assert "/v1/districts/{code}" in schema["paths"]
+    assert "/v1/municipalities" in schema["paths"]
+    assert "/v1/municipalities/{code}" in schema["paths"]
     assert "/v1/psc/{psc}" in schema["paths"]
 
 
@@ -168,6 +174,154 @@ def test_holidays_2026_returns_enveloped_response() -> None:
     assert body["metadata"]["version"] == "v1"
     assert body["metadata"]["lastUpdated"] == "2026-05-25"
     assert body["error"] is None
+
+
+def test_regions_list_returns_enveloped_response() -> None:
+    response = client.get("/v1/regions")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert isinstance(body["data"], list)
+    assert len(body["data"]) == 8
+    assert any(region["code"] == "SK010" for region in body["data"])
+    assert body["metadata"]["source"] == "OpenSK API static geography dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-05-27"
+    assert body["metadata"]["version"] == "v1"
+    assert body["error"] is None
+
+
+def test_known_region_code_returns_one_region() -> None:
+    response = client.get("/v1/regions/SK010")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "SK010"
+    assert body["data"]["name"] == "Bratislavský kraj"
+    assert body["error"] is None
+
+
+def test_unknown_region_code_returns_404() -> None:
+    response = client.get("/v1/regions/SK999")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_invalid_region_code_returns_400() -> None:
+    response = client.get("/v1/regions/SK10A")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_invalid_district_region_filter_returns_400() -> None:
+    response = client.get("/v1/districts?regionCode=SK01A")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_districts_list_returns_enveloped_response() -> None:
+    response = client.get("/v1/districts")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert isinstance(body["data"], list)
+    assert body["metadata"]["source"] == "OpenSK API static geography dataset"
+    assert body["metadata"]["version"] == "v1"
+    assert body["error"] is None
+
+
+def test_districts_region_filter_returns_subset() -> None:
+    response = client.get("/v1/districts?regionCode=SK010")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]
+    assert all(district["regionCode"] == "SK010" for district in body["data"])
+
+
+def test_known_district_code_returns_one_district() -> None:
+    response = client.get("/v1/districts/SK0101")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "SK0101"
+    assert body["data"]["name"] == "Bratislava I"
+
+
+def test_unknown_district_code_returns_404() -> None:
+    response = client.get("/v1/districts/SK9999")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_municipalities_list_returns_enveloped_response() -> None:
+    response = client.get("/v1/municipalities")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert isinstance(body["data"], list)
+    assert body["metadata"]["source"] == "OpenSK API static geography seed dataset"
+    assert body["metadata"]["version"] == "v1"
+    assert body["error"] is None
+
+
+def test_municipalities_region_filter_returns_subset() -> None:
+    response = client.get("/v1/municipalities?regionCode=SK010")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]
+    assert all(municipality["regionCode"] == "SK010" for municipality in body["data"])
+
+
+def test_municipalities_district_filter_returns_subset() -> None:
+    response = client.get("/v1/municipalities?districtCode=SK0101")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]
+    assert all(municipality["districtCode"] == "SK0101" for municipality in body["data"])
+
+
+def test_invalid_municipality_region_filter_returns_400() -> None:
+    response = client.get("/v1/municipalities?regionCode=SK01A")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_known_municipality_code_returns_one_municipality() -> None:
+    response = client.get("/v1/municipalities/528595")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "528595"
+    assert body["data"]["name"] == "Bratislava - Staré Mesto"
+
+
+def test_unknown_municipality_code_returns_404() -> None:
+    response = client.get("/v1/municipalities/999999")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
 
 
 def test_unsupported_holiday_year_returns_structured_404() -> None:
