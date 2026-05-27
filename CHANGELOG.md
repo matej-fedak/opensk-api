@@ -8,9 +8,14 @@
 
 ## Unreleased
 
-- Added geography foundation with regions, districts, and municipalities endpoints.
-- Added static geography datasets and lookup services.
-- Added geography coverage notes and API documentation updates.
+- No unreleased public geography changes.
+
+## v0.4.0
+
+- Added PSC geography code fields and optional geography expansion.
+- Added `GET /v1/psc/{psc}?include=geography` for nested local geography objects.
+- Linked PSC seed records to the local regions, districts, and municipalities datasets where available.
+- Updated tests and docs for PSC geography integration.
 
 ## v0.3.0
 

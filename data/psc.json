@@ -3,40 +3,55 @@
     "psc": "81101",
     "city": "Bratislava",
     "municipality": "Bratislava - mestská časť Staré Mesto",
+    "municipalityCode": "528595",
     "district": "Bratislava I",
+    "districtCode": "SK0101",
     "region": "Bratislavský kraj",
+    "regionCode": "SK010",
     "country": "Slovakia"
   },
   "04001": {
     "psc": "04001",
     "city": "Košice",
     "municipality": "Košice - mestská časť Staré Mesto",
+    "municipalityCode": null,
     "district": "Košice I",
+    "districtCode": "SK0521",
     "region": "Košický kraj",
+    "regionCode": "SK052",
     "country": "Slovakia"
   },
   "01001": {
     "psc": "01001",
     "city": "Žilina",
     "municipality": "Žilina",
+    "municipalityCode": null,
     "district": "Žilina",
+    "districtCode": null,
     "region": "Žilinský kraj",
+    "regionCode": "SK041",
     "country": "Slovakia"
   },
   "94901": {
     "psc": "94901",
     "city": "Nitra",
     "municipality": "Nitra",
+    "municipalityCode": null,
     "district": "Nitra",
+    "districtCode": null,
     "region": "Nitriansky kraj",
+    "regionCode": "SK032",
     "country": "Slovakia"
   },
   "97401": {
     "psc": "97401",
     "city": "Banská Bystrica",
     "municipality": "Banská Bystrica",
+    "municipalityCode": null,
     "district": "Banská Bystrica",
+    "districtCode": null,
     "region": "Banskobystrický kraj",
+    "regionCode": "SK042",
     "country": "Slovakia"
   }
 }

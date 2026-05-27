@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.3.0`.
+Status: MVP release `v0.4.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -19,7 +19,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/regions` | Working | Static regions dataset |
 | `GET /v1/districts` | Working | Static districts seed dataset |
 | `GET /v1/municipalities` | Working | Static municipalities seed dataset |
-| `GET /v1/psc/81101` | Working | Static PSC seed dataset |
+| `GET /v1/psc/81101` | Working | Static PSC seed dataset with geography links |
 | `/docs` | Working | Swagger UI |
 | `/openapi.json` | Working | OpenAPI schema |
 
@@ -39,7 +39,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/districts/{code}` | Slovak district lookup |
 | `GET /v1/municipalities` | Slovak municipalities list, optional `regionCode` and `districtCode` filters |
 | `GET /v1/municipalities/{code}` | Slovak municipality lookup |
-| `GET /v1/psc/{psc}` | Slovak postal code lookup |
+| `GET /v1/psc/{psc}` | Slovak postal code lookup, optional `include=geography` |
 
 ## Planned Endpoints
 
@@ -80,6 +80,7 @@ curl "http://127.0.0.1:8000/v1/districts?regionCode=SK010"
 curl http://127.0.0.1:8000/v1/municipalities
 curl "http://127.0.0.1:8000/v1/municipalities?districtCode=SK0101"
 curl http://127.0.0.1:8000/v1/psc/81101
+curl "http://127.0.0.1:8000/v1/psc/81101?include=geography"
 ```
 
 Swagger docs: `http://127.0.0.1:8000/docs`
@@ -125,6 +126,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Banks use a small static seed dataset and IBAN validation runs locally without network access.
 - The bank dataset is intentionally incomplete and should not be presented as exhaustive.
 - The PSC dataset is intentionally limited and does not claim national coverage.
+- PSC geography links are only present where mappings are available in the local seed data.
+- PSC is still a seed dataset, not a full national postal code source.
 - Regions are complete for the 8 Slovak self-governing regions.
 - Districts are seed-only in this release.
 - Municipalities are seed-only in this release.
