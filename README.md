@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.5.0`.
+Status: MVP release `v0.6.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -52,10 +52,26 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 The repository keeps its reference data in local JSON files under `data/`.
 
+- `data/sources.json` is the machine-readable source registry.
+- `docs/import-pipeline.md` explains the offline raw -> checked-in JSON -> production runtime flow.
 - `docs/data-sources.md` lists the current dataset inventory and coverage notes.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
-- No new public endpoints were added in `v0.5.0`.
+- Runtime requests do not call upstream services; the API reads local JSON only.
+- No new public endpoints were added in `v0.6.0`.
+
+## Dataset Import Pipeline
+
+The import pipeline is offline-only and defaults to dry-run.
+
+```bash
+python scripts/import_geography.py --dataset municipalities --input data/raw/example.csv --dry-run
+python scripts/import_geography.py --dataset municipalities --input data/raw/example.csv --output data/generated/municipalities.json --write
+python scripts/validate_datasets.py
+python scripts/check_referential_integrity.py
+```
+
+Use `data/raw/` for source material and `data/generated/` for normalized previews. Promote generated files into `data/*.json` only after review.
 
 ## Response Envelope
 
@@ -76,23 +92,23 @@ Error responses use the same envelope with `data: null` and a structured error o
 ## Examples
 
 ```bash
-curl http://127.0.0.1:8000/
-curl http://127.0.0.1:8000/v1/banks
-curl http://127.0.0.1:8000/v1/banks/1100
-curl http://127.0.0.1:8000/v1/iban/validate/SK0009000000000000000001
-curl http://127.0.0.1:8000/v1/health
-curl http://127.0.0.1:8000/v1/holidays/2026
-curl http://127.0.0.1:8000/v1/regions
-curl http://127.0.0.1:8000/v1/regions/SK010
-curl http://127.0.0.1:8000/v1/districts
-curl "http://127.0.0.1:8000/v1/districts?regionCode=SK010"
-curl http://127.0.0.1:8000/v1/municipalities
-curl "http://127.0.0.1:8000/v1/municipalities?districtCode=SK0101"
-curl http://127.0.0.1:8000/v1/psc/81101
-curl "http://127.0.0.1:8000/v1/psc/81101?include=geography"
+curl http://opensk-api.onrender.com/
+curl http://opensk-api.onrender.com/v1/banks
+curl http://opensk-api.onrender.com/v1/banks/1100
+curl http://opensk-api.onrender.com/v1/iban/validate/SK0009000000000000000001
+curl http://opensk-api.onrender.com/v1/health
+curl http://opensk-api.onrender.com/v1/holidays/2026
+curl http://opensk-api.onrender.com/v1/regions
+curl http://opensk-api.onrender.com/v1/regions/SK010
+curl http://opensk-api.onrender.com/v1/districts
+curl http://opensk-api.onrender.com/v1/districts?regionCode=SK010
+curl http://opensk-api.onrender.com/v1/municipalities
+curl http://opensk-api.onrender.com/v1/municipalities?districtCode=SK0101
+curl http://opensk-api.onrender.com/v1/psc/81101
+curl http://opensk-api.onrender.com/v1/psc/81101?include=geography
 ```
 
-Swagger docs: `http://127.0.0.1:8000/docs`
+Swagger docs: `http://opensk-api.onrender.com/docs`
 
 ## Local Development
 
@@ -130,6 +146,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 
 ## Data Notes
 
+- Raw source material is handled offline and curated into the checked-in JSON datasets under `data/`.
+- Production requests read those local JSON files only.
 - Holiday and PSC responses currently use static seed datasets.
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
 - Banks use a small static seed dataset and IBAN validation runs locally without network access.

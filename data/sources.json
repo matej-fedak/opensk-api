@@ -1,0 +1,64 @@
+{
+  "geography": {
+    "regions": {
+      "status": "manual-seed",
+      "coverage": "complete",
+      "sourceName": "Manual geography seed dataset",
+      "sourceUrl": "Source/licence verification pending.",
+      "license": "Source/licence verification pending.",
+      "lastChecked": "2026-05-30",
+      "notes": "Current checked-in regions are a complete 8-region seed set.",
+      "importedOrCurated": "Manually curated"
+    },
+    "districts": {
+      "status": "manual-seed",
+      "coverage": "seed-only",
+      "sourceName": "Manual geography seed dataset",
+      "sourceUrl": "Source/licence verification pending.",
+      "license": "Source/licence verification pending.",
+      "lastChecked": "2026-05-30",
+      "notes": "District coverage is intentionally incomplete seed data.",
+      "importedOrCurated": "Manually curated"
+    },
+    "municipalities": {
+      "status": "import-candidate",
+      "coverage": "seed-only",
+      "sourceName": "Manual geography seed dataset",
+      "sourceUrl": "Source/licence verification pending.",
+      "license": "Source/licence verification pending.",
+      "lastChecked": "2026-05-30",
+      "notes": "Municipality coverage is seed-only and intended for future import expansion.",
+      "importedOrCurated": "Manually curated"
+    }
+  },
+  "psc": {
+    "status": "manual-seed",
+    "coverage": "seed-only",
+    "sourceName": "Static PSC seed dataset",
+    "sourceUrl": "Source/licence verification pending.",
+    "license": "Source/licence verification pending.",
+    "lastChecked": "2026-05-30",
+    "notes": "PSC geography links are partial local seed data and do not imply national coverage.",
+    "importedOrCurated": "Manually curated"
+  },
+  "banks": {
+    "status": "manual-seed",
+    "coverage": "seed-only",
+    "sourceName": "Manual MVP seed dataset",
+    "sourceUrl": "Source/licence verification pending.",
+    "license": "Source/licence verification pending.",
+    "lastChecked": "2026-05-30",
+    "notes": "Bank data remains a small non-exhaustive seed set.",
+    "importedOrCurated": "Manually curated"
+  },
+  "holidays": {
+    "status": "manual-seed",
+    "coverage": "partial",
+    "sourceName": "Static holiday dataset",
+    "sourceUrl": "Source/licence verification pending.",
+    "license": "Source/licence verification pending.",
+    "lastChecked": "2026-05-30",
+    "notes": "Holiday data currently covers 2024-2026 and is curated offline.",
+    "importedOrCurated": "Manually curated"
+  }
+}

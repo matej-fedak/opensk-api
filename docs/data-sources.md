@@ -2,6 +2,11 @@
 
 The API serves static JSON files from `data/` at runtime. No upstream API calls are made during requests.
 
+- `data/sources.json` records the machine-readable source registry for current datasets.
+- Raw source material is handled offline.
+- The checked-in JSON files under `data/` are the generated/curated runtime inputs.
+- Production requests read only those local JSON files.
+
 | Dataset | File | Source name | Source URL | Licence / terms | lastUpdated used by API | Coverage | Imported or curated |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | Banks | `data/banks.json` | Manual MVP seed dataset | Source/licence verification pending. | Source/licence verification pending. | `2026-05-25` | Small, non-exhaustive seed set | Manually curated |

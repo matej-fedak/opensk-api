@@ -2,6 +2,11 @@
 
 The repository stores its reference data as JSON files under `data/`. These files are loaded directly by the application, so codes should stay string-based and preserve leading zeros.
 
+- Raw source material is curated offline into the checked-in JSON files.
+- Generated/curated JSON under `data/` is the runtime input.
+- Production requests read those JSON files only; they do not call upstream sources.
+- Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.
