@@ -16,6 +16,12 @@
 - Updated the README with dataset tooling guidance.
 - No new public endpoints were added in this release.
 
+## v0.2.0
+
+- Added `GET /v1/banks` and `GET /v1/banks/{code}` from a static Slovak bank seed dataset.
+- Added `GET /v1/iban/validate/{iban}` for local Slovak IBAN validation and bank resolution.
+- Documented the new endpoints and dataset limitations.
+
 ## v0.4.0
 
 - Added PSC geography code fields and optional geography expansion.
