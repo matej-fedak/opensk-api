@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.7.0
+
+- Expanded `data/municipalities.json` from the Eurostat LAU 2025 workbook.
+- Updated `data/regions.json` to the current Eurostat NUTS 2024 code mapping.
+- Kept district provenance explicitly unverified and documented the offline-only import/runtime flow.
+- Bumped the application version to `v0.7.0`.
+- No runtime upstream calls were added.
+
 ## v0.6.0
 
 - Added `data/sources.json` as the source registry.

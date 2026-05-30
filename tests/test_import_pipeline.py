@@ -19,23 +19,23 @@ from scripts.import_utils import (
 
 REGIONS = [
     {"code": "SK010", "name": "Bratislavský kraj", "nameEn": "Bratislava Region", "country": "SK"},
-    {"code": "SK011", "name": "Trnavský kraj", "nameEn": "Trnava Region", "country": "SK"},
-    {"code": "SK031", "name": "Trenčiansky kraj", "nameEn": "Trenčín Region", "country": "SK"},
-    {"code": "SK032", "name": "Nitriansky kraj", "nameEn": "Nitra Region", "country": "SK"},
-    {"code": "SK041", "name": "Žilinský kraj", "nameEn": "Žilina Region", "country": "SK"},
-    {"code": "SK042", "name": "Banskobystrický kraj", "nameEn": "Banská Bystrica Region", "country": "SK"},
-    {"code": "SK051", "name": "Prešovský kraj", "nameEn": "Prešov Region", "country": "SK"},
-    {"code": "SK052", "name": "Košický kraj", "nameEn": "Košice Region", "country": "SK"},
+    {"code": "SK021", "name": "Trnavský kraj", "nameEn": "Trnava Region", "country": "SK"},
+    {"code": "SK022", "name": "Trenčiansky kraj", "nameEn": "Trenčín Region", "country": "SK"},
+    {"code": "SK023", "name": "Nitriansky kraj", "nameEn": "Nitra Region", "country": "SK"},
+    {"code": "SK031", "name": "Žilinský kraj", "nameEn": "Žilina Region", "country": "SK"},
+    {"code": "SK032", "name": "Banskobystrický kraj", "nameEn": "Banská Bystrica Region", "country": "SK"},
+    {"code": "SK041", "name": "Prešovský kraj", "nameEn": "Prešov Region", "country": "SK"},
+    {"code": "SK042", "name": "Košický kraj", "nameEn": "Košice Region", "country": "SK"},
 ]
 
 DISTRICTS = [
     {"code": "SK0101", "name": "Bratislava I", "regionCode": "SK010", "country": "SK"},
-    {"code": "SK0111", "name": "Trnava", "regionCode": "SK011", "country": "SK"},
+    {"code": "SK0211", "name": "Trnava", "regionCode": "SK021", "country": "SK"},
 ]
 
 MUNICIPALITIES = [
     {"code": "528595", "name": "Bratislava - Staré Mesto", "districtCode": "SK0101", "regionCode": "SK010", "country": "SK"},
-    {"code": "545321", "name": "Trnava", "districtCode": "SK0111", "regionCode": "SK011", "country": "SK"},
+    {"code": "545321", "name": "Trnava", "districtCode": "SK0211", "regionCode": "SK021", "country": "SK"},
 ]
 
 PSC_FIXTURE = {

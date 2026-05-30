@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "source": "Manual geography seed dataset aligned to Slovak NUTS region codes. Complete regions only.",
-    "license": "Informational seed data only. Verify against an authoritative source before production use.",
+    "source": "Verified offline against the Eurostat LAU 2025 correspondence table. Complete regions only.",
+    "license": "Eurostat reuse terms; verify before redistribution.",
     "lastUpdated": "2026-05-27",
     "complete": true
   },
@@ -13,43 +13,43 @@
       "country": "SK"
     },
     {
-      "code": "SK020",
+      "code": "SK021",
       "name": "Trnavský kraj",
       "nameEn": "Trnava Region",
       "country": "SK"
     },
     {
-      "code": "SK031",
+      "code": "SK022",
       "name": "Trenčiansky kraj",
       "nameEn": "Trenčín Region",
       "country": "SK"
     },
     {
-      "code": "SK032",
+      "code": "SK023",
       "name": "Nitriansky kraj",
       "nameEn": "Nitra Region",
       "country": "SK"
     },
     {
-      "code": "SK041",
+      "code": "SK031",
       "name": "Žilinský kraj",
       "nameEn": "Žilina Region",
       "country": "SK"
     },
     {
-      "code": "SK042",
+      "code": "SK032",
       "name": "Banskobystrický kraj",
       "nameEn": "Banská Bystrica Region",
       "country": "SK"
     },
     {
-      "code": "SK051",
+      "code": "SK041",
       "name": "Prešovský kraj",
       "nameEn": "Prešov Region",
       "country": "SK"
     },
     {
-      "code": "SK052",
+      "code": "SK042",
       "name": "Košický kraj",
       "nameEn": "Košice Region",
       "country": "SK"

@@ -3,17 +3,18 @@
     "regions": {
       "status": "manual-seed",
       "coverage": "complete",
-      "sourceName": "Manual geography seed dataset",
-      "sourceUrl": "Source/licence verification pending.",
-      "license": "Source/licence verification pending.",
+      "sourceName": "Eurostat LAU 2025 correspondence table",
+      "sourceUrl": "https://ec.europa.eu/eurostat/web/nuts/local-administrative-units",
+      "sourceFileName": "EU-27-LAU-2025-NUTS-2024.xlsx",
+      "license": "Eurostat reuse terms; verify before redistribution.",
       "lastChecked": "2026-05-30",
-      "notes": "Current checked-in regions are a complete 8-region seed set.",
-      "importedOrCurated": "Manually curated"
+      "notes": "Current checked-in regions are a complete 8-region set verified offline against Eurostat LAU 2025.",
+      "importedOrCurated": "Verified offline"
     },
     "districts": {
       "status": "manual-seed",
       "coverage": "seed-only",
-      "sourceName": "Manual geography seed dataset",
+      "sourceName": "Unverified district seed dataset",
       "sourceUrl": "Source/licence verification pending.",
       "license": "Source/licence verification pending.",
       "lastChecked": "2026-05-30",
@@ -21,14 +22,15 @@
       "importedOrCurated": "Manually curated"
     },
     "municipalities": {
-      "status": "import-candidate",
-      "coverage": "seed-only",
-      "sourceName": "Manual geography seed dataset",
-      "sourceUrl": "Source/licence verification pending.",
-      "license": "Source/licence verification pending.",
+      "status": "imported",
+      "coverage": "partial",
+      "sourceName": "Eurostat LAU 2025 correspondence table",
+      "sourceUrl": "https://ec.europa.eu/eurostat/web/nuts/local-administrative-units",
+      "sourceFileName": "EU-27-LAU-2025-NUTS-2024.xlsx",
+      "license": "Eurostat reuse terms; verify before redistribution.",
       "lastChecked": "2026-05-30",
-      "notes": "Municipality coverage is seed-only and intended for future import expansion.",
-      "importedOrCurated": "Manually curated"
+      "notes": "Municipality coverage is expanded from the official Eurostat LAU 2025 workbook. District codes are not supplied by the source and remain null in the imported dataset.",
+      "importedOrCurated": "Imported and verified offline"
     }
   },
   "psc": {

@@ -6,6 +6,7 @@ import pytest
 
 from scripts.check_referential_integrity import collect_errors
 from scripts.import_utils import validate_datasets_before_write
+from scripts.import_utils import load_dataset_records
 from scripts.validate_datasets import (
     validate_all_datasets,
     validate_banks_dataset,
@@ -58,14 +59,28 @@ def test_district_region_codes_reference_existing_regions() -> None:
     report = validate_districts_dataset()
 
     assert report.ok
-    assert report.record_count > 0
+    assert report.record_count == 9
 
 
 def test_municipality_references_are_valid() -> None:
     report = validate_municipalities_dataset()
 
     assert report.ok
-    assert report.record_count > 0
+    assert report.record_count > 2000
+
+
+def test_municipalities_were_expanded_from_eurostat_lau() -> None:
+    regions = {region["code"] for region in load_dataset_records("regions", DATA_DIR / "regions.json")}
+    districts = {district["code"]: district for district in load_dataset_records("districts", DATA_DIR / "districts.json")}
+    municipalities = load_dataset_records("municipalities", DATA_DIR / "municipalities.json")
+
+    municipality_codes = [municipality["code"] for municipality in municipalities]
+
+    assert len(municipalities) > 2000
+    assert {"503681", "507814", "528595"}.issubset(municipality_codes)
+    assert len(municipality_codes) == len(set(municipality_codes))
+    assert all(municipality["regionCode"] in regions for municipality in municipalities)
+    assert all(municipality.get("districtCode") is None or municipality["districtCode"] in districts for municipality in municipalities)
 
 
 def test_psc_records_have_unique_codes_and_valid_geography_references() -> None:

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Import geography datasets from local JSON or CSV files.
+"""Import geography datasets from local JSON, CSV, or XLSX files.
 
 JSON is the primary input format. CSV is also supported for flat record lists.
+Municipalities can also be imported from a local XLSX workbook.
 For `--dataset all`, pass either a directory containing `regions`, `districts`,
 and `municipalities` files, or a JSON manifest with those keys.
 """
@@ -19,6 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+DEFAULT_CONTEXT_DIR = ROOT / "data"
 
 from scripts.import_utils import (
     build_dataset_payload,
@@ -93,13 +96,14 @@ def _build_payloads(dataset: str, input_path: Path, source: str) -> dict[str, di
 
 
 def _stage_existing_context(stage_dir: Path, output_root: Path, dataset: str) -> None:
-    if not output_root.exists() or not output_root.is_dir():
-        return
+    base_dir = DEFAULT_CONTEXT_DIR
 
     for name in ("regions", "districts", "municipalities", "psc"):
         if dataset != "all" and name == dataset:
             continue
         source = output_root / dataset_file_name(name)
+        if not source.is_file():
+            source = base_dir / dataset_file_name(name)
         destination = stage_dir / dataset_file_name(name)
         copy_existing_file(source, destination)
 
@@ -222,9 +226,9 @@ def _print_result(result: ImportResult) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Import geography datasets from local JSON or CSV files.")
+    parser = argparse.ArgumentParser(description="Import geography datasets from local JSON, CSV, or XLSX files.")
     parser.add_argument("--source", default="local file import", help="Source label stored in dataset metadata")
-    parser.add_argument("--input", required=True, type=Path, help="Input file or directory")
+    parser.add_argument("--input", required=True, type=Path, help="Input file or directory (JSON, CSV, or XLSX for municipalities)")
     parser.add_argument("--output", required=True, type=Path, help="Output file or directory")
     parser.add_argument(
         "--dataset",
