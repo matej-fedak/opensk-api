@@ -1,15 +1,20 @@
 # Changelog
 
+## v0.6.0
+
+- Added `data/sources.json` as the source registry.
+- Added `data/raw/` and `data/generated/` storage conventions for import work.
+- Added `scripts/import_geography.py`, `scripts/import_utils.py`, and `scripts/fetch_source.py` for offline import and optional source fetching.
+- Added `docs/import-pipeline.md` to document the offline raw-to-generated-to-runtime flow.
+- Added importer tests for dry-run, write, validation, and referential checks.
+- No new public endpoints were added.
+
 ## v0.5.0
 
 - Added `docs/data-sources.md` with the current dataset inventory, coverage notes, and provenance placeholders.
 - Added `docs/dataset-format.md` with the local JSON file shapes and shared metadata conventions.
 - Updated the README with dataset tooling guidance.
 - No new public endpoints were added in this release.
-
-## Unreleased
-
-- No unreleased public geography changes.
 
 ## v0.2.0
 
@@ -30,6 +35,12 @@
 - Added `GET /v1/districts` and `GET /v1/districts/{code}`, including `regionCode` filtering.
 - Added `GET /v1/municipalities` and `GET /v1/municipalities/{code}`, including `regionCode` and `districtCode` filtering.
 - Added static geography datasets with honest seed/full coverage notes.
+
+## v0.2.0
+
+- Added `GET /v1/banks` and `GET /v1/banks/{code}` from a static Slovak bank seed dataset.
+- Added `GET /v1/iban/validate/{iban}` for local Slovak IBAN validation and bank resolution.
+- Documented the new endpoints and dataset limitations.
 
 ## v0.1.1
 

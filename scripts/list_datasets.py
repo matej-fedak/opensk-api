@@ -60,7 +60,7 @@ def main() -> None:
     if not DATA_DIR.is_dir():
         raise SystemExit(f"data directory not found: {DATA_DIR}")
 
-    dataset_files = sorted(DATA_DIR.glob("*.json"))
+    dataset_files = [path for path in sorted(DATA_DIR.glob("*.json")) if path.name != "sources.json"]
     if not dataset_files:
         print("No dataset files found.")
         return
