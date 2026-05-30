@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.4.0`.
+Status: MVP release `v0.5.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -47,6 +47,15 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | --- | --- |
 | `GET /v1/companies/{ico}` | Company lookup |
 
+
+## Dataset Tooling
+
+The repository keeps its reference data in local JSON files under `data/`.
+
+- `docs/data-sources.md` lists the current dataset inventory and coverage notes.
+- `docs/dataset-format.md` documents the JSON file layout and record shapes.
+- `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
+- No new public endpoints were added in `v0.5.0`.
 
 ## Response Envelope
 
@@ -131,9 +140,9 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Regions are complete for the 8 Slovak self-governing regions.
 - Districts are seed-only in this release.
 - Municipalities are seed-only in this release.
-- Geography data were compiled manually from public Slovak administrative division references and aligned to official-looking code formats; municipality codes are provisional seed identifiers where not fully verified.
-- Source notes live in `docs/data-sources.md`.
-- Dataset source and license attribution must be checked per dataset before adding or publishing new data.
+- Geography datasets include provisional seed identifiers where not fully verified.
+- Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
+- Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.
 - Do not assume any dataset is official government data unless the source explicitly says so.
 
 ## Contributing

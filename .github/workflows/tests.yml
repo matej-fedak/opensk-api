@@ -25,3 +25,9 @@ jobs:
 
       - name: Compile Python files
         run: python -m compileall .
+
+      - name: Validate datasets
+        run: python scripts/validate_datasets.py
+
+      - name: Check referential integrity
+        run: python scripts/check_referential_integrity.py

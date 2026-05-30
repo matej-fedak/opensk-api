@@ -1,14 +1,21 @@
 # Changelog
 
+## v0.5.0
+
+- Added `docs/data-sources.md` with the current dataset inventory, coverage notes, and provenance placeholders.
+- Added `docs/dataset-format.md` with the local JSON file shapes and shared metadata conventions.
+- Updated the README with dataset tooling guidance.
+- No new public endpoints were added in this release.
+
+## Unreleased
+
+- No unreleased public geography changes.
+
 ## v0.2.0
 
 - Added `GET /v1/banks` and `GET /v1/banks/{code}` from a static Slovak bank seed dataset.
 - Added `GET /v1/iban/validate/{iban}` for local Slovak IBAN validation and bank resolution.
 - Documented the new endpoints and dataset limitations.
-
-## Unreleased
-
-- No unreleased public geography changes.
 
 ## v0.4.0
 
