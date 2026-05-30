@@ -7,6 +7,8 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - `data/raw/` stores downloaded or manually supplied source material.
 - `data/generated/` stores normalized preview output from import scripts.
 - `data/*.json` remains the production runtime input for the API.
+- Geography imports for regions and municipalities should be checked against the Eurostat LAU 2025 correspondence table and workbook.
+- District-level source material remains unverified until an authoritative source is confirmed.
 
 ## Workflow
 
@@ -21,7 +23,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 Dry run is the default. Use it to preview what would be generated without writing files.
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/example.csv --dry-run --output data/generated/municipalities.json
+python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --dry-run --output data/generated/municipalities.json
 ```
 
 ## Write Workflow
@@ -29,7 +31,7 @@ python scripts/import_geography.py --dataset municipalities --input data/raw/exa
 Only `--write` writes files.
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/example.csv --output data/generated/municipalities.json --write
+python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --output data/generated/municipalities.json --write
 ```
 
 The importer refuses to write when validation fails. Referential integrity failures also block writes unless `--allow-incomplete` is explicitly provided.
@@ -46,7 +48,7 @@ python scripts/check_referential_integrity.py
 ## Adding a New Source
 
 1. Add a source entry to `data/sources.json`.
-2. Place raw material in `data/raw/`.
+2. Place raw material in `data/raw/` if it is small enough for Git; otherwise keep it outside the repo and document the download step.
 3. Extend `scripts/import_geography.py` or add a dataset-specific importer.
 4. Add/extend validation before any write step.
 5. Add tests for both dry-run and write behavior.

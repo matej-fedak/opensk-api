@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "source": "Manual geography seed dataset compiled from public Slovak administrative division references. Seed coverage only.",
+    "source": "Unverified district seed dataset compiled from public Slovak administrative division references. Seed coverage only.",
     "license": "Informational seed data only. Verify against an authoritative source before production use.",
     "lastUpdated": "2026-05-27",
     "complete": false
@@ -37,27 +37,27 @@
       "country": "SK"
     },
     {
-      "code": "SK0521",
+      "code": "SK0421",
       "name": "Košice I",
-      "regionCode": "SK052",
+      "regionCode": "SK042",
       "country": "SK"
     },
     {
-      "code": "SK0522",
+      "code": "SK0422",
       "name": "Košice II",
-      "regionCode": "SK052",
+      "regionCode": "SK042",
       "country": "SK"
     },
     {
-      "code": "SK0523",
+      "code": "SK0423",
       "name": "Košice III",
-      "regionCode": "SK052",
+      "regionCode": "SK042",
       "country": "SK"
     },
     {
-      "code": "SK0524",
+      "code": "SK0424",
       "name": "Košice IV",
-      "regionCode": "SK052",
+      "regionCode": "SK042",
       "country": "SK"
     }
   ]

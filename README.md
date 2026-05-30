@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.6.0`.
+Status: MVP release `v0.7.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -58,15 +58,15 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- No new public endpoints were added in `v0.6.0`.
+- No new public endpoints were added in `v0.7.0`.
 
 ## Dataset Import Pipeline
 
 The import pipeline is offline-only and defaults to dry-run.
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/example.csv --dry-run
-python scripts/import_geography.py --dataset municipalities --input data/raw/example.csv --output data/generated/municipalities.json --write
+python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --dry-run
+python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --output data/generated/municipalities.json --write
 python scripts/validate_datasets.py
 python scripts/check_referential_integrity.py
 ```
@@ -155,10 +155,9 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - The PSC dataset is intentionally limited and does not claim national coverage.
 - PSC geography links are only present where mappings are available in the local seed data.
 - PSC is still a seed dataset, not a full national postal code source.
-- Regions are complete for the 8 Slovak self-governing regions.
-- Districts are seed-only in this release.
-- Municipalities are seed-only in this release.
-- Geography datasets include provisional seed identifiers where not fully verified.
+- Regions are complete for the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
+- Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
+- Districts are still seed-only and the district-level source remains unverified.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.
 - Do not assume any dataset is official government data unless the source explicitly says so.

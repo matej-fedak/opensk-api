@@ -295,8 +295,7 @@ def test_municipalities_district_filter_returns_subset() -> None:
 
     assert response.status_code == 200
     body = response.json()
-    assert body["data"]
-    assert all(municipality["districtCode"] == "SK0101" for municipality in body["data"])
+    assert body["data"] == []
 
 
 def test_invalid_municipality_region_filter_returns_400() -> None:
@@ -314,7 +313,7 @@ def test_known_municipality_code_returns_one_municipality() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["code"] == "528595"
-    assert body["data"]["name"] == "Bratislava - Staré Mesto"
+    assert body["data"]["name"] == "Bratislava - mestská časť Staré Mesto"
 
 
 def test_unknown_municipality_code_returns_404() -> None:
@@ -347,7 +346,7 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert body["data"]["psc"] == "81101"
     assert body["data"]["city"] == "Bratislava"
     assert body["data"]["municipalityCode"] == "528595"
-    assert body["data"]["districtCode"] == "SK0101"
+    assert body["data"]["districtCode"] is None
     assert body["data"]["regionCode"] == "SK010"
     assert body["data"]["municipality"] == "Bratislava - mestská časť Staré Mesto"
     assert body["data"]["district"] == "Bratislava I"
@@ -365,13 +364,10 @@ def test_psc_81101_with_geography_includes_nested_objects() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["municipalityCode"] == "528595"
-    assert body["data"]["districtCode"] == "SK0101"
+    assert body["data"]["districtCode"] is None
     assert body["data"]["regionCode"] == "SK010"
     assert body["data"]["geography"]["region"]["code"] == body["data"]["regionCode"]
-    assert body["data"]["geography"]["district"]["code"] == body["data"]["districtCode"]
     assert body["data"]["geography"]["municipality"]["code"] == body["data"]["municipalityCode"]
-    assert body["data"]["geography"]["district"]["regionCode"] == body["data"]["regionCode"]
-    assert body["data"]["geography"]["municipality"]["districtCode"] == body["data"]["districtCode"]
     assert body["data"]["geography"]["municipality"]["regionCode"] == body["data"]["regionCode"]
     assert body["metadata"]["source"] == "OpenSK API static PSC seed dataset + static geography seed datasets"
     assert body["metadata"]["lastUpdated"] == "2026-05-27"

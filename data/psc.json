@@ -1,24 +1,24 @@
 {
-  "81101": {
-    "psc": "81101",
-    "city": "Bratislava",
-    "municipality": "Bratislava - mestská časť Staré Mesto",
-    "municipalityCode": "528595",
-    "district": "Bratislava I",
-    "districtCode": "SK0101",
-    "region": "Bratislavský kraj",
-    "regionCode": "SK010",
-    "country": "Slovakia"
-  },
+    "81101": {
+      "psc": "81101",
+      "city": "Bratislava",
+      "municipality": "Bratislava - mestská časť Staré Mesto",
+      "municipalityCode": "528595",
+      "district": "Bratislava I",
+      "districtCode": null,
+      "region": "Bratislavský kraj",
+      "regionCode": "SK010",
+      "country": "Slovakia"
+    },
   "04001": {
     "psc": "04001",
     "city": "Košice",
     "municipality": "Košice - mestská časť Staré Mesto",
     "municipalityCode": null,
     "district": "Košice I",
-    "districtCode": "SK0521",
+      "districtCode": "SK0421",
     "region": "Košický kraj",
-    "regionCode": "SK052",
+    "regionCode": "SK042",
     "country": "Slovakia"
   },
   "01001": {
@@ -29,7 +29,7 @@
     "district": "Žilina",
     "districtCode": null,
     "region": "Žilinský kraj",
-    "regionCode": "SK041",
+    "regionCode": "SK031",
     "country": "Slovakia"
   },
   "94901": {
@@ -40,7 +40,7 @@
     "district": "Nitra",
     "districtCode": null,
     "region": "Nitriansky kraj",
-    "regionCode": "SK032",
+    "regionCode": "SK023",
     "country": "Slovakia"
   },
   "97401": {
@@ -51,7 +51,7 @@
     "district": "Banská Bystrica",
     "districtCode": null,
     "region": "Banskobystrický kraj",
-    "regionCode": "SK042",
+    "regionCode": "SK032",
     "country": "Slovakia"
   }
 }
