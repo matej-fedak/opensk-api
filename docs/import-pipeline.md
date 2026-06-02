@@ -9,7 +9,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - `data/*.json` remains the production runtime input for the API.
 - Geography imports for regions and municipalities should be checked against the Eurostat LAU 2025 correspondence table and workbook.
 - District-level source material remains unverified until an authoritative source is confirmed.
-- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms.
+- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. The imported PSC dataset currently keeps `districtCode` null because the source does not supply a reliable district mapping.
 
 ## Workflow
 

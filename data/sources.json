@@ -36,11 +36,11 @@
   "psc": {
     "status": "manual-seed",
     "coverage": "partial",
-    "sourceName": "Expanded local PSC dataset",
-    "sourceUrl": "Source/licence verification pending.",
+    "sourceName": "PortalVS Číselníky classifier 42",
+    "sourceUrl": "https://ciselniky.portalvs.sk/api/rest/json/42",
     "license": "Source/licence verification pending.",
-    "lastChecked": "2026-05-30",
-    "notes": "PSC coverage is expanded beyond the original tiny seed-only sample, but it still does not imply national coverage. Source rows may repeat the same postal code, so importer previews should preserve ambiguity with matchCount and matches. Source/licence verification is still pending.",
+    "lastChecked": "2026-06-02",
+    "notes": "PSC coverage is expanded beyond the original tiny seed-only sample, but it still does not imply national coverage. Source rows may repeat the same postal code, so importer previews should preserve ambiguity with matchCount and matches. Imported PSC records currently have districtCode null because the source does not provide a reliable district mapping. Source/licence verification is still pending.",
     "importedOrCurated": "Manually curated"
   },
   "banks": {

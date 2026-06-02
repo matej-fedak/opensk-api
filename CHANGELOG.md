@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.9.0
+
+- Documented the PSC collection surface, including list, search, and stats endpoints.
+- Documented PSC pagination with `limit` and `offset`.
+- Clarified that imported PSC data currently has `districtCode: null` and that source/licence verification is still pending.
+- Bumped the application version to `v0.9.0`.
+
 ## v0.8.0
 
 - Expanded the checked-in PSC dataset beyond the original tiny seed-only sample.
