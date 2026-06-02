@@ -21,6 +21,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Omit fields only when the dataset schema does not define them.
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
 - For imported municipality records, `districtCode` may be `null` because the Eurostat LAU workbook does not provide district mappings.
+- In the current imported PSC data, `districtCode` is `null` throughout because the source data does not provide a reliable district mapping.
 
 ## Common Metadata
 
@@ -113,8 +114,56 @@ Where present, dataset metadata uses this shape:
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
 - Imported municipality rows may have `districtCode: null` when the source workbook does not provide district mappings.
+- Imported PSC rows currently have `districtCode: null` in the checked-in dataset.
 - PSC geography links are local data, not a live lookup.
 - The PSC source may contain multiple rows for the same postal code; importer previews should report that with `matchCount` and `matches` before selecting a canonical runtime record.
+
+### PSC List/Search Responses
+
+`GET /v1/psc` and `GET /v1/psc/search` both return a paginated envelope:
+
+```json
+{
+  "data": {
+    "items": [],
+    "count": 0,
+    "total": 0,
+    "limit": 100,
+    "offset": 0
+  },
+  "metadata": { ... },
+  "error": null
+}
+```
+
+- `items` contains flattened PSC match records.
+- `count` is the number of items returned for the current page.
+- `total` is the total number of records after filters/search before pagination.
+- `limit` and `offset` are echoed back after validation.
+- Search uses the same item shape as the list endpoint.
+
+### PSC Stats
+
+`GET /v1/psc/stats` returns local dataset totals and geography coverage:
+
+```json
+{
+  "data": {
+    "recordCount": 3101,
+    "uniquePscCount": 1420,
+    "multiMatchPscCount": 759,
+    "geographyCoverage": {
+      "municipalityCode": { "count": 3101, "percentage": 100.0 },
+      "regionCode": { "count": 3101, "percentage": 100.0 },
+      "districtCode": { "count": 0, "percentage": 0.0 }
+    },
+    "source": {
+      "name": "PortalVS Číselníky classifier 42",
+      "licenceStatus": "Source/licence verification pending."
+    }
+  }
+}
+```
 
 Example preview shape for an ambiguous PSC code:
 

@@ -14,7 +14,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Regions | `data/regions.json` | Eurostat LAU 2025 correspondence table | `EU-27-LAU-2025-NUTS-2024.xlsx` | https://ec.europa.eu/eurostat/web/nuts/local-administrative-units | Eurostat reuse terms; verify before redistribution. | `2026-05-30` | Complete 8-region set | Verified offline |
 | Districts | `data/districts.json` | Unverified district seed dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-27` | Seed coverage only | Manually curated |
 | Municipalities | `data/municipalities.json` | Eurostat LAU 2025 correspondence table | `EU-27-LAU-2025-NUTS-2024.xlsx` | https://ec.europa.eu/eurostat/web/nuts/local-administrative-units | Eurostat reuse terms; verify before redistribution. | `2026-05-30` | Expanded LAU coverage; district codes remain null in the imported file | Imported and verified offline |
-| PSC | `data/psc.json` | Expanded local PSC dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-27` | 5 checked-in postal codes with partial geography links | Manually curated |
+| PSC | `data/psc.json` | PortalVS Číselníky classifier 42 | `https://ciselniky.portalvs.sk/api/rest/json/42` | Source/licence verification pending. | Source/licence verification pending. | `2026-06-02` | 5 checked-in postal codes with partial geography links; imported PSC records currently have `districtCode: null` | Manually curated |
 
 Notes:
 
@@ -23,6 +23,7 @@ Notes:
 - Districts remain seed-only and the district-level source is unverified.
 - PSC is expanded beyond the original tiny seed-only sample, but it is still not national coverage.
 - The checked-in PSC file currently contains 5 codes; geography links are only present where local mappings exist.
+- Imported PSC records currently have `districtCode: null` because the source data does not provide a reliable district mapping.
 - PSC source/licence verification is still pending.
 - PSC source rows may repeat the same postal code; the importer/preview should preserve that ambiguity with `matchCount` and `matches`.
 - PSC geography expansion is local and static; it does not call upstream services.

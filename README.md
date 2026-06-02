@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.8.0`.
+Status: MVP release `v0.9.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -20,6 +20,9 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/districts` | Working | Static districts seed dataset |
 | `GET /v1/municipalities` | Working | Static municipalities seed dataset |
 | `GET /v1/psc/81101` | Working | Expanded static PSC dataset with geography links |
+| `GET /v1/psc` | Working | PSC collection surface with `limit` / `offset` pagination |
+| `GET /v1/psc/search?q=...` | Working | PSC search surface |
+| `GET /v1/psc/stats` | Working | PSC dataset stats |
 | `/docs` | Working | Swagger UI |
 | `/openapi.json` | Working | OpenAPI schema |
 
@@ -39,7 +42,20 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/districts/{code}` | Slovak district lookup |
 | `GET /v1/municipalities` | Slovak municipalities list, optional `regionCode` and `districtCode` filters |
 | `GET /v1/municipalities/{code}` | Slovak municipality lookup |
+| `GET /v1/psc` | Slovak postal code list/filter endpoint with `limit` and `offset` |
+| `GET /v1/psc/search` | Slovak postal code search endpoint |
+| `GET /v1/psc/stats` | Slovak postal code dataset statistics |
 | `GET /v1/psc/{psc}` | Slovak postal code lookup, optional `include=geography` |
+
+## PSC Collection Surface
+
+The v0.9.0 docs cover the PSC collection routes and pagination model.
+
+| Endpoint | Notes |
+| --- | --- |
+| `GET /v1/psc` | PSC collection list, paginated with `limit` and `offset` |
+| `GET /v1/psc/search?q=Bratislava` | PSC search by `q` |
+| `GET /v1/psc/stats` | PSC dataset statistics |
 
 ## Planned Endpoints
 
@@ -58,7 +74,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- No new public endpoints were added in `v0.8.0`.
+- `v0.9.0` documents the PSC collection surface, pagination, and stats/search examples.
 
 ## Dataset Import Pipeline
 
@@ -108,6 +124,9 @@ curl http://opensk-api.onrender.com/v1/municipalities
 curl http://opensk-api.onrender.com/v1/municipalities?districtCode=SK0101
 curl http://opensk-api.onrender.com/v1/psc/81101
 curl http://opensk-api.onrender.com/v1/psc/81101?include=geography
+curl http://opensk-api.onrender.com/v1/psc?limit=25&offset=0
+curl "http://opensk-api.onrender.com/v1/psc/search?q=Bratislava"
+curl http://opensk-api.onrender.com/v1/psc/stats
 ```
 
 PSC source previews can expose repeated codes like this:
@@ -178,7 +197,11 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it still does not claim national coverage.
 - The checked-in PSC file currently covers 5 postal codes and only partially links geography.
 - PSC source/licence verification is still pending, so do not present the dataset as official or redistributable without checking the upstream terms.
+- Imported PSC data currently has `districtCode: null`; that field is unavailable in the imported source data.
 - PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
+- `GET /v1/psc` returns paginated PSC match records with `limit` and `offset`.
+- `GET /v1/psc/search?q=...` searches PSC records by PSC prefix, municipality, and delivery post.
+- `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
 - Regions are complete for the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
 - Districts are still seed-only and the district-level source remains unverified.
