@@ -43,7 +43,7 @@ def get_psc(
         include_geography = True
 
     try:
-        psc_data = lookup_psc(psc, include_geography=include_geography)
+        psc_result = lookup_psc(psc, include_geography=include_geography)
     except PSCInvalidFormatError:
         raise HTTPException(
             status_code=400,
@@ -67,11 +67,11 @@ def get_psc(
         )
 
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
-    source = f"{API_SOURCE} static PSC seed dataset"
+    source = f"{API_SOURCE} static PSC dataset"
     if include_geography:
         source = PSC_GEOGRAPHY_SOURCE
     return success_response(
-        data=psc_data,
+        data=psc_result,
         source=source,
         last_updated=PSC_LAST_UPDATED,
     )

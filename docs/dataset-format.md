@@ -113,7 +113,23 @@ Where present, dataset metadata uses this shape:
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
 - Imported municipality rows may have `districtCode: null` when the source workbook does not provide district mappings.
-- PSC geography links are local seed data, not a live lookup.
+- PSC geography links are local data, not a live lookup.
+- The PSC source may contain multiple rows for the same postal code; importer previews should report that with `matchCount` and `matches` before selecting a canonical runtime record.
+
+Example preview shape for an ambiguous PSC code:
+
+```json
+{
+  "data": {
+    "psc": "81101",
+    "matchCount": 2,
+    "matches": [
+      { "psc": "81101", "city": "Bratislava" },
+      { "psc": "81101", "city": "Bratislava - mestská časť Staré Mesto" }
+    ]
+  }
+}
+```
 
 ### `data/holidays.json`
 

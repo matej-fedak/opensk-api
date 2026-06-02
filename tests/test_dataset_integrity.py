@@ -26,6 +26,10 @@ def _copy_dataset_dir(target_dir: Path) -> None:
         shutil.copy2(source, target_dir / source.name)
 
 
+def _write_psc_dataset(target_dir: Path, payload: dict[str, object]) -> None:
+    (target_dir / "psc.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
@@ -88,6 +92,160 @@ def test_psc_records_have_unique_codes_and_valid_geography_references() -> None:
 
     assert report.ok
     assert report.record_count > 0
+
+
+def test_psc_dataset_accepts_expanded_model_and_multiple_matches(tmp_path: Path) -> None:
+    _copy_dataset_dir(tmp_path)
+    _write_psc_dataset(
+        tmp_path,
+        {
+            "81101": {
+                "psc": "81101",
+                "city": "Bratislava",
+                "municipality": "Bratislava - mestská časť Staré Mesto",
+                "municipalityCode": "528595",
+                "district": "Bratislava I",
+                "districtCode": None,
+                "region": "Bratislavský kraj",
+                "regionCode": "SK010",
+                "country": "Slovakia",
+                "matchCount": 2,
+                "matches": [
+                    {
+                        "psc": "81101",
+                        "city": "Bratislava",
+                        "municipality": "Bratislava - mestská časť Staré Mesto",
+                        "municipalityCode": "528595",
+                        "district": "Bratislava I",
+                        "districtCode": None,
+                        "region": "Bratislavský kraj",
+                        "regionCode": "SK010",
+                        "country": "Slovakia",
+                        "deliveryPost": "Bratislava 1",
+                        "validFrom": "2026-01-01",
+                        "validTo": "2026-06-30",
+                    },
+                    {
+                        "psc": "81101",
+                        "city": "Bratislava",
+                        "municipality": "Bratislava - mestská časť Staré Mesto",
+                        "municipalityCode": "528595",
+                        "district": "Bratislava I",
+                        "districtCode": None,
+                        "region": "Bratislavský kraj",
+                        "regionCode": "SK010",
+                        "country": "Slovakia",
+                        "deliveryPost": "Bratislava 2",
+                        "validFrom": "2026-07-01",
+                        "validTo": "2026-12-31",
+                    },
+                ],
+            }
+        },
+    )
+
+    report = validate_psc_dataset(tmp_path / "psc.json")
+
+    assert report.ok
+    assert report.record_count == 1
+
+
+def test_psc_dataset_rejects_exact_duplicates(tmp_path: Path) -> None:
+    _copy_dataset_dir(tmp_path)
+    _write_psc_dataset(
+        tmp_path,
+        {
+            "81101": {
+                "psc": "81101",
+                "city": "Bratislava",
+                "municipality": "Bratislava - mestská časť Staré Mesto",
+                "municipalityCode": "528595",
+                "district": "Bratislava I",
+                "districtCode": None,
+                "region": "Bratislavský kraj",
+                "regionCode": "SK010",
+                "country": "Slovakia",
+                "matchCount": 2,
+                "matches": [
+                    {
+                        "psc": "81101",
+                        "city": "Bratislava",
+                        "municipality": "Bratislava - mestská časť Staré Mesto",
+                        "municipalityCode": "528595",
+                        "district": "Bratislava I",
+                        "districtCode": None,
+                        "region": "Bratislavský kraj",
+                        "regionCode": "SK010",
+                        "country": "Slovakia",
+                        "deliveryPost": "Bratislava 1",
+                        "validFrom": "2026-01-01",
+                        "validTo": "2026-06-30",
+                    },
+                    {
+                        "psc": "81101",
+                        "city": "Bratislava",
+                        "municipality": "Bratislava - mestská časť Staré Mesto",
+                        "municipalityCode": "528595",
+                        "district": "Bratislava I",
+                        "districtCode": None,
+                        "region": "Bratislavský kraj",
+                        "regionCode": "SK010",
+                        "country": "Slovakia",
+                        "deliveryPost": "Bratislava 1",
+                        "validFrom": "2026-01-01",
+                        "validTo": "2026-06-30",
+                    },
+                ],
+            }
+        },
+    )
+
+    report = validate_psc_dataset(tmp_path / "psc.json")
+
+    assert not report.ok
+    assert any("duplicate PSC record" in issue.message for issue in report.errors)
+
+
+def test_psc_dataset_checks_valid_from_and_valid_to(tmp_path: Path) -> None:
+    _copy_dataset_dir(tmp_path)
+    _write_psc_dataset(
+        tmp_path,
+        {
+            "81101": {
+                "psc": "81101",
+                "city": "Bratislava",
+                "municipality": "Bratislava - mestská časť Staré Mesto",
+                "municipalityCode": "528595",
+                "district": "Bratislava I",
+                "districtCode": None,
+                "region": "Bratislavský kraj",
+                "regionCode": "SK010",
+                "country": "Slovakia",
+                "matchCount": 1,
+                "matches": [
+                    {
+                        "psc": "81101",
+                        "city": "Bratislava",
+                        "municipality": "Bratislava - mestská časť Staré Mesto",
+                        "municipalityCode": "528595",
+                        "district": "Bratislava I",
+                        "districtCode": None,
+                        "region": "Bratislavský kraj",
+                        "regionCode": "SK010",
+                        "country": "Slovakia",
+                        "deliveryPost": "Bratislava 1",
+                        "validFrom": "2026-06-30",
+                        "validTo": "2026-01-01",
+                    }
+                ],
+            }
+        },
+    )
+
+    report = validate_psc_dataset(tmp_path / "psc.json")
+
+    assert not report.ok
+    assert any("validFrom must be on or before validTo" in issue.message for issue in report.errors)
 
 
 def test_referential_integrity_script_reports_no_errors() -> None:

@@ -344,16 +344,18 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert response.headers["cache-control"] == "public, max-age=86400"
     body = response.json()
     assert body["data"]["psc"] == "81101"
-    assert body["data"]["city"] == "Bratislava"
+    assert body["data"]["matchCount"] == len(body["data"]["matches"])
+    assert body["data"]["matches"]
+    assert body["data"]["city"] == "Bratislava 1"
     assert body["data"]["municipalityCode"] == "528595"
     assert body["data"]["districtCode"] is None
     assert body["data"]["regionCode"] == "SK010"
     assert body["data"]["municipality"] == "Bratislava - mestská časť Staré Mesto"
-    assert body["data"]["district"] == "Bratislava I"
+    assert body["data"]["district"] is None
     assert body["data"]["region"] == "Bratislavský kraj"
     assert body["data"]["country"] == "Slovakia"
-    assert body["metadata"]["source"] == "OpenSK API static PSC seed dataset"
-    assert body["metadata"]["lastUpdated"] == "2026-05-27"
+    assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-06-02"
     assert body["metadata"]["version"] == "v1"
     assert body["error"] is None
 
@@ -363,14 +365,15 @@ def test_psc_81101_with_geography_includes_nested_objects() -> None:
 
     assert response.status_code == 200
     body = response.json()
+    assert body["data"]["matchCount"] == len(body["data"]["matches"])
     assert body["data"]["municipalityCode"] == "528595"
     assert body["data"]["districtCode"] is None
     assert body["data"]["regionCode"] == "SK010"
     assert body["data"]["geography"]["region"]["code"] == body["data"]["regionCode"]
     assert body["data"]["geography"]["municipality"]["code"] == body["data"]["municipalityCode"]
     assert body["data"]["geography"]["municipality"]["regionCode"] == body["data"]["regionCode"]
-    assert body["metadata"]["source"] == "OpenSK API static PSC seed dataset + static geography seed datasets"
-    assert body["metadata"]["lastUpdated"] == "2026-05-27"
+    assert body["metadata"]["source"] == "OpenSK API static PSC dataset + static geography seed datasets"
+    assert body["metadata"]["lastUpdated"] == "2026-06-02"
     assert body["metadata"]["version"] == "v1"
     assert body["error"] is None
 
@@ -416,31 +419,32 @@ def test_unknown_valid_psc_returns_404() -> None:
 
 def test_psc_seed_records_reference_existing_geography() -> None:
     from services.geography_service import load_districts, load_municipalities, load_regions
-    from services.psc_service import load_psc_data
+    from services.psc_service import index_psc_data
 
     regions = {region["code"]: region for region in load_regions()}
     districts = {district["code"]: district for district in load_districts()}
     municipalities = {municipality["code"]: municipality for municipality in load_municipalities()}
 
-    for psc_code, record in load_psc_data().items():
-        region_code = record.get("regionCode")
-        district_code = record.get("districtCode")
-        municipality_code = record.get("municipalityCode")
+    for psc_code, records in index_psc_data().items():
+        for record in records:
+            region_code = record.get("regionCode")
+            district_code = record.get("districtCode")
+            municipality_code = record.get("municipalityCode")
 
-        if region_code is not None:
-            assert region_code in regions, psc_code
-
-        if district_code is not None:
-            assert district_code in districts, psc_code
             if region_code is not None:
-                assert districts[district_code]["regionCode"] == region_code, psc_code
+                assert region_code in regions, psc_code
 
-        if municipality_code is not None:
-            assert municipality_code in municipalities, psc_code
             if district_code is not None:
-                assert municipalities[municipality_code]["districtCode"] == district_code, psc_code
-            if region_code is not None:
-                assert municipalities[municipality_code]["regionCode"] == region_code, psc_code
+                assert district_code in districts, psc_code
+                if region_code is not None:
+                    assert districts[district_code]["regionCode"] == region_code, psc_code
+
+            if municipality_code is not None:
+                assert municipality_code in municipalities, psc_code
+                if district_code is not None:
+                    assert municipalities[municipality_code]["districtCode"] == district_code, psc_code
+                if region_code is not None:
+                    assert municipalities[municipality_code]["regionCode"] == region_code, psc_code
 
 
 def test_unknown_route_returns_enveloped_404() -> None:

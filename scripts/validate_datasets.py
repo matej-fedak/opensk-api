@@ -107,6 +107,12 @@ def _require_string(report: ValidationReport, value: Any, path: str, message: st
     return value
 
 
+def _require_nullable_string(report: ValidationReport, value: Any, path: str, message: str) -> str | None:
+    if value is None:
+        return None
+    return _require_string(report, value, path, message)
+
+
 def _require_iso_date(report: ValidationReport, value: Any, path: str, message: str) -> str | None:
     text = _require_string(report, value, path, message)
     if text is None:
@@ -123,6 +129,27 @@ def _require_iso_date(report: ValidationReport, value: Any, path: str, message: 
         return None
 
     return text
+
+
+def _require_nullable_iso_date(report: ValidationReport, value: Any, path: str, message: str) -> str | None:
+    if value is None:
+        return None
+
+    if not isinstance(value, str) or not value.strip():
+        report.add_error(path, message)
+        return None
+
+    if not _DATE_RE.fullmatch(value):
+        report.add_error(path, f"Expected YYYY-MM-DD date or null, got {value!r}")
+        return None
+
+    try:
+        date.fromisoformat(value)
+    except ValueError:
+        report.add_error(path, f"Invalid ISO date: {value!r}")
+        return None
+
+    return value
 
 
 def _validate_dataset_metadata(report: ValidationReport, payload: dict[str, Any]) -> dict[str, Any] | None:
@@ -463,38 +490,41 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
     districts_by_code = _load_districts_lookup(data_dir, report)
     municipalities_by_code = _load_index(report, data_dir / "municipalities.json", "municipalities", "code")
 
-    if not payload:
+    if isinstance(payload.get("metadata"), dict):
+        metadata = payload["metadata"]
+        _validate_dataset_metadata(report, payload)
+        _warn_if_seed(report, metadata)
+
+    entries = [(str(psc_code), record) for psc_code, record in payload.items() if psc_code != "metadata"]
+    if not entries:
         report.add_error("root", "psc dataset must not be empty")
         return report
 
-    partial_geography_seen = False
-    seen_codes: set[str] = set()
-    for psc_code, record in payload.items():
-        item_path = str(psc_code)
-        if not isinstance(psc_code, str) or not _PSC_CODE_RE.fullmatch(psc_code):
-            report.add_error(item_path, f"PSC key must be 5 digits, got {psc_code!r}")
-            continue
-
-        item = _require_dict(report, record, item_path, f"PSC record {psc_code!r} must be an object")
+    for item_path, record in entries:
+        item = _require_dict(report, record, item_path, f"PSC record at {item_path} must be an object")
         if item is None:
             continue
 
-        if psc_code in seen_codes:
-            report.add_error(item_path, f"duplicate PSC key {psc_code!r}")
-        seen_codes.add(psc_code)
-
         record_psc = _require_string(report, item.get("psc"), f"{item_path}.psc", "PSC record must include its postal code")
-        if record_psc is not None and record_psc != psc_code:
-            report.add_error(f"{item_path}.psc", f"PSC field {record_psc!r} does not match key {psc_code!r}")
+        if record_psc is not None:
+            if not _PSC_CODE_RE.fullmatch(record_psc):
+                report.add_error(f"{item_path}.psc", f"PSC must be 5 digits, got {record_psc!r}")
+            if record_psc != item_path:
+                report.add_error(f"{item_path}.psc", f"PSC field {record_psc!r} does not match key {item_path!r}")
 
-        _require_string(report, item.get("city"), f"{item_path}.city", "PSC city must be a non-empty string")
-        _require_string(report, item.get("municipality"), f"{item_path}.municipality", "PSC municipality must be a non-empty string")
-        _require_string(report, item.get("district"), f"{item_path}.district", "PSC district must be a non-empty string")
-        _require_string(report, item.get("region"), f"{item_path}.region", "PSC region must be a non-empty string")
+        _require_nullable_string(report, item.get("city"), f"{item_path}.city", "PSC city must be a string when provided")
+        _require_nullable_string(report, item.get("municipality"), f"{item_path}.municipality", "PSC municipality must be a string when provided")
+        _require_nullable_string(report, item.get("district"), f"{item_path}.district", "PSC district must be a string when provided")
+        _require_nullable_string(report, item.get("region"), f"{item_path}.region", "PSC region must be a string when provided")
 
         country = _require_string(report, item.get("country"), f"{item_path}.country", "PSC country must be a non-empty string")
         if country is not None and country != "Slovakia":
             report.add_error(f"{item_path}.country", f"PSC country must be 'Slovakia', got {country!r}")
+
+        valid_from = _require_nullable_iso_date(report, item.get("validFrom"), f"{item_path}.validFrom", "PSC validFrom must be null or a YYYY-MM-DD date")
+        valid_to = _require_nullable_iso_date(report, item.get("validTo"), f"{item_path}.validTo", "PSC validTo must be null or a YYYY-MM-DD date")
+        if valid_from is not None and valid_to is not None and date.fromisoformat(valid_from) > date.fromisoformat(valid_to):
+            report.add_error(f"{item_path}.validFrom", "PSC validFrom must be on or before validTo")
 
         region_code = item.get("regionCode")
         if region_code is not None:
@@ -518,20 +548,104 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
                 report.add_error(f"{item_path}.municipalityCode", f"PSC municipalityCode must be 6 digits, got {municipality_code!r}")
             elif municipality_code not in municipalities_by_code:
                 report.add_error(f"{item_path}.municipalityCode", f"unknown municipality code {municipality_code!r}")
-            else:
-                municipality = municipalities_by_code[municipality_code]
-                if district_code is not None and municipality.get("districtCode") != district_code:
-                    report.add_error(f"{item_path}.municipalityCode", f"municipality {municipality_code!r} does not belong to district {district_code!r}")
-                if region_code is not None and municipality.get("regionCode") != region_code:
-                    report.add_error(f"{item_path}.municipalityCode", f"municipality {municipality_code!r} does not belong to region {region_code!r}")
 
-        if region_code is None or district_code is None or municipality_code is None:
-            partial_geography_seen = True
+        matches = item.get("matches")
+        if matches is None:
+            continue
 
-    if partial_geography_seen:
-        report.add_warning("psc", "PSC dataset contains partial geography mappings; this is expected seed data")
+        matches_list = _require_list(report, matches, f"{item_path}.matches", "PSC matches must be a list")
+        if matches_list is None:
+            continue
 
-    report.record_count = len(payload)
+        match_count = item.get("matchCount")
+        if match_count is not None and (not isinstance(match_count, int) or match_count < 0):
+            report.add_error(f"{item_path}.matchCount", "PSC matchCount must be a non-negative integer")
+        elif isinstance(match_count, int) and match_count != len(matches_list):
+            report.add_error(f"{item_path}.matchCount", f"PSC matchCount must equal len(matches), got {match_count} and {len(matches_list)}")
+
+        seen_matches: set[str] = set()
+        for index, match in enumerate(matches_list):
+            match_path = f"{item_path}.matches[{index}]"
+            match_item = _require_dict(report, match, match_path, "PSC match must be an object")
+            if match_item is None:
+                continue
+
+            delivery_post = _require_string(report, match_item.get("deliveryPost"), f"{match_path}.deliveryPost", "PSC deliveryPost must be a non-empty string")
+            valid_from_match = _require_nullable_iso_date(
+                report,
+                match_item.get("validFrom"),
+                f"{match_path}.validFrom",
+                "PSC validFrom must be null or a YYYY-MM-DD date",
+            )
+            valid_to_match = _require_nullable_iso_date(
+                report,
+                match_item.get("validTo"),
+                f"{match_path}.validTo",
+                "PSC validTo must be null or a YYYY-MM-DD date",
+            )
+            if valid_from_match is not None and valid_to_match is not None and date.fromisoformat(valid_from_match) > date.fromisoformat(valid_to_match):
+                report.add_error(f"{match_path}.validFrom", "PSC validFrom must be on or before validTo")
+
+            municipality_code_match = match_item.get("municipalityCode")
+            if municipality_code_match is not None and (
+                not isinstance(municipality_code_match, str) or not _MUNICIPALITY_CODE_RE.fullmatch(municipality_code_match)
+            ):
+                report.add_error(f"{match_path}.municipalityCode", f"PSC municipalityCode must be 6 digits, got {municipality_code_match!r}")
+
+            exact_key = json.dumps(match_item, ensure_ascii=False, sort_keys=True)
+            if exact_key in seen_matches:
+                report.add_error(match_path, "duplicate PSC record")
+            seen_matches.add(exact_key)
+
+        matches = item.get("matches")
+        if matches is None:
+            continue
+
+        matches_list = _require_list(report, matches, f"{item_path}.matches", "PSC matches must be a list")
+        if matches_list is None:
+            continue
+
+        match_count = item.get("matchCount")
+        if match_count is not None and (not isinstance(match_count, int) or match_count < 0):
+            report.add_error(f"{item_path}.matchCount", "PSC matchCount must be a non-negative integer")
+        elif isinstance(match_count, int) and match_count != len(matches_list):
+            report.add_error(f"{item_path}.matchCount", f"PSC matchCount must equal len(matches), got {match_count} and {len(matches_list)}")
+
+            seen_matches: set[str] = set()
+            for index, match in enumerate(matches_list):
+                match_path = f"{item_path}.matches[{index}]"
+                match_item = _require_dict(report, match, match_path, "PSC match must be an object")
+                if match_item is None:
+                    continue
+
+            delivery_post = _require_string(report, match_item.get("deliveryPost"), f"{match_path}.deliveryPost", "PSC deliveryPost must be a non-empty string")
+            valid_from_match = _require_nullable_iso_date(
+                report,
+                match_item.get("validFrom"),
+                f"{match_path}.validFrom",
+                "PSC validFrom must be null or a YYYY-MM-DD date",
+            )
+            valid_to_match = _require_nullable_iso_date(
+                report,
+                match_item.get("validTo"),
+                f"{match_path}.validTo",
+                "PSC validTo must be null or a YYYY-MM-DD date",
+            )
+            if valid_from_match is not None and valid_to_match is not None and date.fromisoformat(valid_from_match) > date.fromisoformat(valid_to_match):
+                report.add_error(f"{match_path}.validFrom", "PSC validFrom must be on or before validTo")
+
+            municipality_code_match = match_item.get("municipalityCode")
+            if municipality_code_match is not None and (
+                not isinstance(municipality_code_match, str) or not _MUNICIPALITY_CODE_RE.fullmatch(municipality_code_match)
+            ):
+                report.add_error(f"{match_path}.municipalityCode", f"PSC municipalityCode must be 6 digits, got {municipality_code_match!r}")
+
+            exact_key = json.dumps(match_item, ensure_ascii=False, sort_keys=True)
+            if exact_key in seen_matches:
+                report.add_error(match_path, "duplicate PSC record")
+            seen_matches.add(exact_key)
+
+    report.record_count = len(entries)
     return report
 
 
