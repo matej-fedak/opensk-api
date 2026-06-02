@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.7.0`.
+Status: MVP release `v0.8.0`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -19,7 +19,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/regions` | Working | Static regions dataset |
 | `GET /v1/districts` | Working | Static districts seed dataset |
 | `GET /v1/municipalities` | Working | Static municipalities seed dataset |
-| `GET /v1/psc/81101` | Working | Static PSC seed dataset with geography links |
+| `GET /v1/psc/81101` | Working | Expanded static PSC dataset with geography links |
 | `/docs` | Working | Swagger UI |
 | `/openapi.json` | Working | OpenAPI schema |
 
@@ -58,7 +58,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- No new public endpoints were added in `v0.7.0`.
+- No new public endpoints were added in `v0.8.0`.
 
 ## Dataset Import Pipeline
 
@@ -67,6 +67,8 @@ The import pipeline is offline-only and defaults to dry-run.
 ```bash
 python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --dry-run
 python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --output data/generated/municipalities.json --write
+python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
+python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
 python scripts/validate_datasets.py
 python scripts/check_referential_integrity.py
 ```
@@ -106,6 +108,27 @@ curl http://opensk-api.onrender.com/v1/municipalities
 curl http://opensk-api.onrender.com/v1/municipalities?districtCode=SK0101
 curl http://opensk-api.onrender.com/v1/psc/81101
 curl http://opensk-api.onrender.com/v1/psc/81101?include=geography
+```
+
+PSC source previews can expose repeated codes like this:
+
+```json
+{
+  "data": {
+    "psc": "81101",
+    "matchCount": 2,
+    "matches": [
+      { "psc": "81101", "city": "Bratislava" },
+      { "psc": "81101", "city": "Bratislava - mestská časť Staré Mesto" }
+    ]
+  },
+  "metadata": {
+    "source": "OpenSK API PSC import preview",
+    "lastUpdated": "YYYY-MM-DD",
+    "version": "v1"
+  },
+  "error": null
+}
 ```
 
 Swagger docs: `http://opensk-api.onrender.com/docs`
@@ -148,13 +171,14 @@ The free Render instance may sleep when idle and can cold-start on the first req
 
 - Raw source material is handled offline and curated into the checked-in JSON datasets under `data/`.
 - Production requests read those local JSON files only.
-- Holiday and PSC responses currently use static seed datasets.
+- Holiday responses currently use a static seed dataset.
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
 - Banks use a small static seed dataset and IBAN validation runs locally without network access.
 - The bank dataset is intentionally incomplete and should not be presented as exhaustive.
-- The PSC dataset is intentionally limited and does not claim national coverage.
-- PSC geography links are only present where mappings are available in the local seed data.
-- PSC is still a seed dataset, not a full national postal code source.
+- The PSC dataset is expanded beyond the original tiny seed-only sample, but it still does not claim national coverage.
+- The checked-in PSC file currently covers 5 postal codes and only partially links geography.
+- PSC source/licence verification is still pending, so do not present the dataset as official or redistributable without checking the upstream terms.
+- PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
 - Regions are complete for the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
 - Districts are still seed-only and the district-level source remains unverified.

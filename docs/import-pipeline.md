@@ -9,6 +9,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - `data/*.json` remains the production runtime input for the API.
 - Geography imports for regions and municipalities should be checked against the Eurostat LAU 2025 correspondence table and workbook.
 - District-level source material remains unverified until an authoritative source is confirmed.
+- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms.
 
 ## Workflow
 
@@ -26,12 +27,20 @@ Dry run is the default. Use it to preview what would be generated without writin
 python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --dry-run --output data/generated/municipalities.json
 ```
 
+```bash
+python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
+```
+
 ## Write Workflow
 
 Only `--write` writes files.
 
 ```bash
 python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --output data/generated/municipalities.json --write
+```
+
+```bash
+python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
 ```
 
 The importer refuses to write when validation fails. Referential integrity failures also block writes unless `--allow-incomplete` is explicitly provided.
@@ -49,7 +58,7 @@ python scripts/check_referential_integrity.py
 
 1. Add a source entry to `data/sources.json`.
 2. Place raw material in `data/raw/` if it is small enough for Git; otherwise keep it outside the repo and document the download step.
-3. Extend `scripts/import_geography.py` or add a dataset-specific importer.
+3. Extend `scripts/import_geography.py` or add a dataset-specific importer such as `scripts/import_psc.py`.
 4. Add/extend validation before any write step.
 5. Add tests for both dry-run and write behavior.
 

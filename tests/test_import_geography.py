@@ -163,6 +163,49 @@ def test_xlsx_import_supports_partial_municipalities(tmp_path: Path) -> None:
     assert all(record["districtCode"] is None for record in records)
 
     output_dir = tmp_path / "output"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    (output_dir / "psc.json").write_text(
+        json.dumps(
+            {
+                "metadata": {"source": "unit-test", "lastUpdated": "2026-06-02"},
+                "81101": {
+                    "psc": "81101",
+                    "city": "Bratislava 1",
+                    "deliveryPost": "Bratislava 1",
+                    "municipality": "Bratislava - mestská časť Staré Mesto",
+                    "municipalityCode": "528595",
+                    "district": None,
+                    "districtCode": None,
+                    "region": "Bratislavský kraj",
+                    "regionCode": "SK010",
+                    "country": "Slovakia",
+                    "validFrom": "2010-01-01",
+                    "validTo": None,
+                    "matchCount": 1,
+                    "matches": [
+                        {
+                            "psc": "81101",
+                            "city": "Bratislava 1",
+                            "deliveryPost": "Bratislava 1",
+                            "municipality": "Bratislava - mestská časť Staré Mesto",
+                            "municipalityCode": "528595",
+                            "district": None,
+                            "districtCode": None,
+                            "region": "Bratislavský kraj",
+                            "regionCode": "SK010",
+                            "country": "Slovakia",
+                            "validFrom": "2010-01-01",
+                            "validTo": None,
+                        }
+                    ],
+                },
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     result = run_import(
         dataset="municipalities",
         source="Eurostat LAU 2025 correspondence table",

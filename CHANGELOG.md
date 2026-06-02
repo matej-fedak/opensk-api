@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.8.0
+
+- Expanded the checked-in PSC dataset beyond the original tiny seed-only sample.
+- Documented the current PSC coverage, importer workflow, and source/licence verification status.
+- Updated the PSC documentation to explain repeated source codes and the `matchCount` / `matches` preview shape.
+- Bumped the application version to `v0.8.0`.
+
 ## v0.7.0
 
 - Expanded `data/municipalities.json` from the Eurostat LAU 2025 workbook.
