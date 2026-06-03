@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Smoke-test the public OpenSK API surface.
 
-The script checks stable endpoints and expects the company endpoint to be
-backed by the checked-in local seed dataset.
+The script checks the documented public surface and expects the company
+endpoint to be backed by the checked-in local seed dataset.
 """
 
 from __future__ import annotations
@@ -59,6 +59,19 @@ def _check_ok(name: str, url: str, expected_status: int = 200) -> SmokeResult:
     return SmokeResult(name, True, "PASS")
 
 
+def _build_valid_slovak_iban(bank_code: str, account_number: str) -> str:
+    bban = f"{bank_code}{account_number}"
+    rearranged = f"{bban}SK00"
+    numeric = "".join(str(ord(character) - 55) if character.isalpha() else character for character in rearranged)
+
+    remainder = 0
+    for digit in numeric:
+        remainder = (remainder * 10 + int(digit)) % 97
+
+    check_digits = 98 - remainder
+    return f"SK{check_digits:02d}{bban}"
+
+
 def _check_psc_stats(url: str) -> SmokeResult:
     try:
         status, body = _request_json(url)
@@ -98,6 +111,24 @@ def _check_company_endpoint(name: str, url: str) -> SmokeResult:
     return SmokeResult(name, False, "FAIL", f"unexpected body: {body!r}")
 
 
+def _check_company_alias(url: str, expected_ico: str) -> SmokeResult:
+    try:
+        status, body = _request_json(url)
+    except RuntimeError as exc:
+        return SmokeResult("companies-alias", False, "FAIL", str(exc))
+
+    if status != 200:
+        return SmokeResult("companies-alias", False, "FAIL", f"expected 200, got {status}: {body!r}")
+
+    try:
+        if body["data"]["ico"] == expected_ico:
+            return SmokeResult("companies-alias", True, "PASS")
+    except Exception:
+        return SmokeResult("companies-alias", False, "FAIL", f"unexpected body: {body!r}")
+
+    return SmokeResult("companies-alias", False, "FAIL", f"unexpected body: {body!r}")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Smoke test the public OpenSK API surface")
     parser.add_argument("--base-url", required=True, help="Base URL of the deployed API")
@@ -111,9 +142,16 @@ def main(argv: list[str] | None = None) -> int:
     checks = [
         ("root", f"{base_url}/"),
         ("health", f"{base_url}/v1/health"),
+        ("holidays", f"{base_url}/v1/holidays/2026"),
+        ("psc-item", f"{base_url}/v1/psc/81101"),
+        ("psc-list", f"{base_url}/v1/psc"),
         ("psc-search", f"{base_url}/v1/psc/search?q={quote('Bratislava')}", 200),
+        ("psc-stats", f"{base_url}/v1/psc/stats"),
         ("banks", f"{base_url}/v1/banks"),
+        ("iban", f"{base_url}/v1/iban/validate/{_build_valid_slovak_iban('0900', '0000000000000001')}"),
         ("regions", f"{base_url}/v1/regions"),
+        ("districts", f"{base_url}/v1/districts"),
+        ("municipalities", f"{base_url}/v1/municipalities"),
         ("companies", f"{base_url}/v1/companies/50158635", 200),
     ]
 
@@ -135,7 +173,9 @@ def main(argv: list[str] | None = None) -> int:
                 result = _check_ok(name, url, expected_status=expected_status)
         results.append(result)
 
-    results.insert(2, _check_psc_stats(f"{base_url}/v1/psc/stats"))
+    results.append(_check_company_alias(f"{base_url}/v1/ico/50158635", "50158635"))
+    results.append(_check_ok("docs", f"{base_url}/docs"))
+    results.append(_check_ok("openapi", f"{base_url}/openapi.json"))
 
     for result in results:
         line = f"{result.status}: {result.name}"
