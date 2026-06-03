@@ -15,7 +15,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Districts | `data/districts.json` | Unverified district seed dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-27` | Seed coverage only | Manually curated |
 | Municipalities | `data/municipalities.json` | Eurostat LAU 2025 correspondence table | `EU-27-LAU-2025-NUTS-2024.xlsx` | https://ec.europa.eu/eurostat/web/nuts/local-administrative-units | Eurostat reuse terms; verify before redistribution. | `2026-05-30` | Expanded LAU coverage; district codes remain null in the imported file | Imported and verified offline |
 | PSC | `data/psc.json` | PortalVS Číselníky classifier 42 | `https://ciselniky.portalvs.sk/api/rest/json/42` | Source/licence verification pending. | Source/licence verification pending. | `2026-06-02` | 5 checked-in postal codes with partial geography links; imported PSC records currently have `districtCode: null`; not national coverage | Manually curated |
-| Companies | local JSON pending | IČO/company research prototype | n/a | Source/licence verification pending. See `docs/research/rpo-licence.md`. | Source/licence verification pending. | `2026-06-03` | Prototype-only local company lookup; no checked-in production company dataset; personal/stakeholder fields intentionally out of scope | Experimental / dataset pending |
+| Companies | `data/companies.json` | Verified public organizational contact pages | Multiple official contact pages | Source/licence verification pending for broader redistribution. See `docs/research/rpo-licence.md`. | Source/licence verification pending. | `2026-06-03` | Small checked-in legal-entity seed set for local lookup; personal/stakeholder fields intentionally out of scope | Experimental / seed-backed |
 
 Notes:
 
@@ -28,7 +28,7 @@ Notes:
 - PSC source/licence verification is still pending.
 - PSC source rows may repeat the same postal code; the importer/preview should preserve that ambiguity with `matchCount` and `matches`.
 - PSC geography expansion is local and static; it does not call upstream services.
-- Company/IČO work is research-only and is exposed only as an experimental local lookup contract.
+- Company/IČO work uses a small checked-in local seed dataset and is exposed only as an experimental local lookup contract.
 - Company/IČO notes intentionally exclude personal, stakeholder, and other role-holder fields.
 - RPO licence verification remains pending; see `docs/research/rpo-licence.md`.
 - The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.

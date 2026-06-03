@@ -8,16 +8,16 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
 - For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts remain unverified seed data.
 
-## Company Research Prototype
+## Company Seed Dataset
 
-The IČO/company milestone is research-only. The company endpoint contract exists, but it is experimental and dataset-pending; no checked-in company dataset exists yet.
+The repository now includes a small checked-in company seed dataset for the local lookup endpoints. Broader coverage is still research-only.
 
 Proposed normalized company dataset shape:
 
 ```json
 {
   "metadata": {
-    "source": "RPO research prototype",
+    "source": "Verified public organizational contact pages",
     "lastUpdated": "YYYY-MM-DD",
     "complete": false
   },
@@ -25,26 +25,26 @@ Proposed normalized company dataset shape:
     {
       "ico": "50158635",
       "name": "Slovensko.Digital",
-      "legalForm": null,
-      "legalStatus": null,
+      "legalForm": "občianske združenie",
+      "legalStatus": "active",
       "sourceRegister": "Register občianskych združení",
       "address": {
-        "street": "Staré Grunty",
-        "registrationNumber": "205",
+        "street": "Staré grunty",
+        "registrationNumber": null,
         "buildingNumber": "18",
-        "municipality": "Bratislava - Karlova Ves",
+        "municipality": "Bratislava",
         "postalCode": "84104",
         "country": "SK",
         "municipalityCode": null,
         "regionCode": null,
         "districtCode": null
       },
-      "establishedOn": "2016-01-29",
+      "establishedOn": null,
       "terminatedOn": null,
-      "updatedAt": "2025-10-03",
+      "updatedAt": "2026-06-03",
       "source": {
-        "name": "RPO V2",
-        "recordId": "6562824"
+        "name": "https://slovensko.digital/kontakt/",
+        "recordId": "kontakt"
       }
     }
   ]
@@ -85,10 +85,10 @@ Each `companies[]` item uses this shape:
 - `legalForm`, `legalStatus`, `sourceRegister`, `establishedOn`, `terminatedOn`, and `updatedAt` are optional in the source but should be present in the normalized output as strings or `null`.
 - `address` is normalized and should not be stored only as a free-form text blob.
 - `registrationNumber`, `buildingNumber`, `municipalityCode`, `districtCode`, and `regionCode` follow the same string/null conventions as the geography datasets.
-- The schema is a proposal for offline research and import prototyping only.
+- The schema is the normalized shape used by the checked-in seed dataset.
 - Keep personal, stakeholder, statutory-body, and other role-holder fields out of this prototype.
 - Do not scrape ORSR/ŽRSR for this dataset; they are reference-only.
-- Licence verification notes live in `docs/research/rpo-licence.md`.
+- Licence verification notes for broader RPO expansion live in `docs/research/rpo-licence.md`.
 
 ## Code Conventions
 

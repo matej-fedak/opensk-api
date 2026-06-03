@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.0-rc.5
+
+- Added a small checked-in company seed dataset and activated local company lookups for known IČOs.
+- Updated the smoke test and dataset/docs to reflect seed-backed company coverage.
+- Bumped the application version to `v1.0.0-rc.5`.
+
 ## v1.0.0-rc.4
 
 - Added `docs/api-status.md`, `docs/known-limitations.md`, and the RPO verification follow-up notes.

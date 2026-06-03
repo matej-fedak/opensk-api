@@ -27,10 +27,10 @@ The runtime serves local JSON only and does not call upstream sources during req
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/companies/{ico}` | experimental / dataset pending | Local company lookup, 503 until a dataset is approved |
-| `GET /v1/ico/{ico}` | experimental / dataset pending | Alias for the local company lookup |
+| `GET /v1/companies/{ico}` | experimental / seed-backed | Local company lookup, backed by a small checked-in seed set |
+| `GET /v1/ico/{ico}` | experimental / seed-backed | Alias for the local company lookup |
 
 ## Notes
 
 - No endpoint fetches live upstream data at request time.
-- Company lookup remains dataset-pending until licence and privacy follow-up are complete.
+- Company lookup is backed by a small checked-in seed set; broader coverage still awaits licence and privacy follow-up.

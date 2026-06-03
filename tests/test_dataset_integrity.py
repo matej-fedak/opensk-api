@@ -27,6 +27,13 @@ def _copy_dataset_dir(target_dir: Path) -> None:
         shutil.copy2(source, target_dir / source.name)
 
 
+def _copy_dataset_dir_without_companies(target_dir: Path) -> None:
+    for source in DATA_DIR.glob("*.json"):
+        if source.name == "companies.json":
+            continue
+        shutil.copy2(source, target_dir / source.name)
+
+
 def _write_psc_dataset(target_dir: Path, payload: dict[str, object]) -> None:
     (target_dir / "psc.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
@@ -38,13 +45,13 @@ def _write_companies_dataset(target_dir: Path, payload: dict[str, object]) -> No
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
-    assert len(reports) == 6
+    assert len(reports) == 7
     assert all(report.record_count > 0 for report in reports)
     assert all(report.ok for report in reports)
 
 
 def test_validate_all_datasets_skips_missing_companies_dataset(tmp_path: Path) -> None:
-    _copy_dataset_dir(tmp_path)
+    _copy_dataset_dir_without_companies(tmp_path)
 
     reports = validate_all_datasets(tmp_path)
 
