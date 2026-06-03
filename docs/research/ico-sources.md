@@ -2,7 +2,7 @@
 
 Status: research and prototype only.
 
-This note records source evaluation for the future company/IČO dataset. It does not imply a shipped public endpoint, and it does not claim any redistribution rights beyond what was directly verified.
+This note records source evaluation for the future company/IČO dataset. It does not imply a dataset-backed public endpoint, and it does not claim any redistribution rights beyond what was directly verified.
 
 ## Summary
 
@@ -28,6 +28,8 @@ This note records source evaluation for the future company/IČO dataset. It does
 - Stakeholder and statutory-body fields can expose personal names and addresses.
 - Historical data can surface past personal-role records.
 - For a first release, avoid exposing FO entrepreneurs and personal-role data unless legal review explicitly covers it.
+
+See `docs/research/rpo-licence.md` for the current licence verification status.
 
 ## Prototype Guidance
 

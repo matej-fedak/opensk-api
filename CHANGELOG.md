@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.0-rc.3
+
+- Added an RPO licence verification note and kept the company dataset withheld because official redistribution terms remain unverified.
+- Hardened company dataset validation against forbidden personal/stakeholder fields.
+- Kept the company lookup endpoint fail-closed with `503 DATASET_UNAVAILABLE` until a local dataset is approved.
+- Bumped the application version to `v1.0.0-rc.3`.
+
 ## v1.0.0-rc.2
 
 - Added a local company lookup service with canonical `/v1/companies/{ico}` and alias `/v1/ico/{ico}` routes.

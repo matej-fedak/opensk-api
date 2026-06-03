@@ -88,6 +88,7 @@ Each `companies[]` item uses this shape:
 - The schema is a proposal for offline research and import prototyping only.
 - Keep personal, stakeholder, statutory-body, and other role-holder fields out of this prototype.
 - Do not scrape ORSR/ŽRSR for this dataset; they are reference-only.
+- Licence verification notes live in `docs/research/rpo-licence.md`.
 
 ## Code Conventions
 
