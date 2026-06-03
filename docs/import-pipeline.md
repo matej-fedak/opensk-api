@@ -9,15 +9,16 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - `data/*.json` remains the production runtime input for the API.
 - Geography imports for regions and municipalities should be checked against the Eurostat LAU 2025 correspondence table and workbook.
 - District-level source material remains unverified until an authoritative source is confirmed.
-- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. The imported PSC dataset currently keeps `districtCode` null because the source does not supply a reliable district mapping.
+- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. The imported PSC dataset currently keeps `districtCode` null because the source does not supply a reliable district mapping, and coverage is partial rather than national.
 
 ## Company Import Prototype
 
 - IČO/company work is research-only.
-- No public company endpoint is shipped yet.
+- The public company lookup contract exists, but it is dataset-pending and returns `503 DATASET_UNAVAILABLE` until a local JSON file is approved.
 - No checked-in `data/companies.json` exists yet.
 - The proposed normalized record shape is documented in `docs/dataset-format.md`.
 - Source evaluation notes live in `docs/research/ico-sources.md`.
+- ORSR and ŽRSR are reference-only sources here; do not scrape their HTML.
 
 Proposed offline flow:
 
@@ -25,7 +26,7 @@ Proposed offline flow:
 2. Normalize the data into `data/generated/companies.json` as a preview only.
 3. Validate identifiers, address normalization, and provenance notes.
 4. Review the generated diff before any promotion into `data/`.
-5. Do not publish anything that depends on unverified licensing or redistribution terms.
+5. Do not publish anything that depends on unverified licensing, redistribution terms, or scraped ORSR/ŽRSR HTML.
 
 ## Workflow
 

@@ -10,7 +10,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 
 ## Company Research Prototype
 
-The IČO/company milestone is research-only. No company endpoint is shipped yet, and no checked-in company dataset exists yet.
+The IČO/company milestone is research-only. The company endpoint contract exists, but it is experimental and dataset-pending; no checked-in company dataset exists yet.
 
 Proposed normalized company dataset shape:
 
@@ -86,6 +86,8 @@ Each `companies[]` item uses this shape:
 - `address` is normalized and should not be stored only as a free-form text blob.
 - `registrationNumber`, `buildingNumber`, `municipalityCode`, `districtCode`, and `regionCode` follow the same string/null conventions as the geography datasets.
 - The schema is a proposal for offline research and import prototyping only.
+- Keep personal, stakeholder, statutory-body, and other role-holder fields out of this prototype.
+- Do not scrape ORSR/ŽRSR for this dataset; they are reference-only.
 
 ## Code Conventions
 

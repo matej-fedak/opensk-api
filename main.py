@@ -7,6 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from routers.banks import router as banks_router
+from routers.companies import router as companies_router
 from routers.districts import router as districts_router
 from routers.health import router as health_router
 from routers.holidays import router as holidays_router
@@ -20,7 +21,7 @@ from schemas.common import API_SOURCE, error_detail, error_response, success_res
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="1.0.0-rc.1",
+    version="1.0.0-rc.2",
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
@@ -32,6 +33,7 @@ app = FastAPI(
         {"name": "districts", "description": "Static Slovak districts dataset."},
         {"name": "municipalities", "description": "Static Slovak municipalities dataset."},
         {"name": "psc", "description": "Static Slovak postal code lookups."},
+        {"name": "companies", "description": "Local company lookup endpoints backed by the checked-in dataset."},
     ],
 )
 
@@ -102,6 +104,7 @@ app.include_router(banks_router, prefix="/v1")
 app.include_router(iban_router, prefix="/v1")
 app.include_router(holidays_router, prefix="/v1")
 app.include_router(psc_router, prefix="/v1")
+app.include_router(companies_router, prefix="/v1")
 app.include_router(regions_router, prefix="/v1")
 app.include_router(districts_router, prefix="/v1")
 app.include_router(municipalities_router, prefix="/v1")

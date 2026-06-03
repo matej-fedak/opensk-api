@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: research milestone `v1.0.0-rc.1`.
+Status: research milestone `v1.0.0-rc.2`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -19,10 +19,12 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/regions` | Working | Static regions dataset |
 | `GET /v1/districts` | Working | Static districts seed dataset |
 | `GET /v1/municipalities` | Working | Static municipalities seed dataset |
-| `GET /v1/psc/81101` | Working | Expanded static PSC dataset with geography links |
-| `GET /v1/psc` | Working | PSC collection surface with `limit` / `offset` pagination |
-| `GET /v1/psc/search?q=...` | Working | PSC search surface |
-| `GET /v1/psc/stats` | Working | PSC dataset stats |
+| `GET /v1/psc/81101` | Working | Expanded static PSC dataset with partial geography links |
+| `GET /v1/psc` | Working | PSC collection surface with `limit` / `offset`; partial coverage only |
+| `GET /v1/psc/search?q=...` | Working | PSC search surface; partial coverage only |
+| `GET /v1/psc/stats` | Working | Local PSC dataset stats; source/licence verification pending |
+| `GET /v1/companies/{ico}` | Experimental / dataset pending | Local company lookup, no live upstream calls |
+| `GET /v1/ico/{ico}` | Experimental / dataset pending | Alias for local company lookup |
 | `/docs` | Working | Swagger UI |
 | `/openapi.json` | Working | OpenAPI schema |
 
@@ -49,7 +51,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.0.0-rc.1` docs cover the PSC collection routes and pagination model.
+The `v1.0.0-rc.2` docs cover the PSC collection routes, pagination model, and current dataset limitations.
 
 | Endpoint | Notes |
 | --- | --- |
@@ -68,7 +70,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.0.0-rc.1` documents the PSC collection surface, pagination, stats/search examples, and the company research prototype notes.
+- `v1.0.0-rc.2` documents the PSC collection surface, pagination, stats/search examples, and the company research prototype notes.
 
 ## Dataset Import Pipeline
 
@@ -87,11 +89,13 @@ Use `data/raw/` for source material and `data/generated/` for normalized preview
 
 ## Upcoming: IČO/company lookup research
 
-Company/IČO work is still prototype-only. No public company endpoint is shipped yet.
+Company/IČO work is still prototype-only. The endpoint contract exists, but the dataset is pending and may return `503 DATASET_UNAVAILABLE` until a local JSON file is approved.
 
 - Source notes: `docs/research/ico-sources.md`
 - Proposed schema: `docs/dataset-format.md`
 - Registry entry: `data/sources.json`
+- No live upstream calls are made by the API.
+- Personal/stakeholder fields are intentionally excluded from the public response.
 
 ## Response Envelope
 
@@ -196,7 +200,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
 - Banks use a small static seed dataset and IBAN validation runs locally without network access.
 - The bank dataset is intentionally incomplete and should not be presented as exhaustive.
-- The PSC dataset is expanded beyond the original tiny seed-only sample, but it still does not claim national coverage.
+- The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - The checked-in PSC file currently covers 5 postal codes and only partially links geography.
 - PSC source/licence verification is still pending, so do not present the dataset as official or redistributable without checking the upstream terms.
 - Imported PSC data currently has `districtCode: null`; that field is unavailable in the imported source data.
@@ -205,9 +209,10 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - `GET /v1/psc/search?q=...` searches PSC records by PSC prefix, municipality, and delivery post.
 - `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
 - IČO/company work is research-only; do not treat it as a shipped API surface.
-- Regions are complete for the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
+- Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
 - Districts are still seed-only and the district-level source remains unverified.
+- ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Research notes for company/IČO work live in `docs/research/ico-sources.md`.
 - Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.

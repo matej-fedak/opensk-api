@@ -35,6 +35,7 @@ DEFAULT_SOURCE = "RPO research prototype"
 PRODUCTION_OUTPUT_FILE = DEFAULT_DATA_DIR / "companies.json"
 
 from scripts.import_utils import backup_existing_file, load_json, normalize_ico, normalize_whitespace, write_json
+from scripts.validate_datasets import validate_companies_payload
 
 
 @dataclass
@@ -314,6 +315,13 @@ def run_import(
 
     payload = _build_payload(records, source, source_date)
     destination = _resolve_output_path(output_path)
+    validation_report = validate_companies_payload(payload, path=destination)
+    if not validation_report.ok:
+        result.errors.extend(
+            f"{issue.path}: {issue.message}"
+            for issue in validation_report.errors
+        )
+        return result
 
     if write:
         if destination == PRODUCTION_OUTPUT_FILE.resolve():
