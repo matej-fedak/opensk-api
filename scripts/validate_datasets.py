@@ -24,6 +24,7 @@ DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
 _BANK_CODE_RE = re.compile(r"\d{4}$")
+_COMPANY_ICO_RE = re.compile(r"\d{8}$")
 _REGION_CODE_RE = re.compile(r"SK\d{3}$")
 _DISTRICT_CODE_RE = re.compile(r"SK\d{4}$")
 _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
@@ -105,6 +106,19 @@ def _require_string(report: ValidationReport, value: Any, path: str, message: st
         report.add_error(path, message)
         return None
     return value
+
+
+def _require_ico(report: ValidationReport, value: Any, path: str, message: str) -> str | None:
+    text = _require_string(report, value, path, message)
+    if text is None:
+        return None
+
+    normalized = "".join(text.split())
+    if not _COMPANY_ICO_RE.fullmatch(normalized):
+        report.add_error(path, f"Expected 8-digit ICO, got {value!r}")
+        return None
+
+    return normalized
 
 
 def _require_nullable_string(report: ValidationReport, value: Any, path: str, message: str) -> str | None:

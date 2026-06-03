@@ -15,6 +15,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Districts | `data/districts.json` | Unverified district seed dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-27` | Seed coverage only | Manually curated |
 | Municipalities | `data/municipalities.json` | Eurostat LAU 2025 correspondence table | `EU-27-LAU-2025-NUTS-2024.xlsx` | https://ec.europa.eu/eurostat/web/nuts/local-administrative-units | Eurostat reuse terms; verify before redistribution. | `2026-05-30` | Expanded LAU coverage; district codes remain null in the imported file | Imported and verified offline |
 | PSC | `data/psc.json` | PortalVS Číselníky classifier 42 | `https://ciselniky.portalvs.sk/api/rest/json/42` | Source/licence verification pending. | Source/licence verification pending. | `2026-06-02` | 5 checked-in postal codes with partial geography links; imported PSC records currently have `districtCode: null` | Manually curated |
+| Companies | n/a | IČO/company research prototype | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-06-03` | Prototype-only research notes; no checked-in company dataset or public endpoint yet | Research notes only |
 
 Notes:
 
@@ -27,4 +28,6 @@ Notes:
 - PSC source/licence verification is still pending.
 - PSC source rows may repeat the same postal code; the importer/preview should preserve that ambiguity with `matchCount` and `matches`.
 - PSC geography expansion is local and static; it does not call upstream services.
+- Company/IČO work is research-only and does not ship a public endpoint yet.
+- The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.
 - Record provenance should be checked before any production expansion or redistribution.
