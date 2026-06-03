@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Smoke-test the public OpenSK API surface.
 
-The script checks stable endpoints and treats the company endpoint as
-acceptable when it returns DATASET_UNAVAILABLE while the dataset is pending.
+The script checks stable endpoints and expects the company endpoint to be
+backed by the checked-in local seed dataset.
 """
 
 from __future__ import annotations
@@ -86,19 +86,16 @@ def _check_company_endpoint(name: str, url: str) -> SmokeResult:
     except RuntimeError as exc:
         return SmokeResult(name, False, "FAIL", str(exc))
 
-    if status == 503:
-        try:
-            error_code = body["error"]["code"]
-        except Exception:
-            return SmokeResult(name, False, "FAIL", f"unexpected 503 body: {body!r}")
-        if error_code == "DATASET_UNAVAILABLE":
-            return SmokeResult(name, True, "PASS", "dataset pending")
-        return SmokeResult(name, False, "FAIL", f"unexpected 503 error code: {body!r}")
-
     if status != 200:
-        return SmokeResult(name, False, "FAIL", f"expected 200 or 503, got {status}: {body!r}")
+        return SmokeResult(name, False, "FAIL", f"expected 200, got {status}: {body!r}")
 
-    return SmokeResult(name, True, "PASS")
+    try:
+        if body["data"]["ico"]:
+            return SmokeResult(name, True, "PASS")
+    except Exception:
+        return SmokeResult(name, False, "FAIL", f"unexpected body: {body!r}")
+
+    return SmokeResult(name, False, "FAIL", f"unexpected body: {body!r}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -117,7 +114,7 @@ def main(argv: list[str] | None = None) -> int:
         ("psc-search", f"{base_url}/v1/psc/search?q={quote('Bratislava')}", 200),
         ("banks", f"{base_url}/v1/banks"),
         ("regions", f"{base_url}/v1/regions"),
-        ("companies", f"{base_url}/v1/companies/12345678", 503),
+        ("companies", f"{base_url}/v1/companies/50158635", 200),
     ]
 
     results: list[SmokeResult] = []

@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "source": "Verified public organizational contact pages",
+    "lastUpdated": "2026-06-03",
+    "complete": false,
+    "notes": "Small checked-in legal-entity seed dataset for local company lookup."
+  },
+  "companies": [
+    {
+      "ico": "30815410",
+      "name": "Amnesty International Slovensko",
+      "legalForm": null,
+      "legalStatus": "active",
+      "sourceRegister": null,
+      "address": {
+        "street": "Štefánikova",
+        "registrationNumber": null,
+        "buildingNumber": "16",
+        "municipality": "Bratislava",
+        "postalCode": "81104",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": null,
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://www.amnesty.sk/kontakt/",
+        "recordId": "kontakt"
+      }
+    },
+    {
+      "ico": "36069086",
+      "name": "Greenpeace Slovensko",
+      "legalForm": null,
+      "legalStatus": "active",
+      "sourceRegister": null,
+      "address": {
+        "street": "Nám. SNP",
+        "registrationNumber": null,
+        "buildingNumber": "35",
+        "municipality": "Bratislava",
+        "postalCode": "81499",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": null,
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://www.greenpeace.org/slovakia/kontakt/",
+        "recordId": "kontakt"
+      }
+    },
+    {
+      "ico": "42277591",
+      "name": "Wikimedia Slovensko",
+      "legalForm": "občianske združenie",
+      "legalStatus": "active",
+      "sourceRegister": "Register občianskych združení",
+      "address": {
+        "street": "Februárová",
+        "registrationNumber": "1478",
+        "buildingNumber": "2",
+        "municipality": "Partizánske",
+        "postalCode": "95801",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": "2011-12-16",
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://wikimedia.sk/kontakt/",
+        "recordId": "kontakt"
+      }
+    },
+    {
+      "ico": "50158635",
+      "name": "Slovensko.Digital",
+      "legalForm": "o.z.",
+      "legalStatus": "active",
+      "sourceRegister": "Register občianskych združení",
+      "address": {
+        "street": "Staré grunty",
+        "registrationNumber": null,
+        "buildingNumber": "18",
+        "municipality": "Bratislava",
+        "postalCode": "84104",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": null,
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://slovensko.digital/kontakt/",
+        "recordId": "kontakt"
+      }
+    }
+  ]
+}

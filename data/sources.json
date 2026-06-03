@@ -60,6 +60,22 @@
       "riskLevel": "medium",
       "lastChecked": "2026-06-03"
     },
+    "local_seed": {
+      "status": "manual-seed",
+      "coverage": "seed-only",
+      "sourceName": "Verified public organizational contact pages",
+      "sourceUrl": "Multiple official contact pages",
+      "apiDocsUrl": "n/a",
+      "accessMethod": "Checked-in local JSON dataset",
+      "authRequired": false,
+      "license": "Source/licence verification pending for broader redistribution.",
+      "updateCadence": "Manual",
+      "dataFields": ["ico", "name", "address", "legalForm", "legalStatus", "sourceRegister", "updatedAt"],
+      "limitations": ["Seed-only coverage.", "No personal, stakeholder, or statutory-body fields."],
+      "recommendation": "Primary local runtime dataset for seed-backed company lookup.",
+      "riskLevel": "medium",
+      "lastChecked": "2026-06-03"
+    },
     "official_rpo": {
       "status": "candidate",
       "coverage": "lookup-and-verification",

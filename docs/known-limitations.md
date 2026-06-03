@@ -1,7 +1,7 @@
 # Known Limitations
 
 - RPO company data is pending licence verification.
-- Company lookup is dataset-pending and may return `503 DATASET_UNAVAILABLE` until a local dataset is approved.
+- Company lookup is backed by a small checked-in seed set, not a complete company register.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts remain seed/partial data and are not claimed as complete.

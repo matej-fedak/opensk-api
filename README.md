@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: research milestone `v1.0.0-rc.4`.
+Status: research milestone `v1.0.0-rc.5`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -33,8 +33,8 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/companies/{ico}` | Experimental / dataset pending | Local company lookup, no live upstream calls |
-| `GET /v1/ico/{ico}` | Experimental / dataset pending | Alias for local company lookup |
+| `GET /v1/companies/{ico}` | Experimental / seed-backed | Local company lookup, no live upstream calls |
+| `GET /v1/ico/{ico}` | Experimental / seed-backed | Alias for local company lookup |
 
 ### Platform
 
@@ -45,7 +45,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.0.0-rc.4` docs cover the PSC collection routes, pagination model, and current dataset limitations.
+The `v1.0.0-rc.5` docs cover the PSC collection routes, pagination model, and current dataset limitations.
 
 ## Dataset Tooling
 
@@ -60,7 +60,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.0.0-rc.4` documents the PSC collection surface, pagination, stats/search examples, and the company research prototype notes.
+- `v1.0.0-rc.5` adds a small checked-in company seed dataset and keeps the company surface local-only.
 
 ## Dataset Import Pipeline
 
@@ -77,9 +77,9 @@ python scripts/check_referential_integrity.py
 
 Use `data/raw/` for source material and `data/generated/` for normalized previews. Promote generated files into `data/*.json` only after review.
 
-## Upcoming: IČO/company lookup research
+## Company Lookup
 
-Company/IČO work is still prototype-only. The endpoint contract exists, but the dataset is withheld and may return `503 DATASET_UNAVAILABLE` until a local JSON file is approved.
+Company/IČO lookup is backed by a small checked-in local seed dataset.
 
 - Source notes: `docs/research/ico-sources.md`
 - Licence notes: `docs/research/rpo-licence.md`
@@ -190,7 +190,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - `GET /v1/psc` returns paginated PSC match records with `limit` and `offset`.
 - `GET /v1/psc/search?q=...` searches PSC records by PSC prefix, municipality, and delivery post.
 - `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
-- IČO/company work is research-only; do not treat it as a shipped API surface.
+- IČO/company work uses a local seed dataset; do not treat it as exhaustive or a full register.
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
 - Districts are still seed-only and the district-level source remains unverified.

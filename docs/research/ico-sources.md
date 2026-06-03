@@ -1,8 +1,8 @@
 # IČO / Company Source Research
 
-Status: research and prototype only.
+Status: research notes with a small checked-in local seed dataset.
 
-This note records source evaluation for the future company/IČO dataset. It does not imply a dataset-backed public endpoint, and it does not claim any redistribution rights beyond what was directly verified.
+This note records source evaluation for the company/IČO dataset. It does not claim complete coverage or broader redistribution rights beyond what was directly verified.
 
 ## Summary
 
@@ -33,6 +33,6 @@ See `docs/research/rpo-licence.md` for the current licence verification status.
 
 ## Prototype Guidance
 
-- A derived, legal-entities-only subset can live in `data/generated/` while the work remains research-only.
+- Keep any broader expansion separate from the checked-in local seed dataset.
 - Do not store a full raw mirror in-repo until redistribution terms are confirmed.
-- Do not expose a public endpoint until the source and privacy posture are clear.
+- Do not claim official completeness or bulk redistribution rights.
