@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: research milestone `v1.0.0-rc.2`.
+Status: research milestone `v1.0.0-rc.3`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -51,7 +51,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.0.0-rc.2` docs cover the PSC collection routes, pagination model, and current dataset limitations.
+The `v1.0.0-rc.3` docs cover the PSC collection routes, pagination model, and current dataset limitations.
 
 | Endpoint | Notes |
 | --- | --- |
@@ -70,7 +70,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.0.0-rc.2` documents the PSC collection surface, pagination, stats/search examples, and the company research prototype notes.
+- `v1.0.0-rc.3` documents the PSC collection surface, pagination, stats/search examples, and the company research prototype notes.
 
 ## Dataset Import Pipeline
 
@@ -92,6 +92,7 @@ Use `data/raw/` for source material and `data/generated/` for normalized preview
 Company/IČO work is still prototype-only. The endpoint contract exists, but the dataset is pending and may return `503 DATASET_UNAVAILABLE` until a local JSON file is approved.
 
 - Source notes: `docs/research/ico-sources.md`
+- Licence notes: `docs/research/rpo-licence.md`
 - Proposed schema: `docs/dataset-format.md`
 - Registry entry: `data/sources.json`
 - No live upstream calls are made by the API.

@@ -43,6 +43,14 @@ def test_dataset_files_parse_as_valid_json() -> None:
     assert all(report.ok for report in reports)
 
 
+def test_validate_all_datasets_skips_missing_companies_dataset(tmp_path: Path) -> None:
+    _copy_dataset_dir(tmp_path)
+
+    reports = validate_all_datasets(tmp_path)
+
+    assert all(report.dataset != "companies" for report in reports)
+
+
 def test_regions_complete_dataset_has_eight_regions() -> None:
     report = validate_regions_dataset()
 
@@ -159,6 +167,33 @@ def test_companies_dataset_rejects_duplicate_icos_and_bad_date_order(tmp_path: P
     assert not report.ok
     assert any("duplicate IČO" in issue.message for issue in report.errors)
     assert any("terminatedOn must be on or after establishedOn" in issue.message for issue in report.errors)
+
+
+def test_companies_dataset_rejects_forbidden_personal_fields(tmp_path: Path) -> None:
+    _write_companies_dataset(
+        tmp_path,
+        {
+            "companies": [
+                {
+                    "ico": "12345678",
+                    "name": "Example, s.r.o.",
+                    "establishedOn": "2020-01-01",
+                    "terminatedOn": None,
+                    "updatedAt": "2026-06-03",
+                    "address": {"postalCode": "82101"},
+                    "source": {"name": "unit-test"},
+                    "owners": [{"name": "Hidden Person"}],
+                    "residence": "Hidden Street 1",
+                }
+            ]
+        },
+    )
+
+    report = validate_companies_dataset(tmp_path / "companies.json")
+
+    assert not report.ok
+    assert any("forbidden field 'owners'" in issue.message for issue in report.errors)
+    assert any("forbidden field 'residence'" in issue.message for issue in report.errors)
 
 
 def test_psc_dataset_accepts_expanded_model_and_multiple_matches(tmp_path: Path) -> None:

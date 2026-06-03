@@ -31,6 +31,18 @@ _REGION_CODE_RE = re.compile(r"SK\d{3}$")
 _DISTRICT_CODE_RE = re.compile(r"SK\d{4}$")
 _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
 _PSC_CODE_RE = re.compile(r"\d{5}$")
+_COMPANY_FORBIDDEN_KEYS = {
+    "statutoryBodies",
+    "representatives",
+    "stakeholders",
+    "partners",
+    "owners",
+    "persons",
+    "birthDate",
+    "personalNumber",
+    "citizenship",
+    "residence",
+}
 
 
 @dataclass(frozen=True)
@@ -168,7 +180,21 @@ def _require_nullable_iso_date(report: ValidationReport, value: Any, path: str, 
     return value
 
 
+def _record_forbidden_key_errors(report: ValidationReport, value: Any, path: str) -> None:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            item_path = f"{path}.{key}" if path else key
+            if key in _COMPANY_FORBIDDEN_KEYS:
+                report.add_error(item_path, f"company dataset must not include forbidden field {key!r}")
+            _record_forbidden_key_errors(report, item, item_path)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _record_forbidden_key_errors(report, item, f"{path}[{index}]")
+
+
 def _validate_companies_record(report: ValidationReport, item: dict[str, Any], item_path: str, seen_icos: set[str]) -> None:
+    _record_forbidden_key_errors(report, item, item_path)
+
     ico = _require_ico(report, item.get("ico"), f"{item_path}.ico", "company ico must be an 8-digit string")
     if ico is not None:
         if ico in seen_icos:

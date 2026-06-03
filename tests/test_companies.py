@@ -49,7 +49,14 @@ def company_dataset(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> Path:
                     "updatedAt": "2026-06-02",
                     "source": {"name": "local-test-source", "recordId": "RPO-01234567"},
                     "statutoryBodies": [{"name": "Hidden Person"}],
+                    "representatives": [{"name": "Hidden Person"}],
                     "stakeholders": [{"name": "Hidden Person"}],
+                    "owners": [{"name": "Hidden Person"}],
+                    "persons": [{"name": "Hidden Person"}],
+                    "birthDate": "1990-01-01",
+                    "personalNumber": "900101/1234",
+                    "citizenship": "SK",
+                    "residence": "Hidden Street 1",
                     "personalData": {"name": "Hidden Person"},
                 }
             ],
@@ -76,6 +83,13 @@ def test_company_lookup_returns_sanitized_enveloped_response(company_dataset: Pa
     assert body["error"] is None
     assert "stakeholders" not in body["data"]
     assert "statutoryBodies" not in body["data"]
+    assert "representatives" not in body["data"]
+    assert "owners" not in body["data"]
+    assert "persons" not in body["data"]
+    assert "birthDate" not in body["data"]
+    assert "personalNumber" not in body["data"]
+    assert "citizenship" not in body["data"]
+    assert "residence" not in body["data"]
     assert "personalData" not in body["data"]
 
 
@@ -157,3 +171,25 @@ def test_company_dataset_validation_rejects_missing_name(tmp_path: Path) -> None
 
     assert not report.ok
     assert any("company name must be a non-empty string" in issue.message for issue in report.errors)
+
+
+def test_company_dataset_validation_rejects_forbidden_fields(tmp_path: Path) -> None:
+    report = validate_companies_payload(
+        {
+            "companies": [
+                {
+                    "ico": "01234567",
+                    "name": "Example, s.r.o.",
+                    "address": {"postalCode": "82101"},
+                    "source": {"name": "local-test-source"},
+                    "stakeholders": [{"name": "Hidden Person"}],
+                    "birthDate": "1990-01-01",
+                }
+            ]
+        },
+        path=tmp_path / "companies.json",
+    )
+
+    assert not report.ok
+    assert any("forbidden field 'stakeholders'" in issue.message for issue in report.errors)
+    assert any("forbidden field 'birthDate'" in issue.message for issue in report.errors)

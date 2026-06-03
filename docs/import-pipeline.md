@@ -15,6 +15,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 
 - IČO/company work is research-only.
 - The public company lookup contract exists, but it is dataset-pending and returns `503 DATASET_UNAVAILABLE` until a local JSON file is approved.
+- RPO licence verification remains pending; see `docs/research/rpo-licence.md`.
 - No checked-in `data/companies.json` exists yet.
 - The proposed normalized record shape is documented in `docs/dataset-format.md`.
 - Source evaluation notes live in `docs/research/ico-sources.md`.

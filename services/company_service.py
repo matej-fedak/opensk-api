@@ -8,6 +8,18 @@ from typing import Any
 
 
 DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "companies.json"
+FORBIDDEN_OUTPUT_KEYS = {
+    "statutoryBodies",
+    "representatives",
+    "stakeholders",
+    "partners",
+    "owners",
+    "persons",
+    "birthDate",
+    "personalNumber",
+    "citizenship",
+    "residence",
+}
 
 
 class CompanyInvalidFormatError(ValueError):
@@ -58,6 +70,14 @@ def _text_or_none(value: Any) -> str | None:
     return text or None
 
 
+def _prune_forbidden_fields(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: _prune_forbidden_fields(item) for key, item in value.items() if key not in FORBIDDEN_OUTPUT_KEYS}
+    if isinstance(value, list):
+        return [_prune_forbidden_fields(item) for item in value]
+    return value
+
+
 def _normalize_address(address: Any) -> dict[str, Any]:
     raw_address = address if isinstance(address, dict) else {}
     return {
@@ -82,6 +102,7 @@ def _normalize_source(source: Any) -> dict[str, Any]:
 
 
 def _normalize_company_record(record: dict[str, Any], *, index: int) -> dict[str, Any]:
+    record = _prune_forbidden_fields(record)
     raw_ico = record.get("ico")
     if raw_ico is None:
         raw_ico = record.get("IČO")
