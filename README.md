@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: research milestone `v1.0.0-rc.5`.
+Status: research milestone `v1.0.0-rc.6`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -12,29 +12,29 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /` | Working | Project info |
-| `GET /v1/health` | Working | Health check |
-| `GET /v1/banks` | Working | Static bank list |
-| `GET /v1/banks/1100` | Working | Static bank lookup |
-| `GET /v1/iban/validate/SK...` | Working | Slovak IBAN validation |
-| `GET /v1/holidays/2026` | Working | Static holiday dataset |
-| `GET /v1/regions` | Working | Static regions dataset |
-| `GET /v1/regions/SK010` | Working | Static region lookup |
-| `GET /v1/districts` | Working | Static districts seed dataset |
-| `GET /v1/districts/SK0101` | Working | Static district lookup |
-| `GET /v1/municipalities` | Working | Static municipalities seed dataset |
-| `GET /v1/municipalities/528595` | Working | Static municipality lookup |
-| `GET /v1/psc/81101` | Working | Expanded static PSC dataset with partial geography links |
-| `GET /v1/psc` | Working | PSC collection surface with `limit` / `offset`; partial coverage only |
-| `GET /v1/psc/search?q=...` | Working | PSC search surface; partial coverage only |
-| `GET /v1/psc/stats` | Working | Local PSC dataset stats; source/licence verification pending |
+| `GET /` | stable | Project info |
+| `GET /v1/health` | stable | Health check |
+| `GET /v1/banks` | seed-backed | Static bank list |
+| `GET /v1/banks/1100` | seed-backed | Static bank lookup |
+| `GET /v1/iban/validate/SK...` | stable | Slovak IBAN validation |
+| `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
+| `GET /v1/regions` | stable | Static regions dataset |
+| `GET /v1/regions/SK010` | stable | Static region lookup |
+| `GET /v1/districts` | seed-backed | Static districts seed dataset |
+| `GET /v1/districts/SK0101` | seed-backed | Static district lookup |
+| `GET /v1/municipalities` | stable | Static municipalities dataset |
+| `GET /v1/municipalities/528595` | stable | Static municipality lookup |
+| `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
+| `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
+| `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
+| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; source/licence verification pending |
 
-### Experimental
+### Seed-backed
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/companies/{ico}` | Experimental / seed-backed | Local company lookup, no live upstream calls |
-| `GET /v1/ico/{ico}` | Experimental / seed-backed | Alias for local company lookup |
+| `GET /v1/companies/{ico}` | seed-backed | Local company lookup, no live upstream calls |
+| `GET /v1/ico/{ico}` | seed-backed | Alias for local company lookup |
 
 ### Platform
 
@@ -45,7 +45,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.0.0-rc.5` docs cover the PSC collection routes, pagination model, and current dataset limitations.
+The `v1.0.0-rc.6` docs cover the PSC collection routes, pagination model, and current dataset limitations.
 
 ## Dataset Tooling
 
@@ -56,11 +56,11 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/data-sources.md` lists the current dataset inventory and coverage notes.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
-- `docs/api-status.md` lists stable vs experimental endpoints.
+- `docs/api-status.md` lists the endpoint status categories.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.0.0-rc.5` adds a small checked-in company seed dataset and keeps the company surface local-only.
+- `v1.0.0-rc.6` is final-release verification: no new endpoints, just status alignment and endpoint checks.
 
 ## Dataset Import Pipeline
 
@@ -114,7 +114,7 @@ curl <base-url>/v1/psc/stats
 curl "<base-url>/v1/psc/search?q=Bratislava"
 curl <base-url>/v1/banks
 curl <base-url>/v1/regions
-curl <base-url>/v1/companies/12345678
+curl <base-url>/v1/companies/50158635
 ```
 
 PSC source previews can expose repeated codes like this:

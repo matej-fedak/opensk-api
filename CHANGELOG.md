@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.0.0-rc.6
+
+- Finalized release verification and aligned endpoint status documentation with the shipped local data model.
+- Expanded smoke-test coverage for the documented public surface and confirmed the seed-backed company lookup.
+- Kept the release feature set unchanged and added no new public endpoints.
+- Bumped the application version to `v1.0.0-rc.6`.
+
 ## v1.0.0-rc.5
 
 - Added a small checked-in company seed dataset and activated local company lookups for known IČOs.

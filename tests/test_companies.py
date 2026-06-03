@@ -122,6 +122,13 @@ def test_seed_company_lookup_returns_200() -> None:
     assert body["data"]["name"] == "Slovensko.Digital"
 
 
+def test_seed_company_alias_returns_200() -> None:
+    response = client.get("/v1/ico/50158635")
+
+    assert response.status_code == 200
+    assert response.json()["data"]["ico"] == "50158635"
+
+
 def test_invalid_ico_returns_400(company_dataset: Path) -> None:
     response = client.get("/v1/companies/12A4567")
 
