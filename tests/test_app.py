@@ -365,6 +365,17 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert body["error"] is None
 
 
+def test_psc_stats_reports_nonzero_counts() -> None:
+    response = client.get("/v1/psc/stats")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["recordCount"] > 0
+    assert body["data"]["uniquePscCount"] > 0
+    assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
+    assert body["error"] is None
+
+
 def test_psc_list_returns_paged_enveloped_response() -> None:
     response = client.get("/v1/psc")
 

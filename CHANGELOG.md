@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.0-rc.4
+
+- Added `docs/api-status.md`, `docs/known-limitations.md`, and the RPO verification follow-up notes.
+- Added the public smoke-test script and the data source verification issue template.
+- Tightened the README into stable vs experimental endpoint sections and refreshed public-readiness guidance.
+- Bumped the application version to `v1.0.0-rc.4`.
+- No new public endpoints were added.
+
 ## v1.0.0-rc.3
 
 - Added an RPO licence verification note and kept the company dataset withheld because official redistribution terms remain unverified.
