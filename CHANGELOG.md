@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.0.0-rc.1
+
+- Added IČO/company research notes under `docs/research/ico-sources.md`.
+- Documented the proposed normalized company schema and offline prototype import flow.
+- Added a research-only company source entry to `data/sources.json`.
+- Updated the README and source inventory to keep company work prototype-only.
+- Bumped the application version to `v1.0.0-rc.1`.
+- No public company endpoint was added.
+
 ## v0.9.0
 
 - Documented the PSC collection surface, including list, search, and stats endpoints.

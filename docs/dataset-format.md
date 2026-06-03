@@ -8,6 +8,85 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
 - For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts remain unverified seed data.
 
+## Company Research Prototype
+
+The IČO/company milestone is research-only. No company endpoint is shipped yet, and no checked-in company dataset exists yet.
+
+Proposed normalized company dataset shape:
+
+```json
+{
+  "metadata": {
+    "source": "RPO research prototype",
+    "lastUpdated": "YYYY-MM-DD",
+    "complete": false
+  },
+  "companies": [
+    {
+      "ico": "50158635",
+      "name": "Slovensko.Digital",
+      "legalForm": null,
+      "legalStatus": null,
+      "sourceRegister": "Register občianskych združení",
+      "address": {
+        "street": "Staré Grunty",
+        "registrationNumber": "205",
+        "buildingNumber": "18",
+        "municipality": "Bratislava - Karlova Ves",
+        "postalCode": "84104",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": "2016-01-29",
+      "terminatedOn": null,
+      "updatedAt": "2025-10-03",
+      "source": {
+        "name": "RPO V2",
+        "recordId": "6562824"
+      }
+    }
+  ]
+}
+```
+
+Each `companies[]` item uses this shape:
+
+```json
+{
+  "ico": "50158635",
+  "name": "Slovensko.Digital",
+  "legalForm": null,
+  "legalStatus": null,
+  "sourceRegister": "Register občianskych združení",
+  "address": {
+    "street": "Staré Grunty",
+    "registrationNumber": "205",
+    "buildingNumber": "18",
+    "municipality": "Bratislava - Karlova Ves",
+    "postalCode": "84104",
+    "country": "SK",
+    "municipalityCode": null,
+    "regionCode": null,
+    "districtCode": null
+  },
+  "establishedOn": "2016-01-29",
+  "terminatedOn": null,
+  "updatedAt": "2025-10-03",
+  "source": {
+    "name": "RPO V2",
+    "recordId": "6562824"
+  }
+}
+```
+
+- `ico` stays a string and should preserve leading zeros.
+- `legalForm`, `legalStatus`, `sourceRegister`, `establishedOn`, `terminatedOn`, and `updatedAt` are optional in the source but should be present in the normalized output as strings or `null`.
+- `address` is normalized and should not be stored only as a free-form text blob.
+- `registrationNumber`, `buildingNumber`, `municipalityCode`, `districtCode`, and `regionCode` follow the same string/null conventions as the geography datasets.
+- The schema is a proposal for offline research and import prototyping only.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.
