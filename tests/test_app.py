@@ -54,6 +54,8 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/psc/search" in schema["paths"]
     assert "/v1/psc/stats" in schema["paths"]
     assert "/v1/psc/{psc}" in schema["paths"]
+    assert "/v1/companies/{ico}" in schema["paths"]
+    assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
     assert any(param["name"] == "include" for param in psc_params)
 

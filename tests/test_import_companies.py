@@ -125,3 +125,26 @@ def test_missing_name_is_rejected(tmp_path: Path) -> None:
     assert not result.ok
     assert any("missing company name" in error for error in result.errors)
     assert result.wrote_files == []
+
+
+def test_duplicate_icos_are_rejected(tmp_path: Path) -> None:
+    input_file = tmp_path / "companies.json"
+    input_file.write_text(
+        json.dumps(
+            {
+                "records": [
+                    {"ico": "12345678", "name": "Alpha, s.r.o.", "sidlo": {"postalCode": "82101"}, "updatedAt": "2026-06-03"},
+                    {"ico": "12345678", "name": "Beta, s.r.o.", "sidlo": {"postalCode": "82101"}, "updatedAt": "2026-06-03"},
+                ]
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    result = run_import(input_path=input_file, output_path=tmp_path / "output", write=False)
+
+    assert not result.ok
+    assert any("duplicate IČO" in error for error in result.errors)

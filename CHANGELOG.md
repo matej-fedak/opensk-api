@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.0-rc.2
+
+- Added a local company lookup service with canonical `/v1/companies/{ico}` and alias `/v1/ico/{ico}` routes.
+- Added IČO normalization/validation and offline company dataset validation helpers.
+- Kept company data local/offline only with `503 DATASET_UNAVAILABLE` when the dataset is absent.
+- Kept personal, stakeholder, and statutory-body fields out of the public response shape.
+- Updated the docs to keep the runtime scope offline-only and honest about partial PSC coverage.
+- Clarified that source/licence verification is still pending for datasets that need it.
+- Bumped the application version to `v1.0.0-rc.2`.
+
 ## v1.0.0-rc.1
 
 - Added IČO/company research notes under `docs/research/ico-sources.md`.
