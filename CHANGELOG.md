@@ -1,5 +1,59 @@
 # Changelog
 
+## v1.0.0-rc.6
+
+- Finalized release verification and aligned endpoint status documentation with the shipped local data model.
+- Expanded smoke-test coverage for the documented public surface and confirmed the seed-backed company lookup.
+- Kept the release feature set unchanged and added no new public endpoints.
+- Bumped the application version to `v1.0.0-rc.6`.
+
+## v1.0.0-rc.5
+
+- Added a small checked-in company seed dataset and activated local company lookups for known IČOs.
+- Updated the smoke test and dataset/docs to reflect seed-backed company coverage.
+- Bumped the application version to `v1.0.0-rc.5`.
+
+## v1.0.0-rc.4
+
+- Added `docs/api-status.md`, `docs/known-limitations.md`, and the RPO verification follow-up notes.
+- Added the public smoke-test script and the data source verification issue template.
+- Tightened the README into stable vs experimental endpoint sections and refreshed public-readiness guidance.
+- Bumped the application version to `v1.0.0-rc.4`.
+- No new public endpoints were added.
+
+## v1.0.0-rc.3
+
+- Added an RPO licence verification note and kept the company dataset withheld because official redistribution terms remain unverified.
+- Hardened company dataset validation against forbidden personal/stakeholder fields.
+- Kept the company lookup endpoint fail-closed with `503 DATASET_UNAVAILABLE` until a local dataset is approved.
+- Bumped the application version to `v1.0.0-rc.3`.
+
+## v1.0.0-rc.2
+
+- Added a local company lookup service with canonical `/v1/companies/{ico}` and alias `/v1/ico/{ico}` routes.
+- Added IČO normalization/validation and offline company dataset validation helpers.
+- Kept company data local/offline only with `503 DATASET_UNAVAILABLE` when the dataset is absent.
+- Kept personal, stakeholder, and statutory-body fields out of the public response shape.
+- Updated the docs to keep the runtime scope offline-only and honest about partial PSC coverage.
+- Clarified that source/licence verification is still pending for datasets that need it.
+- Bumped the application version to `v1.0.0-rc.2`.
+
+## v1.0.0-rc.1
+
+- Added IČO/company research notes under `docs/research/ico-sources.md`.
+- Documented the proposed normalized company schema and offline prototype import flow.
+- Added a research-only company source entry to `data/sources.json`.
+- Updated the README and source inventory to keep company work prototype-only.
+- Bumped the application version to `v1.0.0-rc.1`.
+- No public company endpoint was added.
+
+## v0.9.0
+
+- Documented the PSC collection surface, including list, search, and stats endpoints.
+- Documented PSC pagination with `limit` and `offset`.
+- Clarified that imported PSC data currently has `districtCode: null` and that source/licence verification is still pending.
+- Bumped the application version to `v0.9.0`.
+
 ## v0.8.0
 
 - Expanded the checked-in PSC dataset beyond the original tiny seed-only sample.

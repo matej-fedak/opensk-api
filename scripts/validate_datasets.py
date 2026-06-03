@@ -17,17 +17,32 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 DEFAULT_DATA_DIR = ROOT_DIR / "data"
 DEFAULT_BANKS_PATH = DEFAULT_DATA_DIR / "banks.json"
 DEFAULT_HOLIDAYS_PATH = DEFAULT_DATA_DIR / "holidays.json"
+DEFAULT_COMPANIES_PATH = DEFAULT_DATA_DIR / "companies.json"
 DEFAULT_REGIONS_PATH = DEFAULT_DATA_DIR / "regions.json"
 DEFAULT_DISTRICTS_PATH = DEFAULT_DATA_DIR / "districts.json"
 DEFAULT_MUNICIPALITIES_PATH = DEFAULT_DATA_DIR / "municipalities.json"
 DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
+_POSTAL_CODE_RE = re.compile(r"\d{5}$")
 _BANK_CODE_RE = re.compile(r"\d{4}$")
+_COMPANY_ICO_RE = re.compile(r"\d{8}$")
 _REGION_CODE_RE = re.compile(r"SK\d{3}$")
 _DISTRICT_CODE_RE = re.compile(r"SK\d{4}$")
 _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
 _PSC_CODE_RE = re.compile(r"\d{5}$")
+_COMPANY_FORBIDDEN_KEYS = {
+    "statutoryBodies",
+    "representatives",
+    "stakeholders",
+    "partners",
+    "owners",
+    "persons",
+    "birthDate",
+    "personalNumber",
+    "citizenship",
+    "residence",
+}
 
 
 @dataclass(frozen=True)
@@ -107,6 +122,19 @@ def _require_string(report: ValidationReport, value: Any, path: str, message: st
     return value
 
 
+def _require_ico(report: ValidationReport, value: Any, path: str, message: str) -> str | None:
+    text = _require_string(report, value, path, message)
+    if text is None:
+        return None
+
+    normalized = "".join(text.split())
+    if not _COMPANY_ICO_RE.fullmatch(normalized):
+        report.add_error(path, f"Expected 8-digit ICO, got {value!r}")
+        return None
+
+    return normalized
+
+
 def _require_nullable_string(report: ValidationReport, value: Any, path: str, message: str) -> str | None:
     if value is None:
         return None
@@ -150,6 +178,97 @@ def _require_nullable_iso_date(report: ValidationReport, value: Any, path: str, 
         return None
 
     return value
+
+
+def _record_forbidden_key_errors(report: ValidationReport, value: Any, path: str) -> None:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            item_path = f"{path}.{key}" if path else key
+            if key in _COMPANY_FORBIDDEN_KEYS:
+                report.add_error(item_path, f"company dataset must not include forbidden field {key!r}")
+            _record_forbidden_key_errors(report, item, item_path)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _record_forbidden_key_errors(report, item, f"{path}[{index}]")
+
+
+def _validate_companies_record(report: ValidationReport, item: dict[str, Any], item_path: str, seen_icos: set[str]) -> None:
+    _record_forbidden_key_errors(report, item, item_path)
+
+    ico = _require_ico(report, item.get("ico"), f"{item_path}.ico", "company ico must be an 8-digit string")
+    if ico is not None:
+        if ico in seen_icos:
+            report.add_error(f"{item_path}.ico", f"duplicate IČO {ico!r}")
+        seen_icos.add(ico)
+
+    _require_string(report, item.get("name"), f"{item_path}.name", "company name must be a non-empty string")
+
+    for field_name in ("establishedOn", "terminatedOn", "updatedAt"):
+        if field_name not in item:
+            report.add_error(f"{item_path}.{field_name}", f"company {field_name} must be null or a YYYY-MM-DD date")
+            continue
+        _require_nullable_iso_date(
+            report,
+            item.get(field_name),
+            f"{item_path}.{field_name}",
+            f"company {field_name} must be null or a YYYY-MM-DD date",
+        )
+
+    address = _require_dict(report, item.get("address"), f"{item_path}.address", "company address must be an object")
+    if address is not None:
+        if "postalCode" not in address:
+            report.add_error(f"{item_path}.address.postalCode", "company address.postalCode must be null or a 5-digit string")
+        else:
+            postal_code = address.get("postalCode")
+            if postal_code is not None:
+                if not isinstance(postal_code, str) or not _POSTAL_CODE_RE.fullmatch(postal_code):
+                    report.add_error(f"{item_path}.address.postalCode", f"company address.postalCode must be null or a 5-digit string, got {postal_code!r}")
+
+    source = _require_dict(report, item.get("source"), f"{item_path}.source", "company source must be an object")
+    if source is not None:
+        _require_string(report, source.get("name"), f"{item_path}.source.name", "company source.name must be a non-empty string")
+
+    established_on = item.get("establishedOn")
+    terminated_on = item.get("terminatedOn")
+    if isinstance(established_on, str) and isinstance(terminated_on, str) and _DATE_RE.fullmatch(established_on) and _DATE_RE.fullmatch(terminated_on):
+        if date.fromisoformat(terminated_on) < date.fromisoformat(established_on):
+            report.add_error(f"{item_path}.terminatedOn", "company terminatedOn must be on or after establishedOn")
+
+
+def validate_companies_payload(payload: Any, path: Path = DEFAULT_COMPANIES_PATH) -> ValidationReport:
+    report = ValidationReport("companies", path)
+    if isinstance(payload, list):
+        companies = _require_list(report, payload, "companies", "companies must be an array")
+    elif isinstance(payload, dict):
+        companies = _require_list(report, payload.get("companies"), "companies", "companies must be an array")
+    else:
+        report.add_error("root", "companies dataset must be an object or array")
+        return report
+
+    if companies is None:
+        return report
+
+    if not companies:
+        report.add_error("companies", "companies array must not be empty")
+
+    seen_icos: set[str] = set()
+    for index, company in enumerate(companies):
+        item_path = f"companies[{index}]"
+        item = _require_dict(report, company, item_path, f"{item_path} must be an object")
+        if item is None:
+            continue
+        _validate_companies_record(report, item, item_path, seen_icos)
+
+    report.record_count = len(companies)
+    return report
+
+
+def validate_companies_dataset(path: Path = DEFAULT_COMPANIES_PATH) -> ValidationReport:
+    report = ValidationReport("companies", path)
+    payload = _load_json(report, path)
+    if payload is None:
+        return report
+    return validate_companies_payload(payload, path)
 
 
 def _validate_dataset_metadata(report: ValidationReport, payload: dict[str, Any]) -> dict[str, Any] | None:
@@ -650,7 +769,7 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
 
 
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
-    return [
+    reports = [
         validate_banks_dataset(data_dir / "banks.json"),
         validate_holidays_dataset(data_dir / "holidays.json"),
         validate_regions_dataset(data_dir / "regions.json"),
@@ -658,6 +777,12 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
         validate_municipalities_dataset(data_dir / "municipalities.json"),
         validate_psc_dataset(data_dir / "psc.json"),
     ]
+
+    companies_path = data_dir / "companies.json"
+    if companies_path.is_file():
+        reports.append(validate_companies_dataset(companies_path))
+
+    return reports
 
 
 def _print_issue(issue: ValidationIssue, path: Path) -> None:

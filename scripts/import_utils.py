@@ -6,6 +6,7 @@ from __future__ import annotations
 import csv
 import json
 import os
+import re
 import shutil
 import zipfile
 import tempfile
@@ -24,6 +25,7 @@ DATASET_COLUMNS: dict[str, tuple[str, ...]] = {
     "districts": ("code", "name", "regionCode", "country"),
     "municipalities": ("code", "name", "regionCode", "country"),
 }
+_COMPANY_ICO_RE = re.compile(r"\d{8}$")
 
 XLSX_NS = {
     "main": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
@@ -54,6 +56,28 @@ def normalize_whitespace(value: Any) -> str:
     if value is None:
         return ""
     return " ".join(str(value).split())
+
+
+def normalize_ico(value: Any) -> str:
+    text = normalize_whitespace(value).replace(" ", "")
+    if not _COMPANY_ICO_RE.fullmatch(text):
+        raise ValueError(f"company ico must be exactly 8 digits, got {value!r}")
+    return text
+
+
+def validate_company_record(record: dict[str, Any]) -> dict[str, Any]:
+    if not isinstance(record, dict):
+        raise ValueError("company record must be an object")
+
+    normalized = dict(record)
+
+    name = normalize_whitespace(normalized.get("name"))
+    if not name:
+        raise ValueError("company name must be a non-empty string")
+    normalized["name"] = name
+
+    normalized["ico"] = normalize_ico(normalized.get("ico"))
+    return normalized
 
 
 def today_iso() -> str:

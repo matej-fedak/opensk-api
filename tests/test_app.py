@@ -50,7 +50,12 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/districts/{code}" in schema["paths"]
     assert "/v1/municipalities" in schema["paths"]
     assert "/v1/municipalities/{code}" in schema["paths"]
+    assert "/v1/psc" in schema["paths"]
+    assert "/v1/psc/search" in schema["paths"]
+    assert "/v1/psc/stats" in schema["paths"]
     assert "/v1/psc/{psc}" in schema["paths"]
+    assert "/v1/companies/{ico}" in schema["paths"]
+    assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
     assert any(param["name"] == "include" for param in psc_params)
 
@@ -357,6 +362,134 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
     assert body["metadata"]["lastUpdated"] == "2026-06-02"
     assert body["metadata"]["version"] == "v1"
+    assert body["error"] is None
+
+
+def test_psc_stats_reports_nonzero_counts() -> None:
+    response = client.get("/v1/psc/stats")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["recordCount"] > 0
+    assert body["data"]["uniquePscCount"] > 0
+    assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
+    assert body["error"] is None
+
+
+def test_psc_list_returns_paged_enveloped_response() -> None:
+    response = client.get("/v1/psc")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert set(body["data"]) == {"items", "count", "total", "limit", "offset"}
+    assert body["data"]["count"] == 100
+    assert body["data"]["limit"] == 100
+    assert body["data"]["offset"] == 0
+    assert body["data"]["items"][0]["psc"] == "01001"
+    assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
+    assert body["error"] is None
+
+
+def test_psc_list_supports_max_limit_and_offset() -> None:
+    response = client.get("/v1/psc?limit=500&offset=20")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["count"] == 500
+    assert body["data"]["limit"] == 500
+    assert body["data"]["offset"] == 20
+    assert body["data"]["items"]
+
+
+def test_psc_list_rejects_limit_over_max() -> None:
+    response = client.get("/v1/psc?limit=501")
+
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_psc_list_filters_and_empty_results() -> None:
+    region_response = client.get("/v1/psc?regionCode=SK010")
+    municipality_response = client.get("/v1/psc?municipalityCode=528595")
+    delivery_response = client.get("/v1/psc?deliveryPost=Bratislava%201")
+    empty_response = client.get("/v1/psc?deliveryPost=NoSuchDeliveryPost")
+
+    assert region_response.status_code == 200
+    assert municipality_response.status_code == 200
+    assert delivery_response.status_code == 200
+    assert empty_response.status_code == 200
+
+
+    region_body = region_response.json()
+    municipality_body = municipality_response.json()
+    delivery_body = delivery_response.json()
+    empty_body = empty_response.json()
+
+    assert all(item["regionCode"] == "SK010" for item in region_body["data"]["items"])
+    assert municipality_body["data"]["count"] == 9
+    assert all(item["municipalityCode"] == "528595" for item in municipality_body["data"]["items"])
+    assert all("Bratislava 1" in item["deliveryPost"] for item in delivery_body["data"]["items"])
+    assert empty_body["data"]["items"] == []
+    assert empty_body["data"]["total"] == 0
+
+
+def test_psc_list_supports_exact_filters() -> None:
+    response = client.get("/v1/psc?psc=81101&limit=1&offset=0")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["count"] == 1
+    assert body["data"]["total"] == 1
+    assert body["data"]["items"][0]["psc"] == "81101"
+
+
+def test_psc_list_rejects_invalid_filters() -> None:
+    invalid_psc = client.get("/v1/psc?psc=81A01")
+    invalid_limit = client.get("/v1/psc?limit=abc")
+    invalid_offset = client.get("/v1/psc?offset=-1")
+
+    assert invalid_psc.status_code == 400
+    assert invalid_psc.json()["error"]["code"] == "INVALID_FORMAT"
+    assert invalid_limit.status_code == 400
+    assert invalid_limit.json()["error"]["code"] == "INVALID_FORMAT"
+    assert invalid_offset.status_code == 400
+    assert invalid_offset.json()["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_psc_search_returns_results_and_validates_query() -> None:
+    bratislava_response = client.get("/v1/psc/search?q=Bratislava")
+    prefix_response = client.get("/v1/psc/search?q=811")
+    missing_response = client.get("/v1/psc/search")
+    short_response = client.get("/v1/psc/search?q=8")
+
+    assert bratislava_response.status_code == 200
+    assert prefix_response.status_code == 200
+    assert missing_response.status_code == 400
+    assert short_response.status_code == 400
+
+    bratislava_body = bratislava_response.json()
+    prefix_body = prefix_response.json()
+
+    assert bratislava_body["data"]["items"]
+    assert any("Bratislava" in item["city"] or "Bratislava" in item["municipality"] for item in bratislava_body["data"]["items"])
+    assert prefix_body["data"]["items"]
+    assert all(item["psc"].startswith("811") for item in prefix_body["data"]["items"])
+
+
+def test_psc_stats_returns_summary() -> None:
+    response = client.get("/v1/psc/stats")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["recordCount"] == 3101
+    assert body["data"]["uniquePscCount"] == 1420
+    assert body["data"]["multiMatchPscCount"] == 759
+    assert body["data"]["geographyCoverage"]["municipalityCode"] == {"count": 3101, "percentage": 100.0}
+    assert body["data"]["geographyCoverage"]["regionCode"] == {"count": 3101, "percentage": 100.0}
+    assert body["data"]["geographyCoverage"]["districtCode"] == {"count": 0, "percentage": 0.0}
+    assert body["data"]["source"]["name"] == "PortalVS Číselníky classifier 42"
+    assert body["data"]["source"]["licenceStatus"] == "Source/licence verification pending."
+    assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
     assert body["error"] is None
 
 

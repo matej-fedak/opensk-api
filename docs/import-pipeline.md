@@ -9,7 +9,24 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - `data/*.json` remains the production runtime input for the API.
 - Geography imports for regions and municipalities should be checked against the Eurostat LAU 2025 correspondence table and workbook.
 - District-level source material remains unverified until an authoritative source is confirmed.
-- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms.
+- PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. The imported PSC dataset currently keeps `districtCode` null because the source does not supply a reliable district mapping, and coverage is partial rather than national.
+
+## Company Import Prototype
+
+- IČO/company lookup now uses a small checked-in local seed dataset.
+- Broader company coverage is still research-only and depends on licence/privacy follow-up.
+- RPO licence verification remains pending; see `docs/research/rpo-licence.md`.
+- The proposed normalized record shape is documented in `docs/dataset-format.md`.
+- Source evaluation notes live in `docs/research/ico-sources.md`.
+- ORSR and ŽRSR are reference-only sources here; do not scrape their HTML.
+
+Proposed offline flow:
+
+1. Collect candidate source material into `data/raw/` or an external working directory.
+2. Normalize the data into `data/generated/companies.json` as a preview only.
+3. Validate identifiers, address normalization, and provenance notes.
+4. Review the generated diff before any promotion into `data/`.
+5. Do not publish anything that depends on unverified licensing, redistribution terms, or scraped ORSR/ŽRSR HTML.
 
 ## Workflow
 
@@ -31,6 +48,10 @@ python scripts/import_geography.py --dataset municipalities --input data/raw/EU-
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
 ```
 
+```bash
+python scripts/import_companies.py --input data/raw/rpo_sample.json --output data/generated/companies.json --dry-run
+```
+
 ## Write Workflow
 
 Only `--write` writes files.
@@ -41,6 +62,10 @@ python scripts/import_geography.py --dataset municipalities --input data/raw/EU-
 
 ```bash
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
+```
+
+```bash
+python scripts/import_companies.py --input data/raw/rpo_sample.json --output data/generated/companies.json --write
 ```
 
 The importer refuses to write when validation fails. Referential integrity failures also block writes unless `--allow-incomplete` is explicitly provided.

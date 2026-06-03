@@ -8,6 +8,88 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
 - For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts remain unverified seed data.
 
+## Company Seed Dataset
+
+The repository now includes a small checked-in company seed dataset for the local lookup endpoints. Broader coverage is still research-only.
+
+Proposed normalized company dataset shape:
+
+```json
+{
+  "metadata": {
+    "source": "Verified public organizational contact pages",
+    "lastUpdated": "YYYY-MM-DD",
+    "complete": false
+  },
+  "companies": [
+    {
+      "ico": "50158635",
+      "name": "Slovensko.Digital",
+      "legalForm": "občianske združenie",
+      "legalStatus": "active",
+      "sourceRegister": "Register občianskych združení",
+      "address": {
+        "street": "Staré grunty",
+        "registrationNumber": null,
+        "buildingNumber": "18",
+        "municipality": "Bratislava",
+        "postalCode": "84104",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": null,
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://slovensko.digital/kontakt/",
+        "recordId": "kontakt"
+      }
+    }
+  ]
+}
+```
+
+Each `companies[]` item uses this shape:
+
+```json
+{
+  "ico": "50158635",
+  "name": "Slovensko.Digital",
+  "legalForm": null,
+  "legalStatus": null,
+  "sourceRegister": "Register občianskych združení",
+  "address": {
+    "street": "Staré Grunty",
+    "registrationNumber": "205",
+    "buildingNumber": "18",
+    "municipality": "Bratislava - Karlova Ves",
+    "postalCode": "84104",
+    "country": "SK",
+    "municipalityCode": null,
+    "regionCode": null,
+    "districtCode": null
+  },
+  "establishedOn": "2016-01-29",
+  "terminatedOn": null,
+  "updatedAt": "2025-10-03",
+  "source": {
+    "name": "RPO V2",
+    "recordId": "6562824"
+  }
+}
+```
+
+- `ico` stays a string and should preserve leading zeros.
+- `legalForm`, `legalStatus`, `sourceRegister`, `establishedOn`, `terminatedOn`, and `updatedAt` are optional in the source but should be present in the normalized output as strings or `null`.
+- `address` is normalized and should not be stored only as a free-form text blob.
+- `registrationNumber`, `buildingNumber`, `municipalityCode`, `districtCode`, and `regionCode` follow the same string/null conventions as the geography datasets.
+- The schema is the normalized shape used by the checked-in seed dataset.
+- Keep personal, stakeholder, statutory-body, and other role-holder fields out of this prototype.
+- Do not scrape ORSR/ŽRSR for this dataset; they are reference-only.
+- Licence verification notes for broader RPO expansion live in `docs/research/rpo-licence.md`.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.
@@ -21,6 +103,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Omit fields only when the dataset schema does not define them.
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
 - For imported municipality records, `districtCode` may be `null` because the Eurostat LAU workbook does not provide district mappings.
+- In the current imported PSC data, `districtCode` is `null` throughout because the source data does not provide a reliable district mapping.
 
 ## Common Metadata
 
@@ -113,8 +196,56 @@ Where present, dataset metadata uses this shape:
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
 - Imported municipality rows may have `districtCode: null` when the source workbook does not provide district mappings.
+- Imported PSC rows currently have `districtCode: null` in the checked-in dataset.
 - PSC geography links are local data, not a live lookup.
 - The PSC source may contain multiple rows for the same postal code; importer previews should report that with `matchCount` and `matches` before selecting a canonical runtime record.
+
+### PSC List/Search Responses
+
+`GET /v1/psc` and `GET /v1/psc/search` both return a paginated envelope:
+
+```json
+{
+  "data": {
+    "items": [],
+    "count": 0,
+    "total": 0,
+    "limit": 100,
+    "offset": 0
+  },
+  "metadata": { ... },
+  "error": null
+}
+```
+
+- `items` contains flattened PSC match records.
+- `count` is the number of items returned for the current page.
+- `total` is the total number of records after filters/search before pagination.
+- `limit` and `offset` are echoed back after validation.
+- Search uses the same item shape as the list endpoint.
+
+### PSC Stats
+
+`GET /v1/psc/stats` returns local dataset totals and geography coverage:
+
+```json
+{
+  "data": {
+    "recordCount": 3101,
+    "uniquePscCount": 1420,
+    "multiMatchPscCount": 759,
+    "geographyCoverage": {
+      "municipalityCode": { "count": 3101, "percentage": 100.0 },
+      "regionCode": { "count": 3101, "percentage": 100.0 },
+      "districtCode": { "count": 0, "percentage": 0.0 }
+    },
+    "source": {
+      "name": "PortalVS Číselníky classifier 42",
+      "licenceStatus": "Source/licence verification pending."
+    }
+  }
+}
+```
 
 Example preview shape for an ambiguous PSC code:
 

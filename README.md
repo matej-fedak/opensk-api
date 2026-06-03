@@ -2,51 +2,50 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: MVP release `v0.8.0`.
+Status: research milestone `v1.0.0-rc.6`.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
-## MVP Status
+## Endpoint Matrix
+
+### Stable
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /` | Working | Project info |
-| `GET /v1/banks` | Working | Static bank list |
-| `GET /v1/banks/1100` | Working | Static bank lookup |
-| `GET /v1/iban/validate/SK...` | Working | Slovak IBAN validation |
-| `GET /v1/health` | Working | Health check |
-| `GET /v1/holidays/2026` | Working | Static holiday dataset |
-| `GET /v1/regions` | Working | Static regions dataset |
-| `GET /v1/districts` | Working | Static districts seed dataset |
-| `GET /v1/municipalities` | Working | Static municipalities seed dataset |
-| `GET /v1/psc/81101` | Working | Expanded static PSC dataset with geography links |
+| `GET /` | stable | Project info |
+| `GET /v1/health` | stable | Health check |
+| `GET /v1/banks` | seed-backed | Static bank list |
+| `GET /v1/banks/1100` | seed-backed | Static bank lookup |
+| `GET /v1/iban/validate/SK...` | stable | Slovak IBAN validation |
+| `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
+| `GET /v1/regions` | stable | Static regions dataset |
+| `GET /v1/regions/SK010` | stable | Static region lookup |
+| `GET /v1/districts` | seed-backed | Static districts seed dataset |
+| `GET /v1/districts/SK0101` | seed-backed | Static district lookup |
+| `GET /v1/municipalities` | stable | Static municipalities dataset |
+| `GET /v1/municipalities/528595` | stable | Static municipality lookup |
+| `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
+| `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
+| `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
+| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; source/licence verification pending |
+
+### Seed-backed
+
+| Endpoint | Status | Notes |
+| --- | --- | --- |
+| `GET /v1/companies/{ico}` | seed-backed | Local company lookup, no live upstream calls |
+| `GET /v1/ico/{ico}` | seed-backed | Alias for local company lookup |
+
+### Platform
+
+| Endpoint | Status | Notes |
+| --- | --- | --- |
 | `/docs` | Working | Swagger UI |
 | `/openapi.json` | Working | OpenAPI schema |
 
-## Implemented Endpoints
+## PSC Collection Surface
 
-| Endpoint | Description |
-| --- | --- |
-| `GET /` | Project metadata and docs link |
-| `GET /v1/banks` | List Slovak banks |
-| `GET /v1/banks/{code}` | Slovak bank lookup |
-| `GET /v1/iban/validate/{iban}` | Slovak IBAN validation |
-| `GET /v1/health` | Basic service health |
-| `GET /v1/holidays/{year}` | Slovak public holidays by year |
-| `GET /v1/regions` | Slovak regions list |
-| `GET /v1/regions/{code}` | Slovak region lookup |
-| `GET /v1/districts` | Slovak districts list, optional `regionCode` filter |
-| `GET /v1/districts/{code}` | Slovak district lookup |
-| `GET /v1/municipalities` | Slovak municipalities list, optional `regionCode` and `districtCode` filters |
-| `GET /v1/municipalities/{code}` | Slovak municipality lookup |
-| `GET /v1/psc/{psc}` | Slovak postal code lookup, optional `include=geography` |
-
-## Planned Endpoints
-
-| Endpoint | Description |
-| --- | --- |
-| `GET /v1/companies/{ico}` | Company lookup |
-
+The `v1.0.0-rc.6` docs cover the PSC collection routes, pagination model, and current dataset limitations.
 
 ## Dataset Tooling
 
@@ -56,9 +55,12 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/import-pipeline.md` explains the offline raw -> checked-in JSON -> production runtime flow.
 - `docs/data-sources.md` lists the current dataset inventory and coverage notes.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
+- `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
+- `docs/api-status.md` lists the endpoint status categories.
+- `docs/known-limitations.md` collects the current public-readiness caveats.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- No new public endpoints were added in `v0.8.0`.
+- `v1.0.0-rc.6` is final-release verification: no new endpoints, just status alignment and endpoint checks.
 
 ## Dataset Import Pipeline
 
@@ -74,6 +76,18 @@ python scripts/check_referential_integrity.py
 ```
 
 Use `data/raw/` for source material and `data/generated/` for normalized previews. Promote generated files into `data/*.json` only after review.
+
+## Company Lookup
+
+Company/IČO lookup is backed by a small checked-in local seed dataset.
+
+- Source notes: `docs/research/ico-sources.md`
+- Licence notes: `docs/research/rpo-licence.md`
+- Proposed schema: `docs/dataset-format.md`
+- Registry entry: `data/sources.json`
+- No live upstream calls are made by the API.
+- Personal/stakeholder fields are intentionally excluded from the public response.
+- Public-readiness status is documented in `docs/api-status.md` and `docs/known-limitations.md`.
 
 ## Response Envelope
 
@@ -94,20 +108,13 @@ Error responses use the same envelope with `data: null` and a structured error o
 ## Examples
 
 ```bash
-curl http://opensk-api.onrender.com/
-curl http://opensk-api.onrender.com/v1/banks
-curl http://opensk-api.onrender.com/v1/banks/1100
-curl http://opensk-api.onrender.com/v1/iban/validate/SK0009000000000000000001
-curl http://opensk-api.onrender.com/v1/health
-curl http://opensk-api.onrender.com/v1/holidays/2026
-curl http://opensk-api.onrender.com/v1/regions
-curl http://opensk-api.onrender.com/v1/regions/SK010
-curl http://opensk-api.onrender.com/v1/districts
-curl http://opensk-api.onrender.com/v1/districts?regionCode=SK010
-curl http://opensk-api.onrender.com/v1/municipalities
-curl http://opensk-api.onrender.com/v1/municipalities?districtCode=SK0101
-curl http://opensk-api.onrender.com/v1/psc/81101
-curl http://opensk-api.onrender.com/v1/psc/81101?include=geography
+curl <base-url>/
+curl <base-url>/v1/health
+curl <base-url>/v1/psc/stats
+curl "<base-url>/v1/psc/search?q=Bratislava"
+curl <base-url>/v1/banks
+curl <base-url>/v1/regions
+curl <base-url>/v1/companies/50158635
 ```
 
 PSC source previews can expose repeated codes like this:
@@ -175,14 +182,21 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
 - Banks use a small static seed dataset and IBAN validation runs locally without network access.
 - The bank dataset is intentionally incomplete and should not be presented as exhaustive.
-- The PSC dataset is expanded beyond the original tiny seed-only sample, but it still does not claim national coverage.
+- The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - The checked-in PSC file currently covers 5 postal codes and only partially links geography.
 - PSC source/licence verification is still pending, so do not present the dataset as official or redistributable without checking the upstream terms.
+- Imported PSC data currently has `districtCode: null`; that field is unavailable in the imported source data.
 - PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
-- Regions are complete for the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
+- `GET /v1/psc` returns paginated PSC match records with `limit` and `offset`.
+- `GET /v1/psc/search?q=...` searches PSC records by PSC prefix, municipality, and delivery post.
+- `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
+- IČO/company work uses a local seed dataset; do not treat it as exhaustive or a full register.
+- Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
 - Districts are still seed-only and the district-level source remains unverified.
+- ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
+- Research notes for company/IČO work live in `docs/research/ico-sources.md`.
 - Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.
 - Do not assume any dataset is official government data unless the source explicitly says so.
 
