@@ -2,7 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: research milestone `v1.0.0-rc.6`.
+Status: `v1.0.1` patch cleanup release.
+
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` is a patch cleanup release that only aligns versioning, status docs, and release notes.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -14,38 +16,43 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | --- | --- | --- |
 | `GET /` | stable | Project info |
 | `GET /v1/health` | stable | Health check |
-| `GET /v1/banks` | seed-backed | Static bank list |
-| `GET /v1/banks/1100` | seed-backed | Static bank lookup |
 | `GET /v1/iban/validate/SK...` | stable | Slovak IBAN validation |
-| `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
 | `GET /v1/regions` | stable | Static regions dataset |
 | `GET /v1/regions/SK010` | stable | Static region lookup |
-| `GET /v1/districts` | seed-backed | Static districts seed dataset |
-| `GET /v1/districts/SK0101` | seed-backed | Static district lookup |
 | `GET /v1/municipalities` | stable | Static municipalities dataset |
 | `GET /v1/municipalities/528595` | stable | Static municipality lookup |
-| `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
-| `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
-| `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
-| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; source/licence verification pending |
 
 ### Seed-backed
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
+| `GET /v1/banks` | seed-backed | Static bank list |
+| `GET /v1/banks/1100` | seed-backed | Static bank lookup |
+| `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, no live upstream calls |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for local company lookup |
+
+### Partial Dataset
+
+| Endpoint | Status | Notes |
+| --- | --- | --- |
+| `GET /v1/districts` | partial dataset | Static districts dataset with known coverage limits |
+| `GET /v1/districts/SK0101` | partial dataset | Static district lookup with known coverage limits |
+| `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
+| `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
+| `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
+| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; source/licence verification pending |
 
 ### Platform
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `/docs` | Working | Swagger UI |
-| `/openapi.json` | Working | OpenAPI schema |
+| `/docs` | stable | Swagger UI |
+| `/openapi.json` | stable | OpenAPI schema |
 
 ## PSC Collection Surface
 
-The `v1.0.0-rc.6` docs cover the PSC collection routes, pagination model, and current dataset limitations.
+The `v1.0.1` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
 
 ## Dataset Tooling
 
@@ -58,9 +65,10 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `docs/api-status.md` lists the endpoint status categories.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
+- `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.0.0-rc.6` is final-release verification: no new endpoints, just status alignment and endpoint checks.
+- `v1.0.1` is the post-release cleanup pass: no new endpoints, just status alignment and endpoint checks.
 
 ## Dataset Import Pipeline
 
@@ -79,13 +87,13 @@ Use `data/raw/` for source material and `data/generated/` for normalized preview
 
 ## Company Lookup
 
-Company/IČO lookup is backed by a small checked-in local seed dataset.
+Company/IČO lookup is backed by a small checked-in local seed dataset, not full RPO coverage.
 
 - Source notes: `docs/research/ico-sources.md`
 - Licence notes: `docs/research/rpo-licence.md`
 - Proposed schema: `docs/dataset-format.md`
 - Registry entry: `data/sources.json`
-- No live upstream calls are made by the API.
+- No live upstream calls are made by the API routes.
 - Personal/stakeholder fields are intentionally excluded from the public response.
 - Public-readiness status is documented in `docs/api-status.md` and `docs/known-limitations.md`.
 

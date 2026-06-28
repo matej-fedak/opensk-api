@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.0.1
+
+- Fixed post-release version and status references in the app metadata and docs.
+- Aligned the README and API status docs with the shipped v1.0.0 stable seed-backed release.
+- Verified the public smoke-test expectations against the deployed surface.
+- No API behavior changes were introduced.
+- No new endpoints were added.
+
 ## v1.0.0-rc.6
 
 - Finalized release verification and aligned endpoint status documentation with the shipped local data model.
