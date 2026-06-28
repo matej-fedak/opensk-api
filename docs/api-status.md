@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.0.1 patch cleanup release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.1.0 source/licence verification release.
 
 ## Stable
 

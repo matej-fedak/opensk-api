@@ -16,6 +16,7 @@ from scripts.validate_datasets import (
     validate_municipalities_dataset,
     validate_psc_dataset,
     validate_regions_dataset,
+    validate_sources_registry,
 )
 
 
@@ -50,6 +51,13 @@ def test_dataset_files_parse_as_valid_json() -> None:
     assert all(report.ok for report in reports)
 
 
+def test_sources_registry_has_required_dataset_entries() -> None:
+    report = validate_sources_registry()
+
+    assert report.ok
+    assert report.record_count == 7
+
+
 def test_validate_all_datasets_skips_missing_companies_dataset(tmp_path: Path) -> None:
     _copy_dataset_dir_without_companies(tmp_path)
 
@@ -70,6 +78,7 @@ def test_bank_codes_are_unique_and_valid() -> None:
 
     assert report.ok
     assert report.record_count > 0
+    assert report.warnings
 
 
 def test_holidays_dataset_is_valid() -> None:
@@ -77,6 +86,7 @@ def test_holidays_dataset_is_valid() -> None:
 
     assert report.ok
     assert report.record_count > 0
+    assert report.warnings
 
 
 def test_district_region_codes_reference_existing_regions() -> None:
@@ -84,6 +94,7 @@ def test_district_region_codes_reference_existing_regions() -> None:
 
     assert report.ok
     assert report.record_count == 9
+    assert report.warnings
 
 
 def test_municipality_references_are_valid() -> None:
@@ -91,6 +102,7 @@ def test_municipality_references_are_valid() -> None:
 
     assert report.ok
     assert report.record_count > 2000
+    assert report.warnings
 
 
 def test_municipalities_were_expanded_from_eurostat_lau() -> None:
@@ -112,6 +124,7 @@ def test_psc_records_have_unique_codes_and_valid_geography_references() -> None:
 
     assert report.ok
     assert report.record_count > 0
+    assert report.warnings
 
 
 def test_companies_dataset_is_optional_but_validated_when_present(tmp_path: Path) -> None:
@@ -139,6 +152,7 @@ def test_companies_dataset_is_optional_but_validated_when_present(tmp_path: Path
 
     assert report.ok
     assert report.record_count == 1
+    assert report.warnings
     assert any(item.dataset == "companies" for item in all_reports)
 
 

@@ -2,35 +2,33 @@
 
 The API serves static JSON files from `data/` at runtime. No upstream API calls are made during requests.
 
-- `data/sources.json` records the machine-readable source registry for current datasets.
+- `data/sources.json` is the machine-readable source registry for current datasets.
 - Raw source material is handled offline.
-- The checked-in JSON files under `data/` are the generated/curated runtime inputs.
+- The checked-in JSON files under `data/` are the curated runtime inputs.
 - Production requests read only those local JSON files.
 
-| Dataset | File | Source name | Source file | Source URL | Licence / terms | lastUpdated used by API | Coverage | Imported or curated |
+| Dataset | Source | Coverage | Licence status | Redistribution status | Update cadence | Last checked | Notes | Remaining verification tasks |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Banks | `data/banks.json` | Manual MVP seed dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-25` | Small, non-exhaustive seed set | Manually curated |
-| Holidays | `data/holidays.json` | Static holiday dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-25` | 2024-2026 holiday lists | Manually curated |
-| Regions | `data/regions.json` | Eurostat LAU 2025 correspondence table | `EU-27-LAU-2025-NUTS-2024.xlsx` | https://ec.europa.eu/eurostat/web/nuts/local-administrative-units | Eurostat reuse terms; verify before redistribution. | `2026-05-30` | 8-region set | Verified offline |
-| Districts | `data/districts.json` | Unverified district seed dataset | n/a | Source/licence verification pending. | Source/licence verification pending. | `2026-05-27` | Seed coverage only | Manually curated |
-| Municipalities | `data/municipalities.json` | Eurostat LAU 2025 correspondence table | `EU-27-LAU-2025-NUTS-2024.xlsx` | https://ec.europa.eu/eurostat/web/nuts/local-administrative-units | Eurostat reuse terms; verify before redistribution. | `2026-05-30` | Expanded LAU coverage; district codes remain null in the imported file | Imported and verified offline |
-| PSC | `data/psc.json` | PortalVS Číselníky classifier 42 | `https://ciselniky.portalvs.sk/api/rest/json/42` | Source/licence verification pending. | Source/licence verification pending. | `2026-06-02` | 5 checked-in postal codes with partial geography links; imported PSC records currently have `districtCode: null`; not national coverage | Manually curated |
-| Companies | `data/companies.json` | Verified public organizational contact pages | Multiple official contact pages | Source/licence verification pending for broader redistribution. See `docs/research/rpo-licence.md`. | Source/licence verification pending. | `2026-06-03` | Small checked-in legal-entity seed set for local lookup; personal/stakeholder fields intentionally out of scope | Experimental / seed-backed |
+| Regions | Eurostat LAU 2025 correspondence table | complete | verify before redistribution | verify before redistribution | Eurostat release cycle | `2026-05-27` | 8 Slovak regions verified offline. | Keep monitoring Eurostat reuse terms. |
+| Districts | PortalVS classifier 10 (Okres) / unverified district seed dataset | seed-backed | Source/licence verification pending. | pending verification | Manual | `2026-06-03` | 9-record seed-only set; not authoritative yet. | Confirm exact upstream provenance and redistribution terms. |
+| Municipalities | Eurostat LAU 2025 correspondence table | partial | verify before redistribution | verify before redistribution | Eurostat release cycle | `2026-05-30` | 2,927 municipalities; `districtCode` remains null because the source does not provide district mappings. | Document any future district enrichment source. |
+| PSC | PortalVS classifier 42 (PSČ obcí SR a ČR) | partial | Source/licence verification pending. | pending verification | Unknown | `2026-06-02` | 1,420 PSC keys and 3,101 match records; `districtCode` remains null where no reliable mapping exists; not national coverage. | Verify PSC licence/redistribution terms and districtCode mapping. |
+| Banks | NBS directory of domestic payment system identification codes | seed-backed | Source/licence verification pending. | pending verification | Irregular / manual refresh | `2026-05-25` | 5-bank non-exhaustive seed set. | Expand or formally document the current seed scope. |
+| Holidays | NBS holidays page and Act 241/1993 | partial | Source/licence verification pending. | pending verification | Annual legislative updates | `2026-05-25` | Curated 2024-2026 holiday lists. | Confirm redistribution terms and future update source. |
+| Companies | Verified public organizational contact pages | seed-backed | Source/licence verification pending for broader redistribution. | pending verification | Manual | `2026-06-03` | Small checked-in legal-entity seed dataset; not full RPO coverage; personal/stakeholder fields excluded. | Verify RPO/privacy terms and future import terms. |
 
 Notes:
 
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because the source does not provide district mappings.
-- Districts remain seed-only and the district-level source is unverified.
-- PSC is expanded beyond the original tiny seed-only sample, but it is still not national coverage.
-- The checked-in PSC file currently contains 5 codes; geography links are only present where local mappings exist.
-- Imported PSC records currently have `districtCode: null` because the source data does not provide a reliable district mapping.
+- Districts remain seed-only and the district-level source is still being verified.
+- PSC is expanded beyond the original tiny sample, but it is still not national coverage.
+- The checked-in PSC dataset currently contains 1,420 PSC keys and 3,101 match records, with repeated postal codes preserved via `matchCount` and `matches`.
 - PSC source/licence verification is still pending.
-- PSC source rows may repeat the same postal code; the importer/preview should preserve that ambiguity with `matchCount` and `matches`.
 - PSC geography expansion is local and static; it does not call upstream services.
-- Company/IČO work uses a small checked-in local seed dataset and is exposed only as an experimental local lookup contract.
+- Company/IČO work uses a small checked-in local seed dataset and is exposed only as a seed-backed local lookup contract.
 - Company/IČO notes intentionally exclude personal, stakeholder, and other role-holder fields.
-- RPO licence verification remains pending; see `docs/research/rpo-licence.md`.
+- RPO licence and privacy verification remain pending; see `docs/research/rpo-licence.md` and `docs/verification-backlog.md`.
 - The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.
 - Record provenance should be checked before any production expansion or redistribution.
 - ORSR and ŽRSR remain reference-only in the research notes and are not scraped.

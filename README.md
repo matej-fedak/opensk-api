@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.0.1` patch cleanup release.
+Status: `v1.1.0` source/licence verification release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` is a patch cleanup release that only aligns versioning, status docs, and release notes.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improves source metadata, trust notes, and verification coverage without adding endpoints.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -52,7 +52,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.0.1` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
+The `v1.1.0` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
 
 ## Dataset Tooling
 
@@ -64,11 +64,13 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `docs/api-status.md` lists the endpoint status categories.
+- `docs/data-sources.md` is the dataset inventory and source/coverage reference.
+- `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.0.1` is the post-release cleanup pass: no new endpoints, just status alignment and endpoint checks.
+- `v1.1.0` is the source/licence verification pass: no new endpoints, just status alignment and verification updates.
 
 ## Dataset Import Pipeline
 
@@ -119,7 +121,7 @@ Error responses use the same envelope with `data: null` and a structured error o
 curl <base-url>/
 curl <base-url>/v1/health
 curl <base-url>/v1/psc/stats
-curl "<base-url>/v1/psc/search?q=Bratislava"
+curl <base-url>/v1/psc/search?q=Bratislava
 curl <base-url>/v1/banks
 curl <base-url>/v1/regions
 curl <base-url>/v1/companies/50158635
@@ -191,7 +193,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Banks use a small static seed dataset and IBAN validation runs locally without network access.
 - The bank dataset is intentionally incomplete and should not be presented as exhaustive.
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
-- The checked-in PSC file currently covers 5 postal codes and only partially links geography.
+- PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.
 - PSC source/licence verification is still pending, so do not present the dataset as official or redistributable without checking the upstream terms.
 - Imported PSC data currently has `districtCode: null`; that field is unavailable in the imported source data.
 - PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
@@ -205,6 +207,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Research notes for company/IČO work live in `docs/research/ico-sources.md`.
+- Remaining verification tasks are tracked in `docs/verification-backlog.md`.
 - Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.
 - Do not assume any dataset is official government data unless the source explicitly says so.
 

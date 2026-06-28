@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.1.0
+
+- Improved the dataset source registry and aligned it with current coverage and verification status.
+- Added and updated source verification documentation for PSC, company, bank, district, holiday, and geography datasets.
+- Clarified licence and redistribution statuses without changing API behavior.
+- Added a verification backlog for unresolved source tasks.
+- No API behavior changes were introduced.
+
 ## v1.0.1
 
 - Fixed post-release version and status references in the app metadata and docs.

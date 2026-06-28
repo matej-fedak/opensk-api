@@ -22,6 +22,7 @@ DEFAULT_REGIONS_PATH = DEFAULT_DATA_DIR / "regions.json"
 DEFAULT_DISTRICTS_PATH = DEFAULT_DATA_DIR / "districts.json"
 DEFAULT_MUNICIPALITIES_PATH = DEFAULT_DATA_DIR / "municipalities.json"
 DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
+DEFAULT_SOURCES_PATH = DEFAULT_DATA_DIR / "sources.json"
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
 _POSTAL_CODE_RE = re.compile(r"\d{5}$")
@@ -259,6 +260,10 @@ def validate_companies_payload(payload: Any, path: Path = DEFAULT_COMPANIES_PATH
             continue
         _validate_companies_record(report, item, item_path, seen_icos)
 
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "companies", registry.get("companies") if isinstance(registry, dict) else None)
+
     report.record_count = len(companies)
     return report
 
@@ -298,6 +303,90 @@ def _warn_if_seed(report: ValidationReport, metadata: dict[str, Any] | None) -> 
             report.add_warning("metadata.source", "Dataset is marked as seed/incomplete data")
 
 
+def _load_registry_payload(report: ValidationReport, path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+
+    payload = _load_json(report, path)
+    if not isinstance(payload, dict):
+        return None
+    return payload
+
+
+def _warn_from_source_registry(report: ValidationReport, dataset_name: str, entry: Any) -> None:
+    if not isinstance(entry, dict):
+        return
+
+    coverage = entry.get("coverage")
+    licence = entry.get("licence")
+    redistribution_status = entry.get("redistributionStatus")
+    notes = entry.get("notes")
+    source_name = entry.get("sourceName")
+
+    joined = " ".join(
+        str(value).lower()
+        for value in (coverage, licence, redistribution_status, notes, source_name)
+        if isinstance(value, str)
+    )
+
+    if any(token in joined for token in ("pending", "partial", "seed", "incomplete", "unknown", "unclear", "not exhaustive")):
+        report.add_warning(
+            "sourceRegistry",
+            f"{dataset_name} source/licence verification is pending or coverage is partial",
+        )
+
+
+def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationReport:
+    report = ValidationReport("sources", path)
+    if not path.is_file():
+        report.add_error("file", f"File not found: {path}")
+        return report
+
+    payload = _load_registry_payload(report, path)
+    if payload is None:
+        return report
+
+    required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies"}
+    allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
+    missing = sorted(required_datasets - set(payload))
+    if missing:
+        report.add_error("root", f"source registry is missing dataset entries: {', '.join(missing)}")
+
+    for dataset_name in sorted(required_datasets):
+        entry = payload.get(dataset_name)
+        if not isinstance(entry, dict):
+            report.add_error(dataset_name, f"{dataset_name} registry entry must be an object")
+            continue
+
+        _require_string(report, entry.get("status"), f"{dataset_name}.status", f"{dataset_name} status must be a non-empty string")
+        coverage = _require_string(report, entry.get("coverage"), f"{dataset_name}.coverage", f"{dataset_name} coverage must be a non-empty string")
+        if coverage is not None and coverage not in allowed_coverages:
+            report.add_error(
+                f"{dataset_name}.coverage",
+                f"{dataset_name} coverage must be one of {sorted(allowed_coverages)}, got {coverage!r}",
+            )
+        _require_string(report, entry.get("sourceName"), f"{dataset_name}.sourceName", f"{dataset_name} sourceName must be a non-empty string")
+        _require_string(report, entry.get("sourceUrl"), f"{dataset_name}.sourceUrl", f"{dataset_name} sourceUrl must be a non-empty string")
+        _require_string(report, entry.get("licence"), f"{dataset_name}.licence", f"{dataset_name} licence must be a non-empty string")
+        _require_string(
+            report,
+            entry.get("redistributionStatus"),
+            f"{dataset_name}.redistributionStatus",
+            f"{dataset_name} redistributionStatus must be a non-empty string",
+        )
+        _require_iso_date(report, entry.get("lastChecked"), f"{dataset_name}.lastChecked", f"{dataset_name} lastChecked must be a non-empty ISO date")
+        _require_string(
+            report,
+            entry.get("updateCadence"),
+            f"{dataset_name}.updateCadence",
+            f"{dataset_name} updateCadence must be a non-empty string",
+        )
+        _require_string(report, entry.get("notes"), f"{dataset_name}.notes", f"{dataset_name} notes must be a non-empty string")
+
+    report.record_count = len(required_datasets)
+    return report
+
+
 def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
     report = ValidationReport("banks", path)
     payload = _load_json(report, path)
@@ -312,6 +401,10 @@ def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
         return report
     if not banks:
         report.add_error("banks", "banks array must not be empty")
+
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "banks", registry.get("banks") if isinstance(registry, dict) else None)
 
     seen_codes: set[str] = set()
     for index, bank in enumerate(banks):
@@ -349,11 +442,17 @@ def validate_holidays_dataset(path: Path = DEFAULT_HOLIDAYS_PATH) -> ValidationR
     if not isinstance(payload, dict):
         return report
 
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "holidays", registry.get("holidays") if isinstance(registry, dict) else None)
+
     if not payload:
         report.add_error("root", "holidays dataset must not be empty")
         return report
 
     for year_key, holidays in payload.items():
+        if year_key == "metadata":
+            continue
         if not re.fullmatch(r"\d{4}", str(year_key)):
             report.add_error(f"{year_key}", f"year key must be 4 digits, got {year_key!r}")
             continue
@@ -479,6 +578,10 @@ def validate_districts_dataset(path: Path = DEFAULT_DISTRICTS_PATH) -> Validatio
     metadata = _validate_dataset_metadata(report, payload)
     _warn_if_seed(report, metadata)
 
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "districts", registry.get("districts") if isinstance(registry, dict) else None)
+
     complete = metadata.get("complete") if isinstance(metadata, dict) else None
     if complete is not False:
         report.add_warning("metadata.complete", "districts dataset is expected to be seed/incomplete data")
@@ -535,6 +638,10 @@ def validate_municipalities_dataset(path: Path = DEFAULT_MUNICIPALITIES_PATH) ->
 
     metadata = _validate_dataset_metadata(report, payload)
     _warn_if_seed(report, metadata)
+
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "municipalities", registry.get("municipalities") if isinstance(registry, dict) else None)
 
     complete = metadata.get("complete") if isinstance(metadata, dict) else None
     if complete is not False:
@@ -605,6 +712,8 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
         return report
 
     data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "psc", registry.get("psc") if isinstance(registry, dict) else None)
     regions_by_code = _load_regions_lookup(data_dir, report)
     districts_by_code = _load_districts_lookup(data_dir, report)
     municipalities_by_code = _load_index(report, data_dir / "municipalities.json", "municipalities", "code")

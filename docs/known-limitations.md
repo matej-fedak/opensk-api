@@ -9,5 +9,7 @@
 - PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
 - PSC records currently keep `districtCode` null in the checked-in dataset when no reliable local mapping exists.
 - PSC source/licence verification remains pending.
+- Some datasets are manually curated or imported from sources with incomplete attribution or redistribution clarity.
+- Remaining source follow-up items are tracked in `docs/verification-backlog.md`.
 - The API has no SLA and is deployed as a hobby/public-readiness project.
 - The project is not an official government endpoint and has no official endorsement.
