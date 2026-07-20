@@ -45,6 +45,6 @@ def get_holidays(year: int, response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
         data=holidays_data[year_key],
-        source=f"{API_SOURCE} static dataset",
+        source=f"{API_SOURCE} static holidays dataset",
         last_updated=HOLIDAYS_LAST_UPDATED,
     )

@@ -22,9 +22,9 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/banks` | seed-backed | Local bank list |
-| `GET /v1/banks/{code}` | seed-backed | Local bank lookup |
-| `GET /v1/holidays/{year}` | seed-backed | Local holiday dataset |
+| `GET /v1/banks` | seed-backed | Local bank list; reuse allowed with attribution and no modification |
+| `GET /v1/banks/{code}` | seed-backed | Local bank lookup; reuse allowed with attribution and no modification |
+| `GET /v1/holidays/{year}` | seed-backed | Local holiday dataset; reuse allowed with attribution and no modification |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, backed by a small checked-in seed set |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for the local company lookup |
 
@@ -34,10 +34,10 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 | --- | --- | --- |
 | `GET /v1/districts` | partial dataset | Local districts dataset with known coverage limits |
 | `GET /v1/districts/{code}` | partial dataset | Local district lookup with known coverage limits |
-| `GET /v1/psc` | partial dataset | Local PSC dataset |
-| `GET /v1/psc/search` | partial dataset | Local PSC search |
-| `GET /v1/psc/stats` | partial dataset | Local PSC stats |
-| `GET /v1/psc/{psc}` | partial dataset | Local PSC lookup |
+| `GET /v1/psc` | partial dataset | Local PSC dataset; PortalVS source terms are restrictive |
+| `GET /v1/psc/search` | partial dataset | Local PSC search; PortalVS source terms are restrictive |
+| `GET /v1/psc/stats` | partial dataset | Local PSC stats; PortalVS source terms are restrictive |
+| `GET /v1/psc/{psc}` | partial dataset | Local PSC lookup; PortalVS source terms are restrictive |
 
 ## Notes
 

@@ -879,6 +879,7 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
 
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
+        validate_sources_registry(data_dir / "sources.json"),
         validate_banks_dataset(data_dir / "banks.json"),
         validate_holidays_dataset(data_dir / "holidays.json"),
         validate_regions_dataset(data_dir / "regions.json"),

@@ -15,11 +15,11 @@
     "coverage": "seed-backed",
     "sourceName": "PortalVS classifier 10 (Okres) / unverified district seed dataset",
     "sourceUrl": "https://ciselniky.portalvs.sk/classifier/show/10/",
-    "licence": "Source/licence verification pending.",
-    "redistributionStatus": "pending verification",
+    "licence": "PortalVS site terms are restrictive; provenance remains unclear.",
+    "redistributionStatus": "restricted / not open redistribution",
     "lastChecked": "2026-06-03",
     "updateCadence": "Manual",
-    "notes": "Seed-only coverage; exact upstream provenance and redistribution terms are not yet fully confirmed."
+    "notes": "Seed-only coverage; exact upstream provenance remains unclear even though the PortalVS site terms are explicit."
   },
   "municipalities": {
     "status": "imported",
@@ -37,19 +37,19 @@
     "coverage": "partial",
     "sourceName": "PortalVS classifier 42 (PSČ obcí SR a ČR)",
     "sourceUrl": "https://ciselniky.portalvs.sk/classifier/show/42/",
-    "licence": "Source/licence verification pending.",
-    "redistributionStatus": "pending verification",
+    "licence": "PortalVS site terms are restrictive; preserve notices; non-commercial use only.",
+    "redistributionStatus": "restricted / not open redistribution",
     "lastChecked": "2026-06-02",
     "updateCadence": "Unknown",
-    "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial and districtCode remains null where no reliable mapping exists."
+    "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial and districtCode is null throughout."
   },
   "banks": {
     "status": "manual-seed",
     "coverage": "seed-backed",
     "sourceName": "NBS directory of domestic payment system identification codes",
     "sourceUrl": "https://www.nbs.sk/en/payments/general-information/directories-and-registers/directory-identification-codes-domestic-payment-system-in-sr/",
-    "licence": "Source/licence verification pending.",
-    "redistributionStatus": "pending verification",
+    "licence": "NBS disclaimer allows reuse with attribution and no modification.",
+    "redistributionStatus": "allowed with attribution and no modification",
     "lastChecked": "2026-05-25",
     "updateCadence": "Irregular / manual refresh",
     "notes": "5-bank non-exhaustive seed set; authoritative source expansion is still pending."
@@ -59,8 +59,8 @@
     "coverage": "partial",
     "sourceName": "NBS holidays page and Act 241/1993",
     "sourceUrl": "https://www.nbs.sk/en/about-the-bank/holidays-in-slovakia/",
-    "licence": "Source/licence verification pending.",
-    "redistributionStatus": "pending verification",
+    "licence": "NBS disclaimer allows reuse with attribution and no modification.",
+    "redistributionStatus": "allowed with attribution and no modification",
     "lastChecked": "2026-05-25",
     "updateCadence": "Annual legislative updates",
     "notes": "Curated 2024-2026 holiday lists; source terms should be checked before redistribution."

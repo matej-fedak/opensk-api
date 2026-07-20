@@ -46,7 +46,7 @@ def _write_companies_dataset(target_dir: Path, payload: dict[str, object]) -> No
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
-    assert len(reports) == 7
+    assert len(reports) == 8
     assert all(report.record_count > 0 for report in reports)
     assert all(report.ok for report in reports)
 

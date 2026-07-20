@@ -41,7 +41,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
 | `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
 | `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
-| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; source/licence verification pending |
+| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; PortalVS source terms are restrictive |
 
 ### Platform
 
@@ -148,7 +148,7 @@ PSC source previews can expose repeated codes like this:
 }
 ```
 
-Swagger docs: `http://opensk-api.onrender.com/docs`
+Swagger docs: `https://opensk-api.onrender.com/docs`
 
 ## Local Development
 
@@ -194,7 +194,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - The bank dataset is intentionally incomplete and should not be presented as exhaustive.
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.
-- PSC source/licence verification is still pending, so do not present the dataset as official or redistributable without checking the upstream terms.
+- PSC redistribution is restricted by upstream PortalVS terms, so do not present the dataset as open redistribution material.
 - Imported PSC data currently has `districtCode: null`; that field is unavailable in the imported source data.
 - PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
 - `GET /v1/psc` returns paginated PSC match records with `limit` and `offset`.

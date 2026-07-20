@@ -177,7 +177,7 @@ def test_holidays_2026_returns_enveloped_response() -> None:
     assert first_holiday["date"] == "2026-01-01"
     assert first_holiday["name"] == "Deň vzniku Slovenskej republiky"
     assert first_holiday["name_en"] == "Day of the Establishment of the Slovak Republic"
-    assert body["metadata"]["source"] == "OpenSK API static dataset"
+    assert body["metadata"]["source"] == "OpenSK API static holidays dataset"
     assert body["metadata"]["version"] == "v1"
     assert body["metadata"]["lastUpdated"] == "2026-05-25"
     assert body["error"] is None
