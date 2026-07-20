@@ -242,6 +242,7 @@ def test_districts_list_returns_enveloped_response() -> None:
     assert response.headers["cache-control"] == "public, max-age=86400"
     body = response.json()
     assert isinstance(body["data"], list)
+    assert len(body["data"]) == 79
     assert body["metadata"]["source"] == "OpenSK API static geography dataset"
     assert body["metadata"]["version"] == "v1"
     assert body["error"] is None

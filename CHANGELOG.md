@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.2.0
+
+- Expanded the district dataset to the verified 79 Slovak districts imported from PortalVS classifier 10.
+- Updated district source, coverage, and validation metadata to reflect the complete district dataset.
+- Kept PSC districtCode coverage unchanged.
+- No API behavior changes were introduced.
+
 ## v1.1.0
 
 - Improved the dataset source registry and aligned it with current coverage and verification status.

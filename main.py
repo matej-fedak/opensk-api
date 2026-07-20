@@ -21,7 +21,7 @@ from schemas.common import API_SOURCE, error_detail, error_response, success_res
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="1.1.0",
+    version="1.2.0",
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
@@ -30,7 +30,7 @@ app = FastAPI(
         {"name": "iban", "description": "IBAN validation and bank resolution."},
         {"name": "holidays", "description": "Static Slovak public holiday data."},
         {"name": "regions", "description": "Static Slovak regions dataset."},
-        {"name": "districts", "description": "Static Slovak districts dataset."},
+        {"name": "districts", "description": "Complete Slovak districts dataset imported from PortalVS classifier 10."},
         {"name": "municipalities", "description": "Static Slovak municipalities dataset."},
         {"name": "psc", "description": "Static Slovak postal code lookups."},
         {"name": "companies", "description": "Local company lookup endpoints backed by the checked-in dataset."},

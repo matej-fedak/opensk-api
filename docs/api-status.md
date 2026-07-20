@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.1.0 source/licence verification release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.2.0 district dataset expansion release.
 
 ## Stable
 
@@ -13,6 +13,8 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 | `GET /v1/iban/validate/{iban}` | stable | Local IBAN validation |
 | `GET /v1/regions` | stable | Local regions dataset |
 | `GET /v1/regions/{code}` | stable | Local region lookup |
+| `GET /v1/districts` | stable | Local districts dataset; PortalVS terms may restrict reuse |
+| `GET /v1/districts/{code}` | stable | Local district lookup; PortalVS terms may restrict reuse |
 | `GET /v1/municipalities` | stable | Local municipalities dataset |
 | `GET /v1/municipalities/{code}` | stable | Local municipality lookup |
 | `/docs` | stable | Swagger UI |
@@ -32,8 +34,6 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/districts` | partial dataset | Local districts dataset with known coverage limits |
-| `GET /v1/districts/{code}` | partial dataset | Local district lookup with known coverage limits |
 | `GET /v1/psc` | partial dataset | Local PSC dataset; PortalVS source terms are restrictive |
 | `GET /v1/psc/search` | partial dataset | Local PSC search; PortalVS source terms are restrictive |
 | `GET /v1/psc/stats` | partial dataset | Local PSC stats; PortalVS source terms are restrictive |
@@ -43,4 +43,5 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 
 - No endpoint fetches live upstream data at request time.
 - Company lookup is backed by a small checked-in seed set; broader RPO coverage still awaits licence and privacy follow-up.
-- Districts, banks, holidays, and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
+- Districts are now complete, but PortalVS source terms remain restrictive.
+- Banks, holidays, and PSC remain partial or seed-backed datasets rather than exhaustive official registers.

@@ -10,7 +10,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Dataset | Source | Coverage | Licence status | Redistribution status | Update cadence | Last checked | Notes | Remaining verification tasks |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Regions | Eurostat LAU 2025 correspondence table | complete | Eurostat reuse terms; verify before redistribution. | verify before redistribution | Eurostat release cycle | `2026-05-27` | 8 Slovak regions verified offline. | Keep monitoring Eurostat reuse terms. |
-| Districts | PortalVS classifier 10 (Okres) / unverified district seed dataset | seed-backed | PortalVS site terms are restrictive; provenance remains unclear. | restricted / not open redistribution | Manual | `2026-06-03` | 9-record seed-only set; not authoritative yet. | Confirm exact upstream provenance and district attribution. |
+| Districts | PortalVS classifier 10 (Okres), local REST export filtered to Slovak districts | complete | Source/licence verification pending; PortalVS terms may restrict reuse. | restricted / not open redistribution | Manual | `2026-07-20` | 79 Slovak districts imported from the classifier export; source also contains Czech and foreign rows. | Keep source terms on file and retain upstream notices. |
 | Municipalities | Eurostat LAU 2025 correspondence table | partial | Eurostat reuse terms; verify before redistribution. | verify before redistribution | Eurostat release cycle | `2026-05-30` | 2,927 municipalities; `districtCode` remains null because the source does not provide district mappings. | Document any future district enrichment source. |
 | PSC | PortalVS classifier 42 (PSČ obcí SR a ČR) | partial | PortalVS site terms are restrictive; preserve notices; non-commercial use only. | restricted / not open redistribution | Unknown | `2026-06-02` | 1,420 PSC keys and 3,101 match records; `districtCode` is null throughout; not national coverage. | Verify any allowed use, retain notices, and confirm districtCode mapping. |
 | Banks | NBS directory of domestic payment system identification codes | seed-backed | NBS disclaimer allows reuse with attribution and no modification. | allowed with attribution and no modification | Irregular / manual refresh | `2026-05-25` | 5-bank non-exhaustive seed set. | Expand or formally document the current seed scope. |
@@ -21,7 +21,7 @@ Notes:
 
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because the source does not provide district mappings.
-- Districts remain seed-only and the district-level source is still being verified.
+- Districts are now complete in coverage, but PortalVS terms may restrict reuse.
 - PSC is expanded beyond the original tiny sample, but it is still not national coverage.
 - The checked-in PSC dataset currently contains 1,420 PSC keys and 3,101 match records, with repeated postal codes preserved via `matchCount` and `matches`.
 - PSC source terms are restrictive; redistribution is limited and source notices must be preserved.

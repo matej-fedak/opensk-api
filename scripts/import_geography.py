@@ -85,13 +85,13 @@ def _build_payloads(dataset: str, input_path: Path, source: str) -> dict[str, di
     if dataset == "all":
         records_by_dataset = load_all_dataset_records(input_path)
         return {
-            name: build_dataset_payload(name, records, source, complete=(name == "regions"))
+            name: build_dataset_payload(name, records, source, complete=(name in {"regions", "districts"}))
             for name, records in records_by_dataset.items()
         }
 
     records = load_dataset_records(dataset, input_path)
     return {
-        dataset: build_dataset_payload(dataset, records, source, complete=(dataset == "regions")),
+        dataset: build_dataset_payload(dataset, records, source, complete=(dataset in {"regions", "districts"})),
     }
 
 

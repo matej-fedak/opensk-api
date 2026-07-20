@@ -29,7 +29,7 @@ _POSTAL_CODE_RE = re.compile(r"\d{5}$")
 _BANK_CODE_RE = re.compile(r"\d{4}$")
 _COMPANY_ICO_RE = re.compile(r"\d{8}$")
 _REGION_CODE_RE = re.compile(r"SK\d{3}$")
-_DISTRICT_CODE_RE = re.compile(r"SK\d{4}$")
+_DISTRICT_CODE_RE = re.compile(r"SK\d{4,5}$")
 _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
 _PSC_CODE_RE = re.compile(r"\d{5}$")
 _COMPANY_FORBIDDEN_KEYS = {
@@ -583,8 +583,8 @@ def validate_districts_dataset(path: Path = DEFAULT_DISTRICTS_PATH) -> Validatio
     _warn_from_source_registry(report, "districts", registry.get("districts") if isinstance(registry, dict) else None)
 
     complete = metadata.get("complete") if isinstance(metadata, dict) else None
-    if complete is not False:
-        report.add_warning("metadata.complete", "districts dataset is expected to be seed/incomplete data")
+    if complete is not True:
+        report.add_error("metadata.complete", "districts dataset must be marked complete")
 
     districts = _require_list(report, payload.get("districts"), "districts", "districts must be an array")
     if districts is None:

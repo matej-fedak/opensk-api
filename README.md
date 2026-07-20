@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.1.0` source/licence verification release.
+Status: `v1.2.0` district dataset expansion release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improves source metadata, trust notes, and verification coverage without adding endpoints.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expands the district dataset without adding endpoints.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -19,6 +19,8 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/iban/validate/SK...` | stable | Slovak IBAN validation |
 | `GET /v1/regions` | stable | Static regions dataset |
 | `GET /v1/regions/SK010` | stable | Static region lookup |
+| `GET /v1/districts` | stable | Complete districts dataset; PortalVS terms may restrict reuse |
+| `GET /v1/districts/SK0101` | stable | Complete district lookup; PortalVS terms may restrict reuse |
 | `GET /v1/municipalities` | stable | Static municipalities dataset |
 | `GET /v1/municipalities/528595` | stable | Static municipality lookup |
 
@@ -36,8 +38,6 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/districts` | partial dataset | Static districts dataset with known coverage limits |
-| `GET /v1/districts/SK0101` | partial dataset | Static district lookup with known coverage limits |
 | `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
 | `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
 | `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
@@ -52,7 +52,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.1.0` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
+The `v1.2.0` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
 
 ## Dataset Tooling
 
@@ -64,13 +64,12 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `docs/api-status.md` lists the endpoint status categories.
-- `docs/data-sources.md` is the dataset inventory and source/coverage reference.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.1.0` is the source/licence verification pass: no new endpoints, just status alignment and verification updates.
+- `v1.2.0` is the district coverage pass: no new endpoints, just district expansion and validation updates.
 
 ## Dataset Import Pipeline
 
@@ -203,7 +202,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - IČO/company work uses a local seed dataset; do not treat it as exhaustive or a full register.
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
-- Districts are still seed-only and the district-level source remains unverified.
+- Districts are imported from PortalVS classifier 10 and cover all Slovak districts; PortalVS terms may restrict reuse.
 - ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Research notes for company/IČO work live in `docs/research/ico-sources.md`.

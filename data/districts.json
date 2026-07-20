@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "source": "Unverified district seed dataset compiled from public Slovak administrative division references. Seed coverage only.",
-    "license": "Informational seed data only. Verify against an authoritative source before production use.",
-    "lastUpdated": "2026-05-27",
-    "complete": false
+    "source": "PortalVS classifier 10 (Okres), local REST export filtered to Slovak districts",
+    "license": "Source/licence verification pending; PortalVS terms may restrict reuse.",
+    "lastUpdated": "2026-07-20",
+    "complete": true
   },
   "districts": [
     {
@@ -37,26 +37,446 @@
       "country": "SK"
     },
     {
+      "code": "SK0106",
+      "name": "Malacky",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0107",
+      "name": "Pezinok",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0108",
+      "name": "Senec",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "SK0211",
+      "name": "Dunajská Streda",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0212",
+      "name": "Galanta",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0213",
+      "name": "Hlohovec",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0214",
+      "name": "Piešťany",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0215",
+      "name": "Senica",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0216",
+      "name": "Skalica",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0217",
+      "name": "Trnava",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "SK0221",
+      "name": "Bánovce nad Bebravou",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0222",
+      "name": "Ilava",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0223",
+      "name": "Myjava",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0224",
+      "name": "Nové Mesto nad Váhom",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0225",
+      "name": "Partizánske",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0226",
+      "name": "Považská Bystrica",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0227",
+      "name": "Prievidza",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0228",
+      "name": "Púchov",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0229",
+      "name": "Trenčín",
+      "regionCode": "SK022",
+      "country": "SK"
+    },
+    {
+      "code": "SK0231",
+      "name": "Komárno",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0232",
+      "name": "Levice",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0233",
+      "name": "Nitra",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0234",
+      "name": "Nové Zámky",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0235",
+      "name": "Šaľa",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0236",
+      "name": "Topoľčany",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0237",
+      "name": "Zlaté Moravce",
+      "regionCode": "SK023",
+      "country": "SK"
+    },
+    {
+      "code": "SK0311",
+      "name": "Bytča",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0312",
+      "name": "Čadca",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0313",
+      "name": "Dolný Kubín",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0314",
+      "name": "Kysucké Nové Mesto",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0315",
+      "name": "Liptovský Mikuláš",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0316",
+      "name": "Martin",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0317",
+      "name": "Námestovo",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0318",
+      "name": "Ružomberok",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0319",
+      "name": "Turčianske Teplice",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK03110",
+      "name": "Tvrdošín",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK03111",
+      "name": "Žilina",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "SK0321",
+      "name": "Banská Bystrica",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0322",
+      "name": "Banská Štiavnica",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0323",
+      "name": "Brezno",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0324",
+      "name": "Detva",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0325",
+      "name": "Krupina",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0326",
+      "name": "Lučenec",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0327",
+      "name": "Poltár",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0328",
+      "name": "Revúca",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0329",
+      "name": "Rimavská Sobota",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK03210",
+      "name": "Veľký Krtíš",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK03211",
+      "name": "Zvolen",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK03212",
+      "name": "Žarnovica",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK03213",
+      "name": "Žiar nad Hronom",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "SK0411",
+      "name": "Bardejov",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0412",
+      "name": "Humenné",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0413",
+      "name": "Kežmarok",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0414",
+      "name": "Levoča",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0415",
+      "name": "Medzilaborce",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0416",
+      "name": "Poprad",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0417",
+      "name": "Prešov",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0418",
+      "name": "Sabinov",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK0419",
+      "name": "Snina",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK04110",
+      "name": "Stará Ľubovňa",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK04111",
+      "name": "Stropkov",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK04112",
+      "name": "Svidník",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
+      "code": "SK04113",
+      "name": "Vranov nad Topľou",
+      "regionCode": "SK041",
+      "country": "SK"
+    },
+    {
       "code": "SK0421",
-      "name": "Košice I",
+      "name": "Gelnica",
       "regionCode": "SK042",
       "country": "SK"
     },
     {
       "code": "SK0422",
-      "name": "Košice II",
+      "name": "Košice I",
       "regionCode": "SK042",
       "country": "SK"
     },
     {
       "code": "SK0423",
-      "name": "Košice III",
+      "name": "Košice II",
       "regionCode": "SK042",
       "country": "SK"
     },
     {
       "code": "SK0424",
+      "name": "Košice III",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK0425",
       "name": "Košice IV",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK0426",
+      "name": "Košice - okolie",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK0427",
+      "name": "Michalovce",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK0428",
+      "name": "Rožňava",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK0429",
+      "name": "Sobrance",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK04210",
+      "name": "Spišská Nová Ves",
+      "regionCode": "SK042",
+      "country": "SK"
+    },
+    {
+      "code": "SK04211",
+      "name": "Trebišov",
       "regionCode": "SK042",
       "country": "SK"
     }

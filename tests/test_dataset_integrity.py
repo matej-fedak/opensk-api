@@ -91,9 +91,14 @@ def test_holidays_dataset_is_valid() -> None:
 
 def test_district_region_codes_reference_existing_regions() -> None:
     report = validate_districts_dataset()
+    districts = load_dataset_records("districts", DATA_DIR / "districts.json")
+    regions = {region["code"] for region in load_dataset_records("regions", DATA_DIR / "regions.json")}
 
     assert report.ok
-    assert report.record_count == 9
+    assert report.record_count == 79
+    assert len(districts) == 79
+    assert len({district["code"] for district in districts}) == 79
+    assert all(district["regionCode"] in regions for district in districts)
     assert report.warnings
 
 

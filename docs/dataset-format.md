@@ -6,7 +6,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Generated/curated JSON under `data/` is the runtime input.
 - Production requests read those JSON files only; they do not call upstream sources.
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
-- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts remain unverified seed data.
+- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts are imported from PortalVS classifier 10 filtered to Slovak rows.
 
 ## Company Seed Dataset
 
@@ -94,7 +94,7 @@ Each `companies[]` item uses this shape:
 
 - Keep codes as strings, even when they are numeric-looking.
 - Preserve leading zeros in bank codes and PSC values.
-- Use uppercase `SK###` for region codes and `SK####` for district codes.
+- Use uppercase `SK###` for region codes and region-prefixed district codes such as `SK0101` or `SK03210`.
 - Use 6-digit municipality codes.
 
 ## Null vs Omitted

@@ -11,15 +11,15 @@
     "notes": "8 Slovak regions verified offline against the LAU 2025 workbook."
   },
   "districts": {
-    "status": "manual-seed",
-    "coverage": "seed-backed",
-    "sourceName": "PortalVS classifier 10 (Okres) / unverified district seed dataset",
-    "sourceUrl": "https://ciselniky.portalvs.sk/classifier/show/10/",
-    "licence": "PortalVS site terms are restrictive; provenance remains unclear.",
+    "status": "imported",
+    "coverage": "complete",
+    "sourceName": "PortalVS classifier 10 (Okres), local REST export filtered to Slovak districts",
+    "sourceUrl": "https://ciselniky.portalvs.sk/api/rest/json/10",
+    "licence": "Source/licence verification pending; PortalVS terms may restrict reuse.",
     "redistributionStatus": "restricted / not open redistribution",
-    "lastChecked": "2026-06-03",
+    "lastChecked": "2026-07-20",
     "updateCadence": "Manual",
-    "notes": "Seed-only coverage; exact upstream provenance remains unclear even though the PortalVS site terms are explicit."
+    "notes": "79 Slovak districts imported from the classifier export; source also contains Czech and foreign rows."
   },
   "municipalities": {
     "status": "imported",
