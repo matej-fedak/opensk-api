@@ -644,8 +644,8 @@ def validate_municipalities_dataset(path: Path = DEFAULT_MUNICIPALITIES_PATH) ->
     _warn_from_source_registry(report, "municipalities", registry.get("municipalities") if isinstance(registry, dict) else None)
 
     complete = metadata.get("complete") if isinstance(metadata, dict) else None
-    if complete is not False:
-        report.add_warning("metadata.complete", "municipalities dataset is expected to be seed/incomplete data")
+    if complete is False:
+        report.add_warning("metadata.complete", "municipalities dataset is documented as incomplete")
 
     municipalities = _require_list(report, payload.get("municipalities"), "municipalities", "municipalities must be an array")
     if municipalities is None:
@@ -681,21 +681,14 @@ def validate_municipalities_dataset(path: Path = DEFAULT_MUNICIPALITIES_PATH) ->
             elif region_code not in regions_by_code:
                 report.add_error(f"{item_path}.regionCode", f"unknown region code {region_code!r}")
 
-        district_code = item.get("districtCode")
+        district_code = _require_string(report, item.get("districtCode"), f"{item_path}.districtCode", "municipality districtCode must be a non-empty string")
         if district_code is not None:
-            district_code = _require_string(
-                report,
-                district_code,
-                f"{item_path}.districtCode",
-                "municipality districtCode must be a non-empty string",
-            )
-            if district_code is not None:
-                if not _DISTRICT_CODE_RE.fullmatch(district_code):
-                    report.add_error(f"{item_path}.districtCode", f"municipality districtCode must match SK####, got {district_code!r}")
-                elif district_code not in districts_by_code:
-                    report.add_error(f"{item_path}.districtCode", f"unknown district code {district_code!r}")
-                elif region_code is not None and districts_by_code[district_code].get("regionCode") != region_code:
-                    report.add_error(f"{item_path}.districtCode", f"district code {district_code!r} does not belong to region {region_code!r}")
+            if not _DISTRICT_CODE_RE.fullmatch(district_code):
+                report.add_error(f"{item_path}.districtCode", f"municipality districtCode must match SK####, got {district_code!r}")
+            elif district_code not in districts_by_code:
+                report.add_error(f"{item_path}.districtCode", f"unknown district code {district_code!r}")
+            elif region_code is not None and districts_by_code[district_code].get("regionCode") != region_code:
+                report.add_error(f"{item_path}.districtCode", f"district code {district_code!r} does not belong to region {region_code!r}")
 
         country = _require_string(report, item.get("country"), f"{item_path}.country", "municipality country must be a non-empty string")
         if country is not None and country != "SK":

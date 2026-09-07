@@ -301,7 +301,8 @@ def test_municipalities_district_filter_returns_subset() -> None:
 
     assert response.status_code == 200
     body = response.json()
-    assert body["data"] == []
+    assert body["data"]
+    assert all(municipality["districtCode"] == "SK0101" for municipality in body["data"])
 
 
 def test_invalid_municipality_region_filter_returns_400() -> None:
@@ -320,6 +321,16 @@ def test_known_municipality_code_returns_one_municipality() -> None:
     body = response.json()
     assert body["data"]["code"] == "528595"
     assert body["data"]["name"] == "Bratislava - mestská časť Staré Mesto"
+    assert body["data"]["districtCode"] == "SK0101"
+
+
+def test_unknown_municipality_district_filter_returns_404() -> None:
+    response = client.get("/v1/municipalities?districtCode=SK9999")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
 
 
 def test_unknown_municipality_code_returns_404() -> None:

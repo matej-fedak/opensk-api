@@ -6,7 +6,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Generated/curated JSON under `data/` is the runtime input.
 - Production requests read those JSON files only; they do not call upstream sources.
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
-- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts are imported from PortalVS classifier 10 filtered to Slovak rows.
+- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from PortalVS classifier 9 (`Obce`) with district mappings derived from `code_su`; districts are imported from PortalVS classifier 10 filtered to Slovak rows.
 
 ## Company Seed Dataset
 
@@ -102,7 +102,7 @@ Each `companies[]` item uses this shape:
 - Use `null` only for optional links that are known to be unavailable yet still part of the record shape.
 - Omit fields only when the dataset schema does not define them.
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
-- For imported municipality records, `districtCode` may be `null` because the Eurostat LAU workbook does not provide district mappings.
+- For imported municipality records, `districtCode` is required and is derived from PortalVS classifier 9 `code_su`.
 - In the current imported PSC data, `districtCode` is `null` throughout because the source data does not provide a reliable district mapping.
 
 ## Common Metadata
@@ -169,7 +169,7 @@ Where present, dataset metadata uses this shape:
 {
   "metadata": { ... },
   "municipalities": [
-    { "code": "507814", "name": "Bernolákovo", "districtCode": null, "regionCode": "SK010", "country": "SK" }
+    { "code": "507814", "name": "Bernolákovo", "districtCode": "SK0102", "regionCode": "SK010", "country": "SK" }
   ]
 }
 ```
@@ -195,7 +195,7 @@ Where present, dataset metadata uses this shape:
 ```
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
-- Imported municipality rows may have `districtCode: null` when the source workbook does not provide district mappings.
+- Imported municipality rows should include `districtCode` when sourced from PortalVS classifier 9.
 - Imported PSC rows currently have `districtCode: null` in the checked-in dataset.
 - PSC geography links are local data, not a live lookup.
 - The PSC source may contain multiple rows for the same postal code; importer previews should report that with `matchCount` and `matches` before selecting a canonical runtime record.

@@ -10,6 +10,9 @@ from scripts.import_geography import run_import
 from scripts.import_utils import load_dataset_records
 
 
+DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+
+
 def _write_xlsx(path: Path, rows: list[list[str]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -95,13 +98,49 @@ def _regions_payload() -> list[dict[str, str]]:
 
 def _municipality_rows() -> list[list[str]]:
     return [
-        ["507814", "Bernolákovo", "SK010", "SK"],
-        ["507822", "Blatné", "SK010", "SK"],
-        ["503681", "Boldog", "SK010", "SK"],
-        ["528595", "Bratislava - Staré Mesto", "SK010", "SK"],
-        ["581001", "Trnava", "SK021", "SK"],
-        ["581002", "Smolenice", "SK021", "SK"],
+        ["528595", "Bratislava - mestská časť Staré Mesto", "SK0101528595", "101", "703", "2010-01-01", None],
+        ["506745", "Trnava", "SK0217506745", "207", "703", "2010-01-01", None],
+        ["517402", "Žilina", "SK031B517402", "511", "703", "2010-01-01", None],
+        ["582000", "Bratislava", None, "***", "703", "2010-01-01", None],
     ]
+
+
+def _portalvs_suffix_from_district_code(district_code: str) -> str:
+    suffix = int(district_code[5:])
+    if suffix < 10:
+        return str(suffix)
+    return chr(ord("A") + suffix - 10)
+
+
+def _portalvs_municipality_rows() -> list[dict[str, str | None]]:
+    payload = json.loads((DATA_DIR / "municipalities.json").read_text(encoding="utf-8"))
+    rows: list[dict[str, str | None]] = []
+    for municipality in payload["municipalities"]:
+        district_code = municipality["districtCode"]
+        rows.append(
+            {
+                "code": municipality["code"],
+                "name": municipality["name"],
+                "code_su": f"{municipality['regionCode']}{_portalvs_suffix_from_district_code(district_code)}{municipality['code']}",
+                "county_code": district_code[-3:],
+                "country_code": "703",
+                "validity_from": "2010-01-01",
+                "validity_to": None,
+            }
+        )
+    return rows
+
+
+def _write_portalvs_csv(path: Path, rows: list[dict[str, str | None]]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as file:
+        writer = csv.DictWriter(
+            file,
+            fieldnames=["code", "name", "code_su", "county_code", "country_code", "validity_from", "validity_to"],
+        )
+        writer.writeheader()
+        for row in rows:
+            writer.writerow(row)
 
 
 def test_json_import_validates_without_writing(tmp_path: Path) -> None:
@@ -154,13 +193,15 @@ def test_csv_import_writes_single_dataset(tmp_path: Path) -> None:
     assert payload["regions"] == _regions_payload()
 
 
-def test_xlsx_import_supports_partial_municipalities(tmp_path: Path) -> None:
-    input_file = tmp_path / "municipalities.xlsx"
-    _write_xlsx(input_file, _municipality_rows())
+def test_portalvs_municipality_csv_imports_district_mappings(tmp_path: Path) -> None:
+    input_file = tmp_path / "municipalities.csv"
+    rows = _portalvs_municipality_rows()
+    _write_portalvs_csv(input_file, rows)
 
     records = load_dataset_records("municipalities", input_file)
-    assert len(records) == len(_municipality_rows())
-    assert all(record["districtCode"] is None for record in records)
+    assert len(records) == len(rows)
+    assert {record["code"] for record in records} == {row["code"] for row in rows}
+    assert all(record["districtCode"] for record in records)
 
     output_dir = tmp_path / "output"
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -208,7 +249,7 @@ def test_xlsx_import_supports_partial_municipalities(tmp_path: Path) -> None:
     )
     result = run_import(
         dataset="municipalities",
-        source="Eurostat LAU 2025 correspondence table",
+        source="PortalVS classifier 9 (Obce), local REST export filtered to current Slovak municipalities",
         input_path=input_file,
         output_path=output_dir,
         write=True,
@@ -220,7 +261,35 @@ def test_xlsx_import_supports_partial_municipalities(tmp_path: Path) -> None:
     assert result.wrote_files == [output_file]
 
     payload = json.loads(output_file.read_text(encoding="utf-8"))
-    assert payload["metadata"]["complete"] is False
+    assert payload["metadata"]["complete"] is True
+    assert payload["municipalities"] == sorted(records, key=lambda record: (record["regionCode"], record.get("districtCode") or "", record["name"], record["code"]))
+
+
+def test_portalvs_municipality_json_imports_district_mappings(tmp_path: Path) -> None:
+    input_file = tmp_path / "municipalities.json"
+    rows = _portalvs_municipality_rows()
+    input_file.write_text(json.dumps(rows, ensure_ascii=False), encoding="utf-8")
+
+    records = load_dataset_records("municipalities", input_file)
+    assert len(records) == len(rows)
+    assert {record["code"] for record in records} == {row["code"] for row in rows}
+    assert all(record["districtCode"] for record in records)
+
+    output_dir = tmp_path / "output-json"
+    result = run_import(
+        dataset="municipalities",
+        source="PortalVS classifier 9 (Obce), local REST export filtered to current Slovak municipalities",
+        input_path=input_file,
+        output_path=output_dir,
+        write=True,
+        allow_incomplete=False,
+    )
+
+    output_file = output_dir / "municipalities.json"
+    assert result.ok
+    assert result.wrote_files == [output_file]
+    payload = json.loads(output_file.read_text(encoding="utf-8"))
+    assert payload["metadata"]["complete"] is True
     assert payload["municipalities"] == sorted(records, key=lambda record: (record["regionCode"], record.get("districtCode") or "", record["name"], record["code"]))
 
 

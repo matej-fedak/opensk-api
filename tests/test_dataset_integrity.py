@@ -106,22 +106,33 @@ def test_municipality_references_are_valid() -> None:
     report = validate_municipalities_dataset()
 
     assert report.ok
-    assert report.record_count > 2000
+    assert report.record_count == 2927
     assert report.warnings
 
 
-def test_municipalities_were_expanded_from_eurostat_lau() -> None:
+def test_municipalities_have_complete_district_mappings() -> None:
     regions = {region["code"] for region in load_dataset_records("regions", DATA_DIR / "regions.json")}
     districts = {district["code"]: district for district in load_dataset_records("districts", DATA_DIR / "districts.json")}
     municipalities = load_dataset_records("municipalities", DATA_DIR / "municipalities.json")
 
     municipality_codes = [municipality["code"] for municipality in municipalities]
+    district_coverage = sum(1 for municipality in municipalities if municipality.get("districtCode"))
 
-    assert len(municipalities) > 2000
+    assert len(municipalities) == 2927
     assert {"503681", "507814", "528595"}.issubset(municipality_codes)
     assert len(municipality_codes) == len(set(municipality_codes))
+    assert district_coverage == len(municipalities)
     assert all(municipality["regionCode"] in regions for municipality in municipalities)
-    assert all(municipality.get("districtCode") is None or municipality["districtCode"] in districts for municipality in municipalities)
+    assert all(municipality["districtCode"] in districts for municipality in municipalities)
+    assert all(districts[municipality["districtCode"]]["regionCode"] == municipality["regionCode"] for municipality in municipalities)
+
+
+def test_psc_district_code_coverage_remains_zero() -> None:
+    psc_payload = json.loads((DATA_DIR / "psc.json").read_text(encoding="utf-8"))
+    records = [record for key, record in psc_payload.items() if key != "metadata"]
+
+    assert records
+    assert sum(1 for record in records if record.get("districtCode")) == 0
 
 
 def test_psc_records_have_unique_codes_and_valid_geography_references() -> None:

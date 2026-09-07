@@ -49,7 +49,7 @@ def coverage_status(payload: Any, dataset_name: str) -> str:
         "banks": "seed/incomplete",
         "districts": "complete",
         "holidays": "static",
-        "municipalities": "seed/incomplete",
+        "municipalities": "complete",
         "psc": "seed/partial",
         "regions": "complete",
     }

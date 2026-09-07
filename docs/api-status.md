@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.2.0 district dataset expansion release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.3.0 municipality district mapping release.
 
 ## Stable
 
@@ -43,5 +43,6 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 
 - No endpoint fetches live upstream data at request time.
 - Company lookup is backed by a small checked-in seed set; broader RPO coverage still awaits licence and privacy follow-up.
+- Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - Districts are now complete, but PortalVS source terms remain restrictive.
 - Banks, holidays, and PSC remain partial or seed-backed datasets rather than exhaustive official registers.

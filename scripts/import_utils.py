@@ -19,11 +19,15 @@ from xml.etree import ElementTree as ET
 from scripts.validate_datasets import validate_all_datasets
 
 
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATA_DIR = ROOT / "data"
+DEFAULT_MUNICIPALITIES_PATH = DEFAULT_DATA_DIR / "municipalities.json"
+
 DATASET_NAMES = ("regions", "districts", "municipalities")
 DATASET_COLUMNS: dict[str, tuple[str, ...]] = {
     "regions": ("code", "name", "nameEn", "country"),
     "districts": ("code", "name", "regionCode", "country"),
-    "municipalities": ("code", "name", "regionCode", "country"),
+    "municipalities": ("code", "name", "districtCode", "regionCode", "country"),
 }
 _COMPANY_ICO_RE = re.compile(r"\d{8}$")
 
@@ -39,6 +43,8 @@ XLSX_HEADER_ALIASES: dict[str, tuple[str, ...]] = {
     "regionCode": ("regioncode", "nuts3code", "nuts3", "region"),
     "country": ("country", "countrycode", "countryname"),
 }
+
+_PORTALVS_COUNTRY_CODE = "703"
 
 
 @dataclass(frozen=True)
@@ -104,6 +110,86 @@ def read_csv(path: str | os.PathLike[str] | Path) -> list[dict[str, str | None]]
                 continue
             rows.append(normalized)
         return rows
+
+
+def _load_existing_municipalities_by_code() -> dict[str, dict[str, Any]]:
+    if not DEFAULT_MUNICIPALITIES_PATH.is_file():
+        return {}
+
+    payload = load_json(DEFAULT_MUNICIPALITIES_PATH)
+    if not isinstance(payload, dict):
+        return {}
+
+    municipalities = payload.get("municipalities")
+    if not isinstance(municipalities, list):
+        return {}
+
+    by_code: dict[str, dict[str, Any]] = {}
+    for record in municipalities:
+        if not isinstance(record, dict):
+            continue
+        code = normalize_whitespace(record.get("code"))
+        if code:
+            by_code[code] = dict(record)
+    return by_code
+
+
+def _portalvs_district_code_from_code_su(code_su: Any) -> str | None:
+    text = normalize_whitespace(code_su)
+    if len(text) < 6 or not text.startswith("SK"):
+        return None
+
+    suffix = text[5]
+    if suffix.isdigit():
+        district_suffix = suffix
+    elif suffix.isalpha():
+        district_suffix = str(ord(suffix.upper()) - 55)
+    else:
+        return None
+
+    return f"SK{text[2:5]}{district_suffix}"
+
+
+def _portalvs_municipality_record(record: dict[str, Any], existing_by_code: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    country_code = normalize_whitespace(record.get("country_code"))
+    if country_code != _PORTALVS_COUNTRY_CODE:
+        return None
+
+    if record.get("validity_to") not in (None, ""):
+        return None
+
+    code = normalize_whitespace(record.get("code"))
+    name = normalize_whitespace(record.get("name"))
+    county_code = normalize_whitespace(record.get("county_code"))
+    code_su = normalize_whitespace(record.get("code_su"))
+
+    if not code.isdigit() or len(code) != 6:
+        return None
+    if not name or not county_code or not code_su:
+        return None
+
+    district_code = _portalvs_district_code_from_code_su(code_su)
+    if district_code is None:
+        return None
+
+    existing = existing_by_code.get(code)
+    if existing is None:
+        raise ValueError(f"portalvs municipality code {code} is not present in the current municipalities dataset")
+
+    normalized = dict(existing)
+    normalized["code"] = code
+    normalized["districtCode"] = district_code
+
+    base_region_code = normalize_whitespace(existing.get("regionCode"))
+    derived_region_code = f"SK{code_su[2:5]}"
+    if base_region_code and base_region_code != derived_region_code:
+        raise ValueError(
+            f"municipality code {code} regionCode {base_region_code} does not match PortalVS code_su {code_su} region {derived_region_code}"
+        )
+
+    normalized["regionCode"] = base_region_code or derived_region_code
+    normalized["country"] = "SK"
+    return normalized
 
 
 def _normalize_header(value: Any) -> str:
@@ -398,6 +484,29 @@ def _normalize_records(records: Any, dataset: str) -> list[dict[str, Any]]:
 def load_dataset_records_from_json(path: Path, dataset: str) -> list[dict[str, Any]]:
     payload = load_json(path)
 
+    if dataset == "municipalities" and isinstance(payload, list):
+        if any(isinstance(record, dict) and ("code_su" in record or "county_code" in record or "country_code" in record) for record in payload):
+            existing_by_code = _load_existing_municipalities_by_code()
+            records: list[dict[str, Any]] = []
+            for record in payload:
+                if not isinstance(record, dict):
+                    continue
+                normalized = _portalvs_municipality_record(record, existing_by_code)
+                if normalized is not None:
+                    records.append(normalized)
+
+            if records:
+                expected_codes = set(existing_by_code)
+                imported_codes = {record["code"] for record in records}
+                if imported_codes != expected_codes:
+                    missing = sorted(expected_codes - imported_codes)
+                    extra = sorted(imported_codes - expected_codes)
+                    raise ValueError(
+                        "PortalVS classifier 9 municipality codes do not match the checked-in municipalities dataset; "
+                        f"missing={missing} extra={extra}"
+                    )
+                return records
+
     if isinstance(payload, list):
         return _normalize_records(payload, dataset)
 
@@ -412,11 +521,34 @@ def load_dataset_records_from_json(path: Path, dataset: str) -> list[dict[str, A
 
 
 def load_dataset_records_from_csv(path: Path, dataset: str) -> list[dict[str, Any]]:
-    required_columns = DATASET_COLUMNS[dataset]
     with path.open("r", encoding="utf-8", newline="") as file:
         reader = csv.DictReader(file)
         if reader.fieldnames is None:
             raise ValueError(f"{path} has no CSV header")
+
+        normalized_fieldnames = {normalize_whitespace(fieldname).casefold() for fieldname in reader.fieldnames if fieldname is not None}
+        if dataset == "municipalities" and {"code_su", "county_code", "country_code"}.issubset(normalized_fieldnames):
+            existing_by_code = _load_existing_municipalities_by_code()
+            records: list[dict[str, Any]] = []
+            for row in reader:
+                record = {key: value for key, value in row.items() if value not in (None, "")}
+                normalized = _portalvs_municipality_record(record, existing_by_code)
+                if normalized is not None:
+                    records.append(normalized)
+
+            if records:
+                expected_codes = set(existing_by_code)
+                imported_codes = {record["code"] for record in records}
+                if imported_codes != expected_codes:
+                    missing = sorted(expected_codes - imported_codes)
+                    extra = sorted(imported_codes - expected_codes)
+                    raise ValueError(
+                        "PortalVS classifier 9 municipality codes do not match the checked-in municipalities dataset; "
+                        f"missing={missing} extra={extra}"
+                    )
+                return records
+
+        required_columns = DATASET_COLUMNS[dataset]
 
         missing = [column for column in required_columns if column not in reader.fieldnames]
         if missing:
@@ -542,7 +674,9 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
         district_code = municipality.get("districtCode")
         region_code = municipality.get("regionCode")
 
-        if district_code and district_code not in districts_by_code:
+        if not district_code:
+            errors.append(f"Municipality {municipality_code}: missing districtCode")
+        elif district_code not in districts_by_code:
             errors.append(f"Municipality {municipality_code}: unknown districtCode {district_code}")
 
         if not region_code:

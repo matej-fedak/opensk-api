@@ -89,7 +89,7 @@ def _write_seed_psc(data_dir: Path) -> None:
 
 
 def _expected_payload(dataset: str, records: list[dict[str, str]]) -> str:
-    payload = build_dataset_payload(dataset, records, "unit-test", complete=(dataset in {"regions", "districts"}))
+    payload = build_dataset_payload(dataset, records, "unit-test", complete=(dataset in {"regions", "districts", "municipalities"}))
     return json.dumps(payload, ensure_ascii=False, indent=2) + "\n"
 
 

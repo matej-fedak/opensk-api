@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.2.0` district dataset expansion release.
+Status: `v1.3.0` municipality district mapping release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expands the district dataset without adding endpoints.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populates municipality district mappings without adding endpoints; PortalVS reuse remains pending.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -69,15 +69,15 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.2.0` is the district coverage pass: no new endpoints, just district expansion and validation updates.
+- `v1.3.0` is the municipality mapping pass: no new endpoints, just municipality district enrichment and validation updates.
 
 ## Dataset Import Pipeline
 
 The import pipeline is offline-only and defaults to dry-run.
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --dry-run
-python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --output data/generated/municipalities.json --write
+python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.json --dry-run --output data/generated/municipalities.json
+python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
 python scripts/validate_datasets.py
@@ -201,7 +201,9 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
 - IČO/company work uses a local seed dataset; do not treat it as exhaustive or a full register.
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
-- Municipalities are expanded from the Eurostat LAU 2025 workbook, but district codes remain null because that source does not provide district mappings.
+- Municipalities are sourced from PortalVS classifier 9 (`Obce`) and the checked-in dataset currently covers the 2,927 regular Slovak municipality rows used by the runtime API.
+- Municipality district mappings come from PortalVS classifier 9 `code_su` and are validated against the local districts dataset.
+- PortalVS source/licence verification is still pending; do not treat the municipality dataset as open redistribution material.
 - Districts are imported from PortalVS classifier 10 and cover all Slovak districts; PortalVS terms may restrict reuse.
 - ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.

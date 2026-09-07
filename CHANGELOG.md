@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.3.0
+
+- Populated municipality district mappings from PortalVS classifier 9 (`Obce`) for the checked-in runtime dataset.
+- Kept municipality codes stable and validated municipality region alignment against the local districts dataset.
+- Kept PSC `districtCode` coverage unchanged for the v1.4.0 backfill milestone.
+- No new endpoints or response-envelope changes were introduced.
+
 ## v1.2.0
 
 - Expanded the district dataset to the verified 79 Slovak districts imported from PortalVS classifier 10.

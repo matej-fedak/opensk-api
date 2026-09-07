@@ -7,7 +7,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - `data/raw/` stores downloaded or manually supplied source material.
 - `data/generated/` stores normalized preview output from import scripts.
 - `data/*.json` remains the production runtime input for the API.
-- Geography imports for regions and municipalities should be checked against the Eurostat LAU 2025 correspondence table and workbook.
+- Geography imports for regions should be checked against the Eurostat LAU 2025 correspondence table; municipalities should be imported from PortalVS classifier 9 (`Obce`) JSON/CSV exports.
 - District imports are sourced from PortalVS classifier 10 filtered to Slovak rows; keep upstream notices and treat reuse as restricted until terms are fully settled.
 - PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. The imported PSC dataset currently keeps `districtCode` null because the source does not supply a reliable district mapping, and coverage is partial rather than national.
 
@@ -41,7 +41,7 @@ Proposed offline flow:
 Dry run is the default. Use it to preview what would be generated without writing files.
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --dry-run --output data/generated/municipalities.json
+python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.json --dry-run --output data/generated/municipalities.json
 ```
 
 ```bash
@@ -57,7 +57,7 @@ python scripts/import_companies.py --input data/raw/rpo_sample.json --output dat
 Only `--write` writes files.
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/EU-27-LAU-2025-NUTS-2024.xlsx --output data/generated/municipalities.json --write
+python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write
 ```
 
 ```bash

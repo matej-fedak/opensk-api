@@ -23,14 +23,14 @@
   },
   "municipalities": {
     "status": "imported",
-    "coverage": "partial",
-    "sourceName": "Eurostat LAU 2025 correspondence table",
-    "sourceUrl": "https://ec.europa.eu/eurostat/web/nuts/local-administrative-units",
-    "licence": "Eurostat reuse terms; verify before redistribution.",
-    "redistributionStatus": "verify before redistribution",
-    "lastChecked": "2026-05-30",
-    "updateCadence": "Eurostat release cycle",
-    "notes": "Expanded LAU coverage; districtCode remains null because the source does not provide district mappings."
+    "coverage": "complete",
+    "sourceName": "PortalVS classifier 9 (Obce), local REST export filtered to current Slovak municipalities",
+    "sourceUrl": "https://ciselniky.portalvs.sk/api/rest/json/9",
+    "licence": "Source/licence verification pending; PortalVS terms may restrict reuse.",
+    "redistributionStatus": "restricted / not open redistribution",
+    "lastChecked": "2026-09-07",
+    "updateCadence": "Manual",
+    "notes": "2,927 current Slovak municipality rows match the checked-in dataset; districtCode is derived from PortalVS code_su and validated against districts. Special-purpose Slovak rows without code_su/county_code are excluded from the runtime dataset."
   },
   "psc": {
     "status": "manual-seed",
