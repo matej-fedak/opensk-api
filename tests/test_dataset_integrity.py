@@ -127,12 +127,21 @@ def test_municipalities_have_complete_district_mappings() -> None:
     assert all(districts[municipality["districtCode"]]["regionCode"] == municipality["regionCode"] for municipality in municipalities)
 
 
-def test_psc_district_code_coverage_remains_zero() -> None:
+def test_psc_district_code_coverage_is_complete() -> None:
     psc_payload = json.loads((DATA_DIR / "psc.json").read_text(encoding="utf-8"))
-    records = [record for key, record in psc_payload.items() if key != "metadata"]
+    records = []
+    for key, record in psc_payload.items():
+        if key == "metadata":
+            continue
+        matches = record.get("matches") if isinstance(record, dict) else None
+        if isinstance(matches, list) and matches:
+            records.extend(match for match in matches if isinstance(match, dict))
+        elif isinstance(record, dict):
+            records.append(record)
 
     assert records
-    assert sum(1 for record in records if record.get("districtCode")) == 0
+    assert sum(1 for record in records if record.get("districtCode")) == len(records)
+    assert len(records) == 3101
 
 
 def test_psc_records_have_unique_codes_and_valid_geography_references() -> None:

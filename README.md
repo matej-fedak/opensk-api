@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.3.0` municipality district mapping release.
+Status: `v1.4.0` PSC districtCode backfill release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populates municipality district mappings without adding endpoints; PortalVS reuse remains pending.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -52,7 +52,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.2.0` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
+The `v1.4.0` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
 
 ## Dataset Tooling
 
@@ -69,7 +69,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.3.0` is the municipality mapping pass: no new endpoints, just municipality district enrichment and validation updates.
+- `v1.4.0` is the PSC districtCode backfill pass: no new endpoints, just local PSC district enrichment from municipality mappings and validation updates.
 
 ## Dataset Import Pipeline
 
@@ -80,6 +80,8 @@ python scripts/import_geography.py --dataset municipalities --input data/raw/por
 python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
+python scripts/backfill_psc_districts.py --dry-run
+python scripts/backfill_psc_districts.py --write
 python scripts/validate_datasets.py
 python scripts/check_referential_integrity.py
 ```
@@ -194,7 +196,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.
 - PSC redistribution is restricted by upstream PortalVS terms, so do not present the dataset as open redistribution material.
-- Imported PSC data currently has `districtCode: null`; that field is unavailable in the imported source data.
+- Imported PSC source data does not provide reliable district links, so PSC `districtCode` is backfilled locally from `municipalityCode` using verified municipality -> district mappings.
+- PSC `districtCode` coverage is 100% for current local PSC records; no values are inferred from names or PSC patterns.
 - PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
 - `GET /v1/psc` returns paginated PSC match records with `limit` and `offset`.
 - `GET /v1/psc/search?q=...` searches PSC records by PSC prefix, municipality, and delivery post.

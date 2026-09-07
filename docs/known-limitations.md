@@ -8,8 +8,8 @@
 - Municipalities are now mapped to districts via PortalVS classifier 9, but source/licence verification is still pending and the dataset should not be presented as open redistribution material.
 - Banks remain a small non-exhaustive seed dataset.
 - PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
-- PSC records currently keep `districtCode` null in the checked-in dataset when no reliable local mapping exists.
-- PSC districtCode mapping remains unavailable until the v1.4.0 backfill milestone.
+- PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
+- PSC source coverage remains partial and should not be presented as national coverage.
 - PSC redistribution is restricted by upstream PortalVS terms, and the dataset is not open redistribution material.
 - Some datasets are manually curated or imported from sources with incomplete attribution or redistribution clarity.
 - Remaining source follow-up items are tracked in `docs/verification-backlog.md`.

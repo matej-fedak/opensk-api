@@ -365,7 +365,7 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert body["data"]["matches"]
     assert body["data"]["city"] == "Bratislava 1"
     assert body["data"]["municipalityCode"] == "528595"
-    assert body["data"]["districtCode"] is None
+    assert body["data"]["districtCode"] == "SK0101"
     assert body["data"]["regionCode"] == "SK010"
     assert body["data"]["municipality"] == "Bratislava - mestská časť Staré Mesto"
     assert body["data"]["district"] is None
@@ -422,22 +422,27 @@ def test_psc_list_rejects_limit_over_max() -> None:
 
 def test_psc_list_filters_and_empty_results() -> None:
     region_response = client.get("/v1/psc?regionCode=SK010")
+    district_response = client.get("/v1/psc?districtCode=SK0101")
     municipality_response = client.get("/v1/psc?municipalityCode=528595")
     delivery_response = client.get("/v1/psc?deliveryPost=Bratislava%201")
     empty_response = client.get("/v1/psc?deliveryPost=NoSuchDeliveryPost")
 
     assert region_response.status_code == 200
+    assert district_response.status_code == 200
     assert municipality_response.status_code == 200
     assert delivery_response.status_code == 200
     assert empty_response.status_code == 200
 
 
     region_body = region_response.json()
+    district_body = district_response.json()
     municipality_body = municipality_response.json()
     delivery_body = delivery_response.json()
     empty_body = empty_response.json()
 
     assert all(item["regionCode"] == "SK010" for item in region_body["data"]["items"])
+    assert district_body["data"]["items"]
+    assert all(item["districtCode"] == "SK0101" for item in district_body["data"]["items"])
     assert municipality_body["data"]["count"] == 9
     assert all(item["municipalityCode"] == "528595" for item in municipality_body["data"]["items"])
     assert all("Bratislava 1" in item["deliveryPost"] for item in delivery_body["data"]["items"])
@@ -498,7 +503,7 @@ def test_psc_stats_returns_summary() -> None:
     assert body["data"]["multiMatchPscCount"] == 759
     assert body["data"]["geographyCoverage"]["municipalityCode"] == {"count": 3101, "percentage": 100.0}
     assert body["data"]["geographyCoverage"]["regionCode"] == {"count": 3101, "percentage": 100.0}
-    assert body["data"]["geographyCoverage"]["districtCode"] == {"count": 0, "percentage": 0.0}
+    assert body["data"]["geographyCoverage"]["districtCode"] == {"count": 3101, "percentage": 100.0}
     assert body["data"]["source"]["name"] == "PortalVS Číselníky classifier 42"
     assert body["data"]["source"]["licenceStatus"] == "Source/licence verification pending."
     assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
@@ -512,8 +517,9 @@ def test_psc_81101_with_geography_includes_nested_objects() -> None:
     body = response.json()
     assert body["data"]["matchCount"] == len(body["data"]["matches"])
     assert body["data"]["municipalityCode"] == "528595"
-    assert body["data"]["districtCode"] is None
+    assert body["data"]["districtCode"] == "SK0101"
     assert body["data"]["regionCode"] == "SK010"
+    assert body["data"]["geography"]["district"]["code"] == body["data"]["districtCode"]
     assert body["data"]["geography"]["region"]["code"] == body["data"]["regionCode"]
     assert body["data"]["geography"]["municipality"]["code"] == body["data"]["municipalityCode"]
     assert body["data"]["geography"]["municipality"]["regionCode"] == body["data"]["regionCode"]

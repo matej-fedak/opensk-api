@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.4.0
+
+- Backfilled PSC `districtCode` from `municipalityCode` using verified local municipality district mappings.
+- Verified PSC `districtCode` coverage is 100% for the current local PSC records, with 0 unresolved municipality codes and 0 region conflicts.
+- Kept PSC source as PortalVS classifier 42 and did not infer districtCode values from names or PSC patterns.
+- Kept PortalVS licence/reuse wording conservative and added no new endpoints.
+
 ## v1.3.0
 
 - Populated municipality district mappings from PortalVS classifier 9 (`Obce`) for the checked-in runtime dataset.

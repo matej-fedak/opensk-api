@@ -37,11 +37,11 @@
     "coverage": "partial",
     "sourceName": "PortalVS classifier 42 (PSČ obcí SR a ČR)",
     "sourceUrl": "https://ciselniky.portalvs.sk/classifier/show/42/",
-    "licence": "PortalVS site terms are restrictive; preserve notices; non-commercial use only.",
+    "licence": "Source/licence verification pending; PortalVS terms may restrict reuse.",
     "redistributionStatus": "restricted / not open redistribution",
-    "lastChecked": "2026-06-02",
+    "lastChecked": "2026-09-07",
     "updateCadence": "Unknown",
-    "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial and districtCode is null throughout."
+    "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial. districtCode is backfilled from municipalityCode using local municipality district mappings; no districtCode values are inferred from names or PSC patterns."
   },
   "banks": {
     "status": "manual-seed",

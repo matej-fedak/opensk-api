@@ -103,7 +103,7 @@ Each `companies[]` item uses this shape:
 - Omit fields only when the dataset schema does not define them.
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
 - For imported municipality records, `districtCode` is required and is derived from PortalVS classifier 9 `code_su`.
-- In the current imported PSC data, `districtCode` is `null` throughout because the source data does not provide a reliable district mapping.
+- PSC source data does not provide a reliable district mapping; checked-in PSC `districtCode` values are backfilled locally from `municipalityCode`.
 
 ## Common Metadata
 
@@ -196,7 +196,8 @@ Where present, dataset metadata uses this shape:
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
 - Imported municipality rows should include `districtCode` when sourced from PortalVS classifier 9.
-- Imported PSC rows currently have `districtCode: null` in the checked-in dataset.
+- Imported PSC source rows do not provide reliable district links; checked-in PSC `districtCode` values are backfilled from `municipalityCode` using local municipality mappings.
+- PSC `districtCode` coverage is 100% for current local PSC records, with no values inferred from names or PSC patterns.
 - PSC geography links are local data, not a live lookup.
 - The PSC source may contain multiple rows for the same postal code; importer previews should report that with `matchCount` and `matches` before selecting a canonical runtime record.
 
@@ -237,7 +238,7 @@ Where present, dataset metadata uses this shape:
     "geographyCoverage": {
       "municipalityCode": { "count": 3101, "percentage": 100.0 },
       "regionCode": { "count": 3101, "percentage": 100.0 },
-      "districtCode": { "count": 0, "percentage": 0.0 }
+      "districtCode": { "count": 3101, "percentage": 100.0 }
     },
     "source": {
       "name": "PortalVS Číselníky classifier 42",

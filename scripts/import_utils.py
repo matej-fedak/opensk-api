@@ -849,6 +849,48 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
                         f"municipalityCode {municipality_code} regionCode {municipality_region_code}"
                     )
 
+            matches = record.get("matches")
+            if isinstance(matches, list):
+                for index, match in enumerate(matches):
+                    if not isinstance(match, dict):
+                        continue
+
+                    match_label = f"PSC {psc_code}.matches[{index}]"
+                    match_region_code = match.get("regionCode")
+                    match_district_code = match.get("districtCode")
+                    match_municipality_code = match.get("municipalityCode")
+
+                    if match_region_code is not None and match_region_code not in regions_by_code:
+                        errors.append(f"{match_label}: unknown regionCode {match_region_code}")
+
+                    if match_district_code is not None:
+                        if match_district_code not in districts_by_code:
+                            errors.append(f"{match_label}: unknown districtCode {match_district_code}")
+                        elif match_region_code is not None and districts_by_code[match_district_code].get("regionCode") != match_region_code:
+                            errors.append(
+                                f"{match_label}: districtCode {match_district_code} belongs to regionCode "
+                                f"{districts_by_code[match_district_code].get('regionCode')}, but PSC regionCode is {match_region_code}"
+                            )
+
+                    if match_municipality_code is not None:
+                        if match_municipality_code not in municipalities_by_code:
+                            errors.append(f"{match_label}: unknown municipalityCode {match_municipality_code}")
+                        else:
+                            match_municipality = municipalities_by_code[match_municipality_code]
+                            match_municipality_district_code = match_municipality.get("districtCode")
+                            match_municipality_region_code = match_municipality.get("regionCode")
+
+                            if match_district_code is not None and match_municipality_district_code != match_district_code:
+                                errors.append(
+                                    f"{match_label}: municipalityCode {match_municipality_code} belongs to districtCode "
+                                    f"{match_municipality_district_code}, but PSC districtCode is {match_district_code}"
+                                )
+                            if match_region_code is not None and match_municipality_region_code != match_region_code:
+                                errors.append(
+                                    f"{match_label}: municipalityCode {match_municipality_code} belongs to regionCode "
+                                    f"{match_municipality_region_code}, but PSC regionCode is {match_region_code}"
+                                )
+
     else:
         errors.append("psc.json: missing PSC records")
 
