@@ -3,6 +3,9 @@
 The API serves static JSON files from `data/` at runtime. No upstream API calls are made during requests.
 
 - `data/sources.json` is the machine-readable source registry for current datasets.
+- `docs/source-compliance.md` is the detailed compliance matrix for licence, redistribution, attribution, and risk status.
+- `docs/research/source-verification-evidence.md` records retained source-verification evidence.
+- `docs/research/source-licence-questions.md` lists draft questions for source owners; questions are not sent automatically.
 - Raw source material is handled offline.
 - The checked-in JSON files under `data/` are the curated runtime inputs.
 - Production requests read only those local JSON files.
@@ -36,3 +39,4 @@ Notes:
 - The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.
 - Record provenance should be checked before any production expansion or redistribution.
 - ORSR and ŽRSR remain reference-only in the research notes and are not scraped.
+- Keep source-compliance warnings until source-owner terms are retained or clarified.

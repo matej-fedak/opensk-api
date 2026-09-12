@@ -27,6 +27,8 @@ DEFAULT_SOURCES_PATH = DEFAULT_DATA_DIR / "sources.json"
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
 _POSTAL_CODE_RE = re.compile(r"\d{5}$")
 _BANK_CODE_RE = re.compile(r"\d{4}$")
+_BANK_BIC_RE = re.compile(r"[A-Z0-9]{8}([A-Z0-9]{3})?$")
+_BANK_ALPHABETIC_CODE_RE = re.compile(r"[A-Z0-9]+$")
 _COMPANY_ICO_RE = re.compile(r"\d{8}$")
 _REGION_CODE_RE = re.compile(r"SK\d{3}$")
 _DISTRICT_CODE_RE = re.compile(r"SK\d{4,5}$")
@@ -319,13 +321,15 @@ def _warn_from_source_registry(report: ValidationReport, dataset_name: str, entr
 
     coverage = entry.get("coverage")
     licence = entry.get("licence")
+    licence_status = entry.get("licenceStatus")
     redistribution_status = entry.get("redistributionStatus")
+    risk_level = entry.get("riskLevel")
     notes = entry.get("notes")
     source_name = entry.get("sourceName")
 
     joined = " ".join(
         str(value).lower()
-        for value in (coverage, licence, redistribution_status, notes, source_name)
+        for value in (coverage, licence, licence_status, redistribution_status, risk_level, notes, source_name)
         if isinstance(value, str)
     )
 
@@ -334,6 +338,12 @@ def _warn_from_source_registry(report: ValidationReport, dataset_name: str, entr
             "sourceRegistry",
             f"{dataset_name} source/licence verification is pending or coverage is partial",
         )
+    if isinstance(licence_status, str) and "pending" in licence_status.lower():
+        report.add_warning("sourceRegistry.licenceStatus", f"{dataset_name} licenceStatus is pending")
+    if isinstance(redistribution_status, str) and "pending" in redistribution_status.lower():
+        report.add_warning("sourceRegistry.redistributionStatus", f"{dataset_name} redistributionStatus is pending")
+    if risk_level in {"high", "pending"}:
+        report.add_warning("sourceRegistry.riskLevel", f"{dataset_name} riskLevel is {risk_level}")
 
 
 def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationReport:
@@ -348,6 +358,7 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
 
     required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies"}
     allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
+    allowed_risk_levels = {"low", "medium", "high", "pending"}
     missing = sorted(required_datasets - set(payload))
     if missing:
         report.add_error("root", f"source registry is missing dataset entries: {', '.join(missing)}")
@@ -368,12 +379,31 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
         _require_string(report, entry.get("sourceName"), f"{dataset_name}.sourceName", f"{dataset_name} sourceName must be a non-empty string")
         _require_string(report, entry.get("sourceUrl"), f"{dataset_name}.sourceUrl", f"{dataset_name} sourceUrl must be a non-empty string")
         _require_string(report, entry.get("licence"), f"{dataset_name}.licence", f"{dataset_name} licence must be a non-empty string")
+        licence_status = _require_string(
+            report,
+            entry.get("licenceStatus"),
+            f"{dataset_name}.licenceStatus",
+            f"{dataset_name} licenceStatus must be a non-empty string",
+        )
+        if licence_status is not None and "pending" in licence_status.lower():
+            report.add_warning(f"{dataset_name}.licenceStatus", f"{dataset_name} licenceStatus is pending")
         _require_string(
             report,
             entry.get("redistributionStatus"),
             f"{dataset_name}.redistributionStatus",
             f"{dataset_name} redistributionStatus must be a non-empty string",
         )
+        redistribution_status = entry.get("redistributionStatus")
+        if isinstance(redistribution_status, str) and "pending" in redistribution_status.lower():
+            report.add_warning(f"{dataset_name}.redistributionStatus", f"{dataset_name} redistributionStatus is pending")
+        _require_string(report, entry.get("termsUrl"), f"{dataset_name}.termsUrl", f"{dataset_name} termsUrl must be a non-empty string")
+        _require_string(report, entry.get("attribution"), f"{dataset_name}.attribution", f"{dataset_name} attribution must be a non-empty string")
+        risk_level = _require_string(report, entry.get("riskLevel"), f"{dataset_name}.riskLevel", f"{dataset_name} riskLevel must be a non-empty string")
+        if risk_level is not None:
+            if risk_level not in allowed_risk_levels:
+                report.add_error(f"{dataset_name}.riskLevel", f"{dataset_name} riskLevel must be one of {sorted(allowed_risk_levels)}, got {risk_level!r}")
+            elif risk_level in {"high", "pending"}:
+                report.add_warning(f"{dataset_name}.riskLevel", f"{dataset_name} riskLevel is {risk_level}")
         _require_iso_date(report, entry.get("lastChecked"), f"{dataset_name}.lastChecked", f"{dataset_name} lastChecked must be a non-empty ISO date")
         _require_string(
             report,
@@ -381,6 +411,7 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
             f"{dataset_name}.updateCadence",
             f"{dataset_name} updateCadence must be a non-empty string",
         )
+        _require_string(report, entry.get("nextAction"), f"{dataset_name}.nextAction", f"{dataset_name} nextAction must be a non-empty string")
         _require_string(report, entry.get("notes"), f"{dataset_name}.notes", f"{dataset_name} notes must be a non-empty string")
 
     report.record_count = len(required_datasets)
@@ -422,15 +453,31 @@ def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
             seen_codes.add(code)
 
         _require_string(report, item.get("name"), f"{item_path}.name", "bank name must be a non-empty string")
-        _require_string(report, item.get("country"), f"{item_path}.country", "bank country must be a non-empty string")
+        country = _require_string(report, item.get("country"), f"{item_path}.country", "bank country must be a non-empty string")
+        if country is not None and country != "SK":
+            report.add_error(f"{item_path}.country", f"bank country must be 'SK', got {country!r}")
 
-        swift = item.get("swift")
-        bic = item.get("bic")
-        identifier = swift if swift is not None else bic
-        if identifier is not None:
-            field_name = "swift" if swift is not None else "bic"
-            if not isinstance(identifier, str) or not re.fullmatch(r"[A-Z0-9]{8}([A-Z0-9]{3})?", identifier):
-                report.add_error(f"{item_path}.{field_name}", f"bank swift/bic must be uppercase alphanumeric length 8 or 11, got {identifier!r}")
+        for field_name in ("bic", "swift"):
+            identifier = item.get(field_name)
+            if identifier is not None and (not isinstance(identifier, str) or not _BANK_BIC_RE.fullmatch(identifier)):
+                report.add_error(f"{item_path}.{field_name}", f"bank {field_name} must be null or uppercase alphanumeric length 8 or 11, got {identifier!r}")
+
+        alphabetic_code = item.get("alphabeticCode")
+        if alphabetic_code is not None and (not isinstance(alphabetic_code, str) or not _BANK_ALPHABETIC_CODE_RE.fullmatch(alphabetic_code)):
+            report.add_error(f"{item_path}.alphabeticCode", f"bank alphabeticCode must be null or uppercase alphanumeric, got {alphabetic_code!r}")
+
+        active_party = item.get("activeParty")
+        if active_party is not None and not isinstance(active_party, bool):
+            report.add_error(f"{item_path}.activeParty", f"bank activeParty must be boolean when provided, got {active_party!r}")
+
+        active_party_marker = item.get("activePartyMarker")
+        if active_party_marker is not None:
+            if active_party_marker not in {"C", "K", "Ø"}:
+                report.add_error(f"{item_path}.activePartyMarker", f"bank activePartyMarker must be one of 'C', 'K', or 'Ø', got {active_party_marker!r}")
+            elif isinstance(active_party, bool):
+                expected_active = active_party_marker in {"C", "K"}
+                if active_party != expected_active:
+                    report.add_error(f"{item_path}.activeParty", f"bank activeParty {active_party!r} does not match activePartyMarker {active_party_marker!r}")
 
     report.record_count = len(banks)
     return report

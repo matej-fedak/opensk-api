@@ -13,5 +13,6 @@
 - PSC redistribution is restricted by upstream PortalVS terms, and the dataset is not open redistribution material.
 - Some datasets are manually curated or imported from sources with incomplete attribution or redistribution clarity.
 - Remaining source follow-up items are tracked in `docs/verification-backlog.md`.
+- Compliance status is summarized in `docs/source-compliance.md`; unresolved evidence is tracked in `docs/research/source-verification-evidence.md`.
 - The API has no SLA and is deployed as a hobby/public-readiness project.
 - The project is not an official government endpoint and has no official endorsement.

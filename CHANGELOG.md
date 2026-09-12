@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.6.0
+
+- Added explicit source-compliance metadata to `data/sources.json`, including licence status, redistribution status, terms URL, attribution, risk level, and next action.
+- Added `docs/source-compliance.md` with a dataset-by-dataset compliance matrix.
+- Added retained-evidence and source-owner question docs under `docs/research/`.
+- Updated validation to warn, not fail, for pending or high-risk source-compliance entries.
+- Kept runtime behavior unchanged: no new endpoints, no new datasets, and no upstream calls from API routes.
+
 ## v1.5.0
 
 - Expanded `data/banks.json` from the NBS domestic payment-system identification-code directory snapshot effective `2026-05-18`.

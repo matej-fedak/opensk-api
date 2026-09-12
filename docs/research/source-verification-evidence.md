@@ -1,0 +1,20 @@
+# Source Verification Evidence
+
+This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
+
+| Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
+| --- | --- | --- | --- | --- | --- | --- |
+| Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |
+| PortalVS classifier 10 (Okres) | `https://ciselniky.portalvs.sk/api/rest/json/10` | `2026-07-20` | Local REST export contains Slovak and non-Slovak rows; checked-in districts are filtered to 79 Slovak districts. | Source is identified; licence and redistribution remain pending/restrictive. | low | Need written confirmation for caching, transformation, redistribution, commercial use, and attribution. |
+| PortalVS classifier 9 (Obce) | `https://ciselniky.portalvs.sk/api/rest/json/9` | `2026-09-07` | Local REST export was filtered to 2,927 current Slovak municipality rows; `districtCode` is derived from `code_su`. | Source is identified; licence and redistribution remain pending/restrictive. | low | Need written confirmation for caching, transformation, redistribution, commercial use, excluded rows, and attribution. |
+| PortalVS classifier 42 (PSČ obcí SR a ČR) | `https://ciselniky.portalvs.sk/classifier/show/42/` | `2026-09-07` | Current runtime dataset contains 1,420 PSC keys and 3,101 source match records; coverage is partial and geography links are locally backfilled. | Source is identified; redistribution is treated as restricted until clarified. | low | Need written confirmation for postal-code classifier redistribution and whether partial transformed snapshots are allowed. |
+| NBS bank-code directory | `https://nbs.sk/en/payments/general-information/directories-and-registers/directory-identification-codes-domestic-payment-system-in-sr/` | `2026-09-12` | Directory version 225, effective from `2026-05-18`, was used to import 30 domestic Slovak payment-system code rows; foreign/non-SK BIC rows were excluded. | Source is official and identified; licence and redistribution remain pending. | medium | Need exact terms URL, attribution wording, local caching permission, modification/normalization permission, and commercial-use status. |
+| NBS holidays page and Act 241/1993 | `https://www.nbs.sk/en/about-the-bank/holidays-in-slovakia/` | `2026-05-25` | Existing registry notes an NBS disclaimer allowing reuse with attribution and no modification, but exact retained quote is not yet stored in this repo. | Treat as medium confidence until exact disclaimer text and applicability to curated JSON are retained. | medium | Need exact quote, terms URL, and confirmation that curated JSON redistribution is permitted. |
+| Verified public organizational contact pages | Multiple official organization pages | `2026-06-03` | Current company lookup is a small legal-entity seed dataset; personal/stakeholder fields are intentionally excluded. | Seed source pages are individually checked, but broader RPO reuse is not approved. | low | Need RPO/ŠÚ SR clarification for bulk reuse, local caching, public redistribution, commercial users, and privacy restrictions. |
+
+## Evidence Rules
+
+- Prefer exact quoted source terms and archived local notes over assumptions.
+- If evidence is paraphrased, keep the confidence level below high.
+- Do not treat public availability as permission to redistribute.
+- Do not treat official-source status as official endorsement.

@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.5.0` bank dataset hardening release.
+Status: `v1.6.0` source compliance and licence-closure release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local. `v1.6.0` adds explicit source-compliance metadata and documentation without adding endpoints.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -61,15 +61,18 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `data/sources.json` is the machine-readable source registry.
 - `docs/import-pipeline.md` explains the offline raw -> checked-in JSON -> production runtime flow.
 - `docs/data-sources.md` lists the current dataset inventory and coverage notes.
+- `docs/source-compliance.md` summarizes licence, redistribution, attribution, and risk status for each production dataset.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
+- `docs/research/source-verification-evidence.md` records retained source-verification evidence.
+- `docs/research/source-licence-questions.md` contains draft clarification questions; nothing is sent automatically.
 - `docs/api-status.md` lists the endpoint status categories.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.5.0` expands banks from an offline NBS directory snapshot: no new endpoints, no upstream route calls, and IBAN bank resolution still reads local JSON only.
+- `v1.6.0` adds source-compliance metadata and docs: no new endpoints, no upstream route calls, and no new dataset domains.
 
 ## Dataset Import Pipeline
 
@@ -214,6 +217,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Research notes for company/IČO work live in `docs/research/ico-sources.md`.
 - Remaining verification tasks are tracked in `docs/verification-backlog.md`.
+- Dataset compliance status is summarized in `docs/source-compliance.md`.
+- Verification evidence and draft licence questions are tracked under `docs/research/`.
 - Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.
 - Do not assume any dataset is official government data unless the source explicitly says so.
 

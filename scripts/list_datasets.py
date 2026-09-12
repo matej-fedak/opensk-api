@@ -46,7 +46,7 @@ def coverage_status(payload: Any, dataset_name: str) -> str:
                     return "seed"
 
     documented = {
-        "banks": "seed/incomplete",
+        "banks": "complete",
         "districts": "complete",
         "holidays": "static",
         "municipalities": "complete",

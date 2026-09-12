@@ -21,6 +21,9 @@ from scripts.validate_datasets import (
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
+PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies"}
+SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
+ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
 
 
 def _copy_dataset_dir(target_dir: Path) -> None:
@@ -55,7 +58,29 @@ def test_sources_registry_has_required_dataset_entries() -> None:
     report = validate_sources_registry()
 
     assert report.ok
-    assert report.record_count == 7
+    assert report.record_count == len(PRODUCTION_DATASETS)
+
+
+def test_sources_registry_has_compliance_fields_for_each_dataset() -> None:
+    payload = json.loads((DATA_DIR / "sources.json").read_text(encoding="utf-8"))
+
+    assert set(payload) == PRODUCTION_DATASETS
+    for dataset_name, entry in payload.items():
+        missing_fields = SOURCE_COMPLIANCE_FIELDS - set(entry)
+        assert not missing_fields, f"{dataset_name} missing compliance fields: {sorted(missing_fields)}"
+        for field_name in SOURCE_COMPLIANCE_FIELDS:
+            assert isinstance(entry[field_name], str)
+            assert entry[field_name].strip()
+        assert entry["riskLevel"] in ALLOWED_RISK_LEVELS
+
+
+def test_source_registry_compliance_warnings_do_not_fail_validation() -> None:
+    report = validate_sources_registry()
+
+    assert report.ok
+    assert report.warnings
+    assert any("licenceStatus is pending" in issue.message for issue in report.warnings)
+    assert any("riskLevel is high" in issue.message or "riskLevel is pending" in issue.message for issue in report.warnings)
 
 
 def test_validate_all_datasets_skips_missing_companies_dataset(tmp_path: Path) -> None:

@@ -5,9 +5,14 @@
     "sourceName": "Eurostat LAU 2025 correspondence table",
     "sourceUrl": "https://ec.europa.eu/eurostat/web/nuts/local-administrative-units",
     "licence": "Eurostat reuse terms; verify before redistribution.",
+    "licenceStatus": "reuse terms identified; redistribution verification still required",
     "redistributionStatus": "verify before redistribution",
+    "termsUrl": "https://ec.europa.eu/info/legal-notice_en",
+    "attribution": "Attribute Eurostat as the source when reusing LAU correspondence data.",
+    "riskLevel": "medium",
     "lastChecked": "2026-05-27",
     "updateCadence": "Eurostat release cycle",
+    "nextAction": "Retain the exact Eurostat reuse notice used for the LAU 2025 workbook and confirm redistribution conditions before broader publication.",
     "notes": "8 Slovak regions verified offline against the LAU 2025 workbook."
   },
   "districts": {
@@ -16,9 +21,14 @@
     "sourceName": "PortalVS classifier 10 (Okres), local REST export filtered to Slovak districts",
     "sourceUrl": "https://ciselniky.portalvs.sk/api/rest/json/10",
     "licence": "Source/licence verification pending; PortalVS terms may restrict reuse.",
+    "licenceStatus": "pending verification",
     "redistributionStatus": "restricted / not open redistribution",
+    "termsUrl": "pending",
+    "attribution": "Attribute PortalVS classifier 10 (Okres) if reuse is approved; exact required wording is pending.",
+    "riskLevel": "pending",
     "lastChecked": "2026-07-20",
     "updateCadence": "Manual",
+    "nextAction": "Ask PortalVS whether classifier 10 may be cached and redistributed through an open-source API and what attribution is required.",
     "notes": "79 Slovak districts imported from the classifier export; source also contains Czech and foreign rows."
   },
   "municipalities": {
@@ -27,9 +37,14 @@
     "sourceName": "PortalVS classifier 9 (Obce), local REST export filtered to current Slovak municipalities",
     "sourceUrl": "https://ciselniky.portalvs.sk/api/rest/json/9",
     "licence": "Source/licence verification pending; PortalVS terms may restrict reuse.",
+    "licenceStatus": "pending verification",
     "redistributionStatus": "restricted / not open redistribution",
+    "termsUrl": "pending",
+    "attribution": "Attribute PortalVS classifier 9 (Obce) if reuse is approved; exact required wording is pending.",
+    "riskLevel": "pending",
     "lastChecked": "2026-09-07",
     "updateCadence": "Manual",
+    "nextAction": "Ask PortalVS whether classifier 9 may be cached and redistributed through an open-source API and whether excluded/special-purpose rows require any notice.",
     "notes": "2,927 current Slovak municipality rows match the checked-in dataset; districtCode is derived from PortalVS code_su and validated against districts. Special-purpose Slovak rows without code_su/county_code are excluded from the runtime dataset."
   },
   "psc": {
@@ -38,9 +53,14 @@
     "sourceName": "PortalVS classifier 42 (PSČ obcí SR a ČR)",
     "sourceUrl": "https://ciselniky.portalvs.sk/classifier/show/42/",
     "licence": "Source/licence verification pending; PortalVS terms may restrict reuse.",
+    "licenceStatus": "pending verification",
     "redistributionStatus": "restricted / not open redistribution",
+    "termsUrl": "pending",
+    "attribution": "Attribute PortalVS classifier 42 (PSČ obcí SR a ČR) if reuse is approved; exact required wording is pending.",
+    "riskLevel": "high",
     "lastChecked": "2026-09-07",
     "updateCadence": "Unknown",
+    "nextAction": "Ask PortalVS whether classifier 42 postal-code rows may be cached, transformed, and redistributed; keep partial coverage warnings until answered.",
     "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial. districtCode is backfilled from municipalityCode using local municipality district mappings; no districtCode values are inferred from names or PSC patterns."
   },
   "banks": {
@@ -49,9 +69,14 @@
     "sourceName": "NBS directory of domestic payment system identification codes",
     "sourceUrl": "https://nbs.sk/en/payments/general-information/directories-and-registers/directory-identification-codes-domestic-payment-system-in-sr/",
     "licence": "Source/licence verification pending.",
+    "licenceStatus": "pending verification",
     "redistributionStatus": "pending verification",
+    "termsUrl": "pending",
+    "attribution": "Attribute the National Bank of Slovakia (NBS) directory of domestic payment-system identification codes if reuse is approved; exact required wording is pending.",
+    "riskLevel": "pending",
     "lastChecked": "2026-09-12",
     "updateCadence": "Manual refresh from NBS directory snapshots",
+    "nextAction": "Ask NBS whether the bank-code directory may be cached, transformed, and redistributed in an open-source API, including commercial downstream use.",
     "notes": "30 domestic Slovak payment-system identification-code rows imported from NBS directory version 225, effective from 2026-05-18; 21 active and 9 inactive. Foreign/non-SK BIC rows in the source snapshot are excluded from the runtime dataset."
   },
   "holidays": {
@@ -60,9 +85,14 @@
     "sourceName": "NBS holidays page and Act 241/1993",
     "sourceUrl": "https://www.nbs.sk/en/about-the-bank/holidays-in-slovakia/",
     "licence": "NBS disclaimer allows reuse with attribution and no modification.",
+    "licenceStatus": "reuse statement identified; exact dataset redistribution terms should be retained on file",
     "redistributionStatus": "allowed with attribution and no modification",
+    "termsUrl": "pending",
+    "attribution": "Attribute the National Bank of Slovakia holidays page and Act 241/1993 where applicable.",
+    "riskLevel": "medium",
     "lastChecked": "2026-05-25",
     "updateCadence": "Annual legislative updates",
+    "nextAction": "Retain the exact NBS disclaimer text and confirm whether curated holiday JSON redistribution counts as permitted reuse without modification.",
     "notes": "Curated 2024-2026 holiday lists; source terms should be checked before redistribution."
   },
   "companies": {
@@ -71,9 +101,14 @@
     "sourceName": "Verified public organizational contact pages",
     "sourceUrl": "Multiple official contact pages",
     "licence": "Source/licence verification pending for broader redistribution.",
+    "licenceStatus": "pending verification",
     "redistributionStatus": "pending verification",
+    "termsUrl": "pending",
+    "attribution": "Attribute each verified public organizational contact page where practical; exact required wording is source-specific and pending.",
+    "riskLevel": "pending",
     "lastChecked": "2026-06-03",
     "updateCadence": "Manual",
+    "nextAction": "Ask ŠÚ SR/RPO about reuse, caching, redistribution, commercial use, bulk limits, and privacy constraints before expanding beyond the legal-entity seed dataset.",
     "notes": "Small checked-in legal-entity seed dataset for local lookup; not full RPO coverage. See docs/research and docs/verification-backlog.md."
   }
 }

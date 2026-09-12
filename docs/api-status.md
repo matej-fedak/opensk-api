@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.5.0 bank dataset hardening release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.6.0 source compliance and licence-closure release.
 
 ## Stable
 
@@ -48,3 +48,4 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 - Districts are now complete, but PortalVS source terms remain restrictive.
 - Banks are imported from an offline NBS directory snapshot and include inactive rows; source/licence verification remains pending.
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
+- Dataset compliance status, retained evidence, and draft clarification questions are documented in `docs/source-compliance.md` and `docs/research/`.
