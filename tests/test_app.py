@@ -81,9 +81,10 @@ def test_banks_list_returns_enveloped_response() -> None:
     assert response.status_code == 200
     body = response.json()
     assert isinstance(body["data"], list)
+    assert len(body["data"]) == 30
     assert any(bank["code"] == "0900" for bank in body["data"])
     assert body["metadata"]["source"] == "OpenSK API static banks dataset"
-    assert body["metadata"]["lastUpdated"] == "2026-05-25"
+    assert body["metadata"]["lastUpdated"] == "2026-05-18"
     assert body["error"] is None
 
 
@@ -94,6 +95,12 @@ def test_known_bank_code_returns_enveloped_response() -> None:
     body = response.json()
     assert body["data"]["code"] == "1100"
     assert body["data"]["name"] == "Tatra banka, a.s."
+    assert body["data"]["bic"] == "TATRSKBX"
+    assert body["data"]["swift"] == "TATRSKBX"
+    assert body["data"]["alphabeticCode"] is None
+    assert body["data"]["activeParty"] is True
+    assert body["data"]["activePartyMarker"] == "C"
+    assert body["data"]["country"] == "SK"
     assert body["metadata"]["source"] == "OpenSK API static banks dataset"
     assert body["error"] is None
 

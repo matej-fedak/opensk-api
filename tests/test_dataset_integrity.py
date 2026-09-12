@@ -77,8 +77,9 @@ def test_bank_codes_are_unique_and_valid() -> None:
     report = validate_banks_dataset()
 
     assert report.ok
-    assert report.record_count > 0
+    assert report.record_count == 30
     assert report.warnings
+    assert any("source/licence verification is pending" in issue.message for issue in report.warnings)
 
 
 def test_holidays_dataset_is_valid() -> None:

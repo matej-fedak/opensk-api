@@ -1,34 +1,310 @@
 {
   "metadata": {
-    "source": "Manual MVP seed dataset compiled from publicly listed Slovak bank identifiers. Not exhaustive.",
-    "license": "Informational seed data only. Verify against an authoritative source before production use.",
-    "lastUpdated": "2026-05-25"
+    "source": "NBS directory of identification codes for the domestic payment system in Slovak Republic",
+    "license": "Source/licence verification pending.",
+    "lastUpdated": "2026-05-18",
+    "complete": true
   },
   "banks": [
     {
       "code": "0200",
       "name": "Všeobecná úverová banka, a.s.",
-      "country": "Slovakia"
+      "bic": "SUBASKBX",
+      "swift": "SUBASKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "0720",
+      "name": "Národná banka Slovenska",
+      "bic": "NBSBSKBX",
+      "swift": "NBSBSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
     },
     {
       "code": "0900",
       "name": "Slovenská sporiteľňa, a.s.",
-      "country": "Slovakia"
+      "bic": "GIBASKBX",
+      "swift": "GIBASKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
     },
     {
       "code": "1100",
       "name": "Tatra banka, a.s.",
-      "country": "Slovakia"
+      "bic": "TATRSKBX",
+      "swift": "TATRSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "1111",
+      "name": "UniCredit Bank Czech Republic and Slovakia, a.s., pobočka zahraničnej banky",
+      "bic": "UNCRSKBX",
+      "swift": "UNCRSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "3000",
+      "name": "Slovenská záručná a rozvojová banka, a.s.",
+      "bic": "SLZBSKBA",
+      "swift": "SLZBSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "3100",
+      "name": "Prima banka Slovensko, a.s. - Code for running payments",
+      "bic": "LUBASKBX",
+      "swift": "LUBASKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
     },
     {
       "code": "5600",
       "name": "Prima banka Slovensko, a.s.",
-      "country": "Slovakia"
+      "bic": "KOMASK2X",
+      "swift": "KOMASK2X",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "5900",
+      "name": "Prvá stavebná sporiteľňa, a.s.",
+      "bic": "PRVASKBA",
+      "swift": "PRVASKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "6500",
+      "name": "365.bank, a.s.",
+      "bic": "POBNSKBA",
+      "swift": "POBNSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "7300",
+      "name": "ING Bank N.V., pobočka zahraničnej banky",
+      "bic": "INGBSKBX",
+      "swift": "INGBSKBX",
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
     },
     {
       "code": "7500",
       "name": "Československá obchodná banka, a.s.",
-      "country": "Slovakia"
+      "bic": "CEKOSKBX",
+      "swift": "CEKOSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "7930",
+      "name": "Wustenrot stavebná sporiteľňa, a.s.",
+      "bic": "WUSTSKBA",
+      "swift": "WUSTSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8100",
+      "name": "Komerční banka, a.s., pobočka zahraničnej banky",
+      "bic": "KOMBSKBA",
+      "swift": "KOMBSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8120",
+      "name": "Penta Bank, a.s.",
+      "bic": "BSLOSK22",
+      "swift": "BSLOSK22",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8130",
+      "name": "Citibank Europe plc, pobočka zahraničnej banky",
+      "bic": "CITISKBA",
+      "swift": "CITISKBA",
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "8160",
+      "name": "EXIMBANKA SR",
+      "bic": "EXSKSKBX",
+      "swift": "EXSKSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8180",
+      "name": "Štátna pokladnica",
+      "bic": "SPSRSKBA",
+      "swift": "SPSRSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8191",
+      "name": "Centrálny depozitár cenných papierov SR, a.s.",
+      "bic": null,
+      "swift": null,
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "8320",
+      "name": "J&T BANKA, a.s., pobočka zahraničnej banky",
+      "bic": "JTBPSKBA",
+      "swift": "JTBPSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8330",
+      "name": "Fio banka, a.s., pobočka zahraničnej banky",
+      "bic": "FIOZSKBA",
+      "swift": "FIOZSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8360",
+      "name": "mBank S.A., pobočka zahraničnej banky",
+      "bic": "BREXSKBX",
+      "swift": "BREXSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8370",
+      "name": "Oberbank AG pobočka zahraničnej banky v Slovenskej republike",
+      "bic": "OBKLSKBA",
+      "swift": "OBKLSKBA",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8400",
+      "name": "COFIDIS SA, pobočka zahraničnej banky",
+      "bic": null,
+      "swift": null,
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "8420",
+      "name": "BKS Bank AG, pobočka zahraničnej banky v SR",
+      "bic": "BFKKSKBB",
+      "swift": "BFKKSKBB",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    {
+      "code": "8450",
+      "name": "PKO BP S.A., pobočka zahraničnej banky",
+      "bic": "BPKOSKBB",
+      "swift": "BPKOSKBB",
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "9950",
+      "name": "Nexi Central Europe, a.s.",
+      "bic": null,
+      "swift": null,
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "9952",
+      "name": "Trust Pay, a.s.",
+      "bic": "TPAYSKBX",
+      "swift": "TPAYSKBX",
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "9955",
+      "name": "Unifiedpost Payments, organizačná zložka",
+      "bic": "PANXSK22",
+      "swift": "PANXSK22",
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
+    },
+    {
+      "code": "9956",
+      "name": "Payout a.s.",
+      "bic": null,
+      "swift": null,
+      "alphabeticCode": null,
+      "activeParty": false,
+      "activePartyMarker": "Ø",
+      "country": "SK"
     }
   ]
 }

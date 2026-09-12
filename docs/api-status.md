@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.4.0 PSC districtCode backfill release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.5.0 bank dataset hardening release.
 
 ## Stable
 
@@ -17,6 +17,8 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 | `GET /v1/districts/{code}` | stable | Local district lookup; PortalVS terms may restrict reuse |
 | `GET /v1/municipalities` | stable | Local municipalities dataset |
 | `GET /v1/municipalities/{code}` | stable | Local municipality lookup |
+| `GET /v1/banks` | stable | Local NBS bank-code dataset; source/licence verification pending |
+| `GET /v1/banks/{code}` | stable | Local NBS bank-code lookup; source/licence verification pending |
 | `/docs` | stable | Swagger UI |
 | `/openapi.json` | stable | OpenAPI schema |
 
@@ -24,8 +26,6 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/banks` | seed-backed | Local bank list; reuse allowed with attribution and no modification |
-| `GET /v1/banks/{code}` | seed-backed | Local bank lookup; reuse allowed with attribution and no modification |
 | `GET /v1/holidays/{year}` | seed-backed | Local holiday dataset; reuse allowed with attribution and no modification |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, backed by a small checked-in seed set |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for the local company lookup |
@@ -46,4 +46,5 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 - Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
 - Districts are now complete, but PortalVS source terms remain restrictive.
-- Banks, holidays, and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
+- Banks are imported from an offline NBS directory snapshot and include inactive rows; source/licence verification remains pending.
+- Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.

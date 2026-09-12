@@ -9,6 +9,7 @@ from pathlib import Path
 import pytest
 
 from scripts.import_geography import run_import
+from scripts.import_banks import run_import as run_bank_import
 from scripts.import_utils import (
     build_dataset_payload,
     collect_referential_integrity_errors,
@@ -86,6 +87,33 @@ def _write_bundle(source_dir: Path, *, as_json: bool = False, duplicate_region: 
 
 def _write_seed_psc(data_dir: Path) -> None:
     write_json(data_dir / "psc.json", PSC_FIXTURE)
+
+
+def _write_bank_csv(path: Path) -> None:
+    _write_csv(
+        path,
+        ("Payment system code SR", "Payment service provider", "SWIFT 8", "Payment system SIPS"),
+        [
+            {
+                "Payment system code SR": "1100",
+                "Payment service provider": "Tatra banka, a.s.",
+                "SWIFT 8": "TATRSKBX",
+                "Payment system SIPS": "x",
+            },
+            {
+                "Payment system code SR": "7300",
+                "Payment service provider": "ING Bank N.V., pobočka zahraničnej banky",
+                "SWIFT 8": "INGBSKBX",
+                "Payment system SIPS": "Ø",
+            },
+            {
+                "Payment system code SR": "1234",
+                "Payment service provider": "Foreign bank",
+                "SWIFT 8": "ABCDEFGH",
+                "Payment system SIPS": "x",
+            },
+        ],
+    )
 
 
 def _expected_payload(dataset: str, records: list[dict[str, str]]) -> str:
@@ -240,3 +268,84 @@ def test_output_is_stable_and_no_network_is_required(tmp_path: Path, monkeypatch
     assert (csv_output / "regions.json").read_text(encoding="utf-8") == (json_output / "regions.json").read_text(encoding="utf-8")
     assert (csv_output / "districts.json").read_text(encoding="utf-8") == (json_output / "districts.json").read_text(encoding="utf-8")
     assert (csv_output / "municipalities.json").read_text(encoding="utf-8") == (json_output / "municipalities.json").read_text(encoding="utf-8")
+
+
+def test_bank_import_dry_run_filters_non_sk_bic_and_does_not_write(tmp_path: Path) -> None:
+    source = tmp_path / "banks.csv"
+    output = tmp_path / "banks.json"
+    _write_bank_csv(source)
+
+    result = run_bank_import(input_path=source, output_path=output, last_updated="2026-05-18", write=False)
+
+    assert result.ok
+    assert result.dry_run is True
+    assert result.total_records == 2
+    assert result.active_records == 1
+    assert result.inactive_records == 1
+    assert result.warnings == ["row 3: skipped non-SK BIC record"]
+    assert not output.exists()
+
+
+def test_bank_import_write_outputs_normalized_payload(tmp_path: Path) -> None:
+    source = tmp_path / "banks.csv"
+    output = tmp_path / "banks.json"
+    _write_bank_csv(source)
+
+    result = run_bank_import(input_path=source, output_path=output, source="unit-test", last_updated="2026-05-18", write=True)
+
+    assert result.ok
+    assert result.wrote_files == [output.resolve()]
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["metadata"] == {
+        "source": "unit-test",
+        "license": "Source/licence verification pending.",
+        "lastUpdated": "2026-05-18",
+        "complete": True,
+    }
+    assert payload["banks"] == [
+        {
+            "code": "1100",
+            "name": "Tatra banka, a.s.",
+            "bic": "TATRSKBX",
+            "swift": "TATRSKBX",
+            "alphabeticCode": None,
+            "activeParty": True,
+            "activePartyMarker": "C",
+            "country": "SK",
+        },
+        {
+            "code": "7300",
+            "name": "ING Bank N.V., pobočka zahraničnej banky",
+            "bic": "INGBSKBX",
+            "swift": "INGBSKBX",
+            "alphabeticCode": None,
+            "activeParty": False,
+            "activePartyMarker": "Ø",
+            "country": "SK",
+        },
+    ]
+
+
+def test_bank_import_json_preserves_k_active_marker(tmp_path: Path) -> None:
+    source = tmp_path / "banks.json"
+    output = tmp_path / "output.json"
+    write_json(
+        source,
+        [
+            {
+                "code": "9998",
+                "name": "Test bank",
+                "bic": "TESTSKBX",
+                "activePartyMarker": "K",
+                "alphabeticCode": "TEST",
+            }
+        ],
+    )
+
+    result = run_bank_import(input_path=source, output_path=output, input_format="json", last_updated="2026-05-18", write=True)
+
+    assert result.ok
+    payload = json.loads(output.read_text(encoding="utf-8"))
+    assert payload["banks"][0]["activeParty"] is True
+    assert payload["banks"][0]["activePartyMarker"] == "K"
+    assert payload["banks"][0]["alphabeticCode"] == "TEST"

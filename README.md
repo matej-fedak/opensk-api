@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.4.0` PSC districtCode backfill release.
+Status: `v1.5.0` bank dataset hardening release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -23,13 +23,13 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/districts/SK0101` | stable | Complete district lookup; PortalVS terms may restrict reuse |
 | `GET /v1/municipalities` | stable | Static municipalities dataset |
 | `GET /v1/municipalities/528595` | stable | Static municipality lookup |
+| `GET /v1/banks` | stable | Static NBS bank-code dataset; source/licence verification pending |
+| `GET /v1/banks/1100` | stable | Static bank-code lookup; source/licence verification pending |
 
 ### Seed-backed
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/banks` | seed-backed | Static bank list |
-| `GET /v1/banks/1100` | seed-backed | Static bank lookup |
 | `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, no live upstream calls |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for local company lookup |
@@ -52,7 +52,7 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 
 ## PSC Collection Surface
 
-The `v1.4.0` docs keep the PSC collection routes, pagination model, and current dataset limitations aligned with the shipped release.
+The PSC collection routes, pagination model, and current dataset limitations remain aligned with the shipped local-data contract.
 
 ## Dataset Tooling
 
@@ -69,7 +69,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.4.0` is the PSC districtCode backfill pass: no new endpoints, just local PSC district enrichment from municipality mappings and validation updates.
+- `v1.5.0` expands banks from an offline NBS directory snapshot: no new endpoints, no upstream route calls, and IBAN bank resolution still reads local JSON only.
 
 ## Dataset Import Pipeline
 
@@ -80,6 +80,8 @@ python scripts/import_geography.py --dataset municipalities --input data/raw/por
 python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --dry-run
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --write
 python scripts/backfill_psc_districts.py --dry-run
 python scripts/backfill_psc_districts.py --write
 python scripts/validate_datasets.py
@@ -191,8 +193,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Production requests read those local JSON files only.
 - Holiday responses currently use a static seed dataset.
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
-- Banks use a small static seed dataset and IBAN validation runs locally without network access.
-- The bank dataset is intentionally incomplete and should not be presented as exhaustive.
+- Banks are imported from the NBS domestic payment-system identification-code directory snapshot effective `2026-05-18`; source/licence verification remains pending.
+- IBAN validation and Slovak bank-code resolution run locally without network access.
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.
 - PSC redistribution is restricted by upstream PortalVS terms, so do not present the dataset as open redistribution material.

@@ -10,7 +10,7 @@ router = APIRouter(prefix="/banks", tags=["banks"])
 @router.get(
     "",
     summary="List Slovak banks",
-    description="Returns the static Slovak bank seed dataset.",
+    description="Returns the static Slovak bank dataset imported from the NBS domestic payment-system directory.",
 )
 def list_banks(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
@@ -24,7 +24,7 @@ def list_banks(response: Response) -> dict[str, object]:
 @router.get(
     "/{code}",
     summary="Bank lookup by code",
-    description="Returns one Slovak bank from the static seed dataset.",
+    description="Returns one Slovak bank from the static dataset imported from the NBS domestic payment-system directory.",
 )
 def get_bank(code: str, response: Response) -> dict[str, object]:
     try:

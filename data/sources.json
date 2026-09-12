@@ -44,15 +44,15 @@
     "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial. districtCode is backfilled from municipalityCode using local municipality district mappings; no districtCode values are inferred from names or PSC patterns."
   },
   "banks": {
-    "status": "manual-seed",
-    "coverage": "seed-backed",
+    "status": "imported",
+    "coverage": "complete",
     "sourceName": "NBS directory of domestic payment system identification codes",
-    "sourceUrl": "https://www.nbs.sk/en/payments/general-information/directories-and-registers/directory-identification-codes-domestic-payment-system-in-sr/",
-    "licence": "NBS disclaimer allows reuse with attribution and no modification.",
-    "redistributionStatus": "allowed with attribution and no modification",
-    "lastChecked": "2026-05-25",
-    "updateCadence": "Irregular / manual refresh",
-    "notes": "5-bank non-exhaustive seed set; authoritative source expansion is still pending."
+    "sourceUrl": "https://nbs.sk/en/payments/general-information/directories-and-registers/directory-identification-codes-domestic-payment-system-in-sr/",
+    "licence": "Source/licence verification pending.",
+    "redistributionStatus": "pending verification",
+    "lastChecked": "2026-09-12",
+    "updateCadence": "Manual refresh from NBS directory snapshots",
+    "notes": "30 domestic Slovak payment-system identification-code rows imported from NBS directory version 225, effective from 2026-05-18; 21 active and 9 inactive. Foreign/non-SK BIC rows in the source snapshot are excluded from the runtime dataset."
   },
   "holidays": {
     "status": "manual-seed",

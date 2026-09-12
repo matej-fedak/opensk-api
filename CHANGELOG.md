@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.5.0
+
+- Expanded `data/banks.json` from the NBS domestic payment-system identification-code directory snapshot effective `2026-05-18`.
+- Added the offline `scripts/import_banks.py` importer with dry-run/write modes, CSV/JSON support, and active-party marker normalization.
+- Hardened bank dataset validation for BIC/SWIFT, active-party fields, country codes, and duplicate identifiers.
+- Kept IBAN validation and bank-code resolution fully local with no runtime upstream calls.
+- Kept source/licence wording conservative: `Source/licence verification pending.`
+
 ## v1.4.0
 
 - Backfilled PSC `districtCode` from `municipalityCode` using verified local municipality district mappings.

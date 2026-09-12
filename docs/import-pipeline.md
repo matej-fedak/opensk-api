@@ -10,6 +10,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - Geography imports for regions should be checked against the Eurostat LAU 2025 correspondence table; municipalities should be imported from PortalVS classifier 9 (`Obce`) JSON/CSV exports.
 - District imports are sourced from PortalVS classifier 10 filtered to Slovak rows; keep upstream notices and treat reuse as restricted until terms are fully settled.
 - PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. `scripts/backfill_psc_districts.py` backfills PSC `districtCode` from `municipalityCode` using local municipality mappings only; no values are inferred from names or PSC patterns. PSC coverage remains partial rather than national.
+- Bank imports are handled by `scripts/import_banks.py` from offline NBS directory snapshots. Source/licence verification is still pending; runtime routes never call NBS.
 
 ## Company Import Prototype
 
@@ -53,6 +54,10 @@ python scripts/backfill_psc_districts.py --dry-run
 python scripts/import_companies.py --input data/raw/rpo_sample.json --output data/generated/companies.json --dry-run
 ```
 
+```bash
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --dry-run
+```
+
 ## Write Workflow
 
 Only `--write` writes files.
@@ -68,6 +73,10 @@ python scripts/backfill_psc_districts.py --write
 
 ```bash
 python scripts/import_companies.py --input data/raw/rpo_sample.json --output data/generated/companies.json --write
+```
+
+```bash
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --write --last-updated 2026-05-18
 ```
 
 The importer refuses to write when validation fails. Referential integrity failures also block writes unless `--allow-incomplete` is explicitly provided.

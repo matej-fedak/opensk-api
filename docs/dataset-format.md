@@ -136,10 +136,25 @@ Where present, dataset metadata uses this shape:
 {
   "metadata": { ... },
   "banks": [
-    { "code": "1100", "name": "Tatra banka, a.s.", "country": "Slovakia" }
+    {
+      "code": "1100",
+      "name": "Tatra banka, a.s.",
+      "bic": "TATRSKBX",
+      "swift": "TATRSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    }
   ]
 }
 ```
+
+- `code` is the four-digit domestic payment-system identification code.
+- `bic` and `swift` are uppercase 8- or 11-character identifiers when available; both are retained for API compatibility.
+- `alphabeticCode` is `null` for current NBS CSV imports because the CSV snapshot does not expose a separate alphabetic domestic code.
+- `activePartyMarker` preserves the normalized NBS participation marker: `C` and `K` map to `activeParty: true`, `Ø` maps to `activeParty: false`.
+- `country` is `SK` for runtime bank rows.
 
 ### `data/regions.json`
 
