@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.7.0
+
+- Added seed-backed `data/phone_areas.json` with local municipality, district, and region links for initial phone-area lookup coverage.
+- Added offline `scripts/import_phone_areas.py` support for local CSV/JSON/XLSX source files.
+- Added `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, and `GET /v1/phone-areas/search` endpoints.
+- Added phone-area dataset validation, referential integrity checks, smoke tests, and API/import tests.
+- Kept licence and source wording conservative pending retained telecom regulator workbook evidence.
+
 ## v1.6.0
 
 - Added explicit source-compliance metadata to `data/sources.json`, including licence status, redistribution status, terms URL, attribution, risk level, and next action.

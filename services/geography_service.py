@@ -31,7 +31,7 @@ def validate_region_code_format(code: str) -> str:
 
 def validate_district_code_format(code: str) -> str:
     normalized = normalize_code(code)
-    if not re.fullmatch(r"SK\d{4}", normalized):
+    if not re.fullmatch(r"SK\d{4,5}", normalized):
         raise GeographyInvalidFormatError(code)
     return normalized
 

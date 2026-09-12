@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.6.0 source compliance and licence-closure release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.7.0 phone area seed and import-pipeline release.
 
 ## Stable
 
@@ -29,6 +29,9 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 | `GET /v1/holidays/{year}` | seed-backed | Local holiday dataset; reuse allowed with attribution and no modification |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, backed by a small checked-in seed set |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for the local company lookup |
+| `GET /v1/phone-areas` | seed-backed | Local phone-area seed list; full regulator workbook import pending |
+| `GET /v1/phone-areas/{code}` | seed-backed | Local phone-area seed lookup; full regulator workbook import pending |
+| `GET /v1/phone-areas/search` | seed-backed | Local phone-area seed search; full regulator workbook import pending |
 
 ## Partial Dataset
 
@@ -48,4 +51,5 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 - Districts are now complete, but PortalVS source terms remain restrictive.
 - Banks are imported from an offline NBS directory snapshot and include inactive rows; source/licence verification remains pending.
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
+- Phone areas are seed-backed until the official telecom regulator Excel workbook can be retained and imported.
 - Dataset compliance status, retained evidence, and draft clarification questions are documented in `docs/source-compliance.md` and `docs/research/`.

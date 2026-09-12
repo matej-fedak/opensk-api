@@ -54,6 +54,9 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/psc/search" in schema["paths"]
     assert "/v1/psc/stats" in schema["paths"]
     assert "/v1/psc/{psc}" in schema["paths"]
+    assert "/v1/phone-areas" in schema["paths"]
+    assert "/v1/phone-areas/search" in schema["paths"]
+    assert "/v1/phone-areas/{code}" in schema["paths"]
     assert "/v1/companies/{ico}" in schema["paths"]
     assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
@@ -253,6 +256,71 @@ def test_districts_list_returns_enveloped_response() -> None:
     assert body["metadata"]["source"] == "OpenSK API static geography dataset"
     assert body["metadata"]["version"] == "v1"
     assert body["error"] is None
+
+
+def test_phone_areas_list_returns_paginated_response() -> None:
+    response = client.get("/v1/phone-areas")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert body["data"]["total"] == 5
+    assert body["data"]["count"] == 5
+    assert any(item["code"] == "02" for item in body["data"]["items"])
+    assert body["metadata"]["source"] == "OpenSK API static phone area dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-09-12"
+    assert body["error"] is None
+
+
+def test_phone_area_code_lookup_returns_records() -> None:
+    response = client.get("/v1/phone-areas/02")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "02"
+    assert body["data"]["count"] >= 1
+    assert body["data"]["items"][0]["municipalityCode"] == "528595"
+    assert body["error"] is None
+
+
+def test_phone_area_invalid_code_returns_400() -> None:
+    response = client.get("/v1/phone-areas/abc")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_phone_area_unknown_code_returns_404() -> None:
+    response = client.get("/v1/phone-areas/099")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_phone_area_filters_work() -> None:
+    by_municipality = client.get("/v1/phone-areas?municipalityCode=528595")
+    by_region = client.get("/v1/phone-areas?regionCode=SK010")
+    by_district = client.get("/v1/phone-areas?districtCode=SK0101")
+
+    assert by_municipality.status_code == 200
+    assert by_municipality.json()["data"]["items"][0]["code"] == "02"
+    assert by_region.status_code == 200
+    assert by_region.json()["data"]["items"][0]["code"] == "02"
+    assert by_district.status_code == 200
+    assert by_district.json()["data"]["items"][0]["code"] == "02"
+
+
+def test_phone_area_search_by_municipality_name() -> None:
+    response = client.get("/v1/phone-areas/search?q=Bratislava")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] >= 1
+    assert body["data"]["items"][0]["code"] == "02"
 
 
 def test_districts_region_filter_returns_subset() -> None:

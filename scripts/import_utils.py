@@ -894,6 +894,50 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
     else:
         errors.append("psc.json: missing PSC records")
 
+    phone_areas_path = data_dir / "phone_areas.json"
+    if not phone_areas_path.is_file():
+        return errors
+
+    phone_areas_payload = read_json(phone_areas_path)
+    if not isinstance(phone_areas_payload, dict):
+        errors.append("phone_areas.json: expected JSON object")
+        return errors
+
+    phone_area_records = phone_areas_payload.get("phoneAreas")
+    if not isinstance(phone_area_records, list):
+        errors.append("phone_areas.json: missing phoneAreas array")
+        return errors
+
+    for index, record in enumerate(phone_area_records):
+        item_label = f"Phone area phoneAreas[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{item_label}: record must be an object")
+            continue
+
+        code = record.get("code")
+        if isinstance(code, str) and code:
+            item_label = f"Phone area {code}"
+
+        region_code = record.get("regionCode")
+        district_code = record.get("districtCode")
+        municipality_code = record.get("municipalityCode")
+
+        if region_code is not None and region_code not in regions_by_code:
+            errors.append(f"{item_label}: unknown regionCode {region_code}")
+        if district_code is not None and district_code not in districts_by_code:
+            errors.append(f"{item_label}: unknown districtCode {district_code}")
+        if municipality_code is not None and municipality_code not in municipalities_by_code:
+            errors.append(f"{item_label}: unknown municipalityCode {municipality_code}")
+
+        if municipality_code in municipalities_by_code:
+            municipality = municipalities_by_code[str(municipality_code)]
+            expected_district = municipality.get("districtCode")
+            expected_region = municipality.get("regionCode")
+            if district_code is not None and district_code != expected_district:
+                errors.append(f"{item_label}: municipalityCode {municipality_code} belongs to districtCode {expected_district}, but phone area districtCode is {district_code}")
+            if region_code is not None and region_code != expected_region:
+                errors.append(f"{item_label}: municipalityCode {municipality_code} belongs to regionCode {expected_region}, but phone area regionCode is {region_code}")
+
     return errors
 
 

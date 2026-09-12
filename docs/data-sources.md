@@ -19,6 +19,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Banks | NBS directory of domestic payment system identification codes | complete | Source/licence verification pending. | pending verification | Manual refresh from NBS directory snapshots | `2026-09-12` | 30 domestic Slovak payment-system identification-code rows imported from NBS directory version 225, effective from `2026-05-18`; 21 active and 9 inactive. Foreign/non-SK BIC rows are excluded. | Keep source/licence terms on file and refresh from future NBS directory snapshots. |
 | Holidays | NBS holidays page and Act 241/1993 | partial | NBS disclaimer allows reuse with attribution and no modification. | allowed with attribution and no modification | Annual legislative updates | `2026-05-25` | Curated 2024-2026 holiday lists. | Confirm any future update source and preserve attribution. |
 | Companies | Verified public organizational contact pages | seed-backed | Source/licence verification pending for broader redistribution. | pending verification | Manual | `2026-06-03` | Small checked-in legal-entity seed dataset; not full RPO coverage; personal/stakeholder fields excluded. | Verify RPO/privacy terms and future import terms. |
+| Phone areas | Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data | seed-backed | Source/licence verification pending. | pending verification | Manual refresh from local regulator workbook snapshots | `2026-09-12` | 5-row local seed with municipality/district/region links; full official workbook import pending. | Locate workbook URL, retain source evidence, and verify licence/reuse terms. |
 
 Notes:
 
@@ -35,6 +36,8 @@ Notes:
 - PSC geography expansion is local and static; it does not call upstream services.
 - Company/IČO work uses a small checked-in local seed dataset and is exposed only as a seed-backed local lookup contract.
 - Company/IČO notes intentionally exclude personal, stakeholder, and other role-holder fields.
+- Phone areas are served locally from `data/phone_areas.json`; API routes do not call the telecom regulator.
+- Phone-area municipality links are present for all current seed rows, but the dataset is not complete.
 - RPO licence and privacy verification remain pending; see `docs/research/rpo-licence.md` and `docs/verification-backlog.md`.
 - The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.
 - Record provenance should be checked before any production expansion or redistribution.

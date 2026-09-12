@@ -167,6 +167,30 @@ Where present, dataset metadata uses this shape:
 }
 ```
 
+### `data/phone_areas.json`
+
+```json
+{
+  "metadata": { ... },
+  "phoneAreas": [
+    {
+      "code": "02",
+      "name": "Bratislava",
+      "municipalityCode": "528595",
+      "municipalityName": "Bratislava - mestská časť Staré Mesto",
+      "districtCode": "SK0101",
+      "regionCode": "SK010",
+      "country": "SK"
+    }
+  ]
+}
+```
+
+- `code` is the Slovak primary telephone area code, currently validated as `0#` or `0##`.
+- One code can have multiple municipality rows.
+- `municipalityCode`, `districtCode`, and `regionCode` are nullable for imported rows when source matching is not reliable.
+- Current checked-in data is seed-backed; full regulator workbook import is pending.
+
 ### `data/districts.json`
 
 ```json

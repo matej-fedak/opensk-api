@@ -18,6 +18,9 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
         "/v1/regions": (200, {"data": []}),
         "/v1/districts": (200, {"data": []}),
         "/v1/municipalities": (200, {"data": []}),
+        "/v1/phone-areas": (200, {"data": {"items": []}}),
+        "/v1/phone-areas/02": (200, {"data": {"code": "02", "items": []}}),
+        "/v1/phone-areas/search?q=Bratislava": (200, {"data": {"items": []}}),
         "/v1/companies/50158635": (200, {"data": {"ico": "50158635"}}),
         "/v1/ico/50158635": (200, {"data": {"ico": "50158635"}}),
         "/docs": (200, "docs"),
@@ -28,6 +31,8 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
         path = url.split("http://example.com", 1)[-1]
         if path.startswith("/v1/psc/search?"):
             path = "/v1/psc/search?q=Bratislava"
+        if path.startswith("/v1/phone-areas/search?"):
+            path = "/v1/phone-areas/search?q=Bratislava"
         return responses[path]
 
     monkeypatch.setattr(smoke_test, "_request_json", fake_request_json)

@@ -14,6 +14,7 @@ from scripts.validate_datasets import (
     validate_districts_dataset,
     validate_holidays_dataset,
     validate_municipalities_dataset,
+    validate_phone_areas_dataset,
     validate_psc_dataset,
     validate_regions_dataset,
     validate_sources_registry,
@@ -21,7 +22,7 @@ from scripts.validate_datasets import (
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies"}
+PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas"}
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
 
@@ -49,7 +50,7 @@ def _write_companies_dataset(target_dir: Path, payload: dict[str, object]) -> No
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
-    assert len(reports) == 8
+    assert len(reports) == 9
     assert all(report.record_count > 0 for report in reports)
     assert all(report.ok for report in reports)
 
@@ -113,6 +114,29 @@ def test_holidays_dataset_is_valid() -> None:
     assert report.ok
     assert report.record_count > 0
     assert report.warnings
+
+
+def test_phone_areas_dataset_is_valid() -> None:
+    report = validate_phone_areas_dataset()
+
+    assert report.ok
+    assert report.record_count == 5
+    assert report.warnings
+
+
+def test_phone_area_references_are_valid() -> None:
+    phone_areas = load_dataset_records("phoneAreas", DATA_DIR / "phone_areas.json")
+    municipalities = {record["code"]: record for record in load_dataset_records("municipalities", DATA_DIR / "municipalities.json")}
+    districts = {record["code"] for record in load_dataset_records("districts", DATA_DIR / "districts.json")}
+    regions = {record["code"] for record in load_dataset_records("regions", DATA_DIR / "regions.json")}
+
+    assert len({json.dumps(record, ensure_ascii=False, sort_keys=True) for record in phone_areas}) == len(phone_areas)
+    for record in phone_areas:
+        municipality = municipalities[record["municipalityCode"]]
+        assert record["districtCode"] == municipality["districtCode"]
+        assert record["regionCode"] == municipality["regionCode"]
+        assert record["districtCode"] in districts
+        assert record["regionCode"] in regions
 
 
 def test_district_region_codes_reference_existing_regions() -> None:

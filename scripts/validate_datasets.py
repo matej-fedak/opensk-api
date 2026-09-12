@@ -22,6 +22,7 @@ DEFAULT_REGIONS_PATH = DEFAULT_DATA_DIR / "regions.json"
 DEFAULT_DISTRICTS_PATH = DEFAULT_DATA_DIR / "districts.json"
 DEFAULT_MUNICIPALITIES_PATH = DEFAULT_DATA_DIR / "municipalities.json"
 DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
+DEFAULT_PHONE_AREAS_PATH = DEFAULT_DATA_DIR / "phone_areas.json"
 DEFAULT_SOURCES_PATH = DEFAULT_DATA_DIR / "sources.json"
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
@@ -34,6 +35,7 @@ _REGION_CODE_RE = re.compile(r"SK\d{3}$")
 _DISTRICT_CODE_RE = re.compile(r"SK\d{4,5}$")
 _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
 _PSC_CODE_RE = re.compile(r"\d{5}$")
+_PHONE_AREA_CODE_RE = re.compile(r"0\d{1,2}$")
 _COMPANY_FORBIDDEN_KEYS = {
     "statutoryBodies",
     "representatives",
@@ -356,7 +358,7 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
     if payload is None:
         return report
 
-    required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies"}
+    required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas"}
     allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
     allowed_risk_levels = {"low", "medium", "high", "pending"}
     missing = sorted(required_datasets - set(payload))
@@ -917,6 +919,102 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
     return report
 
 
+def _records_by_code(data_dir: Path, dataset: str, key: str) -> dict[str, dict[str, Any]]:
+    payload = _load_json(ValidationReport(dataset, data_dir / f"{dataset}.json"), data_dir / f"{dataset}.json")
+    if not isinstance(payload, dict):
+        return {}
+    records = payload.get(dataset)
+    if not isinstance(records, list):
+        return {}
+    result: dict[str, dict[str, Any]] = {}
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        code = record.get(key)
+        if isinstance(code, str):
+            result[code] = record
+    return result
+
+
+def validate_phone_areas_dataset(path: Path = DEFAULT_PHONE_AREAS_PATH) -> ValidationReport:
+    report = ValidationReport("phoneAreas", path)
+    payload = _load_json(report, path)
+    if not isinstance(payload, dict):
+        return report
+
+    metadata = _validate_dataset_metadata(report, payload)
+    _warn_if_seed(report, metadata)
+
+    records = _require_list(report, payload.get("phoneAreas"), "phoneAreas", "phoneAreas must be an array")
+    if records is None:
+        return report
+    if not records:
+        report.add_error("phoneAreas", "phoneAreas array must not be empty")
+
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "phoneAreas", registry.get("phoneAreas") if isinstance(registry, dict) else None)
+
+    municipalities = _records_by_code(data_dir, "municipalities", "code")
+    districts = _records_by_code(data_dir, "districts", "code")
+    regions = _records_by_code(data_dir, "regions", "code")
+    seen_exact: set[str] = set()
+
+    for index, item in enumerate(records):
+        item_path = f"phoneAreas[{index}]"
+        if not isinstance(item, dict):
+            report.add_error(item_path, "phone area record must be an object")
+            continue
+
+        code = _require_string(report, item.get("code"), f"{item_path}.code", "phone area code must be a non-empty string")
+        if code is not None and not _PHONE_AREA_CODE_RE.fullmatch(code):
+            report.add_error(f"{item_path}.code", f"phone area code must match 0# or 0## format, got {code!r}")
+        _require_string(report, item.get("name"), f"{item_path}.name", "phone area name must be a non-empty string")
+
+        municipality_name = item.get("municipalityName")
+        if municipality_name is not None and (not isinstance(municipality_name, str) or not municipality_name.strip()):
+            report.add_error(f"{item_path}.municipalityName", f"phone area municipalityName must be null or a non-empty string, got {municipality_name!r}")
+
+        municipality_code = item.get("municipalityCode")
+        district_code = item.get("districtCode")
+        region_code = item.get("regionCode")
+
+        if municipality_code is not None and (not isinstance(municipality_code, str) or not _MUNICIPALITY_CODE_RE.fullmatch(municipality_code)):
+            report.add_error(f"{item_path}.municipalityCode", f"phone area municipalityCode must be null or 6 digits, got {municipality_code!r}")
+        if district_code is not None and (not isinstance(district_code, str) or not _DISTRICT_CODE_RE.fullmatch(district_code)):
+            report.add_error(f"{item_path}.districtCode", f"phone area districtCode must be null or SK district code, got {district_code!r}")
+        if region_code is not None and (not isinstance(region_code, str) or not _REGION_CODE_RE.fullmatch(region_code)):
+            report.add_error(f"{item_path}.regionCode", f"phone area regionCode must be null or SK region code, got {region_code!r}")
+
+        country = _require_string(report, item.get("country"), f"{item_path}.country", "phone area country must be a non-empty string")
+        if country is not None and country != "SK":
+            report.add_error(f"{item_path}.country", f"phone area country must be 'SK', got {country!r}")
+
+        if isinstance(municipality_code, str) and municipality_code in municipalities:
+            municipality = municipalities[municipality_code]
+            expected_district = municipality.get("districtCode")
+            expected_region = municipality.get("regionCode")
+            if district_code is not None and district_code != expected_district:
+                report.add_error(f"{item_path}.districtCode", f"phone area districtCode {district_code!r} does not match municipality {municipality_code} districtCode {expected_district!r}")
+            if region_code is not None and region_code != expected_region:
+                report.add_error(f"{item_path}.regionCode", f"phone area regionCode {region_code!r} does not match municipality {municipality_code} regionCode {expected_region!r}")
+        elif isinstance(municipality_code, str):
+            report.add_error(f"{item_path}.municipalityCode", f"phone area municipalityCode {municipality_code!r} is not present in municipalities.json")
+
+        if isinstance(district_code, str) and district_code not in districts:
+            report.add_error(f"{item_path}.districtCode", f"phone area districtCode {district_code!r} is not present in districts.json")
+        if isinstance(region_code, str) and region_code not in regions:
+            report.add_error(f"{item_path}.regionCode", f"phone area regionCode {region_code!r} is not present in regions.json")
+
+        exact_key = json.dumps(item, ensure_ascii=False, sort_keys=True)
+        if exact_key in seen_exact:
+            report.add_error(item_path, "duplicate phone area record")
+        seen_exact.add(exact_key)
+
+    report.record_count = len(records)
+    return report
+
+
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
         validate_sources_registry(data_dir / "sources.json"),
@@ -927,6 +1025,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
         validate_municipalities_dataset(data_dir / "municipalities.json"),
         validate_psc_dataset(data_dir / "psc.json"),
     ]
+
+    phone_areas_path = data_dir / "phone_areas.json"
+    if phone_areas_path.is_file():
+        reports.append(validate_phone_areas_dataset(phone_areas_path))
 
     companies_path = data_dir / "companies.json"
     if companies_path.is_file():

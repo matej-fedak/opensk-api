@@ -1,0 +1,55 @@
+{
+  "metadata": {
+    "source": "Telecom regulator numbering data seed pending official workbook import",
+    "license": "Source/licence verification pending.",
+    "lastUpdated": "2026-09-12",
+    "complete": false
+  },
+  "phoneAreas": [
+    {
+      "code": "02",
+      "name": "Bratislava",
+      "municipalityCode": "528595",
+      "municipalityName": "Bratislava - mestská časť Staré Mesto",
+      "districtCode": "SK0101",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    {
+      "code": "033",
+      "name": "Trnava",
+      "municipalityCode": "506745",
+      "municipalityName": "Trnava",
+      "districtCode": "SK0217",
+      "regionCode": "SK021",
+      "country": "SK"
+    },
+    {
+      "code": "041",
+      "name": "Žilina",
+      "municipalityCode": "517402",
+      "municipalityName": "Žilina",
+      "districtCode": "SK03111",
+      "regionCode": "SK031",
+      "country": "SK"
+    },
+    {
+      "code": "048",
+      "name": "Banská Bystrica",
+      "municipalityCode": "508438",
+      "municipalityName": "Banská Bystrica",
+      "districtCode": "SK0321",
+      "regionCode": "SK032",
+      "country": "SK"
+    },
+    {
+      "code": "055",
+      "name": "Košice",
+      "municipalityCode": "598186",
+      "municipalityName": "Košice - mestská časť Staré Mesto",
+      "districtCode": "SK0422",
+      "regionCode": "SK042",
+      "country": "SK"
+    }
+  ]
+}

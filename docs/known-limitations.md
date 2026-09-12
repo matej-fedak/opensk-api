@@ -7,6 +7,7 @@
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.
 - Municipalities are now mapped to districts via PortalVS classifier 9, but source/licence verification is still pending and the dataset should not be presented as open redistribution material.
 - Banks are expanded from an offline NBS directory snapshot, but source/licence verification remains pending and inactive rows are retained with `activeParty: false`.
+- Phone areas are currently a small seed-backed subset; the full telecom regulator workbook import and licence verification remain pending.
 - PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
 - PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
 - PSC source coverage remains partial and should not be presented as national coverage.

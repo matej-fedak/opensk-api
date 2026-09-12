@@ -110,5 +110,22 @@
     "updateCadence": "Manual",
     "nextAction": "Ask ŠÚ SR/RPO about reuse, caching, redistribution, commercial use, bulk limits, and privacy constraints before expanding beyond the legal-entity seed dataset.",
     "notes": "Small checked-in legal-entity seed dataset for local lookup; not full RPO coverage. See docs/research and docs/verification-backlog.md."
+  },
+  "phoneAreas": {
+    "status": "seed-backed",
+    "coverage": "seed-backed",
+    "sourceName": "Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data",
+    "sourceUrl": "https://www.teleoff.gov.sk/",
+    "sourceFileUrl": "pending",
+    "licence": "Source/licence verification pending.",
+    "licenceStatus": "pending verification",
+    "redistributionStatus": "pending verification",
+    "termsUrl": "pending",
+    "attribution": "Attribute Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data if reuse is approved; exact required wording is pending.",
+    "riskLevel": "pending",
+    "lastChecked": "2026-09-12",
+    "updateCadence": "Manual refresh from local regulator workbook snapshots",
+    "nextAction": "Locate and retain the official Excel workbook URL for municipalities assigned to primary telephone areas, then verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms.",
+    "notes": "Small seed-backed phone area subset with local municipality links. Full import is pending access to the official machine-processable Excel workbook. Runtime routes read local JSON only."
   }
 }

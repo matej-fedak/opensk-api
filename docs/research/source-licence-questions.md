@@ -46,3 +46,18 @@ Applies to the NBS directory of domestic payment-system identification codes.
 8. Are inactive rows allowed to be redistributed with an explicit inactive marker?
 9. Are there required version, effective-date, or disclaimer notices that must be preserved?
 10. Does any no-modification clause apply to normalized machine-readable datasets?
+
+## Telecom Regulator Phone-Area Workbook
+
+Applies to the machine-processable Excel file for municipalities assigned to primary telephone areas.
+
+1. Is reuse of the workbook data allowed outside the regulator website?
+2. Is redistribution of normalized phone-area data through an open-source public API allowed?
+3. Is local caching of workbook snapshots allowed for runtime use without live upstream calls?
+4. Is transformation allowed, including converting XLSX/CSV to JSON, normalizing field names, and linking rows to local municipality codes?
+5. What attribution wording is required?
+6. Are commercial downstream users allowed to consume redistributed data?
+7. Are there restrictions on bulk download, mirroring, or periodic refreshes?
+8. Are partial seed subsets allowed while a full import is pending?
+9. Are there required version, effective-date, update-date, or disclaimer notices that must be preserved?
+10. Are there any privacy or operational-security restrictions for municipality-to-primary-area mappings?
