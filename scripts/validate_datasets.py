@@ -971,9 +971,7 @@ def validate_phone_areas_dataset(path: Path = DEFAULT_PHONE_AREAS_PATH) -> Valid
             report.add_error(f"{item_path}.code", f"phone area code must match 0# or 0## format, got {code!r}")
         _require_string(report, item.get("name"), f"{item_path}.name", "phone area name must be a non-empty string")
 
-        municipality_name = item.get("municipalityName")
-        if municipality_name is not None and (not isinstance(municipality_name, str) or not municipality_name.strip()):
-            report.add_error(f"{item_path}.municipalityName", f"phone area municipalityName must be null or a non-empty string, got {municipality_name!r}")
+        _require_string(report, item.get("municipalityName"), f"{item_path}.municipalityName", "phone area municipalityName must be a non-empty string")
 
         municipality_code = item.get("municipalityCode")
         district_code = item.get("districtCode")

@@ -7,6 +7,6 @@
 - ŠÚ SR/RPO licence, privacy, caching, commercial-use, and redistribution verification before future company import work.
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
-- Telecom regulator phone-area workbook URL retention, full import, municipality-link coverage review, and licence/reuse verification.
+- Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.
 - Monitor PSC rows whose municipality mappings could become unresolved in future source refreshes.
 - Keep `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` aligned after each source-owner answer.

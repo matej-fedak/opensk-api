@@ -264,11 +264,11 @@ def test_phone_areas_list_returns_paginated_response() -> None:
     assert response.status_code == 200
     assert response.headers["cache-control"] == "public, max-age=86400"
     body = response.json()
-    assert body["data"]["total"] == 5
-    assert body["data"]["count"] == 5
+    assert body["data"]["total"] == 2922
+    assert body["data"]["count"] == 100
     assert any(item["code"] == "02" for item in body["data"]["items"])
     assert body["metadata"]["source"] == "OpenSK API static phone area dataset"
-    assert body["metadata"]["lastUpdated"] == "2026-09-12"
+    assert body["metadata"]["lastUpdated"] == "2026-09-15"
     assert body["error"] is None
 
 
@@ -279,7 +279,7 @@ def test_phone_area_code_lookup_returns_records() -> None:
     body = response.json()
     assert body["data"]["code"] == "02"
     assert body["data"]["count"] >= 1
-    assert body["data"]["items"][0]["municipalityCode"] == "528595"
+    assert any(item["municipalityCode"] == "528595" for item in body["data"]["items"])
     assert body["error"] is None
 
 
@@ -320,7 +320,7 @@ def test_phone_area_search_by_municipality_name() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["total"] >= 1
-    assert body["data"]["items"][0]["code"] == "02"
+    assert any(item["code"] == "02" for item in body["data"]["items"])
 
 
 def test_districts_region_filter_returns_subset() -> None:

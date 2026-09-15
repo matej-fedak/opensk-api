@@ -43,7 +43,7 @@ def test_phone_area_import_write_outputs_normalized_payload(tmp_path: Path) -> N
         "source": "unit-test",
         "license": "Source/licence verification pending.",
         "lastUpdated": "2026-09-12",
-        "complete": False,
+        "complete": True,
     }
     assert payload["phoneAreas"][0] == {
         "code": "033",
@@ -59,7 +59,7 @@ def test_phone_area_import_write_outputs_normalized_payload(tmp_path: Path) -> N
     assert payload["phoneAreas"][1]["regionCode"] is None
 
 
-def test_phone_area_import_duplicate_records_fail(tmp_path: Path) -> None:
+def test_phone_area_import_duplicate_records_are_skipped(tmp_path: Path) -> None:
     source = tmp_path / "phone_areas.csv"
     source.parent.mkdir(parents=True, exist_ok=True)
     with source.open("w", encoding="utf-8", newline="") as handle:
@@ -70,5 +70,18 @@ def test_phone_area_import_duplicate_records_fail(tmp_path: Path) -> None:
 
     result = run_import(input_path=source, output_path=tmp_path / "phone_areas.json", last_updated="2026-09-12", write=False)
 
-    assert not result.ok
-    assert any("duplicate phone area record" in error for error in result.errors)
+    assert result.ok
+    assert result.duplicate_records == 1
+    assert any("skipped duplicate phone area record" in warning for warning in result.warnings)
+
+
+def test_phone_area_import_xls_requires_manual_csv_conversion(tmp_path: Path) -> None:
+    source = tmp_path / "phone_areas.xls"
+    source.write_bytes(b"legacy xls placeholder")
+
+    try:
+        run_import(input_path=source, output_path=tmp_path / "phone_areas.json", write=False)
+    except ValueError as exc:
+        assert "convert the workbook's List1 sheet to CSV first" in str(exc)
+    else:
+        raise AssertionError("expected legacy .xls input to require manual CSV conversion")

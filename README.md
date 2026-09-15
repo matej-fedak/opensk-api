@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.7.0` phone area seed and import-pipeline release.
+Status: `v1.7.1` phone-area source import completion release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local. `v1.6.0` adds explicit source-compliance metadata and documentation without adding endpoints. `v1.7.0` adds phone-area lookup endpoints backed by local seed data and an offline importer for regulator workbook snapshots.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local. `v1.6.0` adds explicit source-compliance metadata and documentation without adding endpoints. `v1.7.0` adds phone-area lookup endpoints and an offline importer. `v1.7.1` imports the official telecom regulator phone-area workbook.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -25,6 +25,9 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/municipalities/528595` | stable | Static municipality lookup |
 | `GET /v1/banks` | stable | Static NBS bank-code dataset; source/licence verification pending |
 | `GET /v1/banks/1100` | stable | Static bank-code lookup; source/licence verification pending |
+| `GET /v1/phone-areas` | stable | Static imported phone-area list; source/licence verification pending |
+| `GET /v1/phone-areas/02` | stable | Static imported phone-area lookup; source/licence verification pending |
+| `GET /v1/phone-areas/search?q=Bratislava` | stable | Static imported phone-area search; source/licence verification pending |
 
 ### Seed-backed
 
@@ -33,9 +36,6 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, no live upstream calls |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for local company lookup |
-| `GET /v1/phone-areas` | seed-backed | Static phone-area list; full telecom regulator workbook import pending |
-| `GET /v1/phone-areas/02` | seed-backed | Static phone-area lookup; full telecom regulator workbook import pending |
-| `GET /v1/phone-areas/search?q=Bratislava` | seed-backed | Static phone-area search; full telecom regulator workbook import pending |
 
 ### Partial Dataset
 
@@ -75,7 +75,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.7.0` adds local phone-area endpoints and an offline importer: no upstream route calls and no database/cache infrastructure.
+- `v1.7.1` imports phone areas from a retained official telecom regulator workbook: no upstream route calls and no database/cache infrastructure.
 
 ## Dataset Import Pipeline
 
@@ -202,7 +202,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Holiday responses currently use a static seed dataset.
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
 - Banks are imported from the NBS domestic payment-system identification-code directory snapshot effective `2026-05-18`; source/licence verification remains pending.
-- Phone areas currently use a small local seed dataset with valid municipality links; full import from the telecom regulator's machine-processable workbook is pending source access and licence verification.
+- Phone areas are imported from the telecom regulator's machine-processable workbook; licence/reuse verification remains pending.
 - IBAN validation and Slovak bank-code resolution run locally without network access.
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.

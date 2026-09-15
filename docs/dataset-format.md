@@ -189,7 +189,7 @@ Where present, dataset metadata uses this shape:
 - `code` is the Slovak primary telephone area code, currently validated as `0#` or `0##`.
 - One code can have multiple municipality rows.
 - `municipalityCode`, `districtCode`, and `regionCode` are nullable for imported rows when source matching is not reliable.
-- Current checked-in data is seed-backed; full regulator workbook import is pending.
+- Current checked-in data is imported from the retained telecom regulator workbook; source/licence verification remains pending.
 
 ### `data/districts.json`
 

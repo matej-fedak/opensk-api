@@ -112,20 +112,20 @@
     "notes": "Small checked-in legal-entity seed dataset for local lookup; not full RPO coverage. See docs/research and docs/verification-backlog.md."
   },
   "phoneAreas": {
-    "status": "seed-backed",
-    "coverage": "seed-backed",
+    "status": "imported",
+    "coverage": "complete",
     "sourceName": "Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data",
-    "sourceUrl": "https://www.teleoff.gov.sk/",
-    "sourceFileUrl": "pending",
+    "sourceUrl": "https://www.teleoff.gov.sk/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/1.html",
+    "sourceFileUrl": "https://www.teleoff.gov.sk/files/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/30.xls",
     "licence": "Source/licence verification pending.",
     "licenceStatus": "pending verification",
     "redistributionStatus": "pending verification",
     "termsUrl": "pending",
     "attribution": "Attribute Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data if reuse is approved; exact required wording is pending.",
     "riskLevel": "pending",
-    "lastChecked": "2026-09-12",
+    "lastChecked": "2026-09-15",
     "updateCadence": "Manual refresh from local regulator workbook snapshots",
-    "nextAction": "Locate and retain the official Excel workbook URL for municipalities assigned to primary telephone areas, then verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms.",
-    "notes": "Small seed-backed phone area subset with local municipality links. Full import is pending access to the official machine-processable Excel workbook. Runtime routes read local JSON only."
+    "nextAction": "Verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained official phone-area workbook.",
+    "notes": "2,922 unique municipality-to-primary-area rows imported from the official legacy Excel workbook; 2,919 rows link to local municipality, district, and region codes. Runtime routes read local JSON only."
   }
 }

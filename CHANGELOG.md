@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.7.1
+
+- Located and retained the official telecom regulator phone-area workbook source (`30.xls`) and converted its `List1` sheet to CSV for reproducible offline imports.
+- Replaced the 5-row phone-area seed with 2,922 imported municipality-to-primary-area records.
+- Linked 2,919 imported phone-area rows to local municipality, district, and region codes; retained 3 unmatched source rows with null local geography links.
+- Updated phone-area source metadata, docs, validation expectations, and tests while keeping licence wording conservative.
+- Kept runtime API behavior local/static with no upstream route calls and no new endpoint domains.
+
 ## v1.7.0
 
 - Added seed-backed `data/phone_areas.json` with local municipality, district, and region links for initial phone-area lookup coverage.

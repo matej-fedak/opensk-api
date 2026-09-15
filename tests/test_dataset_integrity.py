@@ -120,7 +120,7 @@ def test_phone_areas_dataset_is_valid() -> None:
     report = validate_phone_areas_dataset()
 
     assert report.ok
-    assert report.record_count == 5
+    assert report.record_count > 5
     assert report.warnings
 
 
@@ -131,7 +131,10 @@ def test_phone_area_references_are_valid() -> None:
     regions = {record["code"] for record in load_dataset_records("regions", DATA_DIR / "regions.json")}
 
     assert len({json.dumps(record, ensure_ascii=False, sort_keys=True) for record in phone_areas}) == len(phone_areas)
-    for record in phone_areas:
+    assert len({record["code"] for record in phone_areas}) >= 5
+    linked_records = [record for record in phone_areas if record.get("municipalityCode")]
+    assert len(linked_records) == 2919
+    for record in linked_records:
         municipality = municipalities[record["municipalityCode"]]
         assert record["districtCode"] == municipality["districtCode"]
         assert record["regionCode"] == municipality["regionCode"]

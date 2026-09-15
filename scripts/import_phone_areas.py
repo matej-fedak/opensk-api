@@ -29,7 +29,7 @@ if hasattr(sys.stderr, "reconfigure"):
 DEFAULT_DATA_DIR = ROOT / "data"
 DEFAULT_OUTPUT = DEFAULT_DATA_DIR / "generated" / "phone_areas.json"
 DEFAULT_SOURCE = "Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data"
-VALID_FORMATS = ("auto", "csv", "json", "xlsx")
+VALID_FORMATS = ("auto", "csv", "json", "xlsx", "xls")
 
 from scripts.import_utils import _xlsx_rows, backup_existing_file, load_dataset_records, normalize_whitespace, write_json
 from scripts.validate_datasets import ValidationReport, validate_phone_areas_dataset
@@ -92,6 +92,8 @@ def _normalize_text_key(value: Any) -> str:
 def _normalize_phone_code(value: Any) -> str:
     text = normalize_whitespace(value).replace(" ", "")
     text = text.removeprefix("+").removeprefix("421") if text.startswith("+421") else text
+    if text.isdigit() and not text.startswith("0") and len(text) in {1, 2}:
+        text = f"0{text}"
     if not re.fullmatch(r"0\d{1,2}", text):
         raise ValueError(f"phone area code must match 0# or 0## format, got {value!r}")
     return text
@@ -126,6 +128,8 @@ def _resolve_input_format(path: Path, input_format: str) -> str:
         return "json"
     if suffix == ".xlsx":
         return "xlsx"
+    if suffix == ".xls":
+        return "xls"
     raise ValueError(f"Unable to detect input format from {path}")
 
 
@@ -147,7 +151,7 @@ def _read_xlsx(path: Path) -> list[dict[str, Any]]:
     rows = _xlsx_rows(path)
     header_index = -1
     headers: list[str | None] | None = None
-    required_aliases = ({"primarnaoblast", "primarnaoblastkod", "kod", "code", "smerovecislo"}, {"obec", "obecname", "municipality", "municipalityname", "nazovobce"})
+    required_aliases = ({"primarnaoblast", "primarnaoblastkod", "kod", "code", "smerovecislo", "ndc"}, {"obec", "obecname", "municipality", "municipalityname", "nazovobce"})
     for index, row in enumerate(rows):
         normalized = {_normalize_key(value) for value in row if value}
         if all(normalized & aliases for aliases in required_aliases):
@@ -171,6 +175,8 @@ def _load_source_records(path: Path, input_format: str) -> tuple[str, list[dict[
         return format_name, _read_csv(path)
     if format_name == "xlsx":
         return format_name, _read_xlsx(path)
+    if format_name == "xls":
+        raise ValueError("Legacy .xls input is not supported directly; convert the workbook's List1 sheet to CSV first.")
 
     payload = json.loads(path.read_text(encoding="utf-8"))
     if isinstance(payload, list):
@@ -200,10 +206,10 @@ def normalize_phone_area_record(
     warnings: list[str],
     row_number: int,
 ) -> dict[str, Any]:
-    code = _normalize_phone_code(_pick(raw_record, "code", "areaCode", "phoneAreaCode", "primaryAreaCode", "primárna oblasť", "primarna oblast", "smerové číslo", "smerove cislo"))
-    name = _pick(raw_record, "name", "areaName", "primaryAreaName", "názov primárnej oblasti", "nazov primarnej oblasti", "primaryArea") or code
+    code = _normalize_phone_code(_pick(raw_record, "code", "areaCode", "phoneAreaCode", "primaryAreaCode", "primárna oblasť", "primarna oblast", "smerové číslo", "smerove cislo", "NDC"))
+    name = _pick(raw_record, "name", "areaName", "primaryAreaName", "názov primárnej oblasti", "nazov primarnej oblasti", "primaryArea", "PO") or code
     municipality_name = _pick(raw_record, "municipalityName", "municipality", "obec", "názov obce", "nazov obce")
-    municipality_code = _pick(raw_record, "municipalityCode", "codeObce", "kod obce", "kód obce", "obecCode")
+    municipality_code = _pick(raw_record, "municipalityCode", "codeObce", "kod obce", "kód obce", "obecCode", "číselný kód obce", "ciselny kod obce")
 
     municipality: MunicipalityRecord | None = None
     if municipality_code:
@@ -222,7 +228,7 @@ def normalize_phone_area_record(
     return {
         "code": code,
         "name": name,
-        "municipalityCode": municipality.code if municipality is not None else (municipality_code or None),
+        "municipalityCode": municipality.code if municipality is not None else None,
         "municipalityName": municipality.name if municipality is not None else (municipality_name or None),
         "districtCode": municipality.district_code if municipality is not None else None,
         "regionCode": municipality.region_code if municipality is not None else None,
@@ -245,7 +251,7 @@ def build_phone_areas_payload(records: list[dict[str, Any]], source: str, last_u
         exact_key = json.dumps(record, ensure_ascii=False, sort_keys=True)
         if exact_key in seen_exact:
             result.duplicate_records += 1
-            result.errors.append(f"row {index + 1}: duplicate phone area record")
+            result.warnings.append(f"row {index + 1}: skipped duplicate phone area record")
             continue
         seen_exact.add(exact_key)
         if record.get("municipalityCode") and record.get("districtCode") and record.get("regionCode"):
@@ -261,7 +267,7 @@ def build_phone_areas_payload(records: list[dict[str, Any]], source: str, last_u
             "source": source,
             "license": "Source/licence verification pending.",
             "lastUpdated": last_updated,
-            "complete": False,
+            "complete": True,
         },
         "phoneAreas": normalized_records,
     }
