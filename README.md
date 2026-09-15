@@ -2,9 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.8.0` legacy vehicle registration district-code release.
+Status: `v1.9.0` school facility aggregate count release.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local. `v1.6.0` adds explicit source-compliance metadata and documentation without adding endpoints. `v1.7.0` adds phone-area lookup endpoints and an offline importer. `v1.7.1` imports the official telecom regulator phone-area workbook. `v1.8.0` adds legacy vehicle registration district-code reference endpoints.
+`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local. `v1.6.0` adds explicit source-compliance metadata and documentation without adding endpoints. `v1.7.0` adds phone-area lookup endpoints and an offline importer. `v1.7.1` imports the official telecom regulator phone-area workbook. `v1.8.0` adds legacy vehicle registration district-code reference endpoints. `v1.9.0` adds MŠVVaM aggregate school facility count endpoints.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -31,6 +31,8 @@ No API key is required. CORS is enabled for browser clients. All responses are J
 | `GET /v1/vehicle-registration-codes` | stable | Static legacy district-code reference; not a current plate lookup |
 | `GET /v1/vehicle-registration-codes/BA` | stable | Static legacy district-code lookup; does not identify vehicles or owners |
 | `GET /v1/vehicle-registration-codes/search?q=Trencin` | stable | Static legacy district-code search; does not decode full plates |
+| `GET /v1/school-facility-counts` | stable | Static MŠVVaM aggregate school facility counts; not a school directory |
+| `GET /v1/school-facility-counts/stats` | stable | Static aggregate totals by geography and school kind |
 
 ### Seed-backed
 
@@ -80,6 +82,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Runtime requests do not call upstream services; the API reads local JSON only.
 - `v1.7.1` imports phone areas from a retained official telecom regulator workbook: no upstream route calls and no database/cache infrastructure.
 - `v1.8.0` adds historical vehicle registration district abbreviations from Slov-Lex legal text; no full plate decoding or owner/vehicle lookup is provided.
+- `v1.9.0` adds aggregate school facility counts from the MŠVVaM RIS CSV; `/v1/schools` is intentionally not implemented because the confirmed source is not per-school data.
 
 ## Dataset Import Pipeline
 
@@ -94,6 +97,7 @@ python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output 
 python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --write
 python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write
+python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --dry-run
 python scripts/backfill_psc_districts.py --dry-run
 python scripts/backfill_psc_districts.py --write
 python scripts/validate_datasets.py
@@ -140,6 +144,7 @@ curl <base-url>/v1/psc/search?q=Bratislava
 curl <base-url>/v1/banks
 curl <base-url>/v1/regions
 curl <base-url>/v1/vehicle-registration-codes/BA
+curl <base-url>/v1/school-facility-counts/stats
 curl <base-url>/v1/companies/50158635
 ```
 
@@ -209,6 +214,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Banks are imported from the NBS domestic payment-system identification-code directory snapshot effective `2026-05-18`; source/licence verification remains pending.
 - Phone areas are imported from the telecom regulator's machine-processable workbook; licence/reuse verification remains pending.
 - Vehicle registration district codes are legacy/reference data from Slov-Lex legal text; they are not reliable for current plate lookup and do not decode full licence plates.
+- School facility counts are aggregate rows from the MŠVVaM `Register škôl a školských zariadení` CSV, valid as of `2025-09-15`; the API does not provide institution-level `/v1/schools` lookup.
+- School aggregate responses exclude school names, addresses, directors, staff, pupils, personal emails, and phone numbers.
 - IBAN validation and Slovak bank-code resolution run locally without network access.
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.

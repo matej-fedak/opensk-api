@@ -143,5 +143,24 @@
     "updateCadence": "Historical/reference dataset; manual legal-text review only",
     "nextAction": "Retain exact reuse terms for Slov-Lex legal texts and confirm whether transformed historical-reference JSON redistribution is allowed.",
     "notes": "93 legacy two-letter district abbreviations expanded from the legal table for vehicle registration numbers. This is not a current plate lookup, does not decode full plates, and does not identify vehicles or owners."
+  },
+  "schoolFacilityCounts": {
+    "status": "imported",
+    "coverage": "complete",
+    "sourceName": "MŠVVaM SR Register škôl a školských zariadení aggregate CSV",
+    "sourceUrl": "https://www.minedu.sk/dataset-register-skol-a-skolskych-zariadeni/",
+    "sourceFileUrl": "https://data.slovensko.sk/download?id=2ca3a9f8-819a-4ea1-8315-769c4fcc57da",
+    "licence": "Creative Commons BY as listed on the MŠVVaM source page.",
+    "licenceStatus": "Creative Commons BY listed by source; exact attribution wording should be retained",
+    "redistributionStatus": "allowed with attribution, pending exact retained terms",
+    "termsUrl": "https://www.minedu.sk/dataset-register-skol-a-skolskych-zariadeni/",
+    "attribution": "Attribute Ministerstvo školstva, výskumu, vývoja a mládeže Slovenskej republiky and the Register škôl a školských zariadení dataset.",
+    "riskLevel": "medium",
+    "lastChecked": "2026-09-15",
+    "lastUpdated": "2025-09-15",
+    "updateFrequency": "semiannual",
+    "updateCadence": "Semiannual MŠVVaM open-data refresh",
+    "nextAction": "Retain exact Creative Commons BY attribution wording and monitor future semiannual CSV refreshes.",
+    "notes": "Aggregate school facility count rows from RIS, valid as of 2025-09-15. This is not an institution-level school directory; no per-school lookup, addresses, staff, director, pupil, email, or phone data is exposed."
   }
 }

@@ -13,6 +13,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - Bank imports are handled by `scripts/import_banks.py` from offline NBS directory snapshots. Source/licence verification is still pending; runtime routes never call NBS.
 - Phone-area imports are handled by `scripts/import_phone_areas.py` from local CSV/JSON/XLSX files. The official regulator source is a legacy `.xls` workbook retained under `data/raw/`; convert the `List1` sheet to CSV before importing. Runtime routes never call the regulator.
 - Vehicle registration district codes are manually curated from Slov-Lex legal text into `data/vehicle_registration_codes.json`. This historical/reference dataset has no runtime upstream calls and no full-plate decoder.
+- School facility aggregate counts are handled by `scripts/import_school_facility_counts.py` from the confirmed local MŠVVaM CSV. The source is aggregate RIS data, not an institution-level school directory, and runtime routes never call MŠVVaM.
 
 ## Company Import Prototype
 
@@ -64,6 +65,7 @@ python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output 
 python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --dry-run
 python scripts/import_phone_areas.py --input data/raw/teleoff-phone-areas-30.csv --output data/generated/phone_areas.json --dry-run
+python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --dry-run
 ```
 
 ## Write Workflow
@@ -90,6 +92,7 @@ python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output 
 ```bash
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write --last-updated YYYY-MM-DD
 python scripts/import_phone_areas.py --input data/raw/teleoff-phone-areas-30.csv --output data/generated/phone_areas.json --write --last-updated 2026-09-15
+python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --write --last-updated 2025-09-15
 ```
 
 The importer refuses to write when validation fails. Referential integrity failures also block writes unless `--allow-incomplete` is explicitly provided.

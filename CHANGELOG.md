@@ -1,5 +1,14 @@
 # Changelog
 
+## v1.9.0
+
+- Added MŠVVaM `Register škôl a školských zariadení` as aggregate school facility count data, not an institution-level school directory.
+- Added offline `scripts/import_school_facility_counts.py` for the confirmed local CSV and retained the 2025-09-15 source CSV under `data/raw/`.
+- Added `data/school_facility_counts.json` with 1,227 aggregate rows and 7,026 total organizational units; all rows link to local region and district codes.
+- Added `GET /v1/school-facility-counts` and `GET /v1/school-facility-counts/stats` endpoints.
+- Intentionally did not add `/v1/schools` or per-school lookup routes because the confirmed source CSV contains aggregate rows only.
+- Kept privacy guardrails: no school names, addresses, staff, directors, pupils, personal emails, or phone numbers are exposed.
+
 ## v1.8.0
 
 - Added `data/vehicle_registration_codes.json` with 93 legacy two-letter district abbreviations from Slov-Lex legal text for vehicle registration numbers.

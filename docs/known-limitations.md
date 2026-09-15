@@ -10,6 +10,8 @@
 - Phone areas are imported from the telecom regulator workbook, but licence/reuse verification remains pending and 3 source municipality rows do not link to local municipality codes.
 - Vehicle registration district codes are legacy/reference data only; Slovakia changed plate allocation, so these abbreviations are not reliable for current plate lookup.
 - The API does not decode full licence plates, identify vehicles, or identify vehicle owners.
+- School facility counts are aggregate rows, not a school directory; `/v1/schools` and per-school lookup are intentionally not implemented.
+- School facility aggregate responses exclude institution names, addresses, staff, directors, pupils, emails, and phone numbers.
 - PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
 - PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
 - PSC source coverage remains partial and should not be presented as national coverage.

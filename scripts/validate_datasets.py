@@ -24,6 +24,7 @@ DEFAULT_MUNICIPALITIES_PATH = DEFAULT_DATA_DIR / "municipalities.json"
 DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
 DEFAULT_PHONE_AREAS_PATH = DEFAULT_DATA_DIR / "phone_areas.json"
 DEFAULT_VEHICLE_REGISTRATION_CODES_PATH = DEFAULT_DATA_DIR / "vehicle_registration_codes.json"
+DEFAULT_SCHOOL_FACILITY_COUNTS_PATH = DEFAULT_DATA_DIR / "school_facility_counts.json"
 DEFAULT_SOURCES_PATH = DEFAULT_DATA_DIR / "sources.json"
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
@@ -38,6 +39,27 @@ _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
 _PSC_CODE_RE = re.compile(r"\d{5}$")
 _PHONE_AREA_CODE_RE = re.compile(r"0\d{1,2}$")
 _VEHICLE_REGISTRATION_CODE_RE = re.compile(r"[A-Z]{2}$")
+_SCHOOL_FACILITY_FORBIDDEN_KEYS = {
+    "schoolCode",
+    "schoolName",
+    "address",
+    "street",
+    "municipalityCode",
+    "director",
+    "directorName",
+    "staff",
+    "staffName",
+    "teacher",
+    "teacherName",
+    "pupil",
+    "pupilName",
+    "student",
+    "studentName",
+    "birthDate",
+    "personalNumber",
+    "email",
+    "phone",
+}
 _COMPANY_FORBIDDEN_KEYS = {
     "statutoryBodies",
     "representatives",
@@ -360,7 +382,7 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
     if payload is None:
         return report
 
-    required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes"}
+    required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes", "schoolFacilityCounts"}
     allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
     allowed_risk_levels = {"low", "medium", "high", "pending"}
     missing = sorted(required_datasets - set(payload))
@@ -1084,6 +1106,87 @@ def validate_vehicle_registration_codes_dataset(path: Path = DEFAULT_VEHICLE_REG
     return report
 
 
+def _record_school_facility_forbidden_key_errors(report: ValidationReport, value: Any, path: str) -> None:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            item_path = f"{path}.{key}" if path else key
+            if key in _SCHOOL_FACILITY_FORBIDDEN_KEYS:
+                report.add_error(item_path, f"school facility count dataset must not include institution-level or personal field {key!r}")
+            _record_school_facility_forbidden_key_errors(report, item, item_path)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _record_school_facility_forbidden_key_errors(report, item, f"{path}[{index}]")
+
+
+def validate_school_facility_counts_dataset(path: Path = DEFAULT_SCHOOL_FACILITY_COUNTS_PATH) -> ValidationReport:
+    report = ValidationReport("schoolFacilityCounts", path)
+    payload = _load_json(report, path)
+    if not isinstance(payload, dict):
+        return report
+
+    metadata = _validate_dataset_metadata(report, payload)
+    _warn_if_seed(report, metadata)
+    _record_school_facility_forbidden_key_errors(report, payload, "")
+
+    records = _require_list(report, payload.get("schoolFacilityCounts"), "schoolFacilityCounts", "schoolFacilityCounts must be an array")
+    if records is None:
+        return report
+    if not records:
+        report.add_error("schoolFacilityCounts", "schoolFacilityCounts array must not be empty")
+
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "schoolFacilityCounts", registry.get("schoolFacilityCounts") if isinstance(registry, dict) else None)
+
+    districts = _records_by_code(data_dir, "districts", "code")
+    regions = _records_by_code(data_dir, "regions", "code")
+    seen_exact: set[str] = set()
+
+    for index, item in enumerate(records):
+        item_path = f"schoolFacilityCounts[{index}]"
+        if not isinstance(item, dict):
+            report.add_error(item_path, "school facility count record must be an object")
+            continue
+
+        for field_name in ("schoolKindShort", "schoolTypeShort", "kindLevel1", "kindLevel2", "founderOwnershipType", "founderType"):
+            _require_nullable_string(report, item.get(field_name), f"{item_path}.{field_name}", f"school facility {field_name} must be null or a string")
+
+        _require_string(report, item.get("regionName"), f"{item_path}.regionName", "school facility regionName must be a non-empty string")
+        _require_string(report, item.get("districtName"), f"{item_path}.districtName", "school facility districtName must be a non-empty string")
+
+        count = item.get("organizationalUnitCount")
+        if not isinstance(count, int) or count < 0:
+            report.add_error(f"{item_path}.organizationalUnitCount", f"school facility organizationalUnitCount must be a non-negative integer, got {count!r}")
+
+        country = _require_string(report, item.get("country"), f"{item_path}.country", "school facility country must be a non-empty string")
+        if country is not None and country != "SK":
+            report.add_error(f"{item_path}.country", f"school facility country must be 'SK', got {country!r}")
+
+        region_code = item.get("regionCode")
+        district_code = item.get("districtCode")
+        if not isinstance(region_code, str) or not _REGION_CODE_RE.fullmatch(region_code):
+            report.add_error(f"{item_path}.regionCode", f"school facility regionCode must match SK###, got {region_code!r}")
+        elif region_code not in regions:
+            report.add_error(f"{item_path}.regionCode", f"school facility regionCode {region_code!r} is not present in regions.json")
+
+        if district_code is not None and (not isinstance(district_code, str) or not _DISTRICT_CODE_RE.fullmatch(district_code)):
+            report.add_error(f"{item_path}.districtCode", f"school facility districtCode must be null or SK district code, got {district_code!r}")
+        elif isinstance(district_code, str):
+            district = districts.get(district_code)
+            if district is None:
+                report.add_error(f"{item_path}.districtCode", f"school facility districtCode {district_code!r} is not present in districts.json")
+            elif isinstance(region_code, str) and district.get("regionCode") != region_code:
+                report.add_error(f"{item_path}.districtCode", f"school facility districtCode {district_code!r} does not belong to region {region_code!r}")
+
+        exact_key = json.dumps(item, ensure_ascii=False, sort_keys=True)
+        if exact_key in seen_exact:
+            report.add_error(item_path, "duplicate school facility aggregate row")
+        seen_exact.add(exact_key)
+
+    report.record_count = len(records)
+    return report
+
+
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
         validate_sources_registry(data_dir / "sources.json"),
@@ -1102,6 +1205,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
     vehicle_registration_codes_path = data_dir / "vehicle_registration_codes.json"
     if vehicle_registration_codes_path.is_file():
         reports.append(validate_vehicle_registration_codes_dataset(vehicle_registration_codes_path))
+
+    school_facility_counts_path = data_dir / "school_facility_counts.json"
+    if school_facility_counts_path.is_file():
+        reports.append(validate_school_facility_counts_dataset(school_facility_counts_path))
 
     companies_path = data_dir / "companies.json"
     if companies_path.is_file():

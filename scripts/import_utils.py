@@ -977,6 +977,41 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
                     f"but vehicle registration regionCode is {region_code}"
                 )
 
+    school_facility_counts_path = data_dir / "school_facility_counts.json"
+    if not school_facility_counts_path.is_file():
+        return errors
+
+    school_facility_counts_payload = read_json(school_facility_counts_path)
+    if not isinstance(school_facility_counts_payload, dict):
+        errors.append("school_facility_counts.json: expected JSON object")
+        return errors
+
+    school_facility_records = school_facility_counts_payload.get("schoolFacilityCounts")
+    if not isinstance(school_facility_records, list):
+        errors.append("school_facility_counts.json: missing schoolFacilityCounts array")
+        return errors
+
+    for index, record in enumerate(school_facility_records):
+        item_label = f"School facility count schoolFacilityCounts[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{item_label}: record must be an object")
+            continue
+
+        region_code = record.get("regionCode")
+        district_code = record.get("districtCode")
+
+        if region_code is not None and region_code not in regions_by_code:
+            errors.append(f"{item_label}: unknown regionCode {region_code}")
+        if district_code is not None:
+            district = districts_by_code.get(str(district_code))
+            if district is None:
+                errors.append(f"{item_label}: unknown districtCode {district_code}")
+            elif region_code is not None and district.get("regionCode") != region_code:
+                errors.append(
+                    f"{item_label}: districtCode {district_code} belongs to regionCode {district.get('regionCode')}, "
+                    f"but school facility count regionCode is {region_code}"
+                )
+
     return errors
 
 

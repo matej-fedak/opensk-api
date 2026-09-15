@@ -21,6 +21,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Companies | Verified public organizational contact pages | seed-backed | Source/licence verification pending for broader redistribution. | pending verification | Manual | `2026-06-03` | Small checked-in legal-entity seed dataset; not full RPO coverage; personal/stakeholder fields excluded. | Verify RPO/privacy terms and future import terms. |
 | Phone areas | Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data | complete | Source/licence verification pending. | pending verification | Manual refresh from local regulator workbook snapshots | `2026-09-15` | 2,922 unique municipality-to-primary-area rows imported from retained workbook `30.xls`; 2,919 rows link to local municipality/district/region codes. | Verify licence/reuse terms and monitor unmatched source municipality codes. |
 | Vehicle registration codes | Slov-Lex static text of Vyhláška Ministerstva vnútra SR č. 9/2009 Z. z., § 36 ods. 2 | complete | Source/licence verification pending. | pending verification | Historical/reference dataset; manual legal-text review only | `2026-09-15` | 93 legacy two-letter district abbreviations for vehicle registration numbers; 84 link to local district codes and all 93 link to local region codes. Not a current plate lookup. | Verify Slov-Lex legal-text reuse terms and retain exact attribution requirements. |
+| School facility counts | MŠVVaM SR Register škôl a školských zariadení aggregate CSV | complete | Creative Commons BY as listed by source. | allowed with attribution, pending exact retained terms | Semiannual MŠVVaM open-data refresh | `2026-09-15` | 1,227 aggregate rows and 7,026 organizational units, valid as of `2025-09-15`; all rows link to local region and district codes. Not an institution-level school directory. | Retain exact CC BY attribution wording and monitor future semiannual refreshes. |
 
 Notes:
 
@@ -41,6 +42,8 @@ Notes:
 - Phone-area municipality links are present for 2,919 of 2,922 imported rows; unmatched source municipality codes are retained as rows with null local geography codes.
 - Vehicle registration codes are served locally from `data/vehicle_registration_codes.json`; this is historical/reference data only and does not decode full plates or identify current vehicles/owners.
 - Bratislava and Košice vehicle-registration abbreviations represent aggregate legal-table rows, so their `districtCode` is null rather than invented from current city district splits.
+- School facility counts are served locally from `data/school_facility_counts.json`; source is the MŠVVaM Register škôl a školských zariadení CSV from RIS.
+- The school-facility dataset is aggregate count data, not a school directory; `/v1/schools` was intentionally not implemented and no personal staff/pupil data is exposed.
 - RPO licence and privacy verification remain pending; see `docs/research/rpo-licence.md` and `docs/verification-backlog.md`.
 - The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.
 - Record provenance should be checked before any production expansion or redistribution.

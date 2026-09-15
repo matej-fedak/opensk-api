@@ -61,6 +61,10 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/vehicle-registration-codes/search" in schema["paths"]
     assert "/v1/vehicle-registration-codes/{code}" in schema["paths"]
     assert "/v1/vehicles/{spz}" not in schema["paths"]
+    assert "/v1/school-facility-counts" in schema["paths"]
+    assert "/v1/school-facility-counts/stats" in schema["paths"]
+    assert "/v1/schools" not in schema["paths"]
+    assert "/v1/schools/{code}" not in schema["paths"]
     assert "/v1/companies/{ico}" in schema["paths"]
     assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
@@ -394,6 +398,85 @@ def test_vehicle_registration_code_filters_work() -> None:
 
 def test_full_vehicle_plate_lookup_route_is_not_exposed() -> None:
     response = client.get("/v1/vehicles/BA123AA")
+
+    assert response.status_code == 404
+
+
+def test_school_facility_counts_list_returns_paginated_response() -> None:
+    response = client.get("/v1/school-facility-counts")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert body["data"]["total"] == 1227
+    assert body["data"]["count"] == 100
+    assert body["metadata"]["source"] == "OpenSK API static school facility aggregate count dataset"
+    assert body["metadata"]["lastUpdated"] == "2025-09-15"
+    assert body["error"] is None
+
+
+def test_school_facility_counts_filters_work() -> None:
+    response = client.get("/v1/school-facility-counts?regionCode=SK022&districtCode=SK0229&schoolKind=GYM")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 3
+    assert all(item["regionCode"] == "SK022" for item in body["data"]["items"])
+    assert all(item["districtCode"] == "SK0229" for item in body["data"]["items"])
+    assert all(item["schoolKindShort"] == "GYM" for item in body["data"]["items"])
+
+
+def test_school_facility_counts_name_filters_are_accent_insensitive() -> None:
+    response = client.get("/v1/school-facility-counts?districtName=Trencin&schoolType=GYM")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 3
+    assert all(item["districtName"] == "Trenčín" for item in body["data"]["items"])
+
+
+def test_school_facility_counts_invalid_limit_returns_400() -> None:
+    response = client.get("/v1/school-facility-counts?limit=abc")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_school_facility_counts_invalid_region_returns_400() -> None:
+    response = client.get("/v1/school-facility-counts?regionCode=SK01A")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_school_facility_counts_empty_filter_returns_200() -> None:
+    response = client.get("/v1/school-facility-counts?founderType=missing")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 0
+    assert body["data"]["items"] == []
+
+
+def test_school_facility_counts_stats_returns_totals() -> None:
+    response = client.get("/v1/school-facility-counts/stats")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["recordCount"] == 1227
+    assert body["data"]["totalOrganizationalUnitCount"] == 7026
+    assert body["data"]["regionLinkedCount"] == 1227
+    assert body["data"]["districtLinkedCount"] == 1227
+    assert body["data"]["totalsByRegion"]["SK010"] == 774
+    assert body["data"]["totalsBySchoolKind"]["MŠ"] == 3221
+
+
+def test_schools_route_is_not_exposed() -> None:
+    response = client.get("/v1/schools")
 
     assert response.status_code == 404
 

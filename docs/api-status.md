@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.8.0 legacy vehicle registration district-code release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.9.0 school facility aggregate count release.
 
 ## Stable
 
@@ -25,6 +25,8 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 | `GET /v1/vehicle-registration-codes` | stable | Local legacy vehicle registration district-code dataset; not a current plate lookup |
 | `GET /v1/vehicle-registration-codes/{code}` | stable | Local legacy district-code lookup; does not identify vehicles or owners |
 | `GET /v1/vehicle-registration-codes/search` | stable | Local legacy district-code search; does not decode full plates |
+| `GET /v1/school-facility-counts` | stable | Local MŠVVaM aggregate school facility counts; not a school directory |
+| `GET /v1/school-facility-counts/stats` | stable | Local school facility aggregate totals |
 | `/docs` | stable | Swagger UI |
 | `/openapi.json` | stable | OpenAPI schema |
 
@@ -56,4 +58,5 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
 - Phone areas are imported from the official telecom regulator Excel workbook, with licence/reuse verification still pending.
 - Vehicle registration codes are historical district abbreviations only; the API does not expose `GET /v1/vehicles/{spz}` and does not decode full plates.
+- School facility counts are aggregate RIS rows only; the API does not expose `/v1/schools` and does not include per-school, staff, director, pupil, email, or phone data.
 - Dataset compliance status, retained evidence, and draft clarification questions are documented in `docs/source-compliance.md` and `docs/research/`.

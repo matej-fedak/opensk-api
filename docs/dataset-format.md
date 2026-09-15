@@ -105,6 +105,7 @@ Each `companies[]` item uses this shape:
 - For imported municipality records, `districtCode` is required and is derived from PortalVS classifier 9 `code_su`.
 - PSC source data does not provide a reliable district mapping; checked-in PSC `districtCode` values are backfilled locally from `municipalityCode`.
 - Vehicle registration code `districtCode` is nullable when a legacy legal-table row does not map to one current local district.
+- School facility counts do not include `municipalityCode`, school identifiers, school names, or addresses because the confirmed source CSV contains aggregate rows only.
 
 ## Common Metadata
 
@@ -228,6 +229,36 @@ Where present, dataset metadata uses this shape:
   ]
 }
 ```
+
+### `data/school_facility_counts.json`
+
+```json
+{
+  "metadata": { ... },
+  "schoolFacilityCounts": [
+    {
+      "schoolKindShort": "GYM",
+      "schoolTypeShort": "GYM",
+      "kindLevel1": "SŠ",
+      "kindLevel2": "GYM",
+      "regionName": "Bratislavský",
+      "regionCode": "SK010",
+      "districtName": "Bratislava I",
+      "districtCode": "SK0101",
+      "organizationalUnitCount": 2,
+      "founderOwnershipType": "cirkevná",
+      "founderType": "cirkev, náboženská spoločnosť",
+      "country": "SK"
+    }
+  ]
+}
+```
+
+- `organizationalUnitCount` is an integer count from the source field `Počet organizačných zložiek`.
+- `regionCode` comes from source `NUTS3` and is validated against local regions.
+- `districtCode` comes from source `LAU1`; alphabetical LAU suffixes are transformed only when they match local district code, name, and region.
+- This file contains aggregate rows only, not institution records. Do not add `schoolCode`, `schoolName`, `address`, director/staff/pupil fields, email, or phone fields.
+- `/v1/schools` is intentionally not implemented for this source.
 
 ### `data/municipalities.json`
 

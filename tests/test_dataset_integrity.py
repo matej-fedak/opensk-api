@@ -17,13 +17,14 @@ from scripts.validate_datasets import (
     validate_phone_areas_dataset,
     validate_psc_dataset,
     validate_regions_dataset,
+    validate_school_facility_counts_dataset,
     validate_sources_registry,
     validate_vehicle_registration_codes_dataset,
 )
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes"}
+PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes", "schoolFacilityCounts"}
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
 
@@ -51,7 +52,7 @@ def _write_companies_dataset(target_dir: Path, payload: dict[str, object]) -> No
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
-    assert len(reports) == 10
+    assert len(reports) == 11
     assert all(report.record_count > 0 for report in reports)
     assert all(report.ok for report in reports)
 
@@ -167,6 +168,39 @@ def test_vehicle_registration_code_references_are_valid() -> None:
         if district_code:
             assert district_code in districts
             assert districts[district_code]["regionCode"] == record["regionCode"]
+
+
+def test_school_facility_counts_dataset_is_valid() -> None:
+    report = validate_school_facility_counts_dataset()
+
+    assert report.ok
+    assert report.record_count == 1227
+    assert report.warnings
+
+
+def test_school_facility_counts_references_are_valid() -> None:
+    records = load_dataset_records("schoolFacilityCounts", DATA_DIR / "school_facility_counts.json")
+    districts = {record["code"]: record for record in load_dataset_records("districts", DATA_DIR / "districts.json")}
+    regions = {record["code"] for record in load_dataset_records("regions", DATA_DIR / "regions.json")}
+
+    assert len({json.dumps(record, ensure_ascii=False, sort_keys=True) for record in records}) == len(records)
+    assert all(isinstance(record["organizationalUnitCount"], int) and record["organizationalUnitCount"] >= 0 for record in records)
+    assert sum(record["organizationalUnitCount"] for record in records) == 7026
+    assert sum(1 for record in records if record.get("regionCode")) == 1227
+    assert sum(1 for record in records if record.get("districtCode")) == 1227
+    assert all(record["regionCode"] in regions for record in records)
+    for record in records:
+        district_code = record.get("districtCode")
+        assert district_code in districts
+        assert districts[district_code]["regionCode"] == record["regionCode"]
+
+
+def test_school_facility_counts_do_not_include_institution_or_person_fields() -> None:
+    payload = json.loads((DATA_DIR / "school_facility_counts.json").read_text(encoding="utf-8"))
+    records = payload["schoolFacilityCounts"]
+
+    forbidden = ["schoolCode", "schoolName", "address", "director", "staff", "pupil", "email", "phone"]
+    assert all(field not in record for record in records for field in forbidden)
 
 
 def test_district_region_codes_reference_existing_regions() -> None:

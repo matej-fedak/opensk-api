@@ -15,6 +15,7 @@ This page records the current source-compliance posture. It is not legal advice.
 | Companies | seed-only | Verified public organizational contact pages | Multiple official contact pages | pending | Source/licence verification pending for broader redistribution. | Pending verification. | Attribute each verified organizational source where practical; exact wording is source-specific and pending. | source-specific pages, RPO expansion pending | pending | Ask ŠÚ SR/RPO about reuse, local caching, redistribution, commercial use, bulk limits, and privacy constraints. |
 | Phone areas | complete imported | Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data | `https://www.teleoff.gov.sk/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/1.html` | pending | Source/licence verification pending. | Pending verification. | Attribute the telecom regulator numbering data if reuse is approved; exact wording pending. | official source page and retained workbook URL | pending | Verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained workbook. |
 | Vehicle registration codes | historical/reference | Slov-Lex static text of Vyhláška MV SR č. 9/2009 Z. z., § 36 ods. 2 | `https://static.slov-lex.sk/static/SK/ZZ/2009/9/20191201.html` | pending | Source/licence verification pending. | Pending verification. | Attribute Slov-Lex and the legal regulation if reuse is approved; exact wording pending. | official legal text; terms pending | pending | Verify Slov-Lex legal-text reuse, transformation, redistribution, commercial-use, and attribution terms. |
+| School facility counts | aggregate counts | MŠVVaM SR Register škôl a školských zariadení CSV | `https://www.minedu.sk/dataset-register-skol-a-skolskych-zariadeni/` | `https://www.minedu.sk/dataset-register-skol-a-skolskych-zariadeni/` | Creative Commons BY listed by source; exact attribution wording should be retained. | Allowed with attribution, pending exact retained terms. | Attribute MŠVVaM SR and the Register škôl a školských zariadení dataset. | official source page lists Creative Commons BY | medium | Retain exact CC BY attribution wording and monitor semiannual source refreshes. |
 
 ## Current Rules
 
@@ -24,6 +25,7 @@ This page records the current source-compliance posture. It is not legal advice.
 - Do not remove `Source/licence verification pending.` or risk warnings without retained evidence.
 - Do not claim official endorsement.
 - Do not present legacy vehicle registration district codes as current plate lookup, full plate decoding, vehicle lookup, or owner lookup.
+- Do not present school facility aggregate counts as an institution-level school directory or expose staff, director, pupil, email, or phone data.
 
 ## Unresolved Questions
 
@@ -32,4 +34,5 @@ This page records the current source-compliance posture. It is not legal advice.
 - Whether the NBS bank-code directory has a specific attribution or no-modification requirement.
 - Whether RPO or ŠÚ SR permits local caching and public redistribution, especially when source material can include natural-person entrepreneurs or role-holder personal data.
 - Whether Slov-Lex legal texts may be transformed into a small historical-reference JSON table and redistributed through an open-source API.
+- Exact attribution wording and licence-version details for the MŠVVaM Creative Commons BY school-facility aggregate CSV.
 - Whether each source has required notices that must be preserved verbatim in docs or API metadata.
