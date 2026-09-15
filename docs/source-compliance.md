@@ -14,14 +14,16 @@ This page records the current source-compliance posture. It is not legal advice.
 | Holidays | partial/curated seed | NBS holidays page and Act 241/1993 | `https://www.nbs.sk/en/about-the-bank/holidays-in-slovakia/` | pending | Reuse statement identified; exact dataset redistribution terms should be retained on file. | Allowed with attribution and no modification, pending retained evidence. | Attribute the National Bank of Slovakia holidays page and Act 241/1993 where applicable. | official source page plus legal act reference; exact notice pending in repo | medium | Retain the exact NBS disclaimer text and confirm curated JSON redistribution conditions. |
 | Companies | seed-only | Verified public organizational contact pages | Multiple official contact pages | pending | Source/licence verification pending for broader redistribution. | Pending verification. | Attribute each verified organizational source where practical; exact wording is source-specific and pending. | source-specific pages, RPO expansion pending | pending | Ask ŠÚ SR/RPO about reuse, local caching, redistribution, commercial use, bulk limits, and privacy constraints. |
 | Phone areas | complete imported | Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data | `https://www.teleoff.gov.sk/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/1.html` | pending | Source/licence verification pending. | Pending verification. | Attribute the telecom regulator numbering data if reuse is approved; exact wording pending. | official source page and retained workbook URL | pending | Verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained workbook. |
+| Vehicle registration codes | historical/reference | Slov-Lex static text of Vyhláška MV SR č. 9/2009 Z. z., § 36 ods. 2 | `https://static.slov-lex.sk/static/SK/ZZ/2009/9/20191201.html` | pending | Source/licence verification pending. | Pending verification. | Attribute Slov-Lex and the legal regulation if reuse is approved; exact wording pending. | official legal text; terms pending | pending | Verify Slov-Lex legal-text reuse, transformation, redistribution, commercial-use, and attribution terms. |
 
 ## Current Rules
 
 - Runtime requests must read local files only.
-- Do not add new endpoint domains until unresolved licence and redistribution questions are reduced.
+- New endpoint domains require explicit milestone scope and conservative source/licence wording.
 - Do not scrape ORSR, ŽRSR, or unstable HTML pages for runtime data.
 - Do not remove `Source/licence verification pending.` or risk warnings without retained evidence.
 - Do not claim official endorsement.
+- Do not present legacy vehicle registration district codes as current plate lookup, full plate decoding, vehicle lookup, or owner lookup.
 
 ## Unresolved Questions
 
@@ -29,4 +31,5 @@ This page records the current source-compliance posture. It is not legal advice.
 - Whether transformed/local JSON snapshots count as modified data under NBS terms.
 - Whether the NBS bank-code directory has a specific attribution or no-modification requirement.
 - Whether RPO or ŠÚ SR permits local caching and public redistribution, especially when source material can include natural-person entrepreneurs or role-holder personal data.
+- Whether Slov-Lex legal texts may be transformed into a small historical-reference JSON table and redistributed through an open-source API.
 - Whether each source has required notices that must be preserved verbatim in docs or API metadata.

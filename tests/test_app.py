@@ -57,6 +57,10 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/phone-areas" in schema["paths"]
     assert "/v1/phone-areas/search" in schema["paths"]
     assert "/v1/phone-areas/{code}" in schema["paths"]
+    assert "/v1/vehicle-registration-codes" in schema["paths"]
+    assert "/v1/vehicle-registration-codes/search" in schema["paths"]
+    assert "/v1/vehicle-registration-codes/{code}" in schema["paths"]
+    assert "/v1/vehicles/{spz}" not in schema["paths"]
     assert "/v1/companies/{ico}" in schema["paths"]
     assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
@@ -321,6 +325,77 @@ def test_phone_area_search_by_municipality_name() -> None:
     body = response.json()
     assert body["data"]["total"] >= 1
     assert any(item["code"] == "02" for item in body["data"]["items"])
+
+
+def test_vehicle_registration_codes_list_returns_paginated_response() -> None:
+    response = client.get("/v1/vehicle-registration-codes")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert body["data"]["total"] == 93
+    assert body["data"]["count"] == 93
+    assert any(item["code"] == "BA" for item in body["data"]["items"])
+    assert body["metadata"]["source"] == "OpenSK API static legacy vehicle registration code dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-09-15"
+    assert body["error"] is None
+
+
+def test_vehicle_registration_code_lookup_returns_legacy_reference() -> None:
+    response = client.get("/v1/vehicle-registration-codes/ba")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "BA"
+    assert body["data"]["districtName"] == "Bratislava"
+    assert body["data"]["districtCode"] is None
+    assert body["data"]["regionCode"] == "SK010"
+    assert body["data"]["status"] == "legacy"
+    assert "not reliable for current plate lookup" in body["data"]["notes"]
+    assert body["error"] is None
+
+
+def test_vehicle_registration_invalid_code_returns_400() -> None:
+    response = client.get("/v1/vehicle-registration-codes/BA123AA")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_vehicle_registration_unknown_valid_code_returns_404() -> None:
+    response = client.get("/v1/vehicle-registration-codes/AA")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_vehicle_registration_code_search_by_district_name() -> None:
+    response = client.get("/v1/vehicle-registration-codes/search?q=Trencin")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 3
+    assert {item["code"] for item in body["data"]["items"]} == {"TN", "TC", "TE"}
+
+
+def test_vehicle_registration_code_filters_work() -> None:
+    by_region = client.get("/v1/vehicle-registration-codes?regionCode=SK010")
+    by_district = client.get("/v1/vehicle-registration-codes?districtCode=SK0229")
+
+    assert by_region.status_code == 200
+    assert {item["code"] for item in by_region.json()["data"]["items"]} >= {"BA", "BD", "BE", "BI", "BL", "BT", "MA", "PK", "SC"}
+    assert by_district.status_code == 200
+    assert {item["code"] for item in by_district.json()["data"]["items"]} == {"TN", "TC", "TE"}
+
+
+def test_full_vehicle_plate_lookup_route_is_not_exposed() -> None:
+    response = client.get("/v1/vehicles/BA123AA")
+
+    assert response.status_code == 404
 
 
 def test_districts_region_filter_returns_subset() -> None:

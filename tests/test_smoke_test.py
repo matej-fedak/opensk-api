@@ -21,6 +21,7 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
         "/v1/phone-areas": (200, {"data": {"items": []}}),
         "/v1/phone-areas/02": (200, {"data": {"code": "02", "items": []}}),
         "/v1/phone-areas/search?q=Bratislava": (200, {"data": {"items": []}}),
+        "/v1/vehicle-registration-codes/BA": (200, {"data": {"code": "BA"}}),
         "/v1/companies/50158635": (200, {"data": {"ico": "50158635"}}),
         "/v1/ico/50158635": (200, {"data": {"ico": "50158635"}}),
         "/docs": (200, "docs"),

@@ -18,11 +18,12 @@ from scripts.validate_datasets import (
     validate_psc_dataset,
     validate_regions_dataset,
     validate_sources_registry,
+    validate_vehicle_registration_codes_dataset,
 )
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas"}
+PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes"}
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
 
@@ -50,7 +51,7 @@ def _write_companies_dataset(target_dir: Path, payload: dict[str, object]) -> No
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
-    assert len(reports) == 9
+    assert len(reports) == 10
     assert all(report.record_count > 0 for report in reports)
     assert all(report.ok for report in reports)
 
@@ -140,6 +141,32 @@ def test_phone_area_references_are_valid() -> None:
         assert record["regionCode"] == municipality["regionCode"]
         assert record["districtCode"] in districts
         assert record["regionCode"] in regions
+
+
+def test_vehicle_registration_codes_dataset_is_valid() -> None:
+    report = validate_vehicle_registration_codes_dataset()
+
+    assert report.ok
+    assert report.record_count == 93
+    assert report.warnings
+
+
+def test_vehicle_registration_code_references_are_valid() -> None:
+    records = load_dataset_records("vehicleRegistrationCodes", DATA_DIR / "vehicle_registration_codes.json")
+    districts = {record["code"]: record for record in load_dataset_records("districts", DATA_DIR / "districts.json")}
+    regions = {record["code"] for record in load_dataset_records("regions", DATA_DIR / "regions.json")}
+
+    assert len({record["code"] for record in records}) == 93
+    assert all(record["status"] == "legacy" for record in records)
+    assert all("not reliable for current plate lookup" in record["notes"] for record in records)
+    assert sum(1 for record in records if record.get("districtCode")) == 84
+    assert sum(1 for record in records if record.get("regionCode")) == 93
+    assert all(record["regionCode"] in regions for record in records if record.get("regionCode"))
+    for record in records:
+        district_code = record.get("districtCode")
+        if district_code:
+            assert district_code in districts
+            assert districts[district_code]["regionCode"] == record["regionCode"]
 
 
 def test_district_region_codes_reference_existing_regions() -> None:

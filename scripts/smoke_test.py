@@ -155,6 +155,7 @@ def main(argv: list[str] | None = None) -> int:
         ("phone-areas", f"{base_url}/v1/phone-areas"),
         ("phone-area-item", f"{base_url}/v1/phone-areas/02"),
         ("phone-area-search", f"{base_url}/v1/phone-areas/search?q={quote('Bratislava')}", 200),
+        ("vehicle-registration-code", f"{base_url}/v1/vehicle-registration-codes/BA"),
         ("companies", f"{base_url}/v1/companies/50158635", 200),
     ]
 

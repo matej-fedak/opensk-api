@@ -12,6 +12,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. `scripts/backfill_psc_districts.py` backfills PSC `districtCode` from `municipalityCode` using local municipality mappings only; no values are inferred from names or PSC patterns. PSC coverage remains partial rather than national.
 - Bank imports are handled by `scripts/import_banks.py` from offline NBS directory snapshots. Source/licence verification is still pending; runtime routes never call NBS.
 - Phone-area imports are handled by `scripts/import_phone_areas.py` from local CSV/JSON/XLSX files. The official regulator source is a legacy `.xls` workbook retained under `data/raw/`; convert the `List1` sheet to CSV before importing. Runtime routes never call the regulator.
+- Vehicle registration district codes are manually curated from Slov-Lex legal text into `data/vehicle_registration_codes.json`. This historical/reference dataset has no runtime upstream calls and no full-plate decoder.
 
 ## Company Import Prototype
 

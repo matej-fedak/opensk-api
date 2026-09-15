@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.7.1 phone-area source import completion release.
+v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.8.0 legacy vehicle registration district-code release.
 
 ## Stable
 
@@ -22,6 +22,9 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 | `GET /v1/phone-areas` | stable | Local imported phone-area dataset; source/licence verification pending |
 | `GET /v1/phone-areas/{code}` | stable | Local imported phone-area lookup; source/licence verification pending |
 | `GET /v1/phone-areas/search` | stable | Local imported phone-area search; source/licence verification pending |
+| `GET /v1/vehicle-registration-codes` | stable | Local legacy vehicle registration district-code dataset; not a current plate lookup |
+| `GET /v1/vehicle-registration-codes/{code}` | stable | Local legacy district-code lookup; does not identify vehicles or owners |
+| `GET /v1/vehicle-registration-codes/search` | stable | Local legacy district-code search; does not decode full plates |
 | `/docs` | stable | Swagger UI |
 | `/openapi.json` | stable | OpenAPI schema |
 
@@ -52,4 +55,5 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 - Banks are imported from an offline NBS directory snapshot and include inactive rows; source/licence verification remains pending.
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
 - Phone areas are imported from the official telecom regulator Excel workbook, with licence/reuse verification still pending.
+- Vehicle registration codes are historical district abbreviations only; the API does not expose `GET /v1/vehicles/{spz}` and does not decode full plates.
 - Dataset compliance status, retained evidence, and draft clarification questions are documented in `docs/source-compliance.md` and `docs/research/`.

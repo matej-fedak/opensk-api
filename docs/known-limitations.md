@@ -8,6 +8,8 @@
 - Municipalities are now mapped to districts via PortalVS classifier 9, but source/licence verification is still pending and the dataset should not be presented as open redistribution material.
 - Banks are expanded from an offline NBS directory snapshot, but source/licence verification remains pending and inactive rows are retained with `activeParty: false`.
 - Phone areas are imported from the telecom regulator workbook, but licence/reuse verification remains pending and 3 source municipality rows do not link to local municipality codes.
+- Vehicle registration district codes are legacy/reference data only; Slovakia changed plate allocation, so these abbreviations are not reliable for current plate lookup.
+- The API does not decode full licence plates, identify vehicles, or identify vehicle owners.
 - PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
 - PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
 - PSC source coverage remains partial and should not be presented as national coverage.

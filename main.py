@@ -16,13 +16,14 @@ from routers.municipalities import router as municipalities_router
 from routers.phone_areas import router as phone_areas_router
 from routers.psc import router as psc_router
 from routers.regions import router as regions_router
+from routers.vehicle_registration_codes import router as vehicle_registration_codes_router
 from schemas.common import API_SOURCE, error_detail, error_response, success_response
 
 
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="1.7.1",
+    version="1.8.0",
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
@@ -36,6 +37,7 @@ app = FastAPI(
         {"name": "psc", "description": "Static Slovak postal code lookups."},
         {"name": "companies", "description": "Local company lookup endpoints backed by the checked-in dataset."},
         {"name": "phone-areas", "description": "Static Slovak primary telephone area lookups."},
+        {"name": "vehicle-registration-codes", "description": "Static legacy Slovak vehicle registration district abbreviations; not a current plate lookup."},
     ],
 )
 
@@ -111,3 +113,4 @@ app.include_router(regions_router, prefix="/v1")
 app.include_router(districts_router, prefix="/v1")
 app.include_router(municipalities_router, prefix="/v1")
 app.include_router(phone_areas_router, prefix="/v1")
+app.include_router(vehicle_registration_codes_router, prefix="/v1")

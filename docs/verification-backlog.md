@@ -8,5 +8,6 @@
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
 - Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.
+- Slov-Lex legal-text reuse, attribution, transformation, commercial-use, and redistribution verification for legacy vehicle registration district-code data.
 - Monitor PSC rows whose municipality mappings could become unresolved in future source refreshes.
 - Keep `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` aligned after each source-owner answer.

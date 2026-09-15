@@ -20,6 +20,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 | Holidays | NBS holidays page and Act 241/1993 | partial | NBS disclaimer allows reuse with attribution and no modification. | allowed with attribution and no modification | Annual legislative updates | `2026-05-25` | Curated 2024-2026 holiday lists. | Confirm any future update source and preserve attribution. |
 | Companies | Verified public organizational contact pages | seed-backed | Source/licence verification pending for broader redistribution. | pending verification | Manual | `2026-06-03` | Small checked-in legal-entity seed dataset; not full RPO coverage; personal/stakeholder fields excluded. | Verify RPO/privacy terms and future import terms. |
 | Phone areas | Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data | complete | Source/licence verification pending. | pending verification | Manual refresh from local regulator workbook snapshots | `2026-09-15` | 2,922 unique municipality-to-primary-area rows imported from retained workbook `30.xls`; 2,919 rows link to local municipality/district/region codes. | Verify licence/reuse terms and monitor unmatched source municipality codes. |
+| Vehicle registration codes | Slov-Lex static text of Vyhláška Ministerstva vnútra SR č. 9/2009 Z. z., § 36 ods. 2 | complete | Source/licence verification pending. | pending verification | Historical/reference dataset; manual legal-text review only | `2026-09-15` | 93 legacy two-letter district abbreviations for vehicle registration numbers; 84 link to local district codes and all 93 link to local region codes. Not a current plate lookup. | Verify Slov-Lex legal-text reuse terms and retain exact attribution requirements. |
 
 Notes:
 
@@ -38,6 +39,8 @@ Notes:
 - Company/IČO notes intentionally exclude personal, stakeholder, and other role-holder fields.
 - Phone areas are served locally from `data/phone_areas.json`; API routes do not call the telecom regulator.
 - Phone-area municipality links are present for 2,919 of 2,922 imported rows; unmatched source municipality codes are retained as rows with null local geography codes.
+- Vehicle registration codes are served locally from `data/vehicle_registration_codes.json`; this is historical/reference data only and does not decode full plates or identify current vehicles/owners.
+- Bratislava and Košice vehicle-registration abbreviations represent aggregate legal-table rows, so their `districtCode` is null rather than invented from current city district splits.
 - RPO licence and privacy verification remain pending; see `docs/research/rpo-licence.md` and `docs/verification-backlog.md`.
 - The proposed company schema and source notes live in `docs/dataset-format.md` and `docs/research/ico-sources.md`.
 - Record provenance should be checked before any production expansion or redistribution.

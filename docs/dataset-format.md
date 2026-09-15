@@ -104,6 +104,7 @@ Each `companies[]` item uses this shape:
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
 - For imported municipality records, `districtCode` is required and is derived from PortalVS classifier 9 `code_su`.
 - PSC source data does not provide a reliable district mapping; checked-in PSC `districtCode` values are backfilled locally from `municipalityCode`.
+- Vehicle registration code `districtCode` is nullable when a legacy legal-table row does not map to one current local district.
 
 ## Common Metadata
 
@@ -190,6 +191,32 @@ Where present, dataset metadata uses this shape:
 - One code can have multiple municipality rows.
 - `municipalityCode`, `districtCode`, and `regionCode` are nullable for imported rows when source matching is not reliable.
 - Current checked-in data is imported from the retained telecom regulator workbook; source/licence verification remains pending.
+
+### `data/vehicle_registration_codes.json`
+
+```json
+{
+  "metadata": { ... },
+  "vehicleRegistrationCodes": [
+    {
+      "code": "BA",
+      "districtName": "Bratislava",
+      "districtCode": null,
+      "regionCode": "SK010",
+      "validFrom": null,
+      "validTo": "2023-01-01",
+      "status": "legacy",
+      "notes": "Legacy district abbreviation; not reliable for current plate lookup."
+    }
+  ]
+}
+```
+
+- `code` is a two-letter legacy district abbreviation from Slov-Lex legal text for vehicle registration numbers.
+- `status` is always `legacy`.
+- `districtCode` and `regionCode` link to local geography only where that mapping is reliable.
+- This dataset is historical/reference data only; it does not decode full licence plates, identify vehicles, or identify owners.
+- `validFrom` is currently null because exact start dates are not retained per abbreviation; `validTo` marks the start of the post-2023 allocation model and should not be read as the expiry of already issued plates.
 
 ### `data/districts.json`
 

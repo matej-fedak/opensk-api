@@ -127,5 +127,21 @@
     "updateCadence": "Manual refresh from local regulator workbook snapshots",
     "nextAction": "Verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained official phone-area workbook.",
     "notes": "2,922 unique municipality-to-primary-area rows imported from the official legacy Excel workbook; 2,919 rows link to local municipality, district, and region codes. Runtime routes read local JSON only."
+  },
+  "vehicleRegistrationCodes": {
+    "status": "verified-source",
+    "coverage": "complete",
+    "sourceName": "Slov-Lex static text of Vyhláška Ministerstva vnútra SR č. 9/2009 Z. z., § 36 ods. 2",
+    "sourceUrl": "https://static.slov-lex.sk/static/SK/ZZ/2009/9/20191201.html",
+    "licence": "Source/licence verification pending.",
+    "licenceStatus": "pending verification",
+    "redistributionStatus": "pending verification",
+    "termsUrl": "pending",
+    "attribution": "Attribute Slov-Lex and Vyhláška Ministerstva vnútra SR č. 9/2009 Z. z. if reuse is approved; exact required wording is pending.",
+    "riskLevel": "pending",
+    "lastChecked": "2026-09-15",
+    "updateCadence": "Historical/reference dataset; manual legal-text review only",
+    "nextAction": "Retain exact reuse terms for Slov-Lex legal texts and confirm whether transformed historical-reference JSON redistribution is allowed.",
+    "notes": "93 legacy two-letter district abbreviations expanded from the legal table for vehicle registration numbers. This is not a current plate lookup, does not decode full plates, and does not identify vehicles or owners."
   }
 }

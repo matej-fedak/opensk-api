@@ -938,6 +938,45 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
             if region_code is not None and region_code != expected_region:
                 errors.append(f"{item_label}: municipalityCode {municipality_code} belongs to regionCode {expected_region}, but phone area regionCode is {region_code}")
 
+    vehicle_registration_codes_path = data_dir / "vehicle_registration_codes.json"
+    if not vehicle_registration_codes_path.is_file():
+        return errors
+
+    vehicle_registration_codes_payload = read_json(vehicle_registration_codes_path)
+    if not isinstance(vehicle_registration_codes_payload, dict):
+        errors.append("vehicle_registration_codes.json: expected JSON object")
+        return errors
+
+    vehicle_registration_records = vehicle_registration_codes_payload.get("vehicleRegistrationCodes")
+    if not isinstance(vehicle_registration_records, list):
+        errors.append("vehicle_registration_codes.json: missing vehicleRegistrationCodes array")
+        return errors
+
+    for index, record in enumerate(vehicle_registration_records):
+        item_label = f"Vehicle registration code vehicleRegistrationCodes[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{item_label}: record must be an object")
+            continue
+
+        code = record.get("code")
+        if isinstance(code, str) and code:
+            item_label = f"Vehicle registration code {code}"
+
+        region_code = record.get("regionCode")
+        district_code = record.get("districtCode")
+
+        if region_code is not None and region_code not in regions_by_code:
+            errors.append(f"{item_label}: unknown regionCode {region_code}")
+        if district_code is not None:
+            district = districts_by_code.get(str(district_code))
+            if district is None:
+                errors.append(f"{item_label}: unknown districtCode {district_code}")
+            elif region_code is not None and district.get("regionCode") != region_code:
+                errors.append(
+                    f"{item_label}: districtCode {district_code} belongs to regionCode {district.get('regionCode')}, "
+                    f"but vehicle registration regionCode is {region_code}"
+                )
+
     return errors
 
 

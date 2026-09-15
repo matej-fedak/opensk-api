@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.8.0
+
+- Added `data/vehicle_registration_codes.json` with 93 legacy two-letter district abbreviations from Slov-Lex legal text for vehicle registration numbers.
+- Added `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, and `GET /v1/vehicle-registration-codes/search` endpoints.
+- Linked 84 records to local district codes and all 93 records to local region codes; aggregate Bratislava and Košice abbreviations intentionally keep `districtCode: null`.
+- Added validation, referential integrity checks, API tests, dataset tests, and smoke-test coverage.
+- Kept wording conservative: this is historical/reference data only, not a full plate lookup, current vehicle lookup, owner lookup, or proof of current plate-to-district accuracy.
+
 ## v1.7.1
 
 - Located and retained the official telecom regulator phone-area workbook source (`30.xls`) and converted its `List1` sheet to CSV for reproducible offline imports.
