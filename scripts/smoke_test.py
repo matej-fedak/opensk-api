@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from dataclasses import dataclass, field
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
@@ -30,15 +31,26 @@ def _normalize_base_url(base_url: str) -> str:
 
 def _request_json(url: str) -> tuple[int, object]:
     request = Request(url, headers={"Accept": "application/json"})
-    try:
-        with urlopen(request, timeout=15) as response:
-            status = response.status
-            payload = response.read().decode("utf-8")
-    except HTTPError as exc:
-        status = exc.code
-        payload = exc.read().decode("utf-8")
-    except URLError as exc:
-        raise RuntimeError(str(exc.reason)) from exc
+    last_error: BaseException | None = None
+    for attempt in range(2):
+        try:
+            with urlopen(request, timeout=15) as response:
+                status = response.status
+                payload = response.read().decode("utf-8")
+                break
+        except HTTPError as exc:
+            status = exc.code
+            payload = exc.read().decode("utf-8")
+            break
+        except (TimeoutError, URLError) as exc:
+            last_error = exc
+            if attempt == 0:
+                time.sleep(5)
+                continue
+            reason = getattr(exc, "reason", exc)
+            raise RuntimeError(str(reason)) from exc
+    else:
+        raise RuntimeError(str(last_error))
 
     try:
         body = json.loads(payload)
@@ -71,7 +83,7 @@ def _check_root(url: str) -> SmokeResult:
     try:
         data = body["data"]
         metadata = body["metadata"]
-        if data["version"] == "0.12.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
+        if data["version"] == "0.13.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
             return SmokeResult("root", True, "PASS")
     except Exception:
         return SmokeResult("root", False, "FAIL", f"unexpected body: {body!r}")
@@ -114,8 +126,8 @@ def _check_openapi(url: str) -> SmokeResult:
     missing = sorted(required_paths - paths)
     if missing:
         return SmokeResult("openapi", False, "FAIL", f"missing paths: {missing}")
-    if version != "0.12.0":
-        return SmokeResult("openapi", False, "FAIL", f"expected version 0.12.0, got {version!r}")
+    if version != "0.13.0":
+        return SmokeResult("openapi", False, "FAIL", f"expected version 0.13.0, got {version!r}")
 
     return SmokeResult("openapi", True, "PASS")
 
