@@ -2,9 +2,11 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `v1.9.0` school facility aggregate count release.
+Status: `0.10.0-dev` pre-1.0 development build.
 
-`v1.0.0` was the first stable seed-backed public API release. `v1.0.1` was a patch cleanup release. `v1.1.0` improved source metadata and verification coverage. `v1.2.0` expanded the district dataset. `v1.3.0` populated municipality district mappings. `v1.4.0` backfills PSC `districtCode` from municipality mappings without adding endpoints; PortalVS reuse remains pending. `v1.5.0` expands banks from the NBS domestic payment-system directory while keeping IBAN validation local. `v1.6.0` adds explicit source-compliance metadata and documentation without adding endpoints. `v1.7.0` adds phone-area lookup endpoints and an offline importer. `v1.7.1` imports the official telecom regulator phone-area workbook. `v1.8.0` adds legacy vehicle registration district-code reference endpoints. `v1.9.0` adds MŠVVaM aggregate school facility count endpoints.
+OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
+
+See `docs/versioning.md` for the versioning policy. Future `1.0.0` is reserved for the first stable public API contract after stabilization and source/compliance review.
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
@@ -80,9 +82,9 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
-- `v1.7.1` imports phone areas from a retained official telecom regulator workbook: no upstream route calls and no database/cache infrastructure.
-- `v1.8.0` adds historical vehicle registration district abbreviations from Slov-Lex legal text; no full plate decoding or owner/vehicle lookup is provided.
-- `v1.9.0` adds aggregate school facility counts from the MŠVVaM RIS CSV; `/v1/schools` is intentionally not implemented because the confirmed source is not per-school data.
+- Current project versioning is pre-1.0; endpoint availability does not yet guarantee a stable `1.0.0` public contract.
+- Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
+- `/v1/schools` is intentionally not implemented because the confirmed MŠVVaM school-register CSV is aggregate, not per-school, data.
 
 ## Dataset Import Pipeline
 

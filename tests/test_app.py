@@ -26,6 +26,7 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
+    assert body["data"]["version"] == "0.10.0-dev"
     assert body["metadata"]["source"] == "OpenSK API"
     assert body["metadata"]["version"] == "v1"
     assert "lastUpdated" in body["metadata"]
@@ -40,6 +41,7 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
+    assert schema["info"]["version"] == "0.10.0-dev"
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
     assert "/v1/health" in schema["paths"]
@@ -69,6 +71,14 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
     assert any(param["name"] == "include" for param in psc_params)
+
+
+def test_project_version_reset_preserves_v1_route_namespace() -> None:
+    schema = client.get("/openapi.json").json()
+
+    assert schema["info"]["version"] == "0.10.0-dev"
+    assert "/v1/health" in schema["paths"]
+    assert client.get("/v1/health").status_code == 200
 
 
 def test_health_returns_enveloped_response() -> None:

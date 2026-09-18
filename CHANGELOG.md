@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased / pre-1.0 stabilization
+
+- Reset project-facing versioning to `0.10.0-dev` so future `1.0.0` can represent the first stable public API contract.
+- Documented that earlier `v1.x` labels were internal development milestone labels, not formal stable releases.
+- Kept all existing API functionality, endpoint paths, and response shapes unchanged.
+- Reserved future `1.0.0` for a stabilization pass that includes source/compliance review and an intentional release process.
+
 ## v1.9.0
 
 - Added MŠVVaM `Register škôl a školských zariadení` as aggregate school facility count data, not an institution-level school directory.

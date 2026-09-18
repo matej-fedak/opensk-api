@@ -2,7 +2,7 @@
 
 The runtime serves local JSON only and does not call upstream sources during requests.
 
-v1.0.0 was the first stable seed-backed public API release. This document keeps the deployed surface aligned with the v1.9.0 school facility aggregate count release.
+OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development milestones, not formal stable public releases. The `/v1` route prefix remains the API namespace and does not imply a finalized `1.0.0` contract.
 
 ## Stable
 
@@ -50,6 +50,7 @@ v1.0.0 was the first stable seed-backed public API release. This document keeps 
 ## Notes
 
 - No endpoint fetches live upstream data at request time.
+- Endpoint availability does not yet equal a stable `1.0.0` compatibility guarantee; see `docs/versioning.md`.
 - Company lookup is backed by a small checked-in seed set; broader RPO coverage still awaits licence and privacy follow-up.
 - Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
