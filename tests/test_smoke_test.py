@@ -6,7 +6,7 @@ from scripts import smoke_test
 def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
     iban = smoke_test._build_valid_slovak_iban("0900", "0000000000000001")
     responses = {
-        "/": (200, {"data": {"name": "OpenSK API", "version": "0.12.0", "apiVersion": "v1", "apiNamespace": "/v1"}, "metadata": {"version": "v1"}}),
+        "/": (200, {"data": {"name": "OpenSK API", "version": "0.13.0", "apiVersion": "v1", "apiNamespace": "/v1"}, "metadata": {"version": "v1"}}),
         "/v1/health": (200, {"data": {"status": "ok"}}),
         "/v1/holidays/2026": (200, {"data": [{}]}),
         "/v1/psc/81101": (200, {"data": {"psc": "81101"}}),
@@ -36,7 +36,7 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
         "/openapi.json": (
             200,
             {
-                "info": {"version": "0.12.0"},
+                "info": {"version": "0.13.0"},
                 "paths": {
                     "/v1/health": {},
                     "/v1/holidays/{year}": {},

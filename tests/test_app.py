@@ -26,7 +26,7 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
-    assert body["data"]["version"] == "0.12.0"
+    assert body["data"]["version"] == "0.13.0"
     assert body["data"]["apiVersion"] == "v1"
     assert body["data"]["apiNamespace"] == "/v1"
     assert body["metadata"]["source"] == "OpenSK API"
@@ -43,7 +43,7 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
-    assert schema["info"]["version"] == "0.12.0"
+    assert schema["info"]["version"] == "0.13.0"
     assert schema["paths"]["/"]["get"]["tags"] == ["meta"]
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
@@ -80,8 +80,8 @@ def test_project_version_reset_preserves_v1_route_namespace() -> None:
     schema = client.get("/openapi.json").json()
 
     root = client.get("/").json()
-    assert schema["info"]["version"] == "0.12.0"
-    assert root["data"]["version"] == "0.12.0"
+    assert schema["info"]["version"] == "0.13.0"
+    assert root["data"]["version"] == "0.13.0"
     assert root["data"]["apiVersion"] == root["metadata"]["version"] == "v1"
     assert "/v1/health" in schema["paths"]
     assert not any(path.startswith("/v0") for path in schema["paths"])

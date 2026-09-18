@@ -2,7 +2,9 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.12.0` pre-1.0 public API consistency milestone.
+Status: `0.13.0` pre-1.0 readiness audit and release-preparation milestone.
+
+Public deployment: `https://opensk-api.onrender.com/`
 
 OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
 
@@ -54,6 +56,9 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/source-licence-questions.md` contains draft clarification questions; nothing is sent automatically.
 - `docs/api-status.md` lists the endpoint status categories.
 - `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.
+- `docs/1-0-readiness-audit.md` and `docs/release-readiness.md` track what remains before a future `1.0.0`.
+- `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
+- `docs/privacy-review.md` records the current privacy review.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.

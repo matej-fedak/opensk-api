@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.0
+
+- Added a concrete `1.0.0` readiness audit covering public endpoints, datasets, source/licence posture, breaking-change candidates, privacy, operations, and release blockers.
+- Added a candidate `v1` API contract document for eventual `1.0.0` without changing the `/v1` namespace or response `metadata.version` semantics.
+- Added release-readiness and privacy-review documentation.
+- Added minimal GitHub Actions CI gates for dataset validation, referential integrity, tests, compileall, and whitespace checks.
+- Updated project version metadata to `0.13.0` while keeping the API namespace at `/v1`.
+
 ## 0.12.0
 
 - Hardened public API consistency docs and regression coverage against the actual OpenAPI route surface.
