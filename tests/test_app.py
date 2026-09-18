@@ -26,6 +26,7 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
+    assert body["data"]["version"] == "0.10.0-dev"
     assert body["metadata"]["source"] == "OpenSK API"
     assert body["metadata"]["version"] == "v1"
     assert "lastUpdated" in body["metadata"]
@@ -40,6 +41,7 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
+    assert schema["info"]["version"] == "0.10.0-dev"
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
     assert "/v1/health" in schema["paths"]
@@ -54,10 +56,29 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/psc/search" in schema["paths"]
     assert "/v1/psc/stats" in schema["paths"]
     assert "/v1/psc/{psc}" in schema["paths"]
+    assert "/v1/phone-areas" in schema["paths"]
+    assert "/v1/phone-areas/search" in schema["paths"]
+    assert "/v1/phone-areas/{code}" in schema["paths"]
+    assert "/v1/vehicle-registration-codes" in schema["paths"]
+    assert "/v1/vehicle-registration-codes/search" in schema["paths"]
+    assert "/v1/vehicle-registration-codes/{code}" in schema["paths"]
+    assert "/v1/vehicles/{spz}" not in schema["paths"]
+    assert "/v1/school-facility-counts" in schema["paths"]
+    assert "/v1/school-facility-counts/stats" in schema["paths"]
+    assert "/v1/schools" not in schema["paths"]
+    assert "/v1/schools/{code}" not in schema["paths"]
     assert "/v1/companies/{ico}" in schema["paths"]
     assert "/v1/ico/{ico}" in schema["paths"]
     psc_params = schema["paths"]["/v1/psc/{psc}"]["get"]["parameters"]
     assert any(param["name"] == "include" for param in psc_params)
+
+
+def test_project_version_reset_preserves_v1_route_namespace() -> None:
+    schema = client.get("/openapi.json").json()
+
+    assert schema["info"]["version"] == "0.10.0-dev"
+    assert "/v1/health" in schema["paths"]
+    assert client.get("/v1/health").status_code == 200
 
 
 def test_health_returns_enveloped_response() -> None:
@@ -81,9 +102,10 @@ def test_banks_list_returns_enveloped_response() -> None:
     assert response.status_code == 200
     body = response.json()
     assert isinstance(body["data"], list)
+    assert len(body["data"]) == 30
     assert any(bank["code"] == "0900" for bank in body["data"])
     assert body["metadata"]["source"] == "OpenSK API static banks dataset"
-    assert body["metadata"]["lastUpdated"] == "2026-05-25"
+    assert body["metadata"]["lastUpdated"] == "2026-05-18"
     assert body["error"] is None
 
 
@@ -94,6 +116,12 @@ def test_known_bank_code_returns_enveloped_response() -> None:
     body = response.json()
     assert body["data"]["code"] == "1100"
     assert body["data"]["name"] == "Tatra banka, a.s."
+    assert body["data"]["bic"] == "TATRSKBX"
+    assert body["data"]["swift"] == "TATRSKBX"
+    assert body["data"]["alphabeticCode"] is None
+    assert body["data"]["activeParty"] is True
+    assert body["data"]["activePartyMarker"] == "C"
+    assert body["data"]["country"] == "SK"
     assert body["metadata"]["source"] == "OpenSK API static banks dataset"
     assert body["error"] is None
 
@@ -177,7 +205,7 @@ def test_holidays_2026_returns_enveloped_response() -> None:
     assert first_holiday["date"] == "2026-01-01"
     assert first_holiday["name"] == "Deň vzniku Slovenskej republiky"
     assert first_holiday["name_en"] == "Day of the Establishment of the Slovak Republic"
-    assert body["metadata"]["source"] == "OpenSK API static dataset"
+    assert body["metadata"]["source"] == "OpenSK API static holidays dataset"
     assert body["metadata"]["version"] == "v1"
     assert body["metadata"]["lastUpdated"] == "2026-05-25"
     assert body["error"] is None
@@ -242,9 +270,225 @@ def test_districts_list_returns_enveloped_response() -> None:
     assert response.headers["cache-control"] == "public, max-age=86400"
     body = response.json()
     assert isinstance(body["data"], list)
+    assert len(body["data"]) == 79
     assert body["metadata"]["source"] == "OpenSK API static geography dataset"
     assert body["metadata"]["version"] == "v1"
     assert body["error"] is None
+
+
+def test_phone_areas_list_returns_paginated_response() -> None:
+    response = client.get("/v1/phone-areas")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert body["data"]["total"] == 2922
+    assert body["data"]["count"] == 100
+    assert any(item["code"] == "02" for item in body["data"]["items"])
+    assert body["metadata"]["source"] == "OpenSK API static phone area dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-09-15"
+    assert body["error"] is None
+
+
+def test_phone_area_code_lookup_returns_records() -> None:
+    response = client.get("/v1/phone-areas/02")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "02"
+    assert body["data"]["count"] >= 1
+    assert any(item["municipalityCode"] == "528595" for item in body["data"]["items"])
+    assert body["error"] is None
+
+
+def test_phone_area_invalid_code_returns_400() -> None:
+    response = client.get("/v1/phone-areas/abc")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_phone_area_unknown_code_returns_404() -> None:
+    response = client.get("/v1/phone-areas/099")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_phone_area_filters_work() -> None:
+    by_municipality = client.get("/v1/phone-areas?municipalityCode=528595")
+    by_region = client.get("/v1/phone-areas?regionCode=SK010")
+    by_district = client.get("/v1/phone-areas?districtCode=SK0101")
+
+    assert by_municipality.status_code == 200
+    assert by_municipality.json()["data"]["items"][0]["code"] == "02"
+    assert by_region.status_code == 200
+    assert by_region.json()["data"]["items"][0]["code"] == "02"
+    assert by_district.status_code == 200
+    assert by_district.json()["data"]["items"][0]["code"] == "02"
+
+
+def test_phone_area_search_by_municipality_name() -> None:
+    response = client.get("/v1/phone-areas/search?q=Bratislava")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] >= 1
+    assert any(item["code"] == "02" for item in body["data"]["items"])
+
+
+def test_vehicle_registration_codes_list_returns_paginated_response() -> None:
+    response = client.get("/v1/vehicle-registration-codes")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert body["data"]["total"] == 93
+    assert body["data"]["count"] == 93
+    assert any(item["code"] == "BA" for item in body["data"]["items"])
+    assert body["metadata"]["source"] == "OpenSK API static legacy vehicle registration code dataset"
+    assert body["metadata"]["lastUpdated"] == "2026-09-15"
+    assert body["error"] is None
+
+
+def test_vehicle_registration_code_lookup_returns_legacy_reference() -> None:
+    response = client.get("/v1/vehicle-registration-codes/ba")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["code"] == "BA"
+    assert body["data"]["districtName"] == "Bratislava"
+    assert body["data"]["districtCode"] is None
+    assert body["data"]["regionCode"] == "SK010"
+    assert body["data"]["status"] == "legacy"
+    assert "not reliable for current plate lookup" in body["data"]["notes"]
+    assert body["error"] is None
+
+
+def test_vehicle_registration_invalid_code_returns_400() -> None:
+    response = client.get("/v1/vehicle-registration-codes/BA123AA")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_vehicle_registration_unknown_valid_code_returns_404() -> None:
+    response = client.get("/v1/vehicle-registration-codes/AA")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_vehicle_registration_code_search_by_district_name() -> None:
+    response = client.get("/v1/vehicle-registration-codes/search?q=Trencin")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 3
+    assert {item["code"] for item in body["data"]["items"]} == {"TN", "TC", "TE"}
+
+
+def test_vehicle_registration_code_filters_work() -> None:
+    by_region = client.get("/v1/vehicle-registration-codes?regionCode=SK010")
+    by_district = client.get("/v1/vehicle-registration-codes?districtCode=SK0229")
+
+    assert by_region.status_code == 200
+    assert {item["code"] for item in by_region.json()["data"]["items"]} >= {"BA", "BD", "BE", "BI", "BL", "BT", "MA", "PK", "SC"}
+    assert by_district.status_code == 200
+    assert {item["code"] for item in by_district.json()["data"]["items"]} == {"TN", "TC", "TE"}
+
+
+def test_full_vehicle_plate_lookup_route_is_not_exposed() -> None:
+    response = client.get("/v1/vehicles/BA123AA")
+
+    assert response.status_code == 404
+
+
+def test_school_facility_counts_list_returns_paginated_response() -> None:
+    response = client.get("/v1/school-facility-counts")
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "public, max-age=86400"
+    body = response.json()
+    assert body["data"]["total"] == 1227
+    assert body["data"]["count"] == 100
+    assert body["metadata"]["source"] == "OpenSK API static school facility aggregate count dataset"
+    assert body["metadata"]["lastUpdated"] == "2025-09-15"
+    assert body["error"] is None
+
+
+def test_school_facility_counts_filters_work() -> None:
+    response = client.get("/v1/school-facility-counts?regionCode=SK022&districtCode=SK0229&schoolKind=GYM")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 3
+    assert all(item["regionCode"] == "SK022" for item in body["data"]["items"])
+    assert all(item["districtCode"] == "SK0229" for item in body["data"]["items"])
+    assert all(item["schoolKindShort"] == "GYM" for item in body["data"]["items"])
+
+
+def test_school_facility_counts_name_filters_are_accent_insensitive() -> None:
+    response = client.get("/v1/school-facility-counts?districtName=Trencin&schoolType=GYM")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 3
+    assert all(item["districtName"] == "Trenčín" for item in body["data"]["items"])
+
+
+def test_school_facility_counts_invalid_limit_returns_400() -> None:
+    response = client.get("/v1/school-facility-counts?limit=abc")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_school_facility_counts_invalid_region_returns_400() -> None:
+    response = client.get("/v1/school-facility-counts?regionCode=SK01A")
+
+    assert response.status_code == 400
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_school_facility_counts_empty_filter_returns_200() -> None:
+    response = client.get("/v1/school-facility-counts?founderType=missing")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] == 0
+    assert body["data"]["items"] == []
+
+
+def test_school_facility_counts_stats_returns_totals() -> None:
+    response = client.get("/v1/school-facility-counts/stats")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["recordCount"] == 1227
+    assert body["data"]["totalOrganizationalUnitCount"] == 7026
+    assert body["data"]["regionLinkedCount"] == 1227
+    assert body["data"]["districtLinkedCount"] == 1227
+    assert body["data"]["totalsByRegion"]["SK010"] == 774
+    assert body["data"]["totalsBySchoolKind"]["MŠ"] == 3221
+
+
+def test_schools_route_is_not_exposed() -> None:
+    response = client.get("/v1/schools")
+
+    assert response.status_code == 404
 
 
 def test_districts_region_filter_returns_subset() -> None:
@@ -300,7 +544,8 @@ def test_municipalities_district_filter_returns_subset() -> None:
 
     assert response.status_code == 200
     body = response.json()
-    assert body["data"] == []
+    assert body["data"]
+    assert all(municipality["districtCode"] == "SK0101" for municipality in body["data"])
 
 
 def test_invalid_municipality_region_filter_returns_400() -> None:
@@ -319,6 +564,16 @@ def test_known_municipality_code_returns_one_municipality() -> None:
     body = response.json()
     assert body["data"]["code"] == "528595"
     assert body["data"]["name"] == "Bratislava - mestská časť Staré Mesto"
+    assert body["data"]["districtCode"] == "SK0101"
+
+
+def test_unknown_municipality_district_filter_returns_404() -> None:
+    response = client.get("/v1/municipalities?districtCode=SK9999")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["error"]["code"] == "NOT_FOUND"
 
 
 def test_unknown_municipality_code_returns_404() -> None:
@@ -353,7 +608,7 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert body["data"]["matches"]
     assert body["data"]["city"] == "Bratislava 1"
     assert body["data"]["municipalityCode"] == "528595"
-    assert body["data"]["districtCode"] is None
+    assert body["data"]["districtCode"] == "SK0101"
     assert body["data"]["regionCode"] == "SK010"
     assert body["data"]["municipality"] == "Bratislava - mestská časť Staré Mesto"
     assert body["data"]["district"] is None
@@ -410,22 +665,27 @@ def test_psc_list_rejects_limit_over_max() -> None:
 
 def test_psc_list_filters_and_empty_results() -> None:
     region_response = client.get("/v1/psc?regionCode=SK010")
+    district_response = client.get("/v1/psc?districtCode=SK0101")
     municipality_response = client.get("/v1/psc?municipalityCode=528595")
     delivery_response = client.get("/v1/psc?deliveryPost=Bratislava%201")
     empty_response = client.get("/v1/psc?deliveryPost=NoSuchDeliveryPost")
 
     assert region_response.status_code == 200
+    assert district_response.status_code == 200
     assert municipality_response.status_code == 200
     assert delivery_response.status_code == 200
     assert empty_response.status_code == 200
 
 
     region_body = region_response.json()
+    district_body = district_response.json()
     municipality_body = municipality_response.json()
     delivery_body = delivery_response.json()
     empty_body = empty_response.json()
 
     assert all(item["regionCode"] == "SK010" for item in region_body["data"]["items"])
+    assert district_body["data"]["items"]
+    assert all(item["districtCode"] == "SK0101" for item in district_body["data"]["items"])
     assert municipality_body["data"]["count"] == 9
     assert all(item["municipalityCode"] == "528595" for item in municipality_body["data"]["items"])
     assert all("Bratislava 1" in item["deliveryPost"] for item in delivery_body["data"]["items"])
@@ -486,7 +746,7 @@ def test_psc_stats_returns_summary() -> None:
     assert body["data"]["multiMatchPscCount"] == 759
     assert body["data"]["geographyCoverage"]["municipalityCode"] == {"count": 3101, "percentage": 100.0}
     assert body["data"]["geographyCoverage"]["regionCode"] == {"count": 3101, "percentage": 100.0}
-    assert body["data"]["geographyCoverage"]["districtCode"] == {"count": 0, "percentage": 0.0}
+    assert body["data"]["geographyCoverage"]["districtCode"] == {"count": 3101, "percentage": 100.0}
     assert body["data"]["source"]["name"] == "PortalVS Číselníky classifier 42"
     assert body["data"]["source"]["licenceStatus"] == "Source/licence verification pending."
     assert body["metadata"]["source"] == "OpenSK API static PSC dataset"
@@ -500,8 +760,9 @@ def test_psc_81101_with_geography_includes_nested_objects() -> None:
     body = response.json()
     assert body["data"]["matchCount"] == len(body["data"]["matches"])
     assert body["data"]["municipalityCode"] == "528595"
-    assert body["data"]["districtCode"] is None
+    assert body["data"]["districtCode"] == "SK0101"
     assert body["data"]["regionCode"] == "SK010"
+    assert body["data"]["geography"]["district"]["code"] == body["data"]["districtCode"]
     assert body["data"]["geography"]["region"]["code"] == body["data"]["regionCode"]
     assert body["data"]["geography"]["municipality"]["code"] == body["data"]["municipalityCode"]
     assert body["data"]["geography"]["municipality"]["regionCode"] == body["data"]["regionCode"]

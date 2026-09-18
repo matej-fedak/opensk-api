@@ -1,12 +1,23 @@
 # Known Limitations
 
-- RPO company data is pending licence verification.
-- Company lookup is backed by a small checked-in seed set, not a complete company register.
+- RPO company data is pending licence and privacy verification.
+- Company lookup is backed by a small checked-in seed set, not a complete company register or full RPO coverage.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
-- Districts remain seed/partial data and are not claimed as complete.
-- Banks remain a small non-exhaustive seed dataset.
-- PSC records currently keep `districtCode` null in the checked-in dataset when no reliable local mapping exists.
-- PSC source/licence verification remains pending.
+- Districts are complete in coverage, but PortalVS terms may restrict reuse.
+- Municipalities are now mapped to districts via PortalVS classifier 9, but source/licence verification is still pending and the dataset should not be presented as open redistribution material.
+- Banks are expanded from an offline NBS directory snapshot, but source/licence verification remains pending and inactive rows are retained with `activeParty: false`.
+- Phone areas are imported from the telecom regulator workbook, but licence/reuse verification remains pending and 3 source municipality rows do not link to local municipality codes.
+- Vehicle registration district codes are legacy/reference data only; Slovakia changed plate allocation, so these abbreviations are not reliable for current plate lookup.
+- The API does not decode full licence plates, identify vehicles, or identify vehicle owners.
+- School facility counts are aggregate rows, not a school directory; `/v1/schools` and per-school lookup are intentionally not implemented.
+- School facility aggregate responses exclude institution names, addresses, staff, directors, pupils, emails, and phone numbers.
+- PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
+- PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
+- PSC source coverage remains partial and should not be presented as national coverage.
+- PSC redistribution is restricted by upstream PortalVS terms, and the dataset is not open redistribution material.
+- Some datasets are manually curated or imported from sources with incomplete attribution or redistribution clarity.
+- Remaining source follow-up items are tracked in `docs/verification-backlog.md`.
+- Compliance status is summarized in `docs/source-compliance.md`; unresolved evidence is tracked in `docs/research/source-verification-evidence.md`.
 - The API has no SLA and is deployed as a hobby/public-readiness project.
 - The project is not an official government endpoint and has no official endorsement.

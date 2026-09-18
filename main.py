@@ -13,15 +13,18 @@ from routers.health import router as health_router
 from routers.holidays import router as holidays_router
 from routers.iban import router as iban_router
 from routers.municipalities import router as municipalities_router
+from routers.phone_areas import router as phone_areas_router
 from routers.psc import router as psc_router
 from routers.regions import router as regions_router
+from routers.school_facility_counts import router as school_facility_counts_router
+from routers.vehicle_registration_codes import router as vehicle_registration_codes_router
 from schemas.common import API_SOURCE, error_detail, error_response, success_response
 
 
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="1.0.0-rc.6",
+    version="0.10.0-dev",
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
@@ -30,10 +33,13 @@ app = FastAPI(
         {"name": "iban", "description": "IBAN validation and bank resolution."},
         {"name": "holidays", "description": "Static Slovak public holiday data."},
         {"name": "regions", "description": "Static Slovak regions dataset."},
-        {"name": "districts", "description": "Static Slovak districts dataset."},
+        {"name": "districts", "description": "Complete Slovak districts dataset imported from PortalVS classifier 10."},
         {"name": "municipalities", "description": "Static Slovak municipalities dataset."},
         {"name": "psc", "description": "Static Slovak postal code lookups."},
         {"name": "companies", "description": "Local company lookup endpoints backed by the checked-in dataset."},
+        {"name": "phone-areas", "description": "Static Slovak primary telephone area lookups."},
+        {"name": "vehicle-registration-codes", "description": "Static legacy Slovak vehicle registration district abbreviations; not a current plate lookup."},
+        {"name": "school-facility-counts", "description": "Static MŠVVaM school facility aggregate counts; not an institution-level school directory."},
     ],
 )
 
@@ -108,3 +114,6 @@ app.include_router(companies_router, prefix="/v1")
 app.include_router(regions_router, prefix="/v1")
 app.include_router(districts_router, prefix="/v1")
 app.include_router(municipalities_router, prefix="/v1")
+app.include_router(phone_areas_router, prefix="/v1")
+app.include_router(vehicle_registration_codes_router, prefix="/v1")
+app.include_router(school_facility_counts_router, prefix="/v1")

@@ -1,5 +1,98 @@
 # Changelog
 
+## Unreleased / pre-1.0 stabilization
+
+- Reset project-facing versioning to `0.10.0-dev` so future `1.0.0` can represent the first stable public API contract.
+- Documented that earlier `v1.x` labels were internal development milestone labels, not formal stable releases.
+- Kept all existing API functionality, endpoint paths, and response shapes unchanged.
+- Reserved future `1.0.0` for a stabilization pass that includes source/compliance review and an intentional release process.
+
+## v1.9.0
+
+- Added MŠVVaM `Register škôl a školských zariadení` as aggregate school facility count data, not an institution-level school directory.
+- Added offline `scripts/import_school_facility_counts.py` for the confirmed local CSV and retained the 2025-09-15 source CSV under `data/raw/`.
+- Added `data/school_facility_counts.json` with 1,227 aggregate rows and 7,026 total organizational units; all rows link to local region and district codes.
+- Added `GET /v1/school-facility-counts` and `GET /v1/school-facility-counts/stats` endpoints.
+- Intentionally did not add `/v1/schools` or per-school lookup routes because the confirmed source CSV contains aggregate rows only.
+- Kept privacy guardrails: no school names, addresses, staff, directors, pupils, personal emails, or phone numbers are exposed.
+
+## v1.8.0
+
+- Added `data/vehicle_registration_codes.json` with 93 legacy two-letter district abbreviations from Slov-Lex legal text for vehicle registration numbers.
+- Added `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, and `GET /v1/vehicle-registration-codes/search` endpoints.
+- Linked 84 records to local district codes and all 93 records to local region codes; aggregate Bratislava and Košice abbreviations intentionally keep `districtCode: null`.
+- Added validation, referential integrity checks, API tests, dataset tests, and smoke-test coverage.
+- Kept wording conservative: this is historical/reference data only, not a full plate lookup, current vehicle lookup, owner lookup, or proof of current plate-to-district accuracy.
+
+## v1.7.1
+
+- Located and retained the official telecom regulator phone-area workbook source (`30.xls`) and converted its `List1` sheet to CSV for reproducible offline imports.
+- Replaced the 5-row phone-area seed with 2,922 imported municipality-to-primary-area records.
+- Linked 2,919 imported phone-area rows to local municipality, district, and region codes; retained 3 unmatched source rows with null local geography links.
+- Updated phone-area source metadata, docs, validation expectations, and tests while keeping licence wording conservative.
+- Kept runtime API behavior local/static with no upstream route calls and no new endpoint domains.
+
+## v1.7.0
+
+- Added seed-backed `data/phone_areas.json` with local municipality, district, and region links for initial phone-area lookup coverage.
+- Added offline `scripts/import_phone_areas.py` support for local CSV/JSON/XLSX source files.
+- Added `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, and `GET /v1/phone-areas/search` endpoints.
+- Added phone-area dataset validation, referential integrity checks, smoke tests, and API/import tests.
+- Kept licence and source wording conservative pending retained telecom regulator workbook evidence.
+
+## v1.6.0
+
+- Added explicit source-compliance metadata to `data/sources.json`, including licence status, redistribution status, terms URL, attribution, risk level, and next action.
+- Added `docs/source-compliance.md` with a dataset-by-dataset compliance matrix.
+- Added retained-evidence and source-owner question docs under `docs/research/`.
+- Updated validation to warn, not fail, for pending or high-risk source-compliance entries.
+- Kept runtime behavior unchanged: no new endpoints, no new datasets, and no upstream calls from API routes.
+
+## v1.5.0
+
+- Expanded `data/banks.json` from the NBS domestic payment-system identification-code directory snapshot effective `2026-05-18`.
+- Added the offline `scripts/import_banks.py` importer with dry-run/write modes, CSV/JSON support, and active-party marker normalization.
+- Hardened bank dataset validation for BIC/SWIFT, active-party fields, country codes, and duplicate identifiers.
+- Kept IBAN validation and bank-code resolution fully local with no runtime upstream calls.
+- Kept source/licence wording conservative: `Source/licence verification pending.`
+
+## v1.4.0
+
+- Backfilled PSC `districtCode` from `municipalityCode` using verified local municipality district mappings.
+- Verified PSC `districtCode` coverage is 100% for the current local PSC records, with 0 unresolved municipality codes and 0 region conflicts.
+- Kept PSC source as PortalVS classifier 42 and did not infer districtCode values from names or PSC patterns.
+- Kept PortalVS licence/reuse wording conservative and added no new endpoints.
+
+## v1.3.0
+
+- Populated municipality district mappings from PortalVS classifier 9 (`Obce`) for the checked-in runtime dataset.
+- Kept municipality codes stable and validated municipality region alignment against the local districts dataset.
+- Kept PSC `districtCode` coverage unchanged for the v1.4.0 backfill milestone.
+- No new endpoints or response-envelope changes were introduced.
+
+## v1.2.0
+
+- Expanded the district dataset to the verified 79 Slovak districts imported from PortalVS classifier 10.
+- Updated district source, coverage, and validation metadata to reflect the complete district dataset.
+- Kept PSC districtCode coverage unchanged.
+- No API behavior changes were introduced.
+
+## v1.1.0
+
+- Improved the dataset source registry and aligned it with current coverage and verification status.
+- Added and updated source verification documentation for PSC, company, bank, district, holiday, and geography datasets.
+- Clarified licence and redistribution statuses without changing API behavior.
+- Added a verification backlog for unresolved source tasks.
+- No API behavior changes were introduced.
+
+## v1.0.1
+
+- Fixed post-release version and status references in the app metadata and docs.
+- Aligned the README and API status docs with the shipped v1.0.0 stable seed-backed release.
+- Verified the public smoke-test expectations against the deployed surface.
+- No API behavior changes were introduced.
+- No new endpoints were added.
+
 ## v1.0.0-rc.6
 
 - Finalized release verification and aligned endpoint status documentation with the shipped local data model.

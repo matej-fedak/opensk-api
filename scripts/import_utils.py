@@ -19,11 +19,15 @@ from xml.etree import ElementTree as ET
 from scripts.validate_datasets import validate_all_datasets
 
 
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_DATA_DIR = ROOT / "data"
+DEFAULT_MUNICIPALITIES_PATH = DEFAULT_DATA_DIR / "municipalities.json"
+
 DATASET_NAMES = ("regions", "districts", "municipalities")
 DATASET_COLUMNS: dict[str, tuple[str, ...]] = {
     "regions": ("code", "name", "nameEn", "country"),
     "districts": ("code", "name", "regionCode", "country"),
-    "municipalities": ("code", "name", "regionCode", "country"),
+    "municipalities": ("code", "name", "districtCode", "regionCode", "country"),
 }
 _COMPANY_ICO_RE = re.compile(r"\d{8}$")
 
@@ -39,6 +43,8 @@ XLSX_HEADER_ALIASES: dict[str, tuple[str, ...]] = {
     "regionCode": ("regioncode", "nuts3code", "nuts3", "region"),
     "country": ("country", "countrycode", "countryname"),
 }
+
+_PORTALVS_COUNTRY_CODE = "703"
 
 
 @dataclass(frozen=True)
@@ -104,6 +110,86 @@ def read_csv(path: str | os.PathLike[str] | Path) -> list[dict[str, str | None]]
                 continue
             rows.append(normalized)
         return rows
+
+
+def _load_existing_municipalities_by_code() -> dict[str, dict[str, Any]]:
+    if not DEFAULT_MUNICIPALITIES_PATH.is_file():
+        return {}
+
+    payload = load_json(DEFAULT_MUNICIPALITIES_PATH)
+    if not isinstance(payload, dict):
+        return {}
+
+    municipalities = payload.get("municipalities")
+    if not isinstance(municipalities, list):
+        return {}
+
+    by_code: dict[str, dict[str, Any]] = {}
+    for record in municipalities:
+        if not isinstance(record, dict):
+            continue
+        code = normalize_whitespace(record.get("code"))
+        if code:
+            by_code[code] = dict(record)
+    return by_code
+
+
+def _portalvs_district_code_from_code_su(code_su: Any) -> str | None:
+    text = normalize_whitespace(code_su)
+    if len(text) < 6 or not text.startswith("SK"):
+        return None
+
+    suffix = text[5]
+    if suffix.isdigit():
+        district_suffix = suffix
+    elif suffix.isalpha():
+        district_suffix = str(ord(suffix.upper()) - 55)
+    else:
+        return None
+
+    return f"SK{text[2:5]}{district_suffix}"
+
+
+def _portalvs_municipality_record(record: dict[str, Any], existing_by_code: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    country_code = normalize_whitespace(record.get("country_code"))
+    if country_code != _PORTALVS_COUNTRY_CODE:
+        return None
+
+    if record.get("validity_to") not in (None, ""):
+        return None
+
+    code = normalize_whitespace(record.get("code"))
+    name = normalize_whitespace(record.get("name"))
+    county_code = normalize_whitespace(record.get("county_code"))
+    code_su = normalize_whitespace(record.get("code_su"))
+
+    if not code.isdigit() or len(code) != 6:
+        return None
+    if not name or not county_code or not code_su:
+        return None
+
+    district_code = _portalvs_district_code_from_code_su(code_su)
+    if district_code is None:
+        return None
+
+    existing = existing_by_code.get(code)
+    if existing is None:
+        raise ValueError(f"portalvs municipality code {code} is not present in the current municipalities dataset")
+
+    normalized = dict(existing)
+    normalized["code"] = code
+    normalized["districtCode"] = district_code
+
+    base_region_code = normalize_whitespace(existing.get("regionCode"))
+    derived_region_code = f"SK{code_su[2:5]}"
+    if base_region_code and base_region_code != derived_region_code:
+        raise ValueError(
+            f"municipality code {code} regionCode {base_region_code} does not match PortalVS code_su {code_su} region {derived_region_code}"
+        )
+
+    normalized["regionCode"] = base_region_code or derived_region_code
+    normalized["country"] = "SK"
+    return normalized
 
 
 def _normalize_header(value: Any) -> str:
@@ -398,6 +484,29 @@ def _normalize_records(records: Any, dataset: str) -> list[dict[str, Any]]:
 def load_dataset_records_from_json(path: Path, dataset: str) -> list[dict[str, Any]]:
     payload = load_json(path)
 
+    if dataset == "municipalities" and isinstance(payload, list):
+        if any(isinstance(record, dict) and ("code_su" in record or "county_code" in record or "country_code" in record) for record in payload):
+            existing_by_code = _load_existing_municipalities_by_code()
+            records: list[dict[str, Any]] = []
+            for record in payload:
+                if not isinstance(record, dict):
+                    continue
+                normalized = _portalvs_municipality_record(record, existing_by_code)
+                if normalized is not None:
+                    records.append(normalized)
+
+            if records:
+                expected_codes = set(existing_by_code)
+                imported_codes = {record["code"] for record in records}
+                if imported_codes != expected_codes:
+                    missing = sorted(expected_codes - imported_codes)
+                    extra = sorted(imported_codes - expected_codes)
+                    raise ValueError(
+                        "PortalVS classifier 9 municipality codes do not match the checked-in municipalities dataset; "
+                        f"missing={missing} extra={extra}"
+                    )
+                return records
+
     if isinstance(payload, list):
         return _normalize_records(payload, dataset)
 
@@ -412,11 +521,34 @@ def load_dataset_records_from_json(path: Path, dataset: str) -> list[dict[str, A
 
 
 def load_dataset_records_from_csv(path: Path, dataset: str) -> list[dict[str, Any]]:
-    required_columns = DATASET_COLUMNS[dataset]
     with path.open("r", encoding="utf-8", newline="") as file:
         reader = csv.DictReader(file)
         if reader.fieldnames is None:
             raise ValueError(f"{path} has no CSV header")
+
+        normalized_fieldnames = {normalize_whitespace(fieldname).casefold() for fieldname in reader.fieldnames if fieldname is not None}
+        if dataset == "municipalities" and {"code_su", "county_code", "country_code"}.issubset(normalized_fieldnames):
+            existing_by_code = _load_existing_municipalities_by_code()
+            records: list[dict[str, Any]] = []
+            for row in reader:
+                record = {key: value for key, value in row.items() if value not in (None, "")}
+                normalized = _portalvs_municipality_record(record, existing_by_code)
+                if normalized is not None:
+                    records.append(normalized)
+
+            if records:
+                expected_codes = set(existing_by_code)
+                imported_codes = {record["code"] for record in records}
+                if imported_codes != expected_codes:
+                    missing = sorted(expected_codes - imported_codes)
+                    extra = sorted(imported_codes - expected_codes)
+                    raise ValueError(
+                        "PortalVS classifier 9 municipality codes do not match the checked-in municipalities dataset; "
+                        f"missing={missing} extra={extra}"
+                    )
+                return records
+
+        required_columns = DATASET_COLUMNS[dataset]
 
         missing = [column for column in required_columns if column not in reader.fieldnames]
         if missing:
@@ -542,7 +674,9 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
         district_code = municipality.get("districtCode")
         region_code = municipality.get("regionCode")
 
-        if district_code and district_code not in districts_by_code:
+        if not district_code:
+            errors.append(f"Municipality {municipality_code}: missing districtCode")
+        elif district_code not in districts_by_code:
             errors.append(f"Municipality {municipality_code}: unknown districtCode {district_code}")
 
         if not region_code:
@@ -715,8 +849,168 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
                         f"municipalityCode {municipality_code} regionCode {municipality_region_code}"
                     )
 
+            matches = record.get("matches")
+            if isinstance(matches, list):
+                for index, match in enumerate(matches):
+                    if not isinstance(match, dict):
+                        continue
+
+                    match_label = f"PSC {psc_code}.matches[{index}]"
+                    match_region_code = match.get("regionCode")
+                    match_district_code = match.get("districtCode")
+                    match_municipality_code = match.get("municipalityCode")
+
+                    if match_region_code is not None and match_region_code not in regions_by_code:
+                        errors.append(f"{match_label}: unknown regionCode {match_region_code}")
+
+                    if match_district_code is not None:
+                        if match_district_code not in districts_by_code:
+                            errors.append(f"{match_label}: unknown districtCode {match_district_code}")
+                        elif match_region_code is not None and districts_by_code[match_district_code].get("regionCode") != match_region_code:
+                            errors.append(
+                                f"{match_label}: districtCode {match_district_code} belongs to regionCode "
+                                f"{districts_by_code[match_district_code].get('regionCode')}, but PSC regionCode is {match_region_code}"
+                            )
+
+                    if match_municipality_code is not None:
+                        if match_municipality_code not in municipalities_by_code:
+                            errors.append(f"{match_label}: unknown municipalityCode {match_municipality_code}")
+                        else:
+                            match_municipality = municipalities_by_code[match_municipality_code]
+                            match_municipality_district_code = match_municipality.get("districtCode")
+                            match_municipality_region_code = match_municipality.get("regionCode")
+
+                            if match_district_code is not None and match_municipality_district_code != match_district_code:
+                                errors.append(
+                                    f"{match_label}: municipalityCode {match_municipality_code} belongs to districtCode "
+                                    f"{match_municipality_district_code}, but PSC districtCode is {match_district_code}"
+                                )
+                            if match_region_code is not None and match_municipality_region_code != match_region_code:
+                                errors.append(
+                                    f"{match_label}: municipalityCode {match_municipality_code} belongs to regionCode "
+                                    f"{match_municipality_region_code}, but PSC regionCode is {match_region_code}"
+                                )
+
     else:
         errors.append("psc.json: missing PSC records")
+
+    phone_areas_path = data_dir / "phone_areas.json"
+    if not phone_areas_path.is_file():
+        return errors
+
+    phone_areas_payload = read_json(phone_areas_path)
+    if not isinstance(phone_areas_payload, dict):
+        errors.append("phone_areas.json: expected JSON object")
+        return errors
+
+    phone_area_records = phone_areas_payload.get("phoneAreas")
+    if not isinstance(phone_area_records, list):
+        errors.append("phone_areas.json: missing phoneAreas array")
+        return errors
+
+    for index, record in enumerate(phone_area_records):
+        item_label = f"Phone area phoneAreas[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{item_label}: record must be an object")
+            continue
+
+        code = record.get("code")
+        if isinstance(code, str) and code:
+            item_label = f"Phone area {code}"
+
+        region_code = record.get("regionCode")
+        district_code = record.get("districtCode")
+        municipality_code = record.get("municipalityCode")
+
+        if region_code is not None and region_code not in regions_by_code:
+            errors.append(f"{item_label}: unknown regionCode {region_code}")
+        if district_code is not None and district_code not in districts_by_code:
+            errors.append(f"{item_label}: unknown districtCode {district_code}")
+        if municipality_code is not None and municipality_code not in municipalities_by_code:
+            errors.append(f"{item_label}: unknown municipalityCode {municipality_code}")
+
+        if municipality_code in municipalities_by_code:
+            municipality = municipalities_by_code[str(municipality_code)]
+            expected_district = municipality.get("districtCode")
+            expected_region = municipality.get("regionCode")
+            if district_code is not None and district_code != expected_district:
+                errors.append(f"{item_label}: municipalityCode {municipality_code} belongs to districtCode {expected_district}, but phone area districtCode is {district_code}")
+            if region_code is not None and region_code != expected_region:
+                errors.append(f"{item_label}: municipalityCode {municipality_code} belongs to regionCode {expected_region}, but phone area regionCode is {region_code}")
+
+    vehicle_registration_codes_path = data_dir / "vehicle_registration_codes.json"
+    if not vehicle_registration_codes_path.is_file():
+        return errors
+
+    vehicle_registration_codes_payload = read_json(vehicle_registration_codes_path)
+    if not isinstance(vehicle_registration_codes_payload, dict):
+        errors.append("vehicle_registration_codes.json: expected JSON object")
+        return errors
+
+    vehicle_registration_records = vehicle_registration_codes_payload.get("vehicleRegistrationCodes")
+    if not isinstance(vehicle_registration_records, list):
+        errors.append("vehicle_registration_codes.json: missing vehicleRegistrationCodes array")
+        return errors
+
+    for index, record in enumerate(vehicle_registration_records):
+        item_label = f"Vehicle registration code vehicleRegistrationCodes[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{item_label}: record must be an object")
+            continue
+
+        code = record.get("code")
+        if isinstance(code, str) and code:
+            item_label = f"Vehicle registration code {code}"
+
+        region_code = record.get("regionCode")
+        district_code = record.get("districtCode")
+
+        if region_code is not None and region_code not in regions_by_code:
+            errors.append(f"{item_label}: unknown regionCode {region_code}")
+        if district_code is not None:
+            district = districts_by_code.get(str(district_code))
+            if district is None:
+                errors.append(f"{item_label}: unknown districtCode {district_code}")
+            elif region_code is not None and district.get("regionCode") != region_code:
+                errors.append(
+                    f"{item_label}: districtCode {district_code} belongs to regionCode {district.get('regionCode')}, "
+                    f"but vehicle registration regionCode is {region_code}"
+                )
+
+    school_facility_counts_path = data_dir / "school_facility_counts.json"
+    if not school_facility_counts_path.is_file():
+        return errors
+
+    school_facility_counts_payload = read_json(school_facility_counts_path)
+    if not isinstance(school_facility_counts_payload, dict):
+        errors.append("school_facility_counts.json: expected JSON object")
+        return errors
+
+    school_facility_records = school_facility_counts_payload.get("schoolFacilityCounts")
+    if not isinstance(school_facility_records, list):
+        errors.append("school_facility_counts.json: missing schoolFacilityCounts array")
+        return errors
+
+    for index, record in enumerate(school_facility_records):
+        item_label = f"School facility count schoolFacilityCounts[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{item_label}: record must be an object")
+            continue
+
+        region_code = record.get("regionCode")
+        district_code = record.get("districtCode")
+
+        if region_code is not None and region_code not in regions_by_code:
+            errors.append(f"{item_label}: unknown regionCode {region_code}")
+        if district_code is not None:
+            district = districts_by_code.get(str(district_code))
+            if district is None:
+                errors.append(f"{item_label}: unknown districtCode {district_code}")
+            elif region_code is not None and district.get("regionCode") != region_code:
+                errors.append(
+                    f"{item_label}: districtCode {district_code} belongs to regionCode {district.get('regionCode')}, "
+                    f"but school facility count regionCode is {region_code}"
+                )
 
     return errors
 

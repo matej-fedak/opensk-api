@@ -6,7 +6,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Generated/curated JSON under `data/` is the runtime input.
 - Production requests read those JSON files only; they do not call upstream sources.
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
-- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from the Eurostat LAU 2025 workbook with nullable district links; districts remain unverified seed data.
+- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from PortalVS classifier 9 (`Obce`) with district mappings derived from `code_su`; districts are imported from PortalVS classifier 10 filtered to Slovak rows.
 
 ## Company Seed Dataset
 
@@ -94,7 +94,7 @@ Each `companies[]` item uses this shape:
 
 - Keep codes as strings, even when they are numeric-looking.
 - Preserve leading zeros in bank codes and PSC values.
-- Use uppercase `SK###` for region codes and `SK####` for district codes.
+- Use uppercase `SK###` for region codes and region-prefixed district codes such as `SK0101` or `SK03210`.
 - Use 6-digit municipality codes.
 
 ## Null vs Omitted
@@ -102,8 +102,10 @@ Each `companies[]` item uses this shape:
 - Use `null` only for optional links that are known to be unavailable yet still part of the record shape.
 - Omit fields only when the dataset schema does not define them.
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
-- For imported municipality records, `districtCode` may be `null` because the Eurostat LAU workbook does not provide district mappings.
-- In the current imported PSC data, `districtCode` is `null` throughout because the source data does not provide a reliable district mapping.
+- For imported municipality records, `districtCode` is required and is derived from PortalVS classifier 9 `code_su`.
+- PSC source data does not provide a reliable district mapping; checked-in PSC `districtCode` values are backfilled locally from `municipalityCode`.
+- Vehicle registration code `districtCode` is nullable when a legacy legal-table row does not map to one current local district.
+- School facility counts do not include `municipalityCode`, school identifiers, school names, or addresses because the confirmed source CSV contains aggregate rows only.
 
 ## Common Metadata
 
@@ -136,10 +138,25 @@ Where present, dataset metadata uses this shape:
 {
   "metadata": { ... },
   "banks": [
-    { "code": "1100", "name": "Tatra banka, a.s.", "country": "Slovakia" }
+    {
+      "code": "1100",
+      "name": "Tatra banka, a.s.",
+      "bic": "TATRSKBX",
+      "swift": "TATRSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    }
   ]
 }
 ```
+
+- `code` is the four-digit domestic payment-system identification code.
+- `bic` and `swift` are uppercase 8- or 11-character identifiers when available; both are retained for API compatibility.
+- `alphabeticCode` is `null` for current NBS CSV imports because the CSV snapshot does not expose a separate alphabetic domestic code.
+- `activePartyMarker` preserves the normalized NBS participation marker: `C` and `K` map to `activeParty: true`, `Ø` maps to `activeParty: false`.
+- `country` is `SK` for runtime bank rows.
 
 ### `data/regions.json`
 
@@ -152,6 +169,56 @@ Where present, dataset metadata uses this shape:
 }
 ```
 
+### `data/phone_areas.json`
+
+```json
+{
+  "metadata": { ... },
+  "phoneAreas": [
+    {
+      "code": "02",
+      "name": "Bratislava",
+      "municipalityCode": "528595",
+      "municipalityName": "Bratislava - mestská časť Staré Mesto",
+      "districtCode": "SK0101",
+      "regionCode": "SK010",
+      "country": "SK"
+    }
+  ]
+}
+```
+
+- `code` is the Slovak primary telephone area code, currently validated as `0#` or `0##`.
+- One code can have multiple municipality rows.
+- `municipalityCode`, `districtCode`, and `regionCode` are nullable for imported rows when source matching is not reliable.
+- Current checked-in data is imported from the retained telecom regulator workbook; source/licence verification remains pending.
+
+### `data/vehicle_registration_codes.json`
+
+```json
+{
+  "metadata": { ... },
+  "vehicleRegistrationCodes": [
+    {
+      "code": "BA",
+      "districtName": "Bratislava",
+      "districtCode": null,
+      "regionCode": "SK010",
+      "validFrom": null,
+      "validTo": "2023-01-01",
+      "status": "legacy",
+      "notes": "Legacy district abbreviation; not reliable for current plate lookup."
+    }
+  ]
+}
+```
+
+- `code` is a two-letter legacy district abbreviation from Slov-Lex legal text for vehicle registration numbers.
+- `status` is always `legacy`.
+- `districtCode` and `regionCode` link to local geography only where that mapping is reliable.
+- This dataset is historical/reference data only; it does not decode full licence plates, identify vehicles, or identify owners.
+- `validFrom` is currently null because exact start dates are not retained per abbreviation; `validTo` marks the start of the post-2023 allocation model and should not be read as the expiry of already issued plates.
+
 ### `data/districts.json`
 
 ```json
@@ -163,13 +230,43 @@ Where present, dataset metadata uses this shape:
 }
 ```
 
+### `data/school_facility_counts.json`
+
+```json
+{
+  "metadata": { ... },
+  "schoolFacilityCounts": [
+    {
+      "schoolKindShort": "GYM",
+      "schoolTypeShort": "GYM",
+      "kindLevel1": "SŠ",
+      "kindLevel2": "GYM",
+      "regionName": "Bratislavský",
+      "regionCode": "SK010",
+      "districtName": "Bratislava I",
+      "districtCode": "SK0101",
+      "organizationalUnitCount": 2,
+      "founderOwnershipType": "cirkevná",
+      "founderType": "cirkev, náboženská spoločnosť",
+      "country": "SK"
+    }
+  ]
+}
+```
+
+- `organizationalUnitCount` is an integer count from the source field `Počet organizačných zložiek`.
+- `regionCode` comes from source `NUTS3` and is validated against local regions.
+- `districtCode` comes from source `LAU1`; alphabetical LAU suffixes are transformed only when they match local district code, name, and region.
+- This file contains aggregate rows only, not institution records. Do not add `schoolCode`, `schoolName`, `address`, director/staff/pupil fields, email, or phone fields.
+- `/v1/schools` is intentionally not implemented for this source.
+
 ### `data/municipalities.json`
 
 ```json
 {
   "metadata": { ... },
   "municipalities": [
-    { "code": "507814", "name": "Bernolákovo", "districtCode": null, "regionCode": "SK010", "country": "SK" }
+    { "code": "507814", "name": "Bernolákovo", "districtCode": "SK0102", "regionCode": "SK010", "country": "SK" }
   ]
 }
 ```
@@ -195,8 +292,9 @@ Where present, dataset metadata uses this shape:
 ```
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
-- Imported municipality rows may have `districtCode: null` when the source workbook does not provide district mappings.
-- Imported PSC rows currently have `districtCode: null` in the checked-in dataset.
+- Imported municipality rows should include `districtCode` when sourced from PortalVS classifier 9.
+- Imported PSC source rows do not provide reliable district links; checked-in PSC `districtCode` values are backfilled from `municipalityCode` using local municipality mappings.
+- PSC `districtCode` coverage is 100% for current local PSC records, with no values inferred from names or PSC patterns.
 - PSC geography links are local data, not a live lookup.
 - The PSC source may contain multiple rows for the same postal code; importer previews should report that with `matchCount` and `matches` before selecting a canonical runtime record.
 
@@ -237,7 +335,7 @@ Where present, dataset metadata uses this shape:
     "geographyCoverage": {
       "municipalityCode": { "count": 3101, "percentage": 100.0 },
       "regionCode": { "count": 3101, "percentage": 100.0 },
-      "districtCode": { "count": 0, "percentage": 0.0 }
+      "districtCode": { "count": 3101, "percentage": 100.0 }
     },
     "source": {
       "name": "PortalVS Číselníky classifier 42",
