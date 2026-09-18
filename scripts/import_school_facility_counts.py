@@ -62,7 +62,9 @@ class ImportResult:
     total_source_rows: int = 0
     imported_records: int = 0
     skipped_records: int = 0
+    malformed_records: int = 0
     duplicate_records: int = 0
+    total_organizational_unit_count: int = 0
     region_links: int = 0
     district_links: int = 0
     warnings: list[str] = field(default_factory=list)
@@ -209,6 +211,7 @@ def build_school_facility_counts_payload(records: list[dict[str, Any]], source: 
         try:
             record = normalize_school_facility_count_record(raw_record, districts, result.warnings, index + 1)
         except ValueError as exc:
+            result.malformed_records += 1
             result.skipped_records += 1
             result.errors.append(f"row {index + 1}: {exc}")
             continue
@@ -225,6 +228,7 @@ def build_school_facility_counts_payload(records: list[dict[str, Any]], source: 
             result.region_links += 1
         if record.get("districtCode"):
             result.district_links += 1
+        result.total_organizational_unit_count += int(record["organizationalUnitCount"])
         normalized_records.append(record)
 
     normalized_records.sort(
@@ -288,7 +292,9 @@ def _print_result(result: ImportResult) -> None:
     print(f"total source rows={result.total_source_rows}")
     print(f"imported records={result.imported_records}")
     print(f"skipped records={result.skipped_records}")
+    print(f"malformed records={result.malformed_records}")
     print(f"duplicate aggregate rows={result.duplicate_records}")
+    print(f"total organizational unit count={result.total_organizational_unit_count}")
     print(f"region links={result.region_links}")
     print(f"district links={result.district_links}")
     print(f"warnings={len(result.warnings)}")

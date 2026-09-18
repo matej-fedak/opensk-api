@@ -23,6 +23,7 @@ def test_school_facility_import_maps_headers_and_alpha_lau(tmp_path: Path) -> No
     assert result.ok
     assert result.total_source_rows == 1
     assert result.imported_records == 1
+    assert result.total_organizational_unit_count == 78
     assert result.district_links == 1
     assert output.is_file()
     assert '"districtCode": "SK03111"' in output.read_text(encoding="utf-8")
@@ -40,6 +41,21 @@ def test_school_facility_import_skips_duplicate_aggregate_rows(tmp_path: Path) -
     assert result.total_source_rows == 2
     assert result.imported_records == 1
     assert result.duplicate_records == 1
+    assert result.skipped_records == 1
+
+
+def test_school_facility_import_reports_malformed_rows(tmp_path: Path) -> None:
+    source = tmp_path / "schools.csv"
+    output = tmp_path / "school_facility_counts.json"
+    _write_fixture(
+        source,
+        ["GYM;GYM;SŠ;GYM;Trenčiansky;SK022;Trenčín;SK0229;not-a-number;štátna;samosprávny kraj;"],
+    )
+
+    result = run_import(input_path=source, output_path=output, last_updated="2025-09-15", write=False)
+
+    assert not result.ok
+    assert result.malformed_records == 1
     assert result.skipped_records == 1
 
 

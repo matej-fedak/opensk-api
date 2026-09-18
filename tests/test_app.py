@@ -26,7 +26,7 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
-    assert body["data"]["version"] == "0.10.0-dev"
+    assert body["data"]["version"] == "0.11.0"
     assert body["metadata"]["source"] == "OpenSK API"
     assert body["metadata"]["version"] == "v1"
     assert "lastUpdated" in body["metadata"]
@@ -41,7 +41,7 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
-    assert schema["info"]["version"] == "0.10.0-dev"
+    assert schema["info"]["version"] == "0.11.0"
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
     assert "/v1/health" in schema["paths"]
@@ -76,7 +76,7 @@ def test_docs_or_openapi_is_available() -> None:
 def test_project_version_reset_preserves_v1_route_namespace() -> None:
     schema = client.get("/openapi.json").json()
 
-    assert schema["info"]["version"] == "0.10.0-dev"
+    assert schema["info"]["version"] == "0.11.0"
     assert "/v1/health" in schema["paths"]
     assert client.get("/v1/health").status_code == 200
 
@@ -483,6 +483,8 @@ def test_school_facility_counts_stats_returns_totals() -> None:
     assert body["data"]["districtLinkedCount"] == 1227
     assert body["data"]["totalsByRegion"]["SK010"] == 774
     assert body["data"]["totalsBySchoolKind"]["MŠ"] == 3221
+    assert body["data"]["totalsBySchoolType"]["MŠ"] == 3221
+    assert body["data"]["totalsByFounderType"]["obec, mesto"] == 4871
 
 
 def test_schools_route_is_not_exposed() -> None:
