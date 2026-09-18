@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.11.0` pre-1.0 school facility aggregate data milestone.
+Status: `0.12.0` pre-1.0 public API consistency milestone.
 
 OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
 
@@ -10,55 +10,31 @@ See `docs/versioning.md` for the versioning policy. Future `1.0.0` is reserved f
 
 No API key is required. CORS is enabled for browser clients. All responses are JSON.
 
-## Endpoint Matrix
+## Public API Surface
 
-### Stable
+Use `/docs` or `/openapi.json` for parameter-level details. The table below is a concise index of the current public routes; all runtime routes read local normalized data only.
 
-| Endpoint | Status | Notes |
-| --- | --- | --- |
-| `GET /` | stable | Project info |
-| `GET /v1/health` | stable | Health check |
-| `GET /v1/iban/validate/SK...` | stable | Slovak IBAN validation |
-| `GET /v1/regions` | stable | Static regions dataset |
-| `GET /v1/regions/SK010` | stable | Static region lookup |
-| `GET /v1/districts` | stable | Complete districts dataset; PortalVS terms may restrict reuse |
-| `GET /v1/districts/SK0101` | stable | Complete district lookup; PortalVS terms may restrict reuse |
-| `GET /v1/municipalities` | stable | Static municipalities dataset |
-| `GET /v1/municipalities/528595` | stable | Static municipality lookup |
-| `GET /v1/banks` | stable | Static NBS bank-code dataset; source/licence verification pending |
-| `GET /v1/banks/1100` | stable | Static bank-code lookup; source/licence verification pending |
-| `GET /v1/phone-areas` | stable | Static imported phone-area list; source/licence verification pending |
-| `GET /v1/phone-areas/02` | stable | Static imported phone-area lookup; source/licence verification pending |
-| `GET /v1/phone-areas/search?q=Bratislava` | stable | Static imported phone-area search; source/licence verification pending |
-| `GET /v1/vehicle-registration-codes` | stable | Static legacy district-code reference; not a current plate lookup |
-| `GET /v1/vehicle-registration-codes/BA` | stable | Static legacy district-code lookup; does not identify vehicles or owners |
-| `GET /v1/vehicle-registration-codes/search?q=Trencin` | stable | Static legacy district-code search; does not decode full plates |
-| `GET /v1/school-facility-counts` | stable | Static MŠVVaM aggregate school facility counts; not a school directory |
-| `GET /v1/school-facility-counts/stats` | stable | Static aggregate totals by geography and school kind |
+| Endpoint | Purpose | Coverage | Source status |
+| --- | --- | --- | --- |
+| `GET /` | Project metadata, including project SemVer and API namespace | project metadata | local service metadata |
+| `GET /v1/health` | Health check | service health | local service metadata |
+| `GET /v1/iban/validate/{iban}` | IBAN checksum validation with Slovak bank resolution when possible | validation endpoint | local bank dataset for bank resolution |
+| `GET /v1/regions`, `GET /v1/regions/{code}` | Region list and lookup | complete | Eurostat source; reuse terms tracked |
+| `GET /v1/districts`, `GET /v1/districts/{code}` | District list and lookup | complete imported | PortalVS terms may restrict reuse |
+| `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse |
+| `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | PortalVS terms may restrict reuse |
+| `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and dataset stats | partial imported | PortalVS terms may restrict reuse |
+| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported | NBS source/licence verification pending |
+| `GET /v1/holidays/{year}` | Slovak holiday calendar by year | partial curated seed | NBS/legal-act provenance tracked |
+| `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Seed-backed company lookup and IČO alias | seed-backed | RPO expansion/licence/privacy verification pending |
+| `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}` | Phone-area list and lookup | complete imported; 3 unmatched local geography links | telecom regulator licence verification pending |
+| `GET /v1/phone-areas/search` | Phone-area search | complete imported; 3 unmatched local geography links | telecom regulator licence verification pending |
+| `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}` | Legacy vehicle registration district-code list and lookup | historical/reference | Slov-Lex reuse verification pending |
+| `GET /v1/vehicle-registration-codes/search` | Legacy vehicle registration district-code search | historical/reference | Slov-Lex reuse verification pending |
+| `GET /v1/school-facility-counts` | Aggregate school facility counts | aggregate imported | MŠVVaM lists Creative Commons BY |
+| `GET /v1/school-facility-counts/stats` | Aggregate school facility count totals | aggregate imported | MŠVVaM lists Creative Commons BY |
 
-### Seed-backed
-
-| Endpoint | Status | Notes |
-| --- | --- | --- |
-| `GET /v1/holidays/2026` | seed-backed | Static holiday dataset |
-| `GET /v1/companies/{ico}` | seed-backed | Local company lookup, no live upstream calls |
-| `GET /v1/ico/{ico}` | seed-backed | Alias for local company lookup |
-
-### Partial Dataset
-
-| Endpoint | Status | Notes |
-| --- | --- | --- |
-| `GET /v1/psc/81101` | partial dataset | Expanded static PSC dataset with partial geography links |
-| `GET /v1/psc` | partial dataset | PSC collection surface with `limit` / `offset`; partial coverage only |
-| `GET /v1/psc/search?q=...` | partial dataset | PSC search surface; partial coverage only |
-| `GET /v1/psc/stats` | partial dataset | Local PSC dataset stats; PortalVS source terms are restrictive |
-
-### Platform
-
-| Endpoint | Status | Notes |
-| --- | --- | --- |
-| `/docs` | stable | Swagger UI |
-| `/openapi.json` | stable | OpenAPI schema |
+`/v1/schools` is intentionally not implemented because the confirmed school source is aggregate-only data, not an institution-level school directory.
 
 ## PSC Collection Surface
 
@@ -77,6 +53,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/source-verification-evidence.md` records retained source-verification evidence.
 - `docs/research/source-licence-questions.md` contains draft clarification questions; nothing is sent automatically.
 - `docs/api-status.md` lists the endpoint status categories.
+- `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.

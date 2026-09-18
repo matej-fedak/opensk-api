@@ -4,31 +4,25 @@ The runtime serves local JSON only and does not call upstream sources during req
 
 OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development milestones, not formal stable public releases. The `/v1` route prefix remains the API namespace and does not imply a finalized `1.0.0` contract.
 
-## Stable
+## Public Endpoint Index
 
-| Endpoint | Status | Notes |
-| --- | --- | --- |
-| `GET /` | stable | Project info |
-| `GET /v1/health` | stable | Health check |
-| `GET /v1/iban/validate/{iban}` | stable | Local IBAN validation |
-| `GET /v1/regions` | stable | Local regions dataset |
-| `GET /v1/regions/{code}` | stable | Local region lookup |
-| `GET /v1/districts` | stable | Local districts dataset; PortalVS terms may restrict reuse |
-| `GET /v1/districts/{code}` | stable | Local district lookup; PortalVS terms may restrict reuse |
-| `GET /v1/municipalities` | stable | Local municipalities dataset |
-| `GET /v1/municipalities/{code}` | stable | Local municipality lookup |
-| `GET /v1/banks` | stable | Local NBS bank-code dataset; source/licence verification pending |
-| `GET /v1/banks/{code}` | stable | Local NBS bank-code lookup; source/licence verification pending |
-| `GET /v1/phone-areas` | stable | Local imported phone-area dataset; source/licence verification pending |
-| `GET /v1/phone-areas/{code}` | stable | Local imported phone-area lookup; source/licence verification pending |
-| `GET /v1/phone-areas/search` | stable | Local imported phone-area search; source/licence verification pending |
-| `GET /v1/vehicle-registration-codes` | stable | Local legacy vehicle registration district-code dataset; not a current plate lookup |
-| `GET /v1/vehicle-registration-codes/{code}` | stable | Local legacy district-code lookup; does not identify vehicles or owners |
-| `GET /v1/vehicle-registration-codes/search` | stable | Local legacy district-code search; does not decode full plates |
-| `GET /v1/school-facility-counts` | stable | Local MŠVVaM aggregate school facility counts; not a school directory |
-| `GET /v1/school-facility-counts/stats` | stable | Local school facility aggregate totals |
-| `/docs` | stable | Swagger UI |
-| `/openapi.json` | stable | OpenAPI schema |
+| Endpoint | Purpose | Coverage/status | Notes |
+| --- | --- | --- | --- |
+| `GET /` | Project metadata | service metadata | Distinguishes project SemVer from API namespace `v1`. |
+| `GET /v1/health` | Health check | service metadata | Local service response. |
+| `GET /v1/iban/validate/{iban}` | IBAN validation | validation endpoint | Uses local bank data only for Slovak bank resolution. |
+| `GET /v1/regions`, `GET /v1/regions/{code}` | Region list and lookup | complete | Eurostat source terms tracked. |
+| `GET /v1/districts`, `GET /v1/districts/{code}` | District list and lookup | complete imported | PortalVS terms may restrict reuse. |
+| `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse. |
+| `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | Local PSC coverage is not national coverage. |
+| `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and stats | partial imported | Static `/search` and `/stats` routes are intentionally registered before `/{psc}`. |
+| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported | NBS source/licence verification pending. |
+| `GET /v1/holidays/{year}` | Holiday calendar | partial curated seed | Years outside the seed return 404. |
+| `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage. |
+| `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, `GET /v1/phone-areas/search` | Phone-area list, lookup, and search | complete imported; 3 unmatched local geography links | Telecom regulator reuse verification pending. |
+| `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, `GET /v1/vehicle-registration-codes/search` | Legacy district-code reference | historical/reference | Not current plate lookup, full plate decoding, vehicle lookup, or owner lookup. |
+| `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
+| `/docs`, `/openapi.json` | Interactive docs and schema | platform | Useful for parameter-level details. |
 
 ## Seed-backed
 
