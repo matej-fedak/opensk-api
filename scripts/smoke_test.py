@@ -59,6 +59,67 @@ def _check_ok(name: str, url: str, expected_status: int = 200) -> SmokeResult:
     return SmokeResult(name, True, "PASS")
 
 
+def _check_root(url: str) -> SmokeResult:
+    try:
+        status, body = _request_json(url)
+    except RuntimeError as exc:
+        return SmokeResult("root", False, "FAIL", str(exc))
+
+    if status != 200:
+        return SmokeResult("root", False, "FAIL", f"expected 200, got {status}: {body!r}")
+
+    try:
+        data = body["data"]
+        metadata = body["metadata"]
+        if data["version"] == "0.12.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
+            return SmokeResult("root", True, "PASS")
+    except Exception:
+        return SmokeResult("root", False, "FAIL", f"unexpected body: {body!r}")
+
+    return SmokeResult("root", False, "FAIL", f"unexpected body: {body!r}")
+
+
+def _check_openapi(url: str) -> SmokeResult:
+    try:
+        status, body = _request_json(url)
+    except RuntimeError as exc:
+        return SmokeResult("openapi", False, "FAIL", str(exc))
+
+    if status != 200:
+        return SmokeResult("openapi", False, "FAIL", f"expected 200, got {status}: {body!r}")
+
+    required_paths = {
+        "/v1/health",
+        "/v1/holidays/{year}",
+        "/v1/psc",
+        "/v1/psc/search",
+        "/v1/psc/stats",
+        "/v1/regions",
+        "/v1/districts",
+        "/v1/municipalities",
+        "/v1/banks",
+        "/v1/iban/validate/{iban}",
+        "/v1/companies/{ico}",
+        "/v1/ico/{ico}",
+        "/v1/phone-areas",
+        "/v1/vehicle-registration-codes",
+        "/v1/school-facility-counts",
+    }
+    try:
+        paths = set(body["paths"])
+        version = body["info"]["version"]
+    except Exception:
+        return SmokeResult("openapi", False, "FAIL", f"unexpected body: {body!r}")
+
+    missing = sorted(required_paths - paths)
+    if missing:
+        return SmokeResult("openapi", False, "FAIL", f"missing paths: {missing}")
+    if version != "0.12.0":
+        return SmokeResult("openapi", False, "FAIL", f"expected version 0.12.0, got {version!r}")
+
+    return SmokeResult("openapi", True, "PASS")
+
+
 def _build_valid_slovak_iban(bank_code: str, account_number: str) -> str:
     bban = f"{bank_code}{account_number}"
     rearranged = f"{bban}SK00"
@@ -140,7 +201,6 @@ def main(argv: list[str] | None = None) -> int:
     base_url = _normalize_base_url(args.base_url)
 
     checks = [
-        ("root", f"{base_url}/"),
         ("health", f"{base_url}/v1/health"),
         ("holidays", f"{base_url}/v1/holidays/2026"),
         ("psc-item", f"{base_url}/v1/psc/81101"),
@@ -148,20 +208,26 @@ def main(argv: list[str] | None = None) -> int:
         ("psc-search", f"{base_url}/v1/psc/search?q={quote('Bratislava')}", 200),
         ("psc-stats", f"{base_url}/v1/psc/stats"),
         ("banks", f"{base_url}/v1/banks"),
+        ("bank-item", f"{base_url}/v1/banks/1100"),
         ("iban", f"{base_url}/v1/iban/validate/{_build_valid_slovak_iban('0900', '0000000000000001')}"),
         ("regions", f"{base_url}/v1/regions"),
+        ("region-item", f"{base_url}/v1/regions/SK010"),
         ("districts", f"{base_url}/v1/districts"),
+        ("district-item", f"{base_url}/v1/districts/SK0101"),
         ("municipalities", f"{base_url}/v1/municipalities"),
+        ("municipality-item", f"{base_url}/v1/municipalities/528595"),
         ("phone-areas", f"{base_url}/v1/phone-areas"),
         ("phone-area-item", f"{base_url}/v1/phone-areas/02"),
         ("phone-area-search", f"{base_url}/v1/phone-areas/search?q={quote('Bratislava')}", 200),
+        ("vehicle-registration-codes", f"{base_url}/v1/vehicle-registration-codes"),
         ("vehicle-registration-code", f"{base_url}/v1/vehicle-registration-codes/BA"),
+        ("vehicle-registration-code-search", f"{base_url}/v1/vehicle-registration-codes/search?q={quote('Trencin')}", 200),
         ("school-facility-counts", f"{base_url}/v1/school-facility-counts"),
         ("school-facility-count-stats", f"{base_url}/v1/school-facility-counts/stats"),
         ("companies", f"{base_url}/v1/companies/50158635", 200),
     ]
 
-    results: list[SmokeResult] = []
+    results: list[SmokeResult] = [_check_root(f"{base_url}/")]
     for check in checks:
         if len(check) == 2:
             name, url = check
@@ -181,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
 
     results.append(_check_company_alias(f"{base_url}/v1/ico/50158635", "50158635"))
     results.append(_check_ok("docs", f"{base_url}/docs"))
-    results.append(_check_ok("openapi", f"{base_url}/openapi.json"))
+    results.append(_check_openapi(f"{base_url}/openapi.json"))
 
     for result in results:
         line = f"{result.status}: {result.name}"

@@ -24,10 +24,11 @@ from schemas.common import API_SOURCE, error_detail, error_response, success_res
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="0.11.0",
+    version="0.12.0",
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
+        {"name": "meta", "description": "Project metadata."},
         {"name": "health", "description": "Basic service health checks."},
         {"name": "banks", "description": "Static Slovak bank data and lookup endpoints."},
         {"name": "iban", "description": "IBAN validation and bank resolution."},
@@ -92,12 +93,14 @@ app.add_middleware(
 )
 
 
-@app.get("/", summary="Project info", description="Returns basic project metadata and the documentation URL.")
+@app.get("/", tags=["meta"], summary="Project info", description="Returns project SemVer, API namespace version, and the documentation URL.")
 def root() -> dict[str, object]:
     return success_response(
         data={
             "name": app.title,
             "version": app.version,
+            "apiVersion": "v1",
+            "apiNamespace": "/v1",
             "docs_url": app.docs_url or "/docs",
         },
         source=API_SOURCE,

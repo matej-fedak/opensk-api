@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0
+
+- Hardened public API consistency docs and regression coverage against the actual OpenAPI route surface.
+- Updated root metadata to expose project SemVer separately from API namespace/version fields.
+- Expanded smoke tests to cover representative list, detail, search, stats, company alias, docs, and OpenAPI routes.
+- Added route-shadowing, error-envelope, OpenAPI tag/summary, and `/v1` namespace regression tests.
+- Preserved existing `/v1` route namespace and response `metadata.version == "v1"` semantics.
+
 ## 0.11.0
 
 - Added MŠVVaM `Register škôl a školských zariadení` as aggregate school facility count data, not an institution-level school directory.

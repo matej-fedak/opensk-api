@@ -26,7 +26,9 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
-    assert body["data"]["version"] == "0.11.0"
+    assert body["data"]["version"] == "0.12.0"
+    assert body["data"]["apiVersion"] == "v1"
+    assert body["data"]["apiNamespace"] == "/v1"
     assert body["metadata"]["source"] == "OpenSK API"
     assert body["metadata"]["version"] == "v1"
     assert "lastUpdated" in body["metadata"]
@@ -41,7 +43,8 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
-    assert schema["info"]["version"] == "0.11.0"
+    assert schema["info"]["version"] == "0.12.0"
+    assert schema["paths"]["/"]["get"]["tags"] == ["meta"]
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
     assert "/v1/health" in schema["paths"]
@@ -76,9 +79,61 @@ def test_docs_or_openapi_is_available() -> None:
 def test_project_version_reset_preserves_v1_route_namespace() -> None:
     schema = client.get("/openapi.json").json()
 
-    assert schema["info"]["version"] == "0.11.0"
+    root = client.get("/").json()
+    assert schema["info"]["version"] == "0.12.0"
+    assert root["data"]["version"] == "0.12.0"
+    assert root["data"]["apiVersion"] == root["metadata"]["version"] == "v1"
     assert "/v1/health" in schema["paths"]
+    assert not any(path.startswith("/v0") for path in schema["paths"])
     assert client.get("/v1/health").status_code == 200
+
+
+def test_every_openapi_operation_uses_public_tags_and_summaries() -> None:
+    schema = client.get("/openapi.json").json()
+    get_operations = []
+
+    for path, methods in schema["paths"].items():
+        for method, operation in methods.items():
+            if method != "get":
+                continue
+            get_operations.append(path)
+            assert operation.get("tags"), path
+            assert operation.get("summary"), path
+
+    assert len(get_operations) == 26
+    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 25
+
+
+def test_static_search_and_stats_routes_are_not_shadowed() -> None:
+    checks = [
+        "/v1/psc/search?q=Bratislava",
+        "/v1/psc/stats",
+        "/v1/phone-areas/search?q=Bratislava",
+        "/v1/vehicle-registration-codes/search?q=Trencin",
+        "/v1/school-facility-counts/stats",
+    ]
+
+    for path in checks:
+        response = client.get(path)
+        assert response.status_code == 200, path
+        assert response.json()["metadata"]["version"] == "v1"
+
+
+def test_public_error_responses_use_error_envelope() -> None:
+    checks = [
+        ("/v1/banks/11A0", 400),
+        ("/v1/banks/9999", 404),
+        ("/v1/psc/search", 400),
+        ("/v1/regions/SK999", 404),
+    ]
+
+    for path, status_code in checks:
+        response = client.get(path)
+        body = response.json()
+        assert response.status_code == status_code, path
+        assert body["data"] is None
+        assert body["metadata"]["version"] == "v1"
+        assert body["error"]["code"]
 
 
 def test_health_returns_enveloped_response() -> None:
