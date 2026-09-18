@@ -77,6 +77,8 @@ def get_school_facility_count_stats() -> dict[str, object]:
     totals_by_region: dict[str, int] = {}
     totals_by_district: dict[str, int] = {}
     totals_by_school_kind: dict[str, int] = {}
+    totals_by_school_type: dict[str, int] = {}
+    totals_by_founder_type: dict[str, int] = {}
     total_units = 0
 
     for record in records:
@@ -87,6 +89,8 @@ def get_school_facility_count_stats() -> dict[str, object]:
         _add_total(totals_by_region, record.get("regionCode"), count)
         _add_total(totals_by_district, record.get("districtCode"), count)
         _add_total(totals_by_school_kind, record.get("schoolKindShort"), count)
+        _add_total(totals_by_school_type, record.get("schoolTypeShort"), count)
+        _add_total(totals_by_founder_type, record.get("founderType"), count)
 
     return {
         "recordCount": len(records),
@@ -96,4 +100,6 @@ def get_school_facility_count_stats() -> dict[str, object]:
         "totalsByRegion": dict(sorted(totals_by_region.items())),
         "totalsByDistrict": dict(sorted(totals_by_district.items())),
         "totalsBySchoolKind": dict(sorted(totals_by_school_kind.items())),
+        "totalsBySchoolType": dict(sorted(totals_by_school_type.items())),
+        "totalsByFounderType": dict(sorted(totals_by_founder_type.items())),
     }
