@@ -10,15 +10,33 @@ from typing import Any
 DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "companies.json"
 FORBIDDEN_OUTPUT_KEYS = {
     "statutoryBodies",
+    "statutoryBody",
     "representatives",
+    "representative",
     "stakeholders",
+    "stakeholder",
     "partners",
+    "partner",
     "owners",
+    "owner",
+    "beneficialOwners",
+    "beneficialOwner",
     "persons",
+    "person",
+    "personName",
+    "givenNames",
+    "familyNames",
+    "givenFamilyNames",
     "birthDate",
+    "birthNumber",
     "personalNumber",
+    "personalIdentifier",
     "citizenship",
     "residence",
+    "privateAddress",
+    "personalEmail",
+    "personalPhone",
+    "telephone",
 }
 
 

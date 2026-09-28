@@ -62,15 +62,33 @@ _SCHOOL_FACILITY_FORBIDDEN_KEYS = {
 }
 _COMPANY_FORBIDDEN_KEYS = {
     "statutoryBodies",
+    "statutoryBody",
     "representatives",
+    "representative",
     "stakeholders",
+    "stakeholder",
     "partners",
+    "partner",
     "owners",
+    "owner",
+    "beneficialOwners",
+    "beneficialOwner",
     "persons",
+    "person",
+    "personName",
+    "givenNames",
+    "familyNames",
+    "givenFamilyNames",
     "birthDate",
+    "birthNumber",
     "personalNumber",
+    "personalIdentifier",
     "citizenship",
     "residence",
+    "privateAddress",
+    "personalEmail",
+    "personalPhone",
+    "telephone",
 }
 
 

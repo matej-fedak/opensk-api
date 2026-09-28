@@ -19,7 +19,8 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 
 - IČO/company lookup now uses a small checked-in local seed dataset.
 - Broader company coverage is still research-only and depends on licence/privacy follow-up.
-- RPO licence verification remains pending; see `docs/research/rpo-licence.md`.
+- RPO production acquisition remains blocked; see `docs/research/rpo-acquisition-decision.md` and `docs/research/rpo-licence.md`.
+- `scripts/import_companies.py` can normalize local RPO-style JSON fixtures into `data/generated/companies.json`, excluding natural-person/person-like records and stripping forbidden role/person fields. It still refuses to write `data/companies.json` until the acquisition gate approves production import.
 - The proposed normalized record shape is documented in `docs/dataset-format.md`.
 - Source evaluation notes live in `docs/research/ico-sources.md`.
 - ORSR and ŽRSR are reference-only sources here; do not scrape their HTML.

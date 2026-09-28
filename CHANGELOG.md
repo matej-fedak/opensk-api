@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.0
+
+- Verified the current RPO acquisition gate and chose `RESEARCH_AND_TOOLING_ONLY`; the production company dataset remains seed-backed.
+- Documented current RPO portal/API/mirror findings, CC BY 4.0 evidence from API documentation, privacy constraints, and production import blockers.
+- Hardened the company importer for future local RPO-style files with natural-person exclusion, recursive forbidden-field stripping, duplicate reporting, and richer import statistics.
+- Strengthened company privacy validation denylists for statutory/person-role fields.
+- Retained both existing lookup endpoints, including `/v1/ico/{ico}` as the compatibility alias.
+- Updated project version metadata to `0.14.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.13.0
 
 - Added a concrete `1.0.0` readiness audit covering public endpoints, datasets, source/licence posture, breaking-change candidates, privacy, operations, and release blockers.

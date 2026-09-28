@@ -4,7 +4,7 @@
 - PortalVS classifier 42 PSC licence, caching, transformation, commercial-use, and redistribution verification.
 - PortalVS classifier 9 municipality licence, caching, transformation, commercial-use, and redistribution verification.
 - PortalVS classifier 10 district licence, caching, transformation, commercial-use, and redistribution verification.
-- ŠÚ SR/RPO licence, privacy, caching, commercial-use, and redistribution verification before future company import work.
+- RPO acquisition gate: verify official or otherwise justified bulk/local snapshot source, provenance, licence, attribution, rate limits, privacy filtering, commercial-use, and redistribution before replacing the seed-backed company dataset.
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
 - Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.

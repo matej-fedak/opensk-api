@@ -88,7 +88,9 @@ Each `companies[]` item uses this shape:
 - The schema is the normalized shape used by the checked-in seed dataset.
 - Keep personal, stakeholder, statutory-body, and other role-holder fields out of this prototype.
 - Do not scrape ORSR/ŽRSR for this dataset; they are reference-only.
-- Licence verification notes for broader RPO expansion live in `docs/research/rpo-licence.md`.
+- Licence/acquisition verification notes for broader RPO expansion live in `docs/research/rpo-licence.md` and `docs/research/rpo-acquisition-decision.md`.
+- Production `data/companies.json` remains seed-backed in `0.14.0`; RPO-style local files may be normalized by `scripts/import_companies.py` into `data/generated/companies.json` only until the acquisition gate approves production promotion.
+- Company validation fails if personal or role-holder fields such as statutory bodies, stakeholders, beneficial owners, person names, birth numbers, private addresses, personal email, or personal phone leak into production JSON.
 
 ## Code Conventions
 

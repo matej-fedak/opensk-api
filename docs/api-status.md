@@ -18,7 +18,7 @@ OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and stats | partial imported | Static `/search` and `/stats` routes are intentionally registered before `/{psc}`. |
 | `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported | NBS source/licence verification pending. |
 | `GET /v1/holidays/{year}` | Holiday calendar | partial curated seed | Years outside the seed return 404. |
-| `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage. |
+| `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage; 0.14.0 did not approve RPO production import. |
 | `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, `GET /v1/phone-areas/search` | Phone-area list, lookup, and search | complete imported; 3 unmatched local geography links | Telecom regulator reuse verification pending. |
 | `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, `GET /v1/vehicle-registration-codes/search` | Legacy district-code reference | historical/reference | Not current plate lookup, full plate decoding, vehicle lookup, or owner lookup. |
 | `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
@@ -45,7 +45,7 @@ OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development
 
 - No endpoint fetches live upstream data at request time.
 - Endpoint availability does not yet equal a stable `1.0.0` compatibility guarantee; see `docs/versioning.md`.
-- Company lookup is backed by a small checked-in seed set; broader RPO coverage still awaits licence and privacy follow-up.
+- Company lookup is backed by a small checked-in seed set; broader RPO coverage still awaits a verified production acquisition method, retained reuse evidence, and privacy approval.
 - Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
 - Districts are now complete, but PortalVS source terms remain restrictive.
