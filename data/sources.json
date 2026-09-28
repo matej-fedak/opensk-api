@@ -111,6 +111,24 @@
     "nextAction": "Verify official or otherwise justified RPO bulk/local snapshot acquisition, redistribution terms, rate limits, provenance, and privacy filtering before replacing the seed-backed dataset.",
     "notes": "Small checked-in legal-entity seed dataset for local lookup; not full RPO coverage. 0.14.0 chose RESEARCH_AND_TOOLING_ONLY and kept data/companies.json unchanged. See docs/research/rpo-acquisition-decision.md."
   },
+  "vatRegistrations": {
+    "status": "research-and-tooling-only",
+    "coverage": "unknown",
+    "sourceName": "Finančná správa SR - Zoznam daňových subjektov registrovaných pre DPH",
+    "sourceUrl": "https://www.financnasprava.sk/sk/elektronicke-sluzby/verejne-sluzby/zoznamy/detail/_101c6128-e1f6-4a48-81ed-ad3c01220e03",
+    "sourceFileUrl": "https://report.financnasprava.sk/ds_dphs.zip",
+    "licence": "Current PFS export page states the relevant informational-list group is published under CC0; Open Data FS catalogue metadata lists CC 4.0 international, so both pieces of evidence are retained.",
+    "licenceStatus": "current export-page CC0 evidence retained; catalogue metadata discrepancy documented",
+    "redistributionStatus": "production promotion blocked by privacy gate; no runtime dataset redistributed",
+    "termsUrl": "https://www.financnasprava.sk/sk/elektronicke-sluzby/verejne-sluzby/zoznamy/exporty-z-online-informacnych",
+    "attribution": "Attribute Finančné riaditeľstvo Slovenskej republiky / Finančná správa SR if future production promotion is approved.",
+    "riskLevel": "medium",
+    "lastChecked": "2026-09-28",
+    "lastUpdated": "2026-09-28",
+    "updateCadence": "Daily according to Open Data FS API documentation and current PFS export behavior",
+    "nextAction": "Obtain or identify a reliable natural/legal-subject discriminator, or an explicitly approved minimum-data privacy policy, before promoting data/vat_registrations.json or adding a public VAT endpoint.",
+    "notes": "Official ZIP works and contains ds_dphs.xml plus ds_dphs.xsd. XML has no natural/legal subject marker and includes names and addresses, so 0.15.0 remains research/tooling only with no production VAT dataset."
+  },
   "phoneAreas": {
     "status": "imported",
     "coverage": "complete",

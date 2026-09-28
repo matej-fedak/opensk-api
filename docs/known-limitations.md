@@ -2,6 +2,7 @@
 
 - RPO company production expansion is blocked until a safe acquisition method, reuse terms, provenance, rate limits, and privacy filtering are verified.
 - Company lookup is backed by a small checked-in seed set, not a complete company register or full RPO coverage.
+- VAT/DPH lookup is not exposed in 0.15.0. The official source was verified, but production import is blocked because natural-person entrepreneurs cannot be excluded deterministically from the current XML.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.

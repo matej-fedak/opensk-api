@@ -24,7 +24,19 @@ from scripts.validate_datasets import (
 
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data"
-PRODUCTION_DATASETS = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes", "schoolFacilityCounts"}
+PRODUCTION_DATASETS = {
+    "regions",
+    "districts",
+    "municipalities",
+    "psc",
+    "banks",
+    "holidays",
+    "companies",
+    "phoneAreas",
+    "vehicleRegistrationCodes",
+    "schoolFacilityCounts",
+    "vatRegistrations",
+}
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
 

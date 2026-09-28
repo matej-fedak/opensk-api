@@ -2,6 +2,18 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-09-28 VAT Registrations
+
+- Official source: Finančná správa SR `Zoznam daňových subjektov registrovaných pre DPH`.
+- Online list: `https://www.financnasprava.sk/sk/elektronicke-sluzby/verejne-sluzby/zoznamy/detail/_101c6128-e1f6-4a48-81ed-ad3c01220e03`.
+- Export page: `https://www.financnasprava.sk/sk/elektronicke-sluzby/verejne-sluzby/zoznamy/exporty-z-online-informacnych`.
+- Exact ZIP URL: `https://report.financnasprava.sk/ds_dphs.zip`.
+- HEAD check: HTTP 200, 14,277,628 bytes, `Last-Modified: Mon, 28 Sep 2026 00:36:37 GMT`.
+- ZIP contents inspected offline: `ds_dphs.xml` and `ds_dphs.xsd`.
+- XML source update date: `28092026`, normalized to `2026-09-28`.
+- Licence evidence: current PFS export page states CC0 for the relevant informational-list group; Open Data FS catalogue lists `CC 4.0 international`.
+- Privacy blocker: XML has no natural/legal subject marker and includes combined name/address fields.
+
 | Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |

@@ -92,6 +92,13 @@ Each `companies[]` item uses this shape:
 - Production `data/companies.json` remains seed-backed in `0.14.0`; RPO-style local files may be normalized by `scripts/import_companies.py` into `data/generated/companies.json` only until the acquisition gate approves production promotion.
 - Company validation fails if personal or role-holder fields such as statutory bodies, stakeholders, beneficial owners, person names, birth numbers, private addresses, personal email, or personal phone leak into production JSON.
 
+## VAT Registrations
+
+- `data/vat_registrations.json` is not present in 0.15.0 because production promotion is privacy-blocked.
+- Generated research output from `scripts/import_vat_registrations.py` uses `data/generated/vat_registrations.json` and is not a public runtime dataset.
+- Future production shape is expected to be `{ "ico": "12345678", "registrations": [{ "vatId": "SK...", "registrationType": "§4", "registeredOn": "YYYY-MM-DD", "vatPayerFrom": null, "registrationTypeChangedOn": null }] }`.
+- Names and addresses from the source XML are intentionally excluded from generated output and forbidden in validation.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.
