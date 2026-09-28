@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.13.0` pre-1.0 readiness audit and release-preparation milestone.
+Status: `0.14.0` pre-1.0 RPO company/IČO research and tooling milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -59,12 +59,14 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/1-0-readiness-audit.md` and `docs/release-readiness.md` track what remains before a future `1.0.0`.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
 - `docs/privacy-review.md` records the current privacy review.
+- `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
 - Current project versioning is pre-1.0; endpoint availability does not yet guarantee a stable `1.0.0` public contract.
+- Company lookup remains seed-backed in `0.14.0`; RPO production import is blocked until a safe acquisition method is verified.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because the confirmed MŠVVaM school-register CSV is aggregate, not per-school, data.
 

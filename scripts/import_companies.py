@@ -44,7 +44,16 @@ class ImportResult:
     output_path: Path
     source: str
     dry_run: bool
+    source_records: int = 0
+    records_inspected: int = 0
     record_count: int = 0
+    excluded_natural_persons: int = 0
+    stripped_forbidden_fields: int = 0
+    invalid_icos: int = 0
+    duplicate_icos: int = 0
+    active_entities: int = 0
+    inactive_entities: int = 0
+    geography_links: int = 0
     wrote_files: list[Path] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
@@ -64,6 +73,60 @@ def _field_map(record: dict[str, Any]) -> dict[str, Any]:
     return {_normalize_key(key): value for key, value in record.items() if key is not None}
 
 
+FORBIDDEN_SOURCE_KEYS = {
+    "statutoryBodies",
+    "statutoryBody",
+    "representatives",
+    "representative",
+    "stakeholders",
+    "stakeholder",
+    "partners",
+    "partner",
+    "owners",
+    "owner",
+    "beneficialOwners",
+    "beneficialOwner",
+    "persons",
+    "person",
+    "personName",
+    "givenNames",
+    "familyNames",
+    "givenFamilyNames",
+    "birthDate",
+    "birthNumber",
+    "personalNumber",
+    "personalIdentifier",
+    "citizenship",
+    "residence",
+    "privateAddress",
+    "personalEmail",
+    "personalPhone",
+    "telephone",
+}
+
+
+def _count_forbidden_fields(value: Any) -> int:
+    if isinstance(value, dict):
+        count = 0
+        for key, item in value.items():
+            if key in FORBIDDEN_SOURCE_KEYS:
+                count += 1
+                continue
+            count += _count_forbidden_fields(item)
+        return count
+    if isinstance(value, list):
+        return sum(_count_forbidden_fields(item) for item in value)
+    return 0
+
+
+def _without_forbidden_fields(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {key: _without_forbidden_fields(item) for key, item in value.items() if key not in FORBIDDEN_SOURCE_KEYS}
+    if isinstance(value, list):
+        return [_without_forbidden_fields(item) for item in value]
+    return value
+
+
 def _pick(record: dict[str, Any], *names: str) -> str | None:
     mapping = _field_map(record)
     for name in names:
@@ -74,6 +137,51 @@ def _pick(record: dict[str, Any], *names: str) -> str | None:
         if text:
             return text
     return None
+
+
+def _current_timed_value(value: Any) -> Any:
+    if isinstance(value, list):
+        if not value:
+            return None
+        for item in value:
+            if isinstance(item, dict) and not item.get("validTo"):
+                return item.get("value") if "value" in item else item
+        first = value[0]
+        return first.get("value") if isinstance(first, dict) and "value" in first else first
+    return value
+
+
+def _code_value_text(value: Any) -> str | None:
+    value = _current_timed_value(value)
+    if isinstance(value, dict):
+        for key in ("value", "name", "label", "text"):
+            text = normalize_whitespace(value.get(key))
+            if text:
+                return text
+        code = normalize_whitespace(value.get("code"))
+        return code or None
+    text = normalize_whitespace(value)
+    return text or None
+
+
+def _rpo_value(record: dict[str, Any], key: str) -> Any:
+    value = record.get(key)
+    return _current_timed_value(value)
+
+
+def _is_natural_person_record(raw_record: dict[str, Any]) -> bool:
+    if any(raw_record.get(key) for key in ("personName", "birthDate", "birthNumber", "personalNumber")):
+        return True
+
+    for field_name in ("legalForms", "legalForm", "entityType", "subjectType", "sourceRegister"):
+        text = _code_value_text(raw_record.get(field_name))
+        if not text:
+            continue
+        normalized = text.casefold()
+        if "fyzická osoba" in normalized or "podnikateľ" in normalized or "živnost" in normalized:
+            return True
+
+    return False
 
 
 def _normalize_country(value: Any, *, default: str = "SK") -> str:
@@ -160,10 +268,12 @@ def _source_record_id(raw_record: dict[str, Any], ico: str, index: int) -> str:
 
 def _build_address(raw_record: dict[str, Any]) -> dict[str, Any]:
     raw_address = None
-    for key in ("address", "sidlo", "registeredOffice", "registered_office", "seat", "seatAddress"):
+    for key in ("address", "addresses", "sidlo", "registeredOffice", "registered_office", "seat", "seatAddress"):
         raw_address = raw_record.get(key)
         if raw_address is not None:
             break
+
+    raw_address = _current_timed_value(raw_address)
 
     if raw_address is None:
         raw_address = {}
@@ -193,19 +303,23 @@ def _build_address(raw_record: dict[str, Any]) -> dict[str, Any]:
         "addressLine2",
     )
     municipality = _pick(raw_address, "municipality", "obec", "city", "mesto")
+    municipality_text = _code_value_text(raw_address.get("municipality")) if isinstance(raw_address, dict) else None
     postal_code = _pick(raw_address, "postalCode", "zip", "psc")
+    if postal_code is None and isinstance(raw_address.get("postalCodes"), list) and raw_address["postalCodes"]:
+        postal_code = normalize_whitespace(raw_address["postalCodes"][0]) or None
     municipality_code = _pick(raw_address, "municipalityCode")
     district_code = _pick(raw_address, "districtCode")
     region_code = _pick(raw_address, "regionCode")
     country = _pick(raw_address, "country", "countryCode", "stat")
+    country_text = _code_value_text(raw_address.get("country")) if isinstance(raw_address, dict) else None
 
     return {
         "street": street,
         "registrationNumber": registration_number,
         "buildingNumber": building_number,
-        "municipality": municipality,
+        "municipality": municipality_text or municipality,
         "postalCode": postal_code,
-        "country": _normalize_country(country),
+        "country": _normalize_country(country_text or country),
         "municipalityCode": municipality_code,
         "regionCode": region_code,
         "districtCode": district_code,
@@ -213,11 +327,22 @@ def _build_address(raw_record: dict[str, Any]) -> dict[str, Any]:
 
 
 def _normalize_company_record(raw_record: dict[str, Any], *, source: str, source_date: str, index: int) -> dict[str, Any]:
+    raw_record = _without_forbidden_fields(raw_record)
     ico_raw = _pick(raw_record, "ico", "IČO", "icO", "companyId", "company_id")
+    if ico_raw is None:
+        for identifier in raw_record.get("identifiers", []) if isinstance(raw_record.get("identifiers"), list) else []:
+            if not isinstance(identifier, dict):
+                continue
+            value = normalize_whitespace(identifier.get("value"))
+            if value:
+                ico_raw = value
+                break
     if ico_raw is None:
         raise ValueError("missing ico")
 
     name = _pick(raw_record, "name", "obchodneMeno", "obchodnéMeno", "businessName", "companyName")
+    if name is None:
+        name = normalize_whitespace(_rpo_value(raw_record, "fullNames")) or None
     if name is None:
         raise ValueError(f"IČO {ico_raw!r}: missing company name")
 
@@ -225,16 +350,16 @@ def _normalize_company_record(raw_record: dict[str, Any], *, source: str, source
     record: dict[str, Any] = {
         "ico": ico,
         "name": name,
-        "legalForm": _pick(raw_record, "legalForm", "pravnaForma", "legal_form", "form"),
-        "legalStatus": _pick(raw_record, "legalStatus", "status", "stav", "state"),
-        "sourceRegister": _pick(raw_record, "sourceRegister", "registerName", "register", "registry", "source_registry"),
+        "legalForm": _pick(raw_record, "legalForm", "pravnaForma", "legal_form", "form") or _code_value_text(raw_record.get("legalForms")),
+        "legalStatus": _pick(raw_record, "legalStatus", "status", "stav", "state") or _code_value_text(raw_record.get("legalStatuses")),
+        "sourceRegister": _code_value_text(raw_record.get("sourceRegister")) or _pick(raw_record, "registerName", "register", "registry", "source_registry"),
         "address": _build_address(raw_record),
         "establishedOn": _normalize_iso_date(
-            _pick(raw_record, "establishedOn", "registeredAt", "foundedOn", "dateRegistered", "vznik", "createdAt"),
+            _pick(raw_record, "establishedOn", "establishment", "registeredAt", "foundedOn", "dateRegistered", "vznik", "createdAt"),
             field_name=f"IČO {ico}: establishedOn",
         ),
         "terminatedOn": _normalize_iso_date(
-            _pick(raw_record, "terminatedOn", "dissolvedOn", "cancelledOn", "deletedOn", "zrusenOn", "zanikOn", "closedOn"),
+            _pick(raw_record, "terminatedOn", "termination", "dissolvedOn", "cancelledOn", "deletedOn", "zrusenOn", "zanikOn", "closedOn"),
             field_name=f"IČO {ico}: terminatedOn",
         ),
         "updatedAt": _normalize_iso_date(
@@ -295,18 +420,56 @@ def run_import(
 
     records: list[dict[str, Any]] = []
     errors: list[str] = []
+    warnings: list[str] = []
+    excluded_natural_persons = 0
+    stripped_forbidden_fields = 0
+    invalid_icos = 0
+    seen_icos: set[str] = set()
+    duplicate_icos = 0
     for index, raw_record in enumerate(raw_records):
+        stripped_forbidden_fields += _count_forbidden_fields(raw_record)
+        if _is_natural_person_record(raw_record):
+            excluded_natural_persons += 1
+            continue
         try:
-            records.append(_normalize_company_record(raw_record, source=source, source_date=source_date, index=index))
+            record = _normalize_company_record(raw_record, source=source, source_date=source_date, index=index)
         except ValueError as exc:
+            if "8 digits" in str(exc) or "Expected 8-digit" in str(exc):
+                invalid_icos += 1
             errors.append(f"records[{index}]: {exc}")
+            continue
+
+        if record["ico"] in seen_icos:
+            duplicate_icos += 1
+            errors.append(f"records[{index}]: duplicate IČO {record['ico']!r}")
+            continue
+        seen_icos.add(record["ico"])
+        records.append(record)
+
+    active_entities = sum(1 for record in records if record.get("terminatedOn") is None)
+    inactive_entities = len(records) - active_entities
+    geography_links = sum(1 for record in records if (record.get("address") or {}).get("municipalityCode"))
+    if excluded_natural_persons:
+        warnings.append(f"excluded {excluded_natural_persons} natural-person entrepreneur/person-like records")
+    if stripped_forbidden_fields:
+        warnings.append(f"stripped {stripped_forbidden_fields} forbidden personal/role fields")
 
     result = ImportResult(
         input_path=input_path,
         output_path=output_path,
         source=source,
         dry_run=not write,
+        source_records=len(raw_records),
+        records_inspected=len(raw_records),
         record_count=len(records),
+        excluded_natural_persons=excluded_natural_persons,
+        stripped_forbidden_fields=stripped_forbidden_fields,
+        invalid_icos=invalid_icos,
+        duplicate_icos=duplicate_icos,
+        active_entities=active_entities,
+        inactive_entities=inactive_entities,
+        geography_links=geography_links,
+        warnings=warnings,
         errors=errors,
     )
 
@@ -325,7 +488,7 @@ def run_import(
 
     if write:
         if destination == PRODUCTION_OUTPUT_FILE.resolve():
-            result.errors.append("Refusing to write data/companies.json in this milestone; use data/generated/companies.json")
+            result.errors.append("Refusing to write data/companies.json until the RPO acquisition gate approves production import; use data/generated/companies.json")
             return result
 
         backup_existing_file(destination)
@@ -339,7 +502,14 @@ def run_import(
 def _print_result(result: ImportResult) -> None:
     print(f"input={result.input_path} output={result.output_path} source={result.source}")
     status = "OK" if result.ok else "FAIL"
-    print(f"companies: {status} records={result.record_count} errors={len(result.errors)}")
+    print(f"companies: {status} sourceRecords={result.source_records} inspected={result.records_inspected} imported={result.record_count} errors={len(result.errors)}")
+    print(f"excludedNaturalPersons={result.excluded_natural_persons}")
+    print(f"strippedForbiddenFields={result.stripped_forbidden_fields}")
+    print(f"invalidIcos={result.invalid_icos}")
+    print(f"duplicateIcos={result.duplicate_icos}")
+    print(f"activeEntities={result.active_entities}")
+    print(f"inactiveEntities={result.inactive_entities}")
+    print(f"geographyLinks={result.geography_links}")
 
     for warning in result.warnings:
         print(f"- warning: {warning}")

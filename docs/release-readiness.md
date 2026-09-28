@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.13.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 26 GET operations: root plus 25 `/v1` operations.
+OpenSK API is pre-1.0 at `0.14.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 26 GET operations: root plus 25 `/v1` operations.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
 
@@ -12,7 +12,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 | --- | --- | --- | --- | --- | --- |
 | Resolve high-risk PortalVS redistribution uncertainty for PSC, or exclude PSC from 1.0 scope | PSC is partial and has `riskLevel: high`; redistribution is treated as restricted. Shipping it as stable without a decision is risky. | `/v1/psc`, `/v1/psc/{psc}`, `/v1/psc/search`, `/v1/psc/stats`; `data/psc.json` | high | Obtain written/retained terms for caching, transformation, redistribution, commercial downstream use, and attribution; if unresolved, remove PSC from 1.0 public scope or mark it experimental outside the stable contract. | legal/source, documentation, possible code |
 | Resolve PortalVS district and municipality redistribution uncertainty, or document an explicit exclusion strategy | Districts and municipalities are foundational for geography links, but redistribution remains restricted/pending. | `/v1/districts`, `/v1/municipalities`, geography links in PSC, phone areas, school facility counts | high | Retain exact allowed-use evidence or decide whether these endpoints can be included in 1.0 under conservative terms. | legal/source, documentation |
-| Resolve company dataset strategy | Current company lookup is seed-backed, not full RPO coverage. This is acceptable only if 1.0 explicitly commits to seed-backed lookup and does not imply comprehensive IČO search. | `/v1/companies/{ico}`, `/v1/ico/{ico}`; `data/companies.json` | high | Choose and document one strategy: keep seed-backed as stable with narrow scope, or defer company endpoints from 1.0 until RPO/licence/privacy work is complete. | product, legal/source, documentation |
+| Resolve company dataset strategy | Current company lookup remains seed-backed; 0.14.0 did not approve RPO production import. This is acceptable only if 1.0 explicitly commits to seed-backed lookup and does not imply comprehensive IČO search. | `/v1/companies/{ico}`, `/v1/ico/{ico}`; `data/companies.json` | high | Choose and document one final 1.0 strategy: keep seed-backed as stable with narrow scope, or defer company endpoints until RPO production acquisition is approved. | product, legal/source, documentation |
 | Retain exact source/licence evidence for all datasets included in 1.0 | Several sources are identified but exact licence text, attribution wording, transformation permission, or redistribution permission is not retained. | Regions, banks, holidays, phone areas, vehicle registration codes, school facility counts | high | Store exact evidence quotes/links and update `data/sources.json`, `docs/source-compliance.md`, and evidence docs without removing warnings unless evidence supports it. | legal/source, documentation |
 | Keep CI required for PRs | 1.0 needs automated validation so dataset/API breakage does not merge unnoticed. | Repository-wide | high | Require the CI workflow added in 0.13.0 as a branch protection check before final 1.0. | operational, CI |
 | Complete final deployment verification from clean `main` | Public Render deployment must match the release commit and pass smoke tests. | `https://opensk-api.onrender.com/` | high | Deploy from clean `main`, verify root version, OpenAPI, representative endpoints, and public smoke test. | deployment, operational |
@@ -22,7 +22,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 | Item | Reason | Affected endpoint/dataset | Severity | Proposed resolution | Work type |
 | --- | --- | --- | --- | --- | --- |
 | Decide whether direct-array list responses should remain | Some small list endpoints return arrays directly while larger collections return paginated wrappers. This is documented but inconsistent. | Regions, districts, municipalities, banks, holidays | medium | Either preserve intentionally in `docs/api-contract-v1.md` or change before 1.0 if a uniform wrapper is desired. | API contract, documentation or code |
-| Decide whether `/v1/ico/{ico}` alias is permanent | Alias is useful but duplicates company lookup route. | Companies/IČO | medium | Keep and document as permanent alias, or remove before 1.0. | API contract, documentation or code |
+| Document `/v1/ico/{ico}` alias as permanent if companies remain in 1.0 | 0.14.0 retained the alias for compatibility. | Companies/IČO | low | Keep documented in API contract and smoke tests. | API contract, documentation |
 | Clarify PSC completeness roadmap | Partial coverage can be stable if explicit, but users need clear expectations. | PSC | medium | Add user-facing coverage notes and refresh policy if PSC stays in 1.0. | documentation, data |
 | Retain exact Creative Commons BY licence version for school aggregate source | Source lists CC BY, but exact version/attribution wording is not retained. | School facility counts | medium | Store exact licence version or source wording. | legal/source, documentation |
 | Document operational ownership for Render deploys | 1.0 should have an explicit deployment/redeploy check. | Render deployment | medium | Add release checklist and require public smoke after deploy. | operational, documentation |
@@ -48,7 +48,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 
 ## Post-1.0 Backlog
 
-- Broader company/RPO import after licence and privacy clearance.
+- Broader company/RPO import after acquisition, licence, provenance, rate-limit, and privacy clearance.
 - National PSC completeness work after source rights are clear.
 - Automated scheduled dataset refreshes.
 - Future `/v2` cleanup if a uniform response shape is desired.
@@ -83,12 +83,12 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 14. Git tag created.
 15. GitHub Release created.
 
-Do not execute this release procedure during `0.13.0`.
+Do not execute this release procedure during `0.14.0`.
 
 ## Proposed Follow-Up Issues
 
 - Resolve 1.0 source and redistribution evidence for included datasets.
 - Decide PSC 1.0 inclusion strategy.
-- Decide company/IČO 1.0 scope and alias permanence.
+- Decide company/IČO 1.0 scope; alias permanence is currently resolved in favor of retaining `/v1/ico/{ico}`.
 - Freeze candidate v1 API contract and resolve response-shape decisions.
 - Complete production deployment and smoke-test release checklist.

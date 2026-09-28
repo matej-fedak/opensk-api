@@ -6,7 +6,7 @@ Status: pre-1.0 candidate. This document describes the intended compatibility su
 
 - Public API routes use the `/v1` namespace.
 - Response `metadata.version` is the API contract marker and remains `"v1"`.
-- Project SemVer, such as `0.13.0`, is separate from the `/v1` API namespace.
+- Project SemVer, such as `0.14.0`, is separate from the `/v1` API namespace.
 - Root metadata exposes both project version and API namespace fields.
 
 ## Success Envelope
@@ -68,7 +68,7 @@ Runtime routes read checked-in local JSON datasets or perform local validation o
 
 - Collection routes use plural nouns where practical.
 - Static `/search` and `/stats` routes must be registered before dynamic `/{code}` routes.
-- Aliases such as `/v1/ico/{ico}` are intentional compatibility routes and should remain documented if retained for `1.0.0`.
+- `/v1/ico/{ico}` is retained as an intentional compatibility alias for `/v1/companies/{ico}`.
 
 ## Partial Datasets
 

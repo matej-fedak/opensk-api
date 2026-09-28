@@ -10,7 +10,7 @@ No intentional personal-data dataset is exposed. Current public data is institut
 
 ## Dataset Notes
 
-- Companies: current lookup is a small legal-entity seed dataset. Personal, stakeholder, statutory-body, and similar role-holder fields are intentionally excluded. Broader RPO expansion remains blocked until privacy and redistribution terms are clarified.
+- Companies: current lookup is a small legal-entity seed dataset. Personal, stakeholder, statutory-body, and similar role-holder fields are intentionally excluded. 0.14.0 strengthened recursive denylist validation and kept natural-person entrepreneur records excluded by default. Broader RPO expansion remains blocked until acquisition, privacy, and redistribution terms are clarified.
 - School facility counts: aggregate rows only. The API does not expose school names, school IDs, addresses, staff, directors, pupils, emails, or phone numbers.
 - Vehicle registration codes: historical district abbreviations only. The API does not decode full plates and does not expose vehicles or owners.
 - Phone areas, PSC, regions, districts, and municipalities: public geography/reference data. Some source rows include place names, not person records.
@@ -24,4 +24,4 @@ No intentional personal-data dataset is exposed. Current public data is institut
 
 ## 1.0 Privacy Readiness
 
-Privacy posture is acceptable for the current 1.0 candidate scope if company lookup remains seed-backed and school data remains aggregate-only. Any RPO/company expansion or institution-level school directory would need a fresh privacy review before release.
+Privacy posture is acceptable for the current 1.0 candidate scope if company lookup remains seed-backed and school data remains aggregate-only. Any production RPO/company expansion or institution-level school directory would need a fresh privacy review before release.

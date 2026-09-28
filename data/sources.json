@@ -98,18 +98,18 @@
   "companies": {
     "status": "seed-backed",
     "coverage": "seed-backed",
-    "sourceName": "Verified public organizational contact pages",
-    "sourceUrl": "Multiple official contact pages",
-    "licence": "Source/licence verification pending for broader redistribution.",
-    "licenceStatus": "pending verification",
-    "redistributionStatus": "pending verification",
+    "sourceName": "Verified public organizational contact pages; RPO acquisition research pending production approval",
+    "sourceUrl": "Multiple official contact pages; RPO portal https://rpot.statistics.sk/",
+    "licence": "Current seed records use source-specific public contact pages. RPO API documentation identifies Creative Commons Attribution 4.0 (CC BY 4.0), but production acquisition/reuse evidence remains incomplete.",
+    "licenceStatus": "seed sources verified individually; RPO production import not approved until official or otherwise justified acquisition terms are retained",
+    "redistributionStatus": "seed-backed only; RPO bulk/local snapshot redistribution pending acquisition-gate approval",
     "termsUrl": "pending",
-    "attribution": "Attribute each verified public organizational contact page where practical; exact required wording is source-specific and pending.",
-    "riskLevel": "pending",
-    "lastChecked": "2026-06-03",
+    "attribution": "Attribute each verified public organizational contact page where practical. Future RPO use would require CC BY 4.0 attribution and retained source evidence.",
+    "riskLevel": "medium",
+    "lastChecked": "2026-09-18",
     "updateCadence": "Manual",
-    "nextAction": "Ask ŠÚ SR/RPO about reuse, caching, redistribution, commercial use, bulk limits, and privacy constraints before expanding beyond the legal-entity seed dataset.",
-    "notes": "Small checked-in legal-entity seed dataset for local lookup; not full RPO coverage. See docs/research and docs/verification-backlog.md."
+    "nextAction": "Verify official or otherwise justified RPO bulk/local snapshot acquisition, redistribution terms, rate limits, provenance, and privacy filtering before replacing the seed-backed dataset.",
+    "notes": "Small checked-in legal-entity seed dataset for local lookup; not full RPO coverage. 0.14.0 chose RESEARCH_AND_TOOLING_ONLY and kept data/companies.json unchanged. See docs/research/rpo-acquisition-decision.md."
   },
   "phoneAreas": {
     "status": "imported",

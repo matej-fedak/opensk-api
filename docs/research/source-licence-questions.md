@@ -31,6 +31,11 @@ Applies to future company/RPO expansion and any broader IČO lookup work.
 8. Are natural-person entrepreneurs subject to additional privacy restrictions?
 9. Are role-holder, stakeholder, statutory-body, or address fields subject to additional restrictions?
 10. Are there required update cadences, stale-data notices, or deletion obligations?
+11. Which current authority operates the public RPO portal and API for licence/attribution purposes?
+12. Is there an official bulk export or local snapshot workflow intended for public reuse?
+13. If a mirror or object-storage export is used, what provenance and redistribution terms apply?
+14. Are natural-person entrepreneurs allowed to be redistributed, and if so under what privacy constraints?
+15. May OpenSK redistribute a transformed dataset that excludes statutory bodies, stakeholders, and person-role fields?
 
 ## NBS Bank-Code Directory
 

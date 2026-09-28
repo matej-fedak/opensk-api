@@ -1,6 +1,6 @@
 # Known Limitations
 
-- RPO company data is pending licence and privacy verification.
+- RPO company production expansion is blocked until a safe acquisition method, reuse terms, provenance, rate limits, and privacy filtering are verified.
 - Company lookup is backed by a small checked-in seed set, not a complete company register or full RPO coverage.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
