@@ -8,6 +8,7 @@
 - VAT registration privacy gate: identify a reliable natural/legal subject discriminator, or approve a documented minimum-data privacy policy, before adding `GET /v1/vat/{ico}` or promoting `data/vat_registrations.json`.
 - ŽRSR acquisition gate: find official documented bulk/API/open-data access, reuse terms, non-scraping refresh workflow, and deterministic natural-person exclusion before adding trade-registration importer, dataset, or endpoint.
 - Register adries streets gate: verify a working official data.gov.sk or MV-authorized street distribution, reuse terms, stable identifiers, refresh workflow, and street-only privacy scope before adding `data/streets.json` or `/v1/streets`.
+- Healthcare-facilities gate: verify an official NCZI/e-VUC/data.gov.sk record-level distribution, reuse terms, IdZZ fields, refresh workflow, national or explicit coverage, and deterministic facility-only privacy filtering before adding `data/healthcare_facilities.json` or `/v1/healthcare-facilities`.
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
 - Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.

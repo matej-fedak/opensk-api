@@ -5,6 +5,7 @@
 - VAT/DPH lookup is not exposed in 0.15.0. The official source was verified, but production import is blocked because natural-person entrepreneurs cannot be excluded deterministically from the current XML.
 - ŽRSR/trade-register lookup is not exposed in 0.16.0. No official machine-readable non-scraping acquisition route, reuse terms, or deterministic privacy strategy was verified.
 - Streets/address lookup is not exposed in 0.17.0. Register adries services were researched, but no approved anonymous reproducible source/reuse path was verified for a local streets snapshot.
+- Healthcare-facility lookup is not exposed in 0.18.0. NR PZS and e-VUC were researched, but no approved machine-readable non-scraping source with reuse rights and deterministic facility-only privacy filtering was verified.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.

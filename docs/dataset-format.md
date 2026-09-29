@@ -113,6 +113,13 @@ Each `companies[]` item uses this shape:
 - Future candidate records should use official stable street identifiers only if documented by the selected source.
 - Do not expose house numbers, apartment data, building coordinates, or person-linked address data by default.
 
+## Healthcare Facilities / Providers
+
+- `data/healthcare_facilities.json` is not present in 0.18.0 because no approved production source was verified.
+- No healthcare-facility importer schema is defined because the milestone did not verify a reusable official record-level source shape.
+- Future candidate records should use IdZZ as `id` if exposed by the approved source.
+- Do not expose doctor names, nurse names, individual practitioner names, personal contacts, representatives, responsible persons, birth/personal identifiers, private addresses, appointment slots, absences, or pricing/performance files by default.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.
