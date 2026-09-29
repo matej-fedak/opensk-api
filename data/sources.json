@@ -129,6 +129,22 @@
     "nextAction": "Obtain or identify a reliable natural/legal-subject discriminator, or an explicitly approved minimum-data privacy policy, before promoting data/vat_registrations.json or adding a public VAT endpoint.",
     "notes": "Official ZIP works and contains ds_dphs.xml plus ds_dphs.xsd. XML has no natural/legal subject marker and includes names and addresses, so 0.15.0 remains research/tooling only with no production VAT dataset."
   },
+  "tradeRegistrations": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "Živnostenský register Slovenskej republiky (ŽRSR)",
+    "sourceUrl": "https://www.zrsr.sk/",
+    "licence": "No machine-readable source licence or reuse grant verified. Public human-facing search visibility is not treated as caching, transformation, or redistribution permission.",
+    "licenceStatus": "blocked; exact reuse, caching, transformation, attribution, redistribution, and commercial downstream terms not verified",
+    "redistributionStatus": "blocked; no production dataset redistributed",
+    "termsUrl": "pending",
+    "attribution": "Attribute Ministerstvo vnútra Slovenskej republiky / Živnostenský register SR only if a future approved source explicitly permits reuse and specifies attribution.",
+    "riskLevel": "high",
+    "lastChecked": "2026-09-29",
+    "updateCadence": "Unknown; no official bulk/API refresh mechanism verified",
+    "nextAction": "Find an official documented bulk export, open-data distribution, documented API, or authorized service with clear reuse terms and a deterministic privacy strategy before adding importer or endpoint code.",
+    "notes": "0.16.0 found only a human-facing ŽRSR search interface. No official machine-readable source, licence/reuse permission, non-scraping acquisition route, or deterministic natural-person exclusion was verified."
+  },
   "phoneAreas": {
     "status": "imported",
     "coverage": "complete",
