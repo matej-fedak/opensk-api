@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.18.0` pre-1.0 healthcare facilities / providers source research milestone.
+Status: `0.19.0` pre-1.0 public procurement TED_PARTIAL production milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -35,8 +35,12 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/vehicle-registration-codes/search` | Legacy vehicle registration district-code search | historical/reference | Slov-Lex reuse verification pending |
 | `GET /v1/school-facility-counts` | Aggregate school facility counts | aggregate imported | MŠVVaM lists Creative Commons BY |
 | `GET /v1/school-facility-counts/stats` | Aggregate school facility count totals | aggregate imported | MŠVVaM lists Creative Commons BY |
+| `GET /v1/procurement-notices` | Public procurement notice list | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
+| `GET /v1/procurement-notices/{id}` | Public procurement notice lookup | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
+| `GET /v1/procurement-notices/search` | Public procurement notice search | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
+| `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 
-`/v1/schools` is intentionally not implemented because the confirmed school source is aggregate-only data, not an institution-level school directory.
+`/v1/schools` is intentionally not implemented because the confirmed school source is aggregate-only data, not an institution-level school directory. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
 
 ## PSC Collection Surface
 
@@ -64,6 +68,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/zrsr-source.md` records why 0.16.0 remains research-only for ŽRSR production data.
 - `docs/research/streets-source.md` records why 0.17.0 remains research-only for Register adries / streets production data.
 - `docs/research/healthcare-facilities-source.md` records why 0.18.0 remains research-only for healthcare-facility/provider production data.
+- `docs/research/public-procurement-source.md` records why 0.19.0 uses a TED-backed partial public procurement snapshot rather than claiming ÚVO national coverage.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
@@ -75,6 +80,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - ŽRSR/trade-register lookup is not public in `0.16.0`; no safe official machine-readable acquisition route was verified.
 - Streets/address lookup is not public in `0.17.0`; no approved official anonymous reproducible streets distribution was verified.
 - Healthcare-facility lookup is not public in `0.18.0`; no approved machine-readable non-scraping facility source with reuse rights and deterministic privacy filtering was verified.
+- Procurement notice lookup is public in `0.19.0` as a 100-record TED_PARTIAL snapshot only; it excludes national-only ÚVO notices and personal/contact/address/winner fields.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because the confirmed MŠVVaM school-register CSV is aggregate, not per-school, data.
 
@@ -92,6 +98,8 @@ python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output 
 python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write
 python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --dry-run
+python scripts/fetch_procurement_notices.py --limit 100 --write
+python scripts/import_procurement_notices.py --input data/raw/procurement-notices-ted-search.json --output data/generated/procurement_notices.json --dry-run
 python scripts/fetch_vat_registrations.py --output data/raw/ds_dphs.zip
 python scripts/import_vat_registrations.py data/raw/ds_dphs.zip --output data/generated/vat_registrations.json --write
 python scripts/backfill_psc_districts.py --dry-run
@@ -103,6 +111,8 @@ python scripts/check_referential_integrity.py
 Use `data/raw/` for source material and `data/generated/` for normalized previews. Promote generated files into `data/*.json` only after review.
 
 `scripts/import_vat_registrations.py` intentionally refuses to write `data/vat_registrations.json` while the VAT privacy gate remains blocked.
+
+`scripts/import_procurement_notices.py` can promote a reviewed TED_PARTIAL snapshot to `data/procurement_notices.json`, but refresh edits should be reviewed as dataset diffs before commit.
 
 ## Company Lookup
 
@@ -143,6 +153,8 @@ curl <base-url>/v1/banks
 curl <base-url>/v1/regions
 curl <base-url>/v1/vehicle-registration-codes/BA
 curl <base-url>/v1/school-facility-counts/stats
+curl <base-url>/v1/procurement-notices/stats
+curl <base-url>/v1/procurement-notices/search?q=Bratislava
 curl <base-url>/v1/companies/50158635
 ```
 
@@ -214,6 +226,8 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Vehicle registration district codes are legacy/reference data from Slov-Lex legal text; they are not reliable for current plate lookup and do not decode full licence plates.
 - School facility counts are aggregate rows from the MŠVVaM `Register škôl a školských zariadení` CSV, valid as of `2025-09-15`; the API does not provide institution-level `/v1/schools` lookup.
 - School aggregate responses exclude school names, addresses, directors, staff, pupils, personal emails, and phone numbers.
+- Public procurement notices are a normalized 100-record TED Search API snapshot of Slovak-buyer notices, acquired 2026-09-29; coverage is `TED_PARTIAL`, not the complete national ÚVO vestník.
+- Procurement API responses exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML notice bodies.
 - IBAN validation and Slovak bank-code resolution run locally without network access.
 - The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
 - PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.

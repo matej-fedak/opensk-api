@@ -6,6 +6,9 @@
 - ŽRSR/trade-register lookup is not exposed in 0.16.0. No official machine-readable non-scraping acquisition route, reuse terms, or deterministic privacy strategy was verified.
 - Streets/address lookup is not exposed in 0.17.0. Register adries services were researched, but no approved anonymous reproducible source/reuse path was verified for a local streets snapshot.
 - Healthcare-facility lookup is not exposed in 0.18.0. NR PZS and e-VUC were researched, but no approved machine-readable non-scraping source with reuse rights and deterministic facility-only privacy filtering was verified.
+- Public procurement notices are explicitly `TED_PARTIAL`: the checked-in dataset contains 100 latest Slovak-buyer notices from TED, not the complete historical TED source and not the national ÚVO vestník.
+- Procurement notice geography links are null because TED city/postal fields do not provide stable official municipality identifiers; geography must not be inferred from city names or postal codes.
+- Procurement notice records exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML bodies.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.
@@ -21,6 +24,7 @@
 - PSC source coverage remains partial and should not be presented as national coverage.
 - PSC redistribution is restricted by upstream PortalVS terms, and the dataset is not open redistribution material.
 - Some datasets are manually curated or imported from sources with incomplete attribution or redistribution clarity.
+- Procurement notice dataset uses TED attribution-backed terms, but exact legal-notice wording is still tracked as retained-evidence work before any stable release.
 - Remaining source follow-up items are tracked in `docs/verification-backlog.md`.
 - Compliance status is summarized in `docs/source-compliance.md`; unresolved evidence is tracked in `docs/research/source-verification-evidence.md`.
 - The API has no SLA and is deployed as a hobby/public-readiness project.

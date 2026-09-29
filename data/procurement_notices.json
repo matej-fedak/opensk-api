@@ -1,0 +1,2118 @@
+{
+  "metadata": {
+    "source": "TED Search API Slovak-buyer procurement notice snapshot",
+    "sourceUrl": "https://api.ted.europa.eu/v3/notices/search",
+    "license": "TED / Publications Office reuse terms; preserve attribution. See https://ted.europa.eu/en/legal-notice.",
+    "termsUrl": "https://ted.europa.eu/en/legal-notice",
+    "lastUpdated": "2026-09-29",
+    "complete": false,
+    "coverage": "partial",
+    "coverageDecision": "TED_PARTIAL",
+    "acquisitionDecision": "PRODUCTION_IMPORT_APPROVED",
+    "snapshotLimit": 100,
+    "totalNoticesAtSource": 74693,
+    "notes": "Partial normalized TED Search API snapshot for notices with buyer-country SVK. This is not the national ÚVO procurement register and does not claim national coverage."
+  },
+  "procurementNotices": [
+    {
+      "id": "670654-2026",
+      "title": "Slovensko – Liečivá pre srdcovocievny systém – Liečivá pre srdcovocievny systém , Liečivá pre močovopohlavný systém a pohlavné hormóny",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Fakultná nemocnica s poliklinikou Žilina"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žilina",
+        "postalCode": "01207",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670654-2026/xml"
+    },
+    {
+      "id": "670544-2026",
+      "title": "Slovensko – Stavebné práce – „Cesta II/589 Chotín – Kolta, 2. etapa: Pribeta – Kolta“",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Nitriansky samosprávny kraj"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670544-2026/xml"
+    },
+    {
+      "id": "670385-2026",
+      "title": "Slovensko – Počítačové zariadenia a spotrebný materiál – DNS - Výpočtová technika a komponenty na obdobie 2025-2029",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670385-2026/xml"
+    },
+    {
+      "id": "670347-2026",
+      "title": "Slovensko – Služby informačných technológií: konzultácie, vývoj softvéru, internet a podpora – Vybudovanie centrálnej integračnej platformy mesta Komárno vrátane integrácie mestských dát a IoT prvkov",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Mesto Komárno"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670347-2026/xml"
+    },
+    {
+      "id": "670329-2026",
+      "title": "Slovensko – Zdravotnícky spotrebný materiál – DNS - Chemikálie a spotrebný laboratórny materiál",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Staré Mesto",
+        "postalCode": "04180",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670329-2026/xml"
+    },
+    {
+      "id": "670248-2026",
+      "title": "Slovensko – Stavebné práce na kancelárskych budovách – Významná obnova a riešenie vodozádržných opatrení budovy MsÚ Bratislava-Ružinov",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Mestská časť Bratislava - Ružinov"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Ružinov",
+        "postalCode": "82705",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670248-2026/xml"
+    },
+    {
+      "id": "670134-2026",
+      "title": "Slovensko – Stavebné práce na budovách väzníc – Rekonštrukcia SO 34 ÚAO a SO 22 Sociálna časť ÚAO, ÚVTOS a ÚVV Leopoldov – Inštitút vzdelávania ZVJS",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ústav na výkon trestu odňatia slobody a Ústav na výkon väzby Leopoldov"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Leopoldov",
+        "postalCode": "92041",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670134-2026/xml"
+    },
+    {
+      "id": "670116-2026",
+      "title": "Slovensko – Elektrická energia – Združená dodávka elektrickej energie pre objekty Sociálnej poisťovne",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Sociálna poisťovňa"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670116-2026/xml"
+    },
+    {
+      "id": "670080-2026",
+      "title": "Slovensko – Služby informačných technológií – Zavedenie váženého množstevného zberu ZKO v Žiari nad Hronom",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Mesto Žiar nad Hronom"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žiar nad Hronom",
+        "postalCode": "96501",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670080-2026/xml"
+    },
+    {
+      "id": "670076-2026",
+      "title": "Slovensko – Laboratórne, optické a presné prístroje a vybavenie (s výnimkou skiel) – Laboratórne prístroje a zariadenia",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Slovenská technická univerzita v Bratislave"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Trnava",
+        "postalCode": "91724",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670076-2026/xml"
+    },
+    {
+      "id": "670033-2026",
+      "title": "Slovensko – Počítačové zariadenia a spotrebný materiál – DNS - Výpočtová technika a komponenty na obdobie 2025-2029",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670033-2026/xml"
+    },
+    {
+      "id": "669951-2026",
+      "title": "Slovensko – Stavebné práce na stavbe vojenských budov a zariadení – Sliač – novostavba skladu a plnenie hydrazínu – PD + R",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Sliač",
+        "postalCode": "96231",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669951-2026/xml"
+    },
+    {
+      "id": "669836-2026",
+      "title": "Slovensko – Potraviny, nápoje, tabak a príbuzné produkty – Potraviny na zabezpečenie stravovania – DNS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669836-2026/xml"
+    },
+    {
+      "id": "669766-2026",
+      "title": "Slovensko – Práce na kompletnej alebo čiastočnej stavbe a práce inžinierskych stavieb – Výstavba a rekonštrukcia miestnych komunikácii v meste Trenčín",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Mesto Trenčín"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Trenčín",
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669766-2026/xml"
+    },
+    {
+      "id": "669752-2026",
+      "title": "Slovensko – Stavebné práce na stavbe budov určených pre sociálne služby – „Vybudovanie zdravotno - sociálneho zariadenia sociálnych služieb v Mani - „KAMILKA“, ZSS Maňa“",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Nitriansky samosprávny kraj"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669752-2026/xml"
+    },
+    {
+      "id": "669640-2026",
+      "title": "Slovensko – Liečivá pre krv a krvotvorné orgány – Lieky ATC skupiny B02BD04",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Všeobecná zdravotná poisťovňa, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669640-2026/xml"
+    },
+    {
+      "id": "669629-2026",
+      "title": "Slovensko – Zdravotnícke vybavenie – Angiografické príslušenstvo",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ústredná vojenská nemocnica SNP Ružomberok - FN"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": null
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669629-2026/xml"
+    },
+    {
+      "id": "669530-2026",
+      "title": "Slovensko – Počítačové zariadenia a spotrebný materiál – DNS - Výpočtová technika a komponenty na obdobie 2025-2029",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669530-2026/xml"
+    },
+    {
+      "id": "669464-2026",
+      "title": "Slovensko – Stavebné práce na objektoch nemocničných zariadení – Stavebné úpravy – monoblok 13 NP- urologická klinika",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzitná nemocnica L. Pasteura Košice"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Západ",
+        "postalCode": "04011",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669464-2026/xml"
+    },
+    {
+      "id": "669377-2026",
+      "title": "Slovensko – Návrhárske a architektonické služby – Pešia a cyklistická lávka na ul. Jesenského v Nitre.",
+      "noticeType": "cn-desg",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Mesto Nitra"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Nitra",
+        "postalCode": "94901",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669377-2026/xml"
+    },
+    {
+      "id": "669325-2026",
+      "title": "Slovensko – Vybavenie ciest – Zvodidlové systémy vrátane príslušenstva",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Správa a údržba ciest Prešovského samosprávneho kraja"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669325-2026/xml"
+    },
+    {
+      "id": "669189-2026",
+      "title": "Slovensko – Čistiace a leštiace výrobky – DNS – Čistiace a hygienické potreby",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669189-2026/xml"
+    },
+    {
+      "id": "669049-2026",
+      "title": "Slovensko – Stavebné práce – Rekonštrukcia Domu kultúry Bratislava-Trnávka, Bulharská ul.",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Mestská časť Bratislava - Ružinov"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Ružinov",
+        "postalCode": "82104",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669049-2026/xml"
+    },
+    {
+      "id": "669003-2026",
+      "title": "Slovensko – Upratovacie služby – Komplexné upratovacie, čistiace a dezinfekčné služby - Nemocnica Staré Mesto",
+      "noticeType": "pin-rtl",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzitná nemocnica Bratislava"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669003-2026/xml"
+    },
+    {
+      "id": "668878-2026",
+      "title": "Slovensko – Sieťové komponenty – Dodávka zariadení SAN switch vrátane súvisiacich služieb",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "NÁRODNÁ BANKA SLOVENSKA"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Staré Mesto",
+        "postalCode": "81325",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668878-2026/xml"
+    },
+    {
+      "id": "668838-2026",
+      "title": "Slovensko – Stavebné práce na objektoch nemocničných zariadení – UNLP - Obnova pavilónu XIX.",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzitná nemocnica L. Pasteura Košice"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Juh",
+        "postalCode": "04011",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668838-2026/xml"
+    },
+    {
+      "id": "668740-2026",
+      "title": "Slovensko – Spotrebiče pre domácnosť – Biela technika – DNS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Nemšová",
+        "postalCode": "91441",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668740-2026/xml"
+    },
+    {
+      "id": "668680-2026",
+      "title": "Slovensko – Služby informačných technológií – Platforma dátovej a procesnej integrácie rezortu životného prostredia",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo životného prostredia Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668680-2026/xml"
+    },
+    {
+      "id": "668546-2026",
+      "title": "Slovensko – Technická inšpekcia inžinierskych stavieb – Inšpekcia cestných tunelov",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo dopravy Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668546-2026/xml"
+    },
+    {
+      "id": "668470-2026",
+      "title": "Slovensko – Nábytok – Dodanie nábytku",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Banskobystrický samosprávny kraj"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668470-2026/xml"
+    },
+    {
+      "id": "668351-2026",
+      "title": "Slovensko – Stavebné práce na objektoch nemocničných zariadení – Rekonštrukcia predsunutej strojovne VZT a terasy UNLP Trieda SNP č.1, Košice",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzitná nemocnica L. Pasteura Košice"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Západ",
+        "postalCode": "04001",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668351-2026/xml"
+    },
+    {
+      "id": "668308-2026",
+      "title": "Slovensko – Obrábacie stroje – Vybavenie zváracieho pracoviska (SOŠ Handlová)",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Trenčiansky samosprávny kraj"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Handlová",
+        "postalCode": "97251",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668308-2026/xml"
+    },
+    {
+      "id": "668248-2026",
+      "title": "Slovensko – Služby neverejnej súkromnej siete – Poskytovanie telekomunikačných služieb",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Železničná spoločnosť Slovensko, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668248-2026/xml"
+    },
+    {
+      "id": "668245-2026",
+      "title": "Slovensko – Zdravotnícky spotrebný materiál – DNS - Chemikálie a spotrebný laboratórny materiál",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Staré Mesto",
+        "postalCode": "04180",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668245-2026/xml"
+    },
+    {
+      "id": "668225-2026",
+      "title": "Slovensko – Liečivá pre dýchací systém – Liečivá pre dýchací systém",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Fakultná nemocnica s poliklinikou Žilina"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žilina",
+        "postalCode": "01207",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668225-2026/xml"
+    },
+    {
+      "id": "667980-2026",
+      "title": "Slovensko – Potraviny, nápoje, tabak a príbuzné produkty – Mäso a mäsové výrobky pre OSS - Bratislava",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Kancelária Národnej rady Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Staré Mesto",
+        "postalCode": "81280",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667980-2026/xml"
+    },
+    {
+      "id": "667920-2026",
+      "title": "Slovensko – Stroje na spracovanie údajov (hardvér) – Digitálna transformácia a modernizácia IKT infraštruktúry a IT systémov DCVaV CVTI SR",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Centrum vedecko-technických informácií Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Staré Mesto",
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667920-2026/xml"
+    },
+    {
+      "id": "667918-2026",
+      "title": "Slovensko – Služby informačných technológií – TELEKOMUNIKAČNÉ A SIEŤOVÉ SLUŽBY",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo práce, sociálnych vecí a rodiny Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667918-2026/xml"
+    },
+    {
+      "id": "667909-2026",
+      "title": "Slovensko – Nábytok – LivingLab Revúca – Nábytok a interiérové vybavenie",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Banskobystrický samosprávny kraj"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667909-2026/xml"
+    },
+    {
+      "id": "667898-2026",
+      "title": "Slovensko – Nábytok – Plechové pracovné linky pre novú Vojenskú nemocnicu v Prešove",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ústredná vojenská nemocnica SNP Ružomberok - FN"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": null
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667898-2026/xml"
+    },
+    {
+      "id": "667857-2026",
+      "title": "Slovensko – Bezpilotné lietadlá – SOŠ lesnícka BŠ - Centrum excelentnosti - Geonavigačné systémy",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Stredná odborná škola lesnícka, Akademická 16, Banská Štiavnica"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667857-2026/xml"
+    },
+    {
+      "id": "667808-2026",
+      "title": "Slovensko – Potraviny, nápoje, tabak a príbuzné produkty – Potraviny na zabezpečenie stravovania – DNS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667808-2026/xml"
+    },
+    {
+      "id": "667687-2026",
+      "title": "Slovensko – Antihemoragiká – Antihemoragiká",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Fakultná nemocnica s poliklinikou Žilina"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žilina",
+        "postalCode": "01207",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667687-2026/xml"
+    },
+    {
+      "id": "667470-2026",
+      "title": "Slovensko – Softvérové podporné služby – Služby podpory prevádzky, rozvoja a bezpečnosti vybraných Microsoft platforiem",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Ministerstvo vnútra Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667470-2026/xml"
+    },
+    {
+      "id": "667459-2026",
+      "title": "Slovensko – Stavebné práce na objektoch nemocničných zariadení – Modernizácia priestorov psychiatrického pavilónu UNLP KE",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzitná nemocnica L. Pasteura Košice"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Juh",
+        "postalCode": "04011",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667459-2026/xml"
+    },
+    {
+      "id": "667407-2026",
+      "title": "Slovensko – Zdravotnícky spotrebný materiál – DNS - Chemikálie a spotrebný laboratórny materiál",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Staré Mesto",
+        "postalCode": "04180",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667407-2026/xml"
+    },
+    {
+      "id": "667378-2026",
+      "title": "Slovensko – Röntgenové prístroje – RTG prístroje",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Fakultná nemocnica Nitra"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Nitra",
+        "postalCode": "95001",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667378-2026/xml"
+    },
+    {
+      "id": "669980-2026",
+      "title": "Slovensko – Laboratórne, optické a presné prístroje a vybavenie (s výnimkou skiel) – Integrovaný röntgenový systém pre pokročilé difrakčné a zobrazovacie aplikácie",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-27",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669980-2026/xml"
+    },
+    {
+      "id": "669249-2026",
+      "title": "Slovensko – Kosačky – Obstaranie techniky pre triedený zber KO v Humennom – Traktorová kosačka s košom",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-27",
+      "buyerNames": [
+        "Mesto Humenné"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669249-2026/xml"
+    },
+    {
+      "id": "668634-2026",
+      "title": "Slovensko – Kosačky – Obstaranie techniky pre triedený zber KO v Humennom – Traktorová kosačka s košom",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-27",
+      "buyerNames": [
+        "Mesto Humenné"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668634-2026/xml"
+    },
+    {
+      "id": "668198-2026",
+      "title": "Slovensko – Propagačný materiál – Propagačné predmety-DNS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-27",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668198-2026/xml"
+    },
+    {
+      "id": "670455-2026",
+      "title": "Slovensko – Stavebné práce na ochranných hrádzach/valoch – IV. Zvýšenie bezpečnosti územia proti spätnému vzdutiu Malého Dunaja a Klátovského ramena z Váhu III. Etapa – trysková injektáž",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-26",
+      "buyerNames": [
+        "SLOVENSKÝ VODOHOSPODÁRSKY PODNIK, štátny podnik"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670455-2026/xml"
+    },
+    {
+      "id": "669481-2026",
+      "title": "Slovensko – Stavebné práce na ochranných hrádzach/valoch – IV. Komoča – rieka Nitra, dotesnenie PSOH km 0,000 – 6,260 a ĽSOH km 0,490 – 6,490 preložky rieky Nitra; SO-03 – SO-06 - trysková injektáž",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-26",
+      "buyerNames": [
+        "SLOVENSKÝ VODOHOSPODÁRSKY PODNIK, štátny podnik"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669481-2026/xml"
+    },
+    {
+      "id": "667707-2026",
+      "title": "Slovensko – Služby na zber odpadu – Nakladanie s komunálnymi odpadmi v meste Skalica",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-26",
+      "buyerNames": [
+        "Mesto Skalica"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Skalica",
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667707-2026/xml"
+    },
+    {
+      "id": "670157-2026",
+      "title": "Slovensko – Oftalmologické prístroje – Očný operačný prístroj na mikrochirurgické operácie zadného a predného segmentu oka - kombinovaný",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Fakultná nemocnica s poliklinikou Žilina"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žilina",
+        "postalCode": "01207",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670157-2026/xml"
+    },
+    {
+      "id": "669827-2026",
+      "title": "Slovensko – Služby informačných technológií: konzultácie, vývoj softvéru, internet a podpora – Prevádzka, údržba a rozvoj systému riečnych informačných služieb SlovRIS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Dopravný úrad"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava",
+        "postalCode": "82305",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669827-2026/xml"
+    },
+    {
+      "id": "669791-2026",
+      "title": "Slovensko – Prehodnotenie požiadaviek na informačné technológie – Nová generácia zberu údajov o objektoch a zariadeniach verejného vodovodu a verejnej kanalizácie",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Výskumný ústav vodného hospodárstva"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava",
+        "postalCode": "81249",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669791-2026/xml"
+    },
+    {
+      "id": "668844-2026",
+      "title": "Slovensko – Stavebné práce – Diaľnica D3 Žilina (Brodno) – Kysucké Nové Mesto, privádzač",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Národná diaľničná spoločnosť, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/668844-2026/xml"
+    },
+    {
+      "id": "667656-2026",
+      "title": "Slovensko – Zemný plyn – VÝBER DODÁVATEĽA ELEKTRICKEJ ENERGIE A ZEMNÉHO PLYNU",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "NsP Sv. Jakuba, n.o., Bardejov"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667656-2026/xml"
+    },
+    {
+      "id": "667179-2026",
+      "title": "Slovensko – Pyrotechnika – EOD roboty s príslušenstvom",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667179-2026/xml"
+    },
+    {
+      "id": "667147-2026",
+      "title": "Slovensko – Počítačové zariadenia a spotrebný materiál – DNS - Výpočtová technika a komponenty na obdobie 2025-2029",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667147-2026/xml"
+    },
+    {
+      "id": "666862-2026",
+      "title": "Slovensko – Architektonické a súvisiace služby – Mestský park Banská Bystrica",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Mesto Banská Bystrica"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Banská Bystrica",
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666862-2026/xml"
+    },
+    {
+      "id": "666857-2026",
+      "title": "Slovensko – Služby týkajúce sa podpory systému – Poskytnutie a zabezpečenie služieb spojených s prevádzkou, údržbou a rozvojom existujúceho informačného systému pre digitalizáciu podateľne, registratúry a archívu (IS DIPRA) na SW platformách eOffice a eArchive",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "NÁRODNÁ BANKA SLOVENSKA"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Staré Mesto",
+        "postalCode": "81325",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666857-2026/xml"
+    },
+    {
+      "id": "666767-2026",
+      "title": "Slovensko – Inžinierske projektovanie – Modernizácia vybraných úsekov ciest I. triedy v TT a NR kraji – križovatka I/13 a III/1394 - Medveďov",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Slovenská správa ciest"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666767-2026/xml"
+    },
+    {
+      "id": "666418-2026",
+      "title": "Slovensko – Imunitné očkovacie látky a imunoglobulíny – Liek s účinnou látkou palivizumab",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Detská fakultná nemocnica s poliklinikou Banská Bystrica"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Banská Bystrica",
+        "postalCode": "97409",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666418-2026/xml"
+    },
+    {
+      "id": "666405-2026",
+      "title": "Slovensko – Prístroje na monitorovanie kontaminácie – Laboratórne vybavenie potrebné pre proces vyraďovania JE V1 II. etapa – Časť C - zariadenia pre rádiochemické analýzy (C12.2C)",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Jadrová a vyraďovacia spoločnosť, a.s.; skrátený názov: JAVYS, a. s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666405-2026/xml"
+    },
+    {
+      "id": "666287-2026",
+      "title": "Slovensko – Služby hromadného stravovania – Elektronické stravovacie karty 2026 - 2030",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Dopravný podnik mesta Košice, akciová spoločnosť"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Západ",
+        "postalCode": "04329",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666287-2026/xml"
+    },
+    {
+      "id": "665843-2026",
+      "title": "Slovensko – Nadbytočné pole nezávislých diskov (RAID) – Obnova existujúcich diskových polí",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Pôdohospodárska platobná agentúra"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/665843-2026/xml"
+    },
+    {
+      "id": "665344-2026",
+      "title": "Slovensko – Počítačové zariadenia a spotrebný materiál – DNS - Výpočtová technika a komponenty na obdobie 2025-2029",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/665344-2026/xml"
+    },
+    {
+      "id": "665207-2026",
+      "title": "Slovensko – Diagnostické systémy – Monitorovanie plynných výpustí MO34",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Slovenské elektrárne, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Mochovce",
+        "postalCode": "93539",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/665207-2026/xml"
+    },
+    {
+      "id": "665171-2026",
+      "title": "Slovensko – Opravy, údržba a súvisiace služby pre vozidlá a príbuzné vybavenie – Servis nadstavieb ROS-ROCA nákladných motorových vozidiel vrátane dodania náhradných dielov",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Odvoz a likvidácia odpadu a.s. v skratke: OLO a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/665171-2026/xml"
+    },
+    {
+      "id": "664771-2026",
+      "title": "Slovensko – Laboratórne, optické a presné prístroje a vybavenie (s výnimkou skiel) – Obnova prístrojového vybavenia skúšobného laboratória",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Slovenský hydrometeorologický ústav"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/664771-2026/xml"
+    },
+    {
+      "id": "664482-2026",
+      "title": "Slovensko – Počítačové zariadenia a spotrebný materiál – DNS_MŽP - Nákup IKT",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Ministerstvo životného prostredia Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/664482-2026/xml"
+    },
+    {
+      "id": "664271-2026",
+      "title": "Slovensko – Letecké dopravné služby – Zabezpečenie leteckej prepravy pre Ministerstvo vnútra Slovenskej republiky a organizácie v jeho zriaďovateľskej a riadiacej pôsobnosti.",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Ministerstvo vnútra Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/664271-2026/xml"
+    },
+    {
+      "id": "664109-2026",
+      "title": "Slovensko – Potraviny, nápoje, tabak a príbuzné produkty – DNS – Potraviny",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-25",
+      "buyerNames": [
+        "Akadémia ozbrojených síl generála Milana Rastislava Štefánika v Liptovskom Mikuláši"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Liptovský Mikuláš",
+        "postalCode": "03101",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/664109-2026/xml"
+    },
+    {
+      "id": "667260-2026",
+      "title": "Slovensko – Kovoobrábacie stroje – Zlepšenie materiálno-technického vybavenia školy",
+      "noticeType": "can-modif",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Stredná odborná škola technická, Kukučínova 483/12, Poprad"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Poprad",
+        "postalCode": "05801",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/667260-2026/xml"
+    },
+    {
+      "id": "666979-2026",
+      "title": "Slovensko – Služby na likvidáciu kalu – Preprava a prevzatie na zhodnocovanie alebo zneškodnenie kalov z čistenia komunálnych odpadových vôd (v stabilizovanej forme) kat. č. 19 08 05 (ďalej len odpad) v zmysle vydaného povolenia príslušnými orgánmi.",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Severoslovenské vodárne a kanalizácie, a. s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666979-2026/xml"
+    },
+    {
+      "id": "666746-2026",
+      "title": "Slovensko – Zariadenie ihrísk – Eko park Voderady",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Obec Voderady"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666746-2026/xml"
+    },
+    {
+      "id": "666708-2026",
+      "title": "Slovensko – Služby informačných technológií: konzultácie, vývoj softvéru, internet a podpora – Systémová a aplikačná podpora Informačného systému CPV a LMS",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Ministerstvo investícií, regionálneho rozvoja a informatizácie Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava - mestská časť Staré Mesto",
+        "postalCode": "81109",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666708-2026/xml"
+    },
+    {
+      "id": "666225-2026",
+      "title": "Slovensko – Služby na údržbu a opravu softvéru – Poskytovanie služieb pre prevádzku a údržbu informačných systémov Mesta Lučenec",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-28",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Mesto Lučenec"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Lučenec",
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/666225-2026/xml"
+    },
+    {
+      "id": "663579-2026",
+      "title": "Slovensko – Náplasti – Náplasti",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Fakultná nemocnica s poliklinikou Žilina"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žilina",
+        "postalCode": "01207",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/663579-2026/xml"
+    },
+    {
+      "id": "662756-2026",
+      "title": "Slovensko – Kuchynské vybavenie – Kvalitné a inkluzívne vzdelávanie v ZŠ Sačurov – vybavenie kuchyne",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Obec Sačurov"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/662756-2026/xml"
+    },
+    {
+      "id": "662567-2026",
+      "title": "Slovensko – Zdravotnícke vybavenie – Zdravotnícky nespotrebný materiál, zdravotnícky nábytok, modely a vybavenie na výcvik zdravotníka a prvej pomoci - DNS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Ministerstvo obrany Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/662567-2026/xml"
+    },
+    {
+      "id": "662456-2026",
+      "title": "Slovensko – Zdravotnícky spotrebný materiál – DNS - Chemikálie a spotrebný laboratórny materiál",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Univerzita Pavla Jozefa Šafárika v Košiciach"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Košice - mestská časť Staré Mesto",
+        "postalCode": "04180",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/662456-2026/xml"
+    },
+    {
+      "id": "662326-2026",
+      "title": "Slovensko – Stavebné práce na stavbe potrubných vedení vody a kanalizácie – Horná Streda – vodovod, stoková sieť a čistiareň odpadových vôd",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Obec Horná Streda"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Horná Streda",
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/662326-2026/xml"
+    },
+    {
+      "id": "661873-2026",
+      "title": "Slovensko – Stavebné práce na stavbe potrubných vedení vody a kanalizácie – Viničky - Kráľovský Chlmec - Intenzifikácia zásobného potrubia II. etapa",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Východoslovenská vodárenská spoločnosť, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/661873-2026/xml"
+    },
+    {
+      "id": "661389-2026",
+      "title": "Slovensko – Výstavba elektrární – Výstavba fotovoltickej elektrárne – Petržalka a Senica",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Bratislavská vodárenská spoločnosť, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/661389-2026/xml"
+    },
+    {
+      "id": "661009-2026",
+      "title": "Slovensko – Služby súvisiace so softvérom – Nákup a podpora softvérových produktov",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "DataCentrum"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/661009-2026/xml"
+    },
+    {
+      "id": "660995-2026",
+      "title": "Slovensko – Diagnostické ultrazvukové prístroje – Modernizácia a doplnenie ultrazvukovej techniky pre klinické pracoviská",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Národný onkologický ústav v Bratislave"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660995-2026/xml"
+    },
+    {
+      "id": "660779-2026",
+      "title": "Slovensko – Textilné kempingové výrobky – Turistické a kempingové výstrojné vybavenie DNS",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Ministerstvo vnútra Slovenskej republiky"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660779-2026/xml"
+    },
+    {
+      "id": "660680-2026",
+      "title": "Slovensko – Služby hromadného stravovania – Zabezpečenie stravovania zamestnancov STVR prostredníctvom elektronických stravovacích kariet",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Slovenská televízia a rozhlas"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660680-2026/xml"
+    },
+    {
+      "id": "660619-2026",
+      "title": "Slovensko – Materiály na zimnú údržbu – Inertný posypový materiál",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "Správa ciest Trenčianskeho samosprávneho kraja"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660619-2026/xml"
+    },
+    {
+      "id": "660474-2026",
+      "title": "Slovensko – Stavebné práce – Výstavba tepelných čerpadiel OZE v Teplárni západ",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-24",
+      "buyerNames": [
+        "MH Teplárenský holding, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660474-2026/xml"
+    },
+    {
+      "id": "663621-2026",
+      "title": "Slovensko – Stavebné práce – Obnova vybraných častí NKP kaštieľ, Múzeum vo Svätom Antone",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "MÚZEUM VO SVÄTOM ANTONE"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/663621-2026/xml"
+    },
+    {
+      "id": "662702-2026",
+      "title": "Slovensko – Softvérové balíky a informačné systémy – Nákup programového vybavenia NASES",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "Národná agentúra pre sieťové a elektronické služby"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/662702-2026/xml"
+    },
+    {
+      "id": "662484-2026",
+      "title": "Slovensko – Klimatizačné zariadenia – Doplnenie vzduchotechniky do archívov Mestského súdu Bratislava III",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "Mestský súd Bratislava III"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/662484-2026/xml"
+    },
+    {
+      "id": "661770-2026",
+      "title": "Slovensko – Nábytok – Nábytok - nezdravotnícky",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "Univerzitná nemocnica Martin"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Martin",
+        "postalCode": "03659",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/661770-2026/xml"
+    },
+    {
+      "id": "661609-2026",
+      "title": "Slovensko – Služby súvisiace s likvidáciou odpadu a odpadom – Zber, likvidácia, zneškodnenie a evidencia odpadov v obciach Poruba, Nedožery – Brezany a Pravenec",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "Obec Poruba"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Poruba",
+        "postalCode": "97211",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/661609-2026/xml"
+    },
+    {
+      "id": "660763-2026",
+      "title": "Slovensko – Stavebné práce na celkovej údržbe vodovodov – Kanianka, zásobovanie vodou – SO2 – rekonštrukcia vodovodného potrubia v Bojniciach",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "Stredoslovenská vodárenská spoločnosť, a.s."
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": null,
+        "postalCode": null,
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660763-2026/xml"
+    },
+    {
+      "id": "660551-2026",
+      "title": "Slovensko – Stavebné práce na stavbe budov škôl – Novostavba SMART základnej školy v záujme inkluzívneho vzdelávania v Plaveckom Štvrtku",
+      "noticeType": "cn-standard",
+      "publicationDate": "2026-09-25",
+      "dispatchDate": "2026-09-23",
+      "buyerNames": [
+        "Obec Plavecký Štvrtok"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Plavecký Štvrtok",
+        "postalCode": "90068",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/660551-2026/xml"
+    }
+  ]
+}

@@ -25,6 +25,7 @@ DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
 DEFAULT_PHONE_AREAS_PATH = DEFAULT_DATA_DIR / "phone_areas.json"
 DEFAULT_VEHICLE_REGISTRATION_CODES_PATH = DEFAULT_DATA_DIR / "vehicle_registration_codes.json"
 DEFAULT_SCHOOL_FACILITY_COUNTS_PATH = DEFAULT_DATA_DIR / "school_facility_counts.json"
+DEFAULT_PROCUREMENT_NOTICES_PATH = DEFAULT_DATA_DIR / "procurement_notices.json"
 DEFAULT_VAT_REGISTRATIONS_PATH = DEFAULT_DATA_DIR / "vat_registrations.json"
 DEFAULT_SOURCES_PATH = DEFAULT_DATA_DIR / "sources.json"
 
@@ -41,6 +42,7 @@ _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
 _PSC_CODE_RE = re.compile(r"\d{5}$")
 _PHONE_AREA_CODE_RE = re.compile(r"0\d{1,2}$")
 _VEHICLE_REGISTRATION_CODE_RE = re.compile(r"[A-Z]{2}$")
+_PROCUREMENT_NOTICE_ID_RE = re.compile(r"[0-9]{6}-[0-9]{4}$")
 _SCHOOL_FACILITY_FORBIDDEN_KEYS = {
     "schoolCode",
     "schoolName",
@@ -115,6 +117,35 @@ _VAT_REGISTRATION_FORBIDDEN_KEYS = {
     "PSC",
     "ULICA_CISLO",
     "STAT",
+}
+_PROCUREMENT_NOTICE_FORBIDDEN_KEYS = {
+    "contact",
+    "contactPoint",
+    "contactPerson",
+    "contactName",
+    "email",
+    "phone",
+    "telephone",
+    "fax",
+    "street",
+    "address",
+    "addressLine1",
+    "addressLine2",
+    "winner",
+    "winnerName",
+    "tenderer",
+    "tendererName",
+    "subcontractor",
+    "subcontractorName",
+    "person",
+    "personName",
+    "beneficialOwner",
+    "ubo",
+    "organisationEmail",
+    "organisationTel",
+    "organisationFax",
+    "buyerEmail",
+    "buyerPhone",
 }
 
 
@@ -539,6 +570,7 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
         "tradeRegistrations",
         "streets",
         "healthcareFacilities",
+        "procurementNotices",
     }
     allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
     allowed_risk_levels = {"low", "medium", "high", "pending"}
@@ -1344,6 +1376,113 @@ def validate_school_facility_counts_dataset(path: Path = DEFAULT_SCHOOL_FACILITY
     return report
 
 
+def _record_procurement_notice_forbidden_key_errors(report: ValidationReport, value: Any, path: str) -> None:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            item_path = f"{path}.{key}" if path else key
+            if key in _PROCUREMENT_NOTICE_FORBIDDEN_KEYS:
+                report.add_error(item_path, f"procurement notices dataset must not include personal/contact/address or winner field {key!r}")
+            _record_procurement_notice_forbidden_key_errors(report, item, item_path)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _record_procurement_notice_forbidden_key_errors(report, item, f"{path}[{index}]")
+
+
+def validate_procurement_notices_dataset(path: Path = DEFAULT_PROCUREMENT_NOTICES_PATH) -> ValidationReport:
+    report = ValidationReport("procurementNotices", path)
+    payload = _load_json(report, path)
+    if not isinstance(payload, dict):
+        return report
+
+    metadata = _validate_dataset_metadata(report, payload)
+    _warn_if_seed(report, metadata)
+    if isinstance(metadata, dict):
+        if metadata.get("complete") is not False:
+            report.add_error("metadata.complete", "procurement notices metadata must explicitly say complete is false")
+        if metadata.get("coverage") != "partial":
+            report.add_error("metadata.coverage", "procurement notices metadata coverage must be 'partial'")
+        if metadata.get("coverageDecision") != "TED_PARTIAL":
+            report.add_error("metadata.coverageDecision", "procurement notices metadata coverageDecision must be 'TED_PARTIAL'")
+        if metadata.get("acquisitionDecision") != "PRODUCTION_IMPORT_APPROVED":
+            report.add_error("metadata.acquisitionDecision", "procurement notices metadata acquisitionDecision must be 'PRODUCTION_IMPORT_APPROVED'")
+        total_notices = metadata.get("totalNoticesAtSource")
+        if not isinstance(total_notices, int) or total_notices < 0:
+            report.add_error("metadata.totalNoticesAtSource", "procurement notices totalNoticesAtSource must be a non-negative integer")
+    _record_procurement_notice_forbidden_key_errors(report, payload, "")
+
+    records = _require_list(report, payload.get("procurementNotices"), "procurementNotices", "procurementNotices must be an array")
+    if records is None:
+        return report
+    if not records:
+        report.add_error("procurementNotices", "procurementNotices array must not be empty")
+
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "procurementNotices", registry.get("procurementNotices") if isinstance(registry, dict) else None)
+
+    regions = _records_by_code(data_dir, "regions", "code")
+    districts = _records_by_code(data_dir, "districts", "code")
+    municipalities = _records_by_code(data_dir, "municipalities", "code")
+    seen_ids: set[str] = set()
+
+    for index, item in enumerate(records):
+        item_path = f"procurementNotices[{index}]"
+        if not isinstance(item, dict):
+            report.add_error(item_path, "procurement notice record must be an object")
+            continue
+
+        record_id = _require_string(report, item.get("id"), f"{item_path}.id", "procurement notice id must be a non-empty string")
+        if record_id is not None:
+            if not _PROCUREMENT_NOTICE_ID_RE.fullmatch(record_id):
+                report.add_error(f"{item_path}.id", f"procurement notice id must match 123456-YYYY, got {record_id!r}")
+            if record_id in seen_ids:
+                report.add_error(f"{item_path}.id", f"duplicate procurement notice id {record_id!r}")
+            seen_ids.add(record_id)
+
+        _require_string(report, item.get("title"), f"{item_path}.title", "procurement notice title must be a non-empty string")
+        _require_string(report, item.get("noticeType"), f"{item_path}.noticeType", "procurement notice noticeType must be a non-empty string")
+        _require_iso_date(report, item.get("publicationDate"), f"{item_path}.publicationDate", "procurement notice publicationDate must be a valid ISO date")
+        _require_nullable_iso_date(report, item.get("dispatchDate"), f"{item_path}.dispatchDate", "procurement notice dispatchDate must be a valid ISO date")
+        _require_nullable_iso_date(report, item.get("tenderDeadline"), f"{item_path}.tenderDeadline", "procurement notice tenderDeadline must be a valid ISO date or null")
+
+        buyer_names = item.get("buyerNames")
+        if not isinstance(buyer_names, list) or not buyer_names or any(not isinstance(name, str) or not name.strip() for name in buyer_names):
+            report.add_error(f"{item_path}.buyerNames", "procurement notice buyerNames must be a non-empty string array")
+
+        buyer_country = _require_string(report, item.get("buyerCountry"), f"{item_path}.buyerCountry", "procurement notice buyerCountry must be a non-empty string")
+        if buyer_country is not None and buyer_country != "SK":
+            report.add_error(f"{item_path}.buyerCountry", f"procurement notice buyerCountry must be 'SK', got {buyer_country!r}")
+
+        place = item.get("placeOfPerformance")
+        if not isinstance(place, dict):
+            report.add_error(f"{item_path}.placeOfPerformance", "procurement notice placeOfPerformance must be an object")
+        else:
+            _require_nullable_string(report, place.get("city"), f"{item_path}.placeOfPerformance.city", "procurement notice place city must be null or a string")
+            postal_code = place.get("postalCode")
+            if postal_code is not None and (not isinstance(postal_code, str) or not _POSTAL_CODE_RE.fullmatch(postal_code)):
+                report.add_error(f"{item_path}.placeOfPerformance.postalCode", f"procurement notice place postalCode must be null or 5 digits, got {postal_code!r}")
+            place_country = place.get("country")
+            if place_country is not None and place_country != "SK":
+                report.add_error(f"{item_path}.placeOfPerformance.country", f"procurement notice place country must be null or 'SK', got {place_country!r}")
+
+        region_code = item.get("regionCode")
+        district_code = item.get("districtCode")
+        municipality_code = item.get("municipalityCode")
+        if region_code is not None and (not isinstance(region_code, str) or region_code not in regions):
+            report.add_error(f"{item_path}.regionCode", f"procurement notice regionCode {region_code!r} is not present in regions.json")
+        if district_code is not None and (not isinstance(district_code, str) or district_code not in districts):
+            report.add_error(f"{item_path}.districtCode", f"procurement notice districtCode {district_code!r} is not present in districts.json")
+        if municipality_code is not None and (not isinstance(municipality_code, str) or municipality_code not in municipalities):
+            report.add_error(f"{item_path}.municipalityCode", f"procurement notice municipalityCode {municipality_code!r} is not present in municipalities.json")
+
+        source_url = _require_string(report, item.get("sourceUrl"), f"{item_path}.sourceUrl", "procurement notice sourceUrl must be a non-empty string")
+        if source_url is not None and not source_url.startswith("https://ted.europa.eu/"):
+            report.add_error(f"{item_path}.sourceUrl", f"procurement notice sourceUrl must be a TED URL, got {source_url!r}")
+
+    report.record_count = len(records)
+    return report
+
+
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
         validate_sources_registry(data_dir / "sources.json"),
@@ -1366,6 +1505,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
     school_facility_counts_path = data_dir / "school_facility_counts.json"
     if school_facility_counts_path.is_file():
         reports.append(validate_school_facility_counts_dataset(school_facility_counts_path))
+
+    procurement_notices_path = data_dir / "procurement_notices.json"
+    if procurement_notices_path.is_file():
+        reports.append(validate_procurement_notices_dataset(procurement_notices_path))
 
     companies_path = data_dir / "companies.json"
     if companies_path.is_file():

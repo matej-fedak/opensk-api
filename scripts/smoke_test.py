@@ -83,7 +83,7 @@ def _check_root(url: str) -> SmokeResult:
     try:
         data = body["data"]
         metadata = body["metadata"]
-        if data["version"] == "0.18.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
+        if data["version"] == "0.19.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
             return SmokeResult("root", True, "PASS")
     except Exception:
         return SmokeResult("root", False, "FAIL", f"unexpected body: {body!r}")
@@ -116,6 +116,10 @@ def _check_openapi(url: str) -> SmokeResult:
         "/v1/phone-areas",
         "/v1/vehicle-registration-codes",
         "/v1/school-facility-counts",
+        "/v1/procurement-notices",
+        "/v1/procurement-notices/search",
+        "/v1/procurement-notices/stats",
+        "/v1/procurement-notices/{id}",
     }
     try:
         paths = set(body["paths"])
@@ -126,8 +130,8 @@ def _check_openapi(url: str) -> SmokeResult:
     missing = sorted(required_paths - paths)
     if missing:
         return SmokeResult("openapi", False, "FAIL", f"missing paths: {missing}")
-    if version != "0.18.0":
-        return SmokeResult("openapi", False, "FAIL", f"expected version 0.18.0, got {version!r}")
+    if version != "0.19.0":
+        return SmokeResult("openapi", False, "FAIL", f"expected version 0.19.0, got {version!r}")
 
     return SmokeResult("openapi", True, "PASS")
 
@@ -236,6 +240,10 @@ def main(argv: list[str] | None = None) -> int:
         ("vehicle-registration-code-search", f"{base_url}/v1/vehicle-registration-codes/search?q={quote('Trencin')}", 200),
         ("school-facility-counts", f"{base_url}/v1/school-facility-counts"),
         ("school-facility-count-stats", f"{base_url}/v1/school-facility-counts/stats"),
+        ("procurement-notices", f"{base_url}/v1/procurement-notices"),
+        ("procurement-notice-search", f"{base_url}/v1/procurement-notices/search?q={quote('Bratislava')}", 200),
+        ("procurement-notice-stats", f"{base_url}/v1/procurement-notices/stats"),
+        ("procurement-notice-item", f"{base_url}/v1/procurement-notices/670654-2026"),
         ("companies", f"{base_url}/v1/companies/50158635", 200),
     ]
 

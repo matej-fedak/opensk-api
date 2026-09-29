@@ -26,7 +26,7 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
-    assert body["data"]["version"] == "0.18.0"
+    assert body["data"]["version"] == "0.19.0"
     assert body["data"]["apiVersion"] == "v1"
     assert body["data"]["apiNamespace"] == "/v1"
     assert body["metadata"]["source"] == "OpenSK API"
@@ -43,7 +43,7 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
-    assert schema["info"]["version"] == "0.18.0"
+    assert schema["info"]["version"] == "0.19.0"
     assert schema["paths"]["/"]["get"]["tags"] == ["meta"]
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
@@ -68,6 +68,10 @@ def test_docs_or_openapi_is_available() -> None:
     assert "/v1/vehicles/{spz}" not in schema["paths"]
     assert "/v1/school-facility-counts" in schema["paths"]
     assert "/v1/school-facility-counts/stats" in schema["paths"]
+    assert "/v1/procurement-notices" in schema["paths"]
+    assert "/v1/procurement-notices/search" in schema["paths"]
+    assert "/v1/procurement-notices/stats" in schema["paths"]
+    assert "/v1/procurement-notices/{id}" in schema["paths"]
     assert "/v1/schools" not in schema["paths"]
     assert "/v1/schools/{code}" not in schema["paths"]
     assert "/v1/companies/{ico}" in schema["paths"]
@@ -80,8 +84,8 @@ def test_project_version_reset_preserves_v1_route_namespace() -> None:
     schema = client.get("/openapi.json").json()
 
     root = client.get("/").json()
-    assert schema["info"]["version"] == "0.18.0"
-    assert root["data"]["version"] == "0.18.0"
+    assert schema["info"]["version"] == "0.19.0"
+    assert root["data"]["version"] == "0.19.0"
     assert root["data"]["apiVersion"] == root["metadata"]["version"] == "v1"
     assert "/v1/health" in schema["paths"]
     assert not any(path.startswith("/v0") for path in schema["paths"])
@@ -100,8 +104,8 @@ def test_every_openapi_operation_uses_public_tags_and_summaries() -> None:
             assert operation.get("tags"), path
             assert operation.get("summary"), path
 
-    assert len(get_operations) == 26
-    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 25
+    assert len(get_operations) == 30
+    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 29
 
 
 def test_static_search_and_stats_routes_are_not_shadowed() -> None:
@@ -111,6 +115,8 @@ def test_static_search_and_stats_routes_are_not_shadowed() -> None:
         "/v1/phone-areas/search?q=Bratislava",
         "/v1/vehicle-registration-codes/search?q=Trencin",
         "/v1/school-facility-counts/stats",
+        "/v1/procurement-notices/search?q=Bratislava",
+        "/v1/procurement-notices/stats",
     ]
 
     for path in checks:
@@ -675,6 +681,87 @@ def test_psc_81101_returns_enveloped_response() -> None:
     assert body["metadata"]["lastUpdated"] == "2026-06-02"
     assert body["metadata"]["version"] == "v1"
     assert body["error"] is None
+
+
+def test_procurement_notices_list_returns_partial_snapshot() -> None:
+    response = client.get("/v1/procurement-notices?limit=2")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["metadata"]["version"] == "v1"
+    assert body["metadata"]["source"] == "OpenSK API static TED_PARTIAL procurement notice snapshot"
+    assert body["data"]["count"] == 2
+    assert body["data"]["total"] == 100
+    assert body["data"]["limit"] == 2
+    assert len(body["data"]["items"]) == 2
+    assert body["data"]["items"][0]["buyerCountry"] == "SK"
+
+
+def test_procurement_notices_list_filters_notice_type_and_year() -> None:
+    response = client.get("/v1/procurement-notices?noticeType=cn-standard&year=2026")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["total"] > 0
+    assert all(item["noticeType"] == "cn-standard" for item in body["data"]["items"])
+    assert all(item["publicationDate"].startswith("2026-") for item in body["data"]["items"])
+
+
+def test_procurement_notice_by_id_returns_record() -> None:
+    list_body = client.get("/v1/procurement-notices?limit=1").json()
+    notice_id = list_body["data"]["items"][0]["id"]
+
+    response = client.get(f"/v1/procurement-notices/{notice_id}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["data"]["id"] == notice_id
+    assert body["data"]["sourceUrl"].startswith("https://ted.europa.eu/")
+    assert body["metadata"]["version"] == "v1"
+
+
+def test_procurement_notice_not_found_uses_envelope() -> None:
+    response = client.get("/v1/procurement-notices/000000-0000")
+
+    assert response.status_code == 404
+    body = response.json()
+    assert body["data"] is None
+    assert body["metadata"]["version"] == "v1"
+    assert body["error"]["code"] == "NOT_FOUND"
+
+
+def test_procurement_notice_search_returns_matches() -> None:
+    list_body = client.get("/v1/procurement-notices?limit=1").json()
+    buyer = list_body["data"]["items"][0]["buyerNames"][0]
+    query = buyer.split()[0]
+
+    response = client.get(f"/v1/procurement-notices/search?q={query}")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["metadata"]["version"] == "v1"
+    assert body["data"]["query"] == query
+    assert body["data"]["total"] >= 1
+
+
+def test_procurement_notice_search_requires_query() -> None:
+    response = client.get("/v1/procurement-notices/search")
+
+    assert response.status_code == 400
+    assert response.json()["error"]["code"] == "INVALID_FORMAT"
+
+
+def test_procurement_notice_stats_reports_partial_coverage() -> None:
+    response = client.get("/v1/procurement-notices/stats")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["metadata"]["version"] == "v1"
+    assert body["data"]["recordCount"] == 100
+    assert body["data"]["coverage"] == "partial"
+    assert body["data"]["coverageDecision"] == "TED_PARTIAL"
+    assert body["data"]["acquisitionDecision"] == "PRODUCTION_IMPORT_APPROVED"
+    assert body["data"]["totalNoticesAtSource"] == 74693
 
 
 def test_psc_stats_reports_nonzero_counts() -> None:

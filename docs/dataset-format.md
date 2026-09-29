@@ -113,6 +113,16 @@ Each `companies[]` item uses this shape:
 - Future candidate records should use official stable street identifiers only if documented by the selected source.
 - Do not expose house numbers, apartment data, building coordinates, or person-linked address data by default.
 
+## Public Procurement Notices
+
+- `data/procurement_notices.json` is present in 0.19.0 as a 100-record checked-in TED_PARTIAL snapshot.
+- Source is the anonymous TED Search API query `buyer-country = SVK SORT BY publication-date DESC`; this is not the complete ÚVO national register.
+- The normalized record shape is institutional notice-reference data only: TED publication number, title, notice type, publication/dispatch/deadline dates, buyer institutional names, buyer country, procedure-level place city/postal/country where present, and a TED XML source URL.
+- TED country `SVK` is normalized to `SK`; TED dates with timezone suffixes are normalized to `YYYY-MM-DD`.
+- `regionCode`, `districtCode`, and `municipalityCode` are currently `null` because TED city/postal fields do not provide stable official Slovak municipality identifiers.
+- Do not expose personal/contact fields, phone/email/fax, street-level addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, raw XML/PDF/HTML bodies, or narrative lot text by default.
+- Dataset metadata must keep `complete: false`, `coverage: "partial"`, `coverageDecision: "TED_PARTIAL"`, and `acquisitionDecision: "PRODUCTION_IMPORT_APPROVED"`.
+
 ## Healthcare Facilities / Providers
 
 - `data/healthcare_facilities.json` is not present in 0.18.0 because no approved production source was verified.
@@ -136,6 +146,7 @@ Each `companies[]` item uses this shape:
 - PSC source data does not provide a reliable district mapping; checked-in PSC `districtCode` values are backfilled locally from `municipalityCode`.
 - Vehicle registration code `districtCode` is nullable when a legacy legal-table row does not map to one current local district.
 - School facility counts do not include `municipalityCode`, school identifiers, school names, or addresses because the confirmed source CSV contains aggregate rows only.
+- Procurement notice geography code fields are defined but currently null; they must not be inferred from city names, buyer names, or postal codes without an official verified mapping.
 
 ## Common Metadata
 
@@ -289,6 +300,53 @@ Where present, dataset metadata uses this shape:
 - `districtCode` comes from source `LAU1`; alphabetical LAU suffixes are transformed only when they match local district code, name, and region.
 - This file contains aggregate rows only, not institution records. Do not add `schoolCode`, `schoolName`, `address`, director/staff/pupil fields, email, or phone fields.
 - `/v1/schools` is intentionally not implemented for this source.
+
+### `data/procurement_notices.json`
+
+```json
+{
+  "metadata": {
+    "source": "TED Search API Slovak-buyer procurement notice snapshot",
+    "sourceUrl": "https://api.ted.europa.eu/v3/notices/search",
+    "license": "TED / Publications Office reuse terms; preserve attribution.",
+    "termsUrl": "https://ted.europa.eu/en/legal-notice",
+    "lastUpdated": "2026-09-29",
+    "complete": false,
+    "coverage": "partial",
+    "coverageDecision": "TED_PARTIAL",
+    "acquisitionDecision": "PRODUCTION_IMPORT_APPROVED",
+    "snapshotLimit": 100,
+    "totalNoticesAtSource": 74693
+  },
+  "procurementNotices": [
+    {
+      "id": "669481-2026",
+      "title": "Slovensko – Stavebné práce ...",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-26",
+      "buyerNames": ["Slovenský verejný obstarávateľ"],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Bratislava",
+        "postalCode": "81101",
+        "country": "SK"
+      },
+      "tenderDeadline": "2026-10-15",
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/669481-2026/xml"
+    }
+  ]
+}
+```
+
+- `id` is the TED publication number and must match `123456-YYYY`.
+- `buyerNames` contains institutional buyer labels only; the importer prefers Slovak then English localized values.
+- `placeOfPerformance` uses TED procedure-level city/postal/country reference fields only; no street address is stored.
+- Geography codes remain null until an official stable mapping is verified.
+- The checked-in file intentionally contains 100 latest Slovak-buyer TED notices from acquisition time; `totalNoticesAtSource` records the larger live source count without claiming it is checked in.
 
 ### `data/municipalities.json`
 
