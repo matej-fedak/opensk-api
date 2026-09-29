@@ -2,7 +2,7 @@
 
 Audit date: 2026-09-18
 
-Latest reviewed application version: `0.18.0`
+Latest reviewed application version: `0.19.0`
 
 ## Readiness Conclusion
 
@@ -12,7 +12,7 @@ The largest blockers are not new endpoints or data modeling work. They are sourc
 
 ## Public API Inventory
 
-This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GET operations total: root plus 25 `/v1` operations.
+This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GET operations total: root plus 29 `/v1` operations.
 
 | Method | Path | Purpose | Domain | Response shape | Stability status | Coverage | Source status | Known limitations |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -42,6 +42,10 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | GET | `/v1/vehicle-registration-codes/search` | Legacy code search | vehicle registration | paginated envelope object | candidate stable if source cleared | historical/reference | Slov-Lex pending | Same historical limitation. |
 | GET | `/v1/school-facility-counts` | List aggregate school facility counts | school aggregates | paginated envelope object | candidate stable | aggregate imported | MŠVVaM CC BY listed | Not a school directory. |
 | GET | `/v1/school-facility-counts/stats` | Aggregate school facility stats | school aggregates | envelope object | candidate stable | aggregate imported | MŠVVaM CC BY listed | No per-school records. |
+| GET | `/v1/procurement-notices` | List public procurement notices | public procurement | paginated envelope object | candidate stable with explicit partial scope | TED_PARTIAL imported | TED attribution-backed | Not the complete ÚVO national register. |
+| GET | `/v1/procurement-notices/search` | Search public procurement notices | public procurement | paginated envelope object | candidate stable with explicit partial scope | TED_PARTIAL imported | TED attribution-backed | Searches local 100-record snapshot only. |
+| GET | `/v1/procurement-notices/stats` | Public procurement snapshot stats | public procurement | envelope object | candidate stable with explicit partial scope | TED_PARTIAL imported | TED attribution-backed | Stats are local snapshot totals plus source count metadata. |
+| GET | `/v1/procurement-notices/{id}` | Public procurement notice lookup | public procurement | envelope object | candidate stable with explicit partial scope | TED_PARTIAL imported | TED attribution-backed | Unknown local snapshot ID returns 404. |
 
 ## Dataset Readiness Matrix
 
@@ -58,6 +62,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | Trade registrations / ŽRSR | not promoted | 0 | research-only | checked 2026-09-29 | no reuse grant verified | no importer; no machine-readable source shape verified | not applicable | source access, reuse, privacy, and acquisition gates blocked | blocker until official source strategy resolved |
 | Streets / Register adries | not promoted | 0 | research-only | checked 2026-09-29 | no production street reuse grant verified | no importer; no approved distribution verified | not applicable | source/reuse gate blocked; full address-point privacy risk | blocker until official distribution and scope resolved |
 | Healthcare facilities / providers | not promoted | 0 | research-only | checked 2026-09-29 | no production healthcare-facility reuse grant verified | no importer; no approved record-level distribution verified | not applicable | source/reuse/privacy gates blocked; e-VUC public data can include person/contact fields | blocker until official distribution and facility-only privacy scope resolved |
+| Public procurement notices | `data/procurement_notices.json` | 100 | TED_PARTIAL | checked/acquired 2026-09-29 | TED/Publications Office attribution-backed reuse; exact retained wording still required | TED fetch/importer exists | geography links intentionally null | partial source scope; source count 74,693 but checked-in snapshot is 100 | candidate after exact TED attribution wording retained and partial scope accepted |
 | Phone areas | `data/phone_areas.json` | 2,922 | complete imported | checked 2026-09-15 | licence/redistribution pending | importer and raw workbook retained | 2,919/2,922 linked | medium source/licence risk; 3 unmatched rows | candidate after source evidence or explicit warning |
 | Vehicle registration codes | `data/vehicle_registration_codes.json` | 93 | historical/reference | checked 2026-09-15 | Slov-Lex reuse pending | source text retained in docs | 84 district links; 93 region links | medium source/licence risk | candidate if historical scope explicit and source cleared |
 | School facility counts | `data/school_facility_counts.json` | 1,227 | aggregate-only imported | validity 2025-09-15; checked 2026-09-15 | Creative Commons BY listed; exact version/wording pending | importer and raw CSV retained | 1,227/1,227 linked | medium attribution-version risk | candidate after attribution wording retained |
@@ -72,6 +77,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | ŽRSR/trade registrations | official human-facing search identified | no documented bulk/API/open-data source, reuse terms, or deterministic natural-person exclusion | no public endpoint, importer, or production data until all gates pass |
 | Streets/Register adries | official MV pages and services identified | data.gov distribution not verified; eID/mailbox workflow not suitable for automated open-source refresh; third-party API terms/provenance unapproved | no public endpoint, importer, or production data until source/reuse gates pass |
 | Healthcare facilities/providers | NCZI NR PZS official page, NCZI aggregate outputs, e-VUC portal, and IdZZ documentation identified | no documented public record-level export/API/feed, reuse terms unverified, privacy filtering needed for person/contact fields | no public endpoint, importer, or production data until source/reuse/privacy gates pass |
+| Public procurement notices | TED Search API/OpenAPI/live query verified; ÚVO national distribution not verified | ÚVO national machine-readable source, exact TED attribution wording, national-only notice exclusions | keep as explicit TED_PARTIAL until a verified ÚVO source can support NATIONAL |
 | NBS bank directory | official source identified, medium confidence | exact terms, transformation, redistribution, commercial use | should resolve before 1.0 |
 | NBS holidays | source and legal act identified, medium confidence | exact disclaimer and curated JSON permission | should resolve before 1.0 |
 | Telecom regulator workbook | source and raw file retained, medium confidence | reuse and redistribution terms | should resolve before 1.0 |
@@ -89,6 +95,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | ŽRSR/trade registration lookup is source-blocked | A | 0.16.0 found no safe official machine-readable source, so no endpoint or importer was added. |
 | Streets/address lookup is source-blocked | A | 0.17.0 found no approved anonymous reproducible street distribution, so no endpoint or importer was added. |
 | Healthcare-facility lookup is source/privacy-blocked | A | 0.18.0 found no approved machine-readable source with reuse rights and deterministic facility-only privacy filtering, so no endpoint or importer was added. |
+| Public procurement notice endpoint is explicitly TED_PARTIAL | B preserve intentionally unless ÚVO is verified | 0.19.0 exposes a small institutional TED-backed snapshot and does not claim national ÚVO coverage. |
 | PSC endpoint exposes partial dataset with lookup-like route | A before 1.0 | Must decide whether partial PSC is in 1.0 scope and document 404 semantics clearly. |
 | `metadata.version` is `v1` while project version is `0.x` | B preserve intentionally | This is already documented as API namespace/contract marker. |
 | School facility endpoint name is aggregate-specific instead of `/schools` | B preserve intentionally | Correctly avoids implying an institution-level directory. |
@@ -104,7 +111,7 @@ Resolve non-PortalVS evidence gaps, decide response-shape and alias permanence, 
 
 ## Acceptable Post-1.0 Work
 
-Broader company/RPO imports, national PSC expansion, scheduled refresh automation, additional endpoint domains, and a future `/v2` cleanup can wait if the 1.0 scope is narrow and honest.
+Broader company/RPO imports, national PSC expansion, scheduled refresh automation, additional endpoint domains, a verified ÚVO NATIONAL procurement replacement, and a future `/v2` cleanup can wait if the 1.0 scope is narrow and honest.
 
 ## Intentionally Out Of Scope
 

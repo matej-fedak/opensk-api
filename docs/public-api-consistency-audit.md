@@ -6,7 +6,7 @@ Milestone: `0.12.0`
 
 ## Authoritative Surface
 
-The authoritative route list comes from the FastAPI OpenAPI schema, not from hand-maintained docs. The current schema exposes 26 GET operations: `GET /` plus 25 `/v1` API operations. `/docs` and `/openapi.json` are platform routes.
+The authoritative route list comes from the FastAPI OpenAPI schema, not from hand-maintained docs. The 0.12.0 audit schema exposed 26 GET operations: `GET /` plus 25 `/v1` API operations. Later milestones may change that count; `/docs` and `/openapi.json` are platform routes.
 
 ## Findings Fixed
 
@@ -26,7 +26,7 @@ The authoritative route list comes from the FastAPI OpenAPI schema, not from han
 
 ## Current Pagination Pattern
 
-- PSC, phone areas, vehicle registration codes, and school facility counts support `limit` and `offset`.
+- PSC, phone areas, vehicle registration codes, school facility counts, and procurement notices support `limit` and `offset`. Procurement search follows the standard paginated envelope pattern.
 - List defaults are `limit=100` and `offset=0` where pagination is implemented.
 - Search defaults are narrower where implemented, currently `limit=50` for PSC, phone areas, and vehicle registration code search.
 - Existing maximums remain in place: `500` for list-style endpoints and `200` for search-style endpoints.

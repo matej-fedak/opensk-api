@@ -34,6 +34,18 @@ This log records evidence checked for source and licence decisions. It is intent
 - `data.gov.sk` search/API attempts for Register adries/street terms returned HTML application shell in this environment; no working distribution URL was verified.
 - `https://registeradries.sk/api_doc` documents a JSON API requiring `api_key`, including street and address-point endpoints, but footer identifies `Virtuality, s. r. o.` and OpenStreetMap contributors; it was treated as a separate third-party candidate and not approved for production.
 
+## 2026-09-29 Public Procurement Notices
+
+- ÚVO public portal pages checked by direct request: `https://www.uvo.gov.sk/`, `https://www.uvo.gov.sk/verejny-obstaravatel-obstaravatel/vestnik`, `https://www.uvo.gov.sk/zaujemca-uchadzac/vestnik`, `https://www.uvo.gov.sk/open-data`, and `https://www.uvo.gov.sk/otvaranie-udajov`.
+- ÚVO page/API guesses did not expose a current anonymous machine-readable national notice distribution; guesses under `/api/openapi.json`, `/api/v3/api-docs`, `/openapi.json`, and `/ext-portal/openapi.json` returned portal HTML or JSON 404.
+- ÚVO `robots.txt` checked at `https://www.uvo.gov.sk/robots.txt`; it includes `User-agent: *\nDisallow: /`, so scraping HTML is not an acceptable acquisition route.
+- TED Search API OpenAPI checked at `https://api.ted.europa.eu/api-v3.yaml`; it documents `PublicExpertSearchRequestV1` with `query`, `fields`, `page`, `limit`, `paginationMode`, `onlyLatestVersions`, and `iterationNextToken`.
+- Live anonymous TED Search API query `buyer-country = SVK` returned HTTP 200 with `totalNoticeCount = 74693` on 2026-09-29.
+- Live anonymous latest-notice query `buyer-country = SVK SORT BY publication-date DESC` returned publication number `669481-2026`, publication date `2026-09-29+02:00`, dispatch date `2026-09-26+02:00`, buyer country `SVK`, and notice type `can-standard`.
+- TED Search API date values use compact `YYYYMMDD`; TED country filtering uses `SVK`, not `SK`.
+- TED reuse/legal pages checked by direct request: `https://docs.ted.europa.eu/ODS/latest/reuse/`, `https://ted.europa.eu/en/legal-notice`, and `https://ted.europa.eu/en/simap/developers-corner-for-reusers`.
+- Production decision: a small normalized 100-record TED_PARTIAL institutional notice-reference snapshot is approved; national ÚVO coverage remains unverified.
+
 ## 2026-09-29 Healthcare Facilities / Providers
 
 - NCZI NR PZS page checked by direct request: `https://www.nczisk.sk/Registre/Narodne-administrativne-registre/Narodny-register-poskytovatelov-zdravotnej-starostlivosti/Pages/default.aspx`.

@@ -15,6 +15,7 @@ from scripts.validate_datasets import (
     validate_holidays_dataset,
     validate_municipalities_dataset,
     validate_phone_areas_dataset,
+    validate_procurement_notices_dataset,
     validate_psc_dataset,
     validate_regions_dataset,
     validate_school_facility_counts_dataset,
@@ -39,6 +40,7 @@ PRODUCTION_DATASETS = {
     "tradeRegistrations",
     "streets",
     "healthcareFacilities",
+    "procurementNotices",
 }
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
@@ -67,7 +69,7 @@ def _write_companies_dataset(target_dir: Path, payload: dict[str, object]) -> No
 def test_dataset_files_parse_as_valid_json() -> None:
     reports = validate_all_datasets()
 
-    assert len(reports) == 11
+    assert len(reports) == 12
     assert all(report.record_count > 0 for report in reports)
     assert all(report.ok for report in reports)
 
@@ -215,6 +217,35 @@ def test_school_facility_counts_do_not_include_institution_or_person_fields() ->
     records = payload["schoolFacilityCounts"]
 
     forbidden = ["schoolCode", "schoolName", "address", "director", "staff", "pupil", "email", "phone"]
+    assert all(field not in record for record in records for field in forbidden)
+
+
+def test_procurement_notices_dataset_is_valid_partial_ted_snapshot() -> None:
+    report = validate_procurement_notices_dataset()
+
+    assert report.ok
+    assert report.record_count == 100
+    assert report.warnings
+
+
+def test_procurement_notices_are_partial_and_privacy_scoped() -> None:
+    payload = json.loads((DATA_DIR / "procurement_notices.json").read_text(encoding="utf-8"))
+    records = payload["procurementNotices"]
+
+    assert payload["metadata"]["complete"] is False
+    assert payload["metadata"]["coverage"] == "partial"
+    assert payload["metadata"]["coverageDecision"] == "TED_PARTIAL"
+    assert payload["metadata"]["acquisitionDecision"] == "PRODUCTION_IMPORT_APPROVED"
+    assert payload["metadata"]["totalNoticesAtSource"] == 74693
+    assert len(records) == 100
+    assert len({record["id"] for record in records}) == 100
+    assert all(record["buyerCountry"] == "SK" for record in records)
+    assert all(record["sourceUrl"].startswith("https://ted.europa.eu/") for record in records)
+    assert all(record["regionCode"] is None for record in records)
+    assert all(record["districtCode"] is None for record in records)
+    assert all(record["municipalityCode"] is None for record in records)
+
+    forbidden = ["contact", "contactPerson", "email", "phone", "telephone", "fax", "street", "address", "winner", "tenderer", "subcontractor", "beneficialOwner", "person"]
     assert all(field not in record for record in records for field in forbidden)
 
 

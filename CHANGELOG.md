@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.19.0
+
+- Researched Slovak public procurement notice sources for the Phase 3 public-procurement roadmap item.
+- Verified no current anonymous machine-readable ÚVO national notice distribution with production-ready terms was found, while TED Search API provides an official anonymous notice subset for `buyer-country = SVK`.
+- Added offline TED fetch and import tooling for a bounded latest-notice snapshot with privacy-scoped fields only.
+- Added `data/procurement_notices.json` with 100 normalized Slovak-buyer TED notices and explicit `PRODUCTION_IMPORT_APPROVED` / `TED_PARTIAL` metadata.
+- Added `procurementNotices` source-registry metadata and local validation for IDs, dates, buyer country, source URLs, duplicates, partial coverage flags, geography links, and privacy-forbidden fields.
+- Added `GET /v1/procurement-notices`, `GET /v1/procurement-notices/{id}`, `GET /v1/procurement-notices/search`, and `GET /v1/procurement-notices/stats` backed only by the checked-in static snapshot.
+- Updated project version metadata to `0.19.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.18.0
 
 - Researched Slovak healthcare-facility/provider sources for the Phase 3 medical-facilities roadmap item.
