@@ -2,7 +2,7 @@
 
 Audit date: 2026-09-18
 
-Latest reviewed application version: `0.17.0`
+Latest reviewed application version: `0.18.0`
 
 ## Readiness Conclusion
 
@@ -57,6 +57,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | VAT registrations | not promoted | 0 | research/tooling only | checked 2026-09-28 | current export page says CC0, catalogue lists CC 4.0 international | fetch/import tooling exists for generated output only | not applicable | privacy gate blocked; no natural/legal marker in XML | blocker until privacy strategy resolved |
 | Trade registrations / ŽRSR | not promoted | 0 | research-only | checked 2026-09-29 | no reuse grant verified | no importer; no machine-readable source shape verified | not applicable | source access, reuse, privacy, and acquisition gates blocked | blocker until official source strategy resolved |
 | Streets / Register adries | not promoted | 0 | research-only | checked 2026-09-29 | no production street reuse grant verified | no importer; no approved distribution verified | not applicable | source/reuse gate blocked; full address-point privacy risk | blocker until official distribution and scope resolved |
+| Healthcare facilities / providers | not promoted | 0 | research-only | checked 2026-09-29 | no production healthcare-facility reuse grant verified | no importer; no approved record-level distribution verified | not applicable | source/reuse/privacy gates blocked; e-VUC public data can include person/contact fields | blocker until official distribution and facility-only privacy scope resolved |
 | Phone areas | `data/phone_areas.json` | 2,922 | complete imported | checked 2026-09-15 | licence/redistribution pending | importer and raw workbook retained | 2,919/2,922 linked | medium source/licence risk; 3 unmatched rows | candidate after source evidence or explicit warning |
 | Vehicle registration codes | `data/vehicle_registration_codes.json` | 93 | historical/reference | checked 2026-09-15 | Slov-Lex reuse pending | source text retained in docs | 84 district links; 93 region links | medium source/licence risk | candidate if historical scope explicit and source cleared |
 | School facility counts | `data/school_facility_counts.json` | 1,227 | aggregate-only imported | validity 2025-09-15; checked 2026-09-15 | Creative Commons BY listed; exact version/wording pending | importer and raw CSV retained | 1,227/1,227 linked | medium attribution-version risk | candidate after attribution wording retained |
@@ -70,6 +71,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | VAT registrations | official ZIP/XML source verified; current export page says CC0 | Open Data catalogue licence discrepancy; no natural/legal subject marker | no public endpoint or production data until privacy gate is resolved |
 | ŽRSR/trade registrations | official human-facing search identified | no documented bulk/API/open-data source, reuse terms, or deterministic natural-person exclusion | no public endpoint, importer, or production data until all gates pass |
 | Streets/Register adries | official MV pages and services identified | data.gov distribution not verified; eID/mailbox workflow not suitable for automated open-source refresh; third-party API terms/provenance unapproved | no public endpoint, importer, or production data until source/reuse gates pass |
+| Healthcare facilities/providers | NCZI NR PZS official page, NCZI aggregate outputs, e-VUC portal, and IdZZ documentation identified | no documented public record-level export/API/feed, reuse terms unverified, privacy filtering needed for person/contact fields | no public endpoint, importer, or production data until source/reuse/privacy gates pass |
 | NBS bank directory | official source identified, medium confidence | exact terms, transformation, redistribution, commercial use | should resolve before 1.0 |
 | NBS holidays | source and legal act identified, medium confidence | exact disclaimer and curated JSON permission | should resolve before 1.0 |
 | Telecom regulator workbook | source and raw file retained, medium confidence | reuse and redistribution terms | should resolve before 1.0 |
@@ -86,6 +88,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | VAT/DPH registration lookup is privacy-blocked | A | 0.15.0 verified source acquisition but did not add a public endpoint because natural persons cannot be excluded deterministically from the XML. |
 | ŽRSR/trade registration lookup is source-blocked | A | 0.16.0 found no safe official machine-readable source, so no endpoint or importer was added. |
 | Streets/address lookup is source-blocked | A | 0.17.0 found no approved anonymous reproducible street distribution, so no endpoint or importer was added. |
+| Healthcare-facility lookup is source/privacy-blocked | A | 0.18.0 found no approved machine-readable source with reuse rights and deterministic facility-only privacy filtering, so no endpoint or importer was added. |
 | PSC endpoint exposes partial dataset with lookup-like route | A before 1.0 | Must decide whether partial PSC is in 1.0 scope and document 404 semantics clearly. |
 | `metadata.version` is `v1` while project version is `0.x` | B preserve intentionally | This is already documented as API namespace/contract marker. |
 | School facility endpoint name is aggregate-specific instead of `/schools` | B preserve intentionally | Correctly avoids implying an institution-level directory. |

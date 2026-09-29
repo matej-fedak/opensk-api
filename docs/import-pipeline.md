@@ -17,6 +17,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - VAT registration research tooling is handled by `scripts/fetch_vat_registrations.py` and `scripts/import_vat_registrations.py` from the official Finančná správa ZIP/XML. The importer writes generated output only and refuses `data/vat_registrations.json` while the privacy gate is blocked.
 - ŽRSR/trade-register import tooling is not present. 0.16.0 did not verify an official machine-readable source shape, so adding an importer would be speculative.
 - Streets/Register adries import tooling is not present. 0.17.0 did not verify an approved reusable official distribution, so adding a fetcher/importer would be premature.
+- Healthcare-facilities import tooling is not present. 0.18.0 did not verify an approved reusable record-level official distribution, so adding a fetcher/importer would be premature.
 
 ## Company Import Prototype
 

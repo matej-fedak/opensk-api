@@ -161,6 +161,22 @@
     "nextAction": "Verify a working official data.gov.sk distribution or other MV-authorized machine-readable source with clear reuse rights before adding fetch/import tooling, data/streets.json, or public endpoints.",
     "notes": "0.17.0 found official MV Register adries information and services, including an eID/mailbox XML dataset service, but production import remains blocked. registeradries.sk exposes an API-key JSON API with street identifiers but is a separate third-party/secondary source and was not approved for production."
   },
+  "healthcareFacilities": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "NCZI NR PZS / e-VUC healthcare facilities source research",
+    "sourceUrl": "https://www.nczisk.sk/Registre/Narodne-administrativne-registre/Narodny-register-poskytovatelov-zdravotnej-starostlivosti/Pages/default.aspx",
+    "licence": "No production healthcare-facility dataset licence or reuse grant verified. Official NR PZS information exists and e-VUC exposes public directory pages, but no approved machine-readable non-scraping source with redistribution rights was verified.",
+    "licenceStatus": "blocked; reuse, caching, transformation, attribution, redistribution, and commercial downstream terms not verified for a production OpenSK healthcare-facilities snapshot",
+    "redistributionStatus": "blocked; no production healthcare-facilities dataset redistributed",
+    "termsUrl": "pending",
+    "attribution": "Attribute NCZI / NR PZS or e-VUC only if a future approved source explicitly permits reuse and specifies attribution.",
+    "riskLevel": "high",
+    "lastChecked": "2026-09-29",
+    "updateCadence": "Unknown for OpenSK; no approved anonymous reproducible record-level refresh route was verified",
+    "nextAction": "Verify an official NCZI/e-VUC/data.gov.sk machine-readable distribution with clear reuse rights, IdZZ fields, national or explicit coverage, and deterministic privacy filtering before adding fetch/import tooling, data/healthcare_facilities.json, or public endpoints.",
+    "notes": "0.18.0 verified that NR PZS is the authoritative national administrative register and that IdZZ is a stable facility identifier. NCZI aggregate statistical XLSX/ODS outputs are not a facility directory. e-VUC public pages include healthcare directories and IdZZ documentation, but no documented public export/API/feed was approved, and public data can include doctors, nurses, personal contacts, absences, and other fields outside OpenSK privacy scope."
+  },
   "phoneAreas": {
     "status": "imported",
     "coverage": "complete",

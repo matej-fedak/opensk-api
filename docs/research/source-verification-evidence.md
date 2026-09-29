@@ -34,6 +34,19 @@ This log records evidence checked for source and licence decisions. It is intent
 - `data.gov.sk` search/API attempts for Register adries/street terms returned HTML application shell in this environment; no working distribution URL was verified.
 - `https://registeradries.sk/api_doc` documents a JSON API requiring `api_key`, including street and address-point endpoints, but footer identifies `Virtuality, s. r. o.` and OpenStreetMap contributors; it was treated as a separate third-party candidate and not approved for production.
 
+## 2026-09-29 Healthcare Facilities / Providers
+
+- NCZI NR PZS page checked by direct request: `https://www.nczisk.sk/Registre/Narodne-administrativne-registre/Narodny-register-poskytovatelov-zdravotnej-starostlivosti/Pages/default.aspx`.
+- NCZI page confirms NR PZS as the national administrative register of healthcare providers and lists provider categories and upstream register sources, but no public record-level bulk/API/export route was verified.
+- NCZI `Siet poskytovatelov zdravotnej starostlivosti` page checked by direct request: `https://www.nczisk.sk/Statisticke_vystupy/Tematicke_statisticke_vystupy/Siet_poskytovatelov_zdravotnej_starostlivosti/Pages/default.aspx`.
+- NCZI statistical page exposes XLSX/ODS aggregate statistical outputs by Slovak Republic and region, derived partly from NR PZS, but not a facility directory with IdZZ and operating addresses.
+- e-VUC portal checked by direct request: `https://www.e-vuc.sk/` and `https://www.e-vuc.sk/o-portali-e-vuc.html?page_id=199`.
+- e-VUC presents healthcare directory content for all eight self-governing regions and describes source data from self-governing regions supplemented by MZ SR, SUKL, and RUVZ.
+- e-VUC IdZZ page checked by direct request: `https://www.e-vuc.sk/e-vuc/pre-poskytovatelov-zdravotnej-starostlivosti/identifikator-zdravotnickeho-zariadenia.html?page_id=74559`; it documents IdZZ format, components, immutability, non-reuse, and termination semantics.
+- e-VUC published-data page checked by direct request: `https://www.e-vuc.sk/e-vuc/pre-poskytovatelov-zdravotnej-starostlivosti/zoznam-zverejnovanych-udajov.html?page_id=66315`; it confirms public portal content can include doctors, nurses, phone numbers, absences, opening hours, and related operational fields.
+- e-VUC AMBULANCIA page checked by direct request: `https://www.e-vuc.sk/e-vuc/pre-poskytovatelov-zdravotnej-starostlivosti/aplikacia-ambulancia.html?page_id=92224`; it describes the authenticated provider application backed by Register zdravotnictva.
+- `data.gov.sk` search/API attempts for healthcare-provider terms returned HTML application shell in this environment; no working distribution URL was verified.
+
 | Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |

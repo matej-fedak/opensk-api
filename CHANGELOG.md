@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.18.0
+
+- Researched Slovak healthcare-facility/provider sources for the Phase 3 medical-facilities roadmap item.
+- Documented NCZI NR PZS as the authoritative national register, but no approved public record-level bulk/API/export source was verified.
+- Documented e-VUC / Register zdravotnictva and IdZZ; IdZZ is suitable as a future canonical facility ID if exposed by an approved source.
+- Added `healthcareFacilities` source-registry metadata as research-only/acquisition-blocked.
+- Did not add an importer, production dataset, runtime service, or public endpoint.
+- Updated project version metadata to `0.18.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.17.0
 
 - Researched Register adries / Slovak street and address data sources for the Phase 3 streets roadmap item.
