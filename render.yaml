@@ -1,8 +1,9 @@
 services:
   - type: web
     name: opensk-api
-    env: python
+    runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /v1/health
     autoDeploy: true
