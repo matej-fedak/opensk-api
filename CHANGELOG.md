@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.16.0
+
+- Researched official ŽRSR / Slovak Trade Register machine-readable acquisition options.
+- Documented that only a human-facing ŽRSR search interface was verified; no official bulk export, open-data distribution, documented API, WSDL, CSV, XML, JSON, or downloadable archive was approved.
+- Classified ŽRSR production import as research-only because source access, reuse, privacy, and reproducible acquisition gates are blocked.
+- Added `tradeRegistrations` source-registry metadata as research-only/no production dataset.
+- Did not add an importer, production dataset, runtime service, or public endpoint.
+- Updated project version metadata to `0.16.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.15.0
 
 - Verified the official Finančná správa `Zoznam daňových subjektov registrovaných pre DPH` ZIP/XML source and retained licence evidence.

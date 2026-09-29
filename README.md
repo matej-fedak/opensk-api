@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.15.0` pre-1.0 DPH/VAT registration research and tooling milestone.
+Status: `0.16.0` pre-1.0 ŽRSR trade-register source research milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -61,6 +61,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/privacy-review.md` records the current privacy review.
 - `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
 - `docs/research/vat-source.md` records why 0.15.0 remains research/tooling-only for VAT registration production data.
+- `docs/research/zrsr-source.md` records why 0.16.0 remains research-only for ŽRSR production data.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
@@ -69,6 +70,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Current project versioning is pre-1.0; endpoint availability does not yet guarantee a stable `1.0.0` public contract.
 - Company lookup remains seed-backed; RPO production import is blocked until a safe acquisition method is verified.
 - VAT registration lookup is not public in `0.15.0`; source acquisition is verified, but privacy import is blocked because the XML has no reliable natural/legal subject marker.
+- ŽRSR/trade-register lookup is not public in `0.16.0`; no safe official machine-readable acquisition route was verified.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because the confirmed MŠVVaM school-register CSV is aggregate, not per-school, data.
 

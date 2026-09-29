@@ -99,6 +99,13 @@ Each `companies[]` item uses this shape:
 - Future production shape is expected to be `{ "ico": "12345678", "registrations": [{ "vatId": "SK...", "registrationType": "§4", "registeredOn": "YYYY-MM-DD", "vatPayerFrom": null, "registrationTypeChangedOn": null }] }`.
 - Names and addresses from the source XML are intentionally excluded from generated output and forbidden in validation.
 
+## Trade Registrations / ŽRSR
+
+- `data/trade_registrations.json` is not present in 0.16.0 because no safe official machine-readable source was verified.
+- No importer schema is defined for ŽRSR because the milestone did not verify a real source shape.
+- Future candidate fields may include IČO, status, source register, trade activities, and establishment/termination dates, but fields must not be finalized until source access and privacy gates pass.
+- Person names, residence/private addresses, birth data, personal contacts, responsible-person data, and role-holder data are excluded by default.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.

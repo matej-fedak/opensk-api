@@ -14,6 +14,17 @@ This log records evidence checked for source and licence decisions. It is intent
 - Licence evidence: current PFS export page states CC0 for the relevant informational-list group; Open Data FS catalogue lists `CC 4.0 international`.
 - Privacy blocker: XML has no natural/legal subject marker and includes combined name/address fields.
 
+## 2026-09-29 ŽRSR / Trade Registrations
+
+- Official public site: `https://www.zrsr.sk/`.
+- Alternate hostname checked: `https://zrsr.minv.sk/`.
+- Operator: Ministerstvo vnútra Slovenskej republiky.
+- Direct request to `https://www.zrsr.sk/` returned HTML search page title `Vyhľadávanie v živnostenskom registri - Zivnostensky register Slovenskej republiky`.
+- `https://zrsr.minv.sk/` failed TLS trust validation in the local research environment.
+- `robots.txt`, `sitemap.xml`, `openapi.json`, and `swagger.json` did not expose an approved source; `?wsdl` returned HTML, not WSDL.
+- `data.gov.sk` catalogue/API attempts returned an HTML JavaScript shell in this environment, not verified dataset JSON.
+- Result: no official machine-readable source, licence/reuse permission, non-scraping acquisition route, or deterministic privacy strategy verified.
+
 | Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |
