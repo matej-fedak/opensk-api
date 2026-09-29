@@ -2,7 +2,7 @@
 
 Audit date: 2026-09-18
 
-Latest reviewed application version: `0.14.0`
+Latest reviewed application version: `0.15.0`
 
 ## Readiness Conclusion
 
@@ -54,6 +54,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | Banks | `data/banks.json` | 30 | complete imported | NBS directory v225 effective 2026-05-18 | licence/redistribution pending | importer exists | valid | medium source/licence risk | candidate after evidence retained |
 | Holidays | `data/holidays.json` | 45 holiday rows | partial curated seed | checked 2026-05-25 | NBS disclaimer noted; exact evidence pending | manual/curated | not geography-linked | medium evidence risk | candidate if seed scope explicit |
 | Companies | `data/companies.json` | 4 | seed-backed | checked 2026-09-18 | seed-backed only; RPO CC BY evidence exists in API docs but production acquisition not approved | manual seed; RPO-style importer hardened | not geography-linked | acquisition, provenance, and privacy expansion risk | company/IČO blocker remains partially unresolved; alias decision resolved |
+| VAT registrations | not promoted | 0 | research/tooling only | checked 2026-09-28 | current export page says CC0, catalogue lists CC 4.0 international | fetch/import tooling exists for generated output only | not applicable | privacy gate blocked; no natural/legal marker in XML | blocker until privacy strategy resolved |
 | Phone areas | `data/phone_areas.json` | 2,922 | complete imported | checked 2026-09-15 | licence/redistribution pending | importer and raw workbook retained | 2,919/2,922 linked | medium source/licence risk; 3 unmatched rows | candidate after source evidence or explicit warning |
 | Vehicle registration codes | `data/vehicle_registration_codes.json` | 93 | historical/reference | checked 2026-09-15 | Slov-Lex reuse pending | source text retained in docs | 84 district links; 93 region links | medium source/licence risk | candidate if historical scope explicit and source cleared |
 | School facility counts | `data/school_facility_counts.json` | 1,227 | aggregate-only imported | validity 2025-09-15; checked 2026-09-15 | Creative Commons BY listed; exact version/wording pending | importer and raw CSV retained | 1,227/1,227 linked | medium attribution-version risk | candidate after attribution wording retained |
@@ -64,6 +65,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | --- | --- | --- | --- |
 | PortalVS classifiers 9, 10, 42 | source identified, low legal confidence | caching, transformation, redistribution, commercial use, attribution | must resolve or exclude affected endpoints |
 | RPO/company sources | seed pages identified; RPO API docs identify CC BY 4.0 | production acquisition method, official/mirror provenance, rate limits, redistribution, natural-person entrepreneurs, role-holder fields | keep seed-backed unless acquisition gate later approves production import |
+| VAT registrations | official ZIP/XML source verified; current export page says CC0 | Open Data catalogue licence discrepancy; no natural/legal subject marker | no public endpoint or production data until privacy gate is resolved |
 | NBS bank directory | official source identified, medium confidence | exact terms, transformation, redistribution, commercial use | should resolve before 1.0 |
 | NBS holidays | source and legal act identified, medium confidence | exact disclaimer and curated JSON permission | should resolve before 1.0 |
 | Telecom regulator workbook | source and raw file retained, medium confidence | reuse and redistribution terms | should resolve before 1.0 |
@@ -77,6 +79,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 26 GE
 | --- | --- | --- |
 | Direct-array list responses for regions, districts, municipalities, banks, and holidays differ from paginated wrappers | B: preserve intentionally unless changed before 1.0 | Existing behavior is simple and tested; changing after 1.0 would be breaking, so final decision must be made before release. |
 | `/v1/ico/{ico}` duplicates `/v1/companies/{ico}` | B preserve intentionally | 0.14.0 retains it as a compatibility alias. |
+| VAT/DPH registration lookup is privacy-blocked | A | 0.15.0 verified source acquisition but did not add a public endpoint because natural persons cannot be excluded deterministically from the XML. |
 | PSC endpoint exposes partial dataset with lookup-like route | A before 1.0 | Must decide whether partial PSC is in 1.0 scope and document 404 semantics clearly. |
 | `metadata.version` is `v1` while project version is `0.x` | B preserve intentionally | This is already documented as API namespace/contract marker. |
 | School facility endpoint name is aggregate-specific instead of `/schools` | B preserve intentionally | Correctly avoids implying an institution-level directory. |

@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.14.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 26 GET operations: root plus 25 `/v1` operations.
+OpenSK API is pre-1.0 at `0.15.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 26 GET operations: root plus 25 `/v1` operations.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
 
@@ -13,6 +13,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 | Resolve high-risk PortalVS redistribution uncertainty for PSC, or exclude PSC from 1.0 scope | PSC is partial and has `riskLevel: high`; redistribution is treated as restricted. Shipping it as stable without a decision is risky. | `/v1/psc`, `/v1/psc/{psc}`, `/v1/psc/search`, `/v1/psc/stats`; `data/psc.json` | high | Obtain written/retained terms for caching, transformation, redistribution, commercial downstream use, and attribution; if unresolved, remove PSC from 1.0 public scope or mark it experimental outside the stable contract. | legal/source, documentation, possible code |
 | Resolve PortalVS district and municipality redistribution uncertainty, or document an explicit exclusion strategy | Districts and municipalities are foundational for geography links, but redistribution remains restricted/pending. | `/v1/districts`, `/v1/municipalities`, geography links in PSC, phone areas, school facility counts | high | Retain exact allowed-use evidence or decide whether these endpoints can be included in 1.0 under conservative terms. | legal/source, documentation |
 | Resolve company dataset strategy | Current company lookup remains seed-backed; 0.14.0 did not approve RPO production import. This is acceptable only if 1.0 explicitly commits to seed-backed lookup and does not imply comprehensive IČO search. | `/v1/companies/{ico}`, `/v1/ico/{ico}`; `data/companies.json` | high | Choose and document one final 1.0 strategy: keep seed-backed as stable with narrow scope, or defer company endpoints until RPO production acquisition is approved. | product, legal/source, documentation |
+| Resolve VAT registration privacy gate | 0.15.0 verified the official ZIP/XML source but production promotion is blocked because the XML has no reliable natural/legal subject marker. | Future `/v1/vat/{ico}`; future `data/vat_registrations.json` | high | Identify a reliable discriminator or approve a minimum-data privacy policy before adding a public endpoint. | privacy, legal/source, documentation |
 | Retain exact source/licence evidence for all datasets included in 1.0 | Several sources are identified but exact licence text, attribution wording, transformation permission, or redistribution permission is not retained. | Regions, banks, holidays, phone areas, vehicle registration codes, school facility counts | high | Store exact evidence quotes/links and update `data/sources.json`, `docs/source-compliance.md`, and evidence docs without removing warnings unless evidence supports it. | legal/source, documentation |
 | Keep CI required for PRs | 1.0 needs automated validation so dataset/API breakage does not merge unnoticed. | Repository-wide | high | Require the CI workflow added in 0.13.0 as a branch protection check before final 1.0. | operational, CI |
 | Complete final deployment verification from clean `main` | Public Render deployment must match the release commit and pass smoke tests. | `https://opensk-api.onrender.com/` | high | Deploy from clean `main`, verify root version, OpenAPI, representative endpoints, and public smoke test. | deployment, operational |
@@ -34,6 +35,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Vehicle registration codes are historical/reference only and do not decode current full plates.
 - Phone-area dataset may retain 3 unmatched local geography links if documented.
 - Company lookup may remain seed-backed if this is explicit and not marketed as full RPO coverage.
+- VAT registration lookup remains absent until privacy handling is approved.
 - Free-tier Render cold starts are acceptable if smoke tests retry or operators account for them.
 
 ## Operational Readiness
@@ -53,6 +55,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Automated scheduled dataset refreshes.
 - Future `/v2` cleanup if a uniform response shape is desired.
 - Additional endpoint domains only after source/licence and privacy review.
+- VAT registration lookup after privacy gate approval and normalized dataset-size review.
 
 ## Required Verification For 1.0
 
@@ -83,7 +86,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 14. Git tag created.
 15. GitHub Release created.
 
-Do not execute this release procedure during `0.14.0`.
+Do not execute this release procedure during `0.15.0`.
 
 ## Proposed Follow-Up Issues
 

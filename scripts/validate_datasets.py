@@ -25,6 +25,7 @@ DEFAULT_PSC_PATH = DEFAULT_DATA_DIR / "psc.json"
 DEFAULT_PHONE_AREAS_PATH = DEFAULT_DATA_DIR / "phone_areas.json"
 DEFAULT_VEHICLE_REGISTRATION_CODES_PATH = DEFAULT_DATA_DIR / "vehicle_registration_codes.json"
 DEFAULT_SCHOOL_FACILITY_COUNTS_PATH = DEFAULT_DATA_DIR / "school_facility_counts.json"
+DEFAULT_VAT_REGISTRATIONS_PATH = DEFAULT_DATA_DIR / "vat_registrations.json"
 DEFAULT_SOURCES_PATH = DEFAULT_DATA_DIR / "sources.json"
 
 _DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}$")
@@ -33,6 +34,7 @@ _BANK_CODE_RE = re.compile(r"\d{4}$")
 _BANK_BIC_RE = re.compile(r"[A-Z0-9]{8}([A-Z0-9]{3})?$")
 _BANK_ALPHABETIC_CODE_RE = re.compile(r"[A-Z0-9]+$")
 _COMPANY_ICO_RE = re.compile(r"\d{8}$")
+_VAT_ID_RE = re.compile(r"SK[0-9A-Z]{8,12}$")
 _REGION_CODE_RE = re.compile(r"SK\d{3}$")
 _DISTRICT_CODE_RE = re.compile(r"SK\d{4,5}$")
 _MUNICIPALITY_CODE_RE = re.compile(r"\d{6}$")
@@ -89,6 +91,30 @@ _COMPANY_FORBIDDEN_KEYS = {
     "personalEmail",
     "personalPhone",
     "telephone",
+}
+_VAT_REGISTRATION_FORBIDDEN_KEYS = {
+    "firstName",
+    "lastName",
+    "fullName",
+    "personName",
+    "name",
+    "legalName",
+    "businessName",
+    "residence",
+    "privateAddress",
+    "address",
+    "street",
+    "houseNumber",
+    "birthDate",
+    "birthNumber",
+    "personalNumber",
+    "personalEmail",
+    "personalPhone",
+    "NAZOV_DS",
+    "OBEC",
+    "PSC",
+    "ULICA_CISLO",
+    "STAT",
 }
 
 
@@ -322,6 +348,104 @@ def validate_companies_dataset(path: Path = DEFAULT_COMPANIES_PATH) -> Validatio
     return validate_companies_payload(payload, path)
 
 
+def _record_vat_forbidden_key_errors(report: ValidationReport, value: Any, path: str) -> None:
+    if isinstance(value, dict):
+        for key, item in value.items():
+            item_path = f"{path}.{key}" if path else key
+            if key in _VAT_REGISTRATION_FORBIDDEN_KEYS:
+                report.add_error(item_path, f"VAT registration dataset must not include forbidden personal/source field {key!r}")
+            _record_vat_forbidden_key_errors(report, item, item_path)
+    elif isinstance(value, list):
+        for index, item in enumerate(value):
+            _record_vat_forbidden_key_errors(report, item, f"{path}[{index}]")
+
+
+def validate_vat_registrations_payload(payload: Any, path: Path = DEFAULT_VAT_REGISTRATIONS_PATH) -> ValidationReport:
+    report = ValidationReport("vatRegistrations", path)
+    if not isinstance(payload, dict):
+        report.add_error("root", "vatRegistrations dataset must be an object")
+        return report
+
+    _record_vat_forbidden_key_errors(report, payload, "")
+    metadata = _validate_dataset_metadata(report, payload)
+    _warn_if_seed(report, metadata)
+
+    records = _require_list(report, payload.get("vatRegistrations"), "vatRegistrations", "vatRegistrations must be an array")
+    if records is None:
+        return report
+    if not records:
+        report.add_error("vatRegistrations", "vatRegistrations array must not be empty")
+
+    seen_icos: set[str] = set()
+    for index, record in enumerate(records):
+        item_path = f"vatRegistrations[{index}]"
+        item = _require_dict(report, record, item_path, f"{item_path} must be an object")
+        if item is None:
+            continue
+
+        ico = _require_ico(report, item.get("ico"), f"{item_path}.ico", "VAT registration ico must be an 8-digit string")
+        if ico is not None:
+            if ico in seen_icos:
+                report.add_error(f"{item_path}.ico", f"duplicate IČO {ico!r}")
+            seen_icos.add(ico)
+
+        registrations = _require_list(
+            report,
+            item.get("registrations"),
+            f"{item_path}.registrations",
+            "VAT registrations must be a non-empty list",
+        )
+        if registrations is None:
+            continue
+        if not registrations:
+            report.add_error(f"{item_path}.registrations", "VAT registrations must be non-empty")
+
+        seen_registrations: set[str] = set()
+        for registration_index, registration in enumerate(registrations):
+            registration_path = f"{item_path}.registrations[{registration_index}]"
+            registration_item = _require_dict(report, registration, registration_path, "VAT registration entry must be an object")
+            if registration_item is None:
+                continue
+
+            vat_id = _require_string(report, registration_item.get("vatId"), f"{registration_path}.vatId", "VAT ID must be a non-empty string")
+            if vat_id is not None and not _VAT_ID_RE.fullmatch(vat_id):
+                report.add_error(f"{registration_path}.vatId", f"VAT ID must match SK followed by 8-12 uppercase alphanumeric characters, got {vat_id!r}")
+            _require_string(
+                report,
+                registration_item.get("registrationType"),
+                f"{registration_path}.registrationType",
+                "VAT registrationType must be a non-empty string",
+            )
+            _require_nullable_iso_date(report, registration_item.get("registeredOn"), f"{registration_path}.registeredOn", "registeredOn must be null or a YYYY-MM-DD date")
+            _require_nullable_iso_date(report, registration_item.get("vatPayerFrom"), f"{registration_path}.vatPayerFrom", "vatPayerFrom must be null or a YYYY-MM-DD date")
+            _require_nullable_iso_date(
+                report,
+                registration_item.get("registrationTypeChangedOn"),
+                f"{registration_path}.registrationTypeChangedOn",
+                "registrationTypeChangedOn must be null or a YYYY-MM-DD date",
+            )
+
+            exact_key = json.dumps(registration_item, ensure_ascii=False, sort_keys=True)
+            if exact_key in seen_registrations:
+                report.add_error(registration_path, "duplicate VAT registration record")
+            seen_registrations.add(exact_key)
+
+    data_dir = path.resolve().parent
+    registry = _load_registry_payload(report, data_dir / "sources.json")
+    _warn_from_source_registry(report, "vatRegistrations", registry.get("vatRegistrations") if isinstance(registry, dict) else None)
+
+    report.record_count = len(records)
+    return report
+
+
+def validate_vat_registrations_dataset(path: Path = DEFAULT_VAT_REGISTRATIONS_PATH) -> ValidationReport:
+    report = ValidationReport("vatRegistrations", path)
+    payload = _load_json(report, path)
+    if payload is None:
+        return report
+    return validate_vat_registrations_payload(payload, path)
+
+
 def _validate_dataset_metadata(report: ValidationReport, payload: dict[str, Any]) -> dict[str, Any] | None:
     metadata = _require_dict(report, payload.get("metadata"), "metadata", "metadata must be an object")
     if metadata is None:
@@ -400,7 +524,19 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
     if payload is None:
         return report
 
-    required_datasets = {"regions", "districts", "municipalities", "psc", "banks", "holidays", "companies", "phoneAreas", "vehicleRegistrationCodes", "schoolFacilityCounts"}
+    required_datasets = {
+        "regions",
+        "districts",
+        "municipalities",
+        "psc",
+        "banks",
+        "holidays",
+        "companies",
+        "phoneAreas",
+        "vehicleRegistrationCodes",
+        "schoolFacilityCounts",
+        "vatRegistrations",
+    }
     allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
     allowed_risk_levels = {"low", "medium", "high", "pending"}
     missing = sorted(required_datasets - set(payload))
@@ -1231,6 +1367,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
     companies_path = data_dir / "companies.json"
     if companies_path.is_file():
         reports.append(validate_companies_dataset(companies_path))
+
+    vat_registrations_path = data_dir / "vat_registrations.json"
+    if vat_registrations_path.is_file():
+        reports.append(validate_vat_registrations_dataset(vat_registrations_path))
 
     return reports
 

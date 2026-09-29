@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.14.0` pre-1.0 RPO company/IČO research and tooling milestone.
+Status: `0.15.0` pre-1.0 DPH/VAT registration research and tooling milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -60,13 +60,15 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
 - `docs/privacy-review.md` records the current privacy review.
 - `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
+- `docs/research/vat-source.md` records why 0.15.0 remains research/tooling-only for VAT registration production data.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
 - `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
 - Runtime requests do not call upstream services; the API reads local JSON only.
 - Current project versioning is pre-1.0; endpoint availability does not yet guarantee a stable `1.0.0` public contract.
-- Company lookup remains seed-backed in `0.14.0`; RPO production import is blocked until a safe acquisition method is verified.
+- Company lookup remains seed-backed; RPO production import is blocked until a safe acquisition method is verified.
+- VAT registration lookup is not public in `0.15.0`; source acquisition is verified, but privacy import is blocked because the XML has no reliable natural/legal subject marker.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because the confirmed MŠVVaM school-register CSV is aggregate, not per-school, data.
 
@@ -84,6 +86,8 @@ python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output 
 python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write
 python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --dry-run
+python scripts/fetch_vat_registrations.py --output data/raw/ds_dphs.zip
+python scripts/import_vat_registrations.py data/raw/ds_dphs.zip --output data/generated/vat_registrations.json --write
 python scripts/backfill_psc_districts.py --dry-run
 python scripts/backfill_psc_districts.py --write
 python scripts/validate_datasets.py
@@ -91,6 +95,8 @@ python scripts/check_referential_integrity.py
 ```
 
 Use `data/raw/` for source material and `data/generated/` for normalized previews. Promote generated files into `data/*.json` only after review.
+
+`scripts/import_vat_registrations.py` intentionally refuses to write `data/vat_registrations.json` while the VAT privacy gate remains blocked.
 
 ## Company Lookup
 

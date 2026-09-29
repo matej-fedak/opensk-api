@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.15.0
+
+- Verified the official Finančná správa `Zoznam daňových subjektov registrovaných pre DPH` ZIP/XML source and retained licence evidence.
+- Added offline VAT registration fetch/import tooling for generated research output.
+- Blocked production VAT promotion because the XML includes natural persons and addresses but has no reliable natural/legal subject marker.
+- Added VAT registration validation helpers and tests for privacy-field rejection and deterministic normalization.
+- Added `vatRegistrations` source-registry metadata and VAT source research documentation.
+- Did not add `GET /v1/vat/{ico}` or `GET /v1/dph/{ico}` in this milestone.
+- Updated project version metadata to `0.15.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.14.0
 
 - Verified the current RPO acquisition gate and chose `RESEARCH_AND_TOOLING_ONLY`; the production company dataset remains seed-backed.
