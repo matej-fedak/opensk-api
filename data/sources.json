@@ -145,6 +145,22 @@
     "nextAction": "Find an official documented bulk export, open-data distribution, documented API, or authorized service with clear reuse terms and a deterministic privacy strategy before adding importer or endpoint code.",
     "notes": "0.16.0 found only a human-facing ŽRSR search interface. No official machine-readable source, licence/reuse permission, non-scraping acquisition route, or deterministic natural-person exclusion was verified."
   },
+  "streets": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "Register adries / street and address reference data research",
+    "sourceUrl": "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%20adries/uvod-register%20adries",
+    "licence": "No production street dataset licence or reuse grant verified. MV reference-data services and eID dataset service are documented, but no anonymous reproducible open-data distribution was approved for local snapshot redistribution.",
+    "licenceStatus": "blocked; reuse, caching, transformation, attribution, redistribution, and commercial downstream terms not verified for a production OpenSK street snapshot",
+    "redistributionStatus": "blocked; no production streets dataset redistributed",
+    "termsUrl": "pending",
+    "attribution": "Attribute Ministerstvo vnútra Slovenskej republiky / Register adries only if a future approved source explicitly permits reuse and specifies attribution.",
+    "riskLevel": "high",
+    "lastChecked": "2026-09-29",
+    "updateCadence": "Unknown for OpenSK; MV services exist but no approved anonymous reproducible bulk refresh route was verified",
+    "nextAction": "Verify a working official data.gov.sk distribution or other MV-authorized machine-readable source with clear reuse rights before adding fetch/import tooling, data/streets.json, or public endpoints.",
+    "notes": "0.17.0 found official MV Register adries information and services, including an eID/mailbox XML dataset service, but production import remains blocked. registeradries.sk exposes an API-key JSON API with street identifiers but is a separate third-party/secondary source and was not approved for production."
+  },
   "phoneAreas": {
     "status": "imported",
     "coverage": "complete",

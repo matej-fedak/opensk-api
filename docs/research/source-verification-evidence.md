@@ -25,6 +25,15 @@ This log records evidence checked for source and licence decisions. It is intent
 - `data.gov.sk` catalogue/API attempts returned an HTML JavaScript shell in this environment, not verified dataset JSON.
 - Result: no official machine-readable source, licence/reuse permission, non-scraping acquisition route, or deterministic privacy strategy verified.
 
+## 2026-09-29 Streets / Register Adries
+
+- MV overview page checked by direct request: `https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%20adries/uvod-register%20adries`.
+- MV reference-data page checked by direct request: `https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%2Badries/poskytovanie_referencnych_udajov/`.
+- MV pages returned official HTML and describe Register adries services and an address-point dataset service for a municipality or municipal part.
+- Dataset workflow is described as electronic service/mailbox delivery, not an anonymous reproducible bulk download.
+- `data.gov.sk` search/API attempts for Register adries/street terms returned HTML application shell in this environment; no working distribution URL was verified.
+- `https://registeradries.sk/api_doc` documents a JSON API requiring `api_key`, including street and address-point endpoints, but footer identifies `Virtuality, s. r. o.` and OpenStreetMap contributors; it was treated as a separate third-party candidate and not approved for production.
+
 | Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |

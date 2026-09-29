@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.17.0
+
+- Researched Register adries / Slovak street and address data sources for the Phase 3 streets roadmap item.
+- Documented that MV reference-data services and an eID/mailbox XML dataset workflow exist, but no approved anonymous reproducible open-data/bulk source was verified for OpenSK production use.
+- Documented `registeradries.sk` as a separate third-party/API-key source candidate, not an approved official production source.
+- Added `streets` source-registry metadata as research-only/acquisition-blocked.
+- Did not add an importer, production dataset, runtime service, or public endpoint.
+- Updated project version metadata to `0.17.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.16.0
 
 - Researched official ŽRSR / Slovak Trade Register machine-readable acquisition options.

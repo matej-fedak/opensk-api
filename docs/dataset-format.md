@@ -106,6 +106,13 @@ Each `companies[]` item uses this shape:
 - Future candidate fields may include IČO, status, source register, trade activities, and establishment/termination dates, but fields must not be finalized until source access and privacy gates pass.
 - Person names, residence/private addresses, birth data, personal contacts, responsible-person data, and role-holder data are excluded by default.
 
+## Streets / Register Adries
+
+- `data/streets.json` is not present in 0.17.0 because no approved production source was verified.
+- No street importer schema is defined because the milestone did not verify a reusable official source shape.
+- Future candidate records should use official stable street identifiers only if documented by the selected source.
+- Do not expose house numbers, apartment data, building coordinates, or person-linked address data by default.
+
 ## Code Conventions
 
 - Keep codes as strings, even when they are numeric-looking.
