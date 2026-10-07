@@ -1,14 +1,14 @@
 # 1.0 Readiness Audit
 
-Audit date: 2026-09-18
+Audit date: 2026-10-07
 
-Latest reviewed application version: `0.20.0`
+Latest reviewed application version: `0.21.0`
 
 ## Readiness Conclusion
 
 OpenSK API is not ready to become `1.0.0` today. The API behavior is close to a stable candidate, but source/licence redistribution evidence and final operational release gates are not yet strong enough for a truthful stable release.
 
-The largest blockers are not new endpoints or data modeling work. They are source/licence decisions, scope decisions for partial or seed-backed datasets, and release operations.
+The largest blockers are not new endpoints or data modeling work. The 0.21.0 scope freeze in `docs/1-0-scope.md` narrows the actual 1.0 blockers to included candidate routes, especially PortalVS-backed PSC/districts/municipalities and retained attribution evidence for limited production datasets.
 
 ## Public API Inventory
 
@@ -106,7 +106,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GE
 
 ## Must Fix Before 1.0
 
-See `docs/release-readiness.md` for the canonical blocker table. In short: resolve PortalVS/PSC redistribution risk or exclude those endpoints, decide company scope, retain exact source/licence evidence, require CI gates, and verify production deployment from final `main`.
+See `docs/1-0-scope.md` and `docs/release-readiness.md` for the canonical blocker table. In short: resolve PortalVS-backed PSC/districts/municipalities or exclude them from the stable contract, retain exact source/licence evidence for included Yellow datasets, keep company lookup explicitly seed-backed, require CI gates, and verify production deployment from final `main`.
 
 ## Should Fix Before 1.0
 
@@ -114,7 +114,7 @@ Resolve non-PortalVS evidence gaps, decide response-shape and alias permanence, 
 
 ## Acceptable Post-1.0 Work
 
-Broader company/RPO imports, national PSC expansion, scheduled refresh automation, additional endpoint domains, a verified ÚVO NATIONAL procurement replacement, and a future `/v2` cleanup can wait if the 1.0 scope is narrow and honest.
+Broader company/RPO imports, ŽRSR, VAT, streets, healthcare, institution-level schools, national PSC expansion, scheduled refresh automation, additional endpoint domains, a verified ÚVO NATIONAL procurement replacement, and a future `/v2` cleanup can wait if the 1.0 scope is narrow and honest.
 
 ## Intentionally Out Of Scope
 

@@ -10,6 +10,7 @@
 - Procurement notice geography links are null because TED city/postal fields do not provide stable official municipality identifiers; geography must not be inferred from city names or postal codes.
 - Procurement notice records exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML bodies.
 - Institution-level school lookup is not exposed in 0.20.0. MŠVVaM/RIS/CVTI candidates exist, but production import is blocked until reuse, documented acquisition, stable identifier, coverage, refresh, and privacy gates pass.
+- 0.21.0 freezes the candidate 1.0 scope in `docs/1-0-scope.md`; excluded research-only domains do not block 1.0 while they remain excluded.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.
@@ -24,6 +25,7 @@
 - PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
 - PSC source coverage remains partial and should not be presented as national coverage.
 - PSC redistribution is restricted by upstream PortalVS terms, and the dataset is not open redistribution material.
+- Districts, municipalities, and PSC are intended for 1.0 only after PortalVS compliance is fixed; otherwise they must be excluded from the stable contract.
 - Some datasets are manually curated or imported from sources with incomplete attribution or redistribution clarity.
 - Procurement notice dataset uses TED attribution-backed terms, but exact legal-notice wording is still tracked as retained-evidence work before any stable release.
 - Remaining source follow-up items are tracked in `docs/verification-backlog.md`.

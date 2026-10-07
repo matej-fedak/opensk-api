@@ -2,7 +2,7 @@
 
 Review date: 2026-10-07
 
-Latest reviewed application version: `0.20.0`
+Latest reviewed application version: `0.21.0`
 
 Scope: production JSON datasets, public API schemas, and import guardrails for the pre-1.0 public API.
 
@@ -33,4 +33,4 @@ No intentional personal-data dataset is exposed. Current public data is institut
 
 ## 1.0 Privacy Readiness
 
-Privacy posture is acceptable for the current 1.0 candidate scope if company lookup remains seed-backed, VAT, ŽRSR, street/address, healthcare-facility lookup, and institution-level school lookup remain absent, school data remains aggregate-only, and procurement notices remain a minimal institutional TED_PARTIAL notice-reference snapshot. Any production RPO/company expansion, VAT registration endpoint, ŽRSR/trade-register endpoint, street/address endpoint, healthcare-facility endpoint, procurement winner/contact/address/XML-body expansion, or institution-level school directory would need a fresh privacy review before release.
+Privacy posture is acceptable for the candidate 1.0 scope defined in `docs/1-0-scope.md` if company lookup remains seed-backed, VAT, ŽRSR, street/address, healthcare-facility lookup, and institution-level school lookup remain absent, school data remains aggregate-only, and procurement notices remain a minimal institutional TED_PARTIAL notice-reference snapshot. Any production RPO/company expansion, VAT registration endpoint, ŽRSR/trade-register endpoint, street/address endpoint, healthcare-facility endpoint, procurement winner/contact/address/XML-body expansion, or institution-level school directory would need a fresh privacy review before release.
