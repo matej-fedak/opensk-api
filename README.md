@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.21.0` pre-1.0 research-paper roadmap audit and scope-freeze milestone.
+Status: `0.22.0` pre-1.0 Slovak court-decision source-research milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -63,6 +63,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/1-0-readiness-audit.md` and `docs/release-readiness.md` track what remains before a future `1.0.0`.
 - `docs/1-0-scope.md` defines the candidate first stable release scope and excluded roadmap domains.
 - `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
+- `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
 - `docs/privacy-review.md` records the current privacy review.
 - `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
@@ -86,8 +87,10 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Procurement notice lookup is public in `0.19.0` as a 100-record TED_PARTIAL snapshot only; it excludes national-only ÚVO notices and personal/contact/address/winner fields.
 - Institution-level school lookup is not public in `0.20.0`; official RIS/CVTI candidates were identified, but production import is blocked by reuse, acquisition, identifier, coverage, and privacy gates.
 - 0.21.0 freezes the candidate 1.0 scope: company/IČO remains seed-backed, PortalVS-backed districts/municipalities/PSC require compliance fixes, and research-only domains are excluded rather than treated as 1.0 blockers.
+- 0.22.0 verifies a Ministry court-decision OpenAPI source, but court-decision lookup remains research-only because reuse/redistribution and metadata-only privacy gates are unresolved.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
+- `/v1/court-decisions` is intentionally not implemented because no court-decision source has passed reuse/redistribution and privacy gates.
 
 ## Dataset Import Pipeline
 

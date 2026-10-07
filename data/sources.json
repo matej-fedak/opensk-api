@@ -248,6 +248,28 @@
     "nextAction": "Retain exact reuse terms for Slov-Lex legal texts and confirm whether transformed historical-reference JSON redistribution is allowed.",
     "notes": "93 legacy two-letter district abbreviations expanded from the legal table for vehicle registration numbers. This is not a current plate lookup, does not decode full plates, and does not identify vehicles or owners."
   },
+  "courtDecisions": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "Ministerstvo spravodlivosti SR court-decision OpenAPI source research",
+    "sourceUrl": "https://www.justice.gov.sk/sluzby/registre/otvorene-data/",
+    "sourceDocumentationUrl": "https://obcan.justice.sk/pilot/api/ress-isu-service/swagger-ui/index.html",
+    "candidateSourceUrls": [
+      "https://obcan.justice.sk/pilot/api/ress-isu-service/v3/api-docs",
+      "https://www.justice.gov.sk/sudy-a-rozhodnutia/sudy/rozhodnutia",
+      "https://www.ustavnysud.sk/ako-hladat"
+    ],
+    "licence": "No production licence/reuse grant verified for local caching, transformation, redistribution, or downstream commercial use of court-decision API output.",
+    "licenceStatus": "blocked; reuse, caching, transformation, attribution, redistribution, and commercial downstream terms not verified",
+    "redistributionStatus": "blocked; no production court-decision dataset redistributed",
+    "termsUrl": "pending",
+    "attribution": "Attribute Ministerstvo spravodlivosti SR or the relevant court source only if a future approved source explicitly permits reuse and specifies attribution.",
+    "riskLevel": "high",
+    "lastChecked": "2026-10-07",
+    "updateCadence": "Unknown for OpenSK; no approved local snapshot refresh route was verified",
+    "nextAction": "Verify explicit reuse rights, documented acquisition, metadata-only privacy projection, published-decision scope, Constitutional Court coverage, and full-text exclusion before adding data/court_decisions.json or /v1/court-decisions.",
+    "notes": "0.22.0 verified that the Ministry OpenAPI exposes anonymous-looking /v1/rozhodnutie list/detail/autocomplete endpoints with ECLI and decision metadata, but production import remains blocked by reuse/redistribution and privacy gates. Text decision: NO_PRODUCTION_DATA. Acquisition decision: RESEARCH_AND_TOOLING_ONLY."
+  },
   "schoolFacilityCounts": {
     "status": "imported",
     "coverage": "complete",

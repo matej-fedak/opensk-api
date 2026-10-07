@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.22.0
+
+- Researched official Slovak court-decision sources for a future Phase 3 court-decisions API.
+- Verified the Ministry RESS/ISU OpenAPI discovery chain, including Swagger config and the OpenAPI document for anonymous-looking `GET /v1/rozhodnutie`, `GET /v1/rozhodnutie/{id}`, and `GET /v1/rozhodnutie/autocomplete` endpoints.
+- Documented decision metadata and ECLI fields, while recording privacy-risk fields such as judge/person names, participants, addresses/contact data, snippets/highlights, and document/text fields.
+- Chose `Acquisition decision: RESEARCH_AND_TOOLING_ONLY` and `Text decision: NO_PRODUCTION_DATA` because Ministry/court-source reuse, local caching, transformation, redistribution, commercial-use, metadata-only privacy projection, and full-text exclusion are not verified.
+- Added a research-only `courtDecisions` source-registry entry; did not add `/v1/court-decisions`, `data/court_decisions.json`, fetch tooling, import tooling, or full-text storage.
+- Updated project version metadata to `0.22.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.21.0
 
 - Audited the May 2026 research-paper source assumptions and Phase 1-3 endpoint roadmap against the actual repository and verified source landscape.

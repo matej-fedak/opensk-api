@@ -43,7 +43,7 @@ These roadmap domains are explicitly outside the first stable release. They do n
 | Streets/Register adries | No approved anonymous reusable street distribution; address-point privacy risk. |
 | Healthcare facilities/providers | No approved record-level source with reuse rights and deterministic facility-only privacy filtering. |
 | Institution-level schools/universities | RIS/CVTI candidates lack reuse, acquisition, identifier, coverage, and privacy gates. |
-| Court decisions | Not researched or implemented in this repository. |
+| Court decisions | Ministry OpenAPI was researched in 0.22.0, but reuse/redistribution, privacy, published-decision scope, and full-text gates remain unresolved; no endpoint or dataset is added. |
 | National statistics endpoints | Not implemented; future source-discovery candidate only. |
 | Current vehicle plate decoding | Deliberately excluded; only historical district abbreviations exist. |
 
@@ -79,6 +79,7 @@ Only included candidate endpoints create must-fix blockers:
 - Streets source acquisition.
 - Healthcare-facility source acquisition.
 - Institution-level school source acquisition.
+- Court-decision source/reuse/privacy approval.
 - ÚVO NATIONAL procurement replacement.
 - Scheduled ingestion automation.
 - PostgreSQL, Redis, background workers, or provider fallback infrastructure.

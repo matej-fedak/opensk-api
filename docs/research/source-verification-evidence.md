@@ -71,6 +71,18 @@ This log records evidence checked for source and licence decisions. It is intent
 - `data.gov.sk` / `data.slovensko.sk` search attempts for school-register terms returned JavaScript application shells in this environment; no separate institution-level machine-readable distribution was verified.
 - Production decision: `RESEARCH_AND_TOOLING_ONLY`; no `/v1/schools`, `/v1/education-institutions`, `data/schools.json`, or importer is added.
 
+## 2026-10-07 Slovak Court Decisions
+
+- Ministry open-data page checked by direct request: `https://www.justice.gov.sk/sluzby/registre/otvorene-data/`. It says data is available through OpenAPI/Swagger UI and links `https://obcan.justice.sk/pilot/api/ress-isu-service/swagger-ui/index.html`; extended data or external-system integration requests should contact `servicedesk.mssr@justice.sk`.
+- Swagger initializer checked by direct request: `https://obcan.justice.sk/pilot/api/ress-isu-service/swagger-ui/swagger-initializer.js`. It points to `https://obcan.justice.sk/pilot/api/ress-isu-service/v3/api-docs/swagger-config`.
+- Swagger config checked by direct request: `https://obcan.justice.sk/pilot/api/ress-isu-service/v3/api-docs/swagger-config`. It points to `https://obcan.justice.sk/pilot/api/ress-isu-service/v3/api-docs`.
+- OpenAPI spec checked by direct request: `https://obcan.justice.sk/pilot/api/ress-isu-service/v3/api-docs`. It documents anonymous-looking decision endpoints `GET /v1/rozhodnutie`, `GET /v1/rozhodnutie/{id}`, and `GET /v1/rozhodnutie/autocomplete`, with ECLI, case number, court, judge, legal-area, decision-form, decision-date, sorting, facet, and pagination parameters/fields.
+- Ministry public decisions page checked by direct request: `https://www.justice.gov.sk/sudy-a-rozhodnutia/sudy/rozhodnutia`; the page shell is official, but no separate redistribution licence was verified from the checked content.
+- Constitutional Court guidance checked by direct request: `https://www.ustavnysud.sk/ako-hladat`. It documents public decision search by text, case number, ECLI, dates, proceeding type, legal provisions, collection number, and subject keywords; no documented anonymous API/bulk export was verified.
+- `data.gov.sk` API/search attempts returned only the JavaScript application shell in this environment; no verified court-decision catalogue distribution or terms were retained.
+- Privacy risk is high because the inspected API schemas expose or reference judge/person names, participants, addresses/contact fields, snippets/highlights, and document/text fields.
+- Production decision: `RESEARCH_AND_TOOLING_ONLY`; text decision: `NO_PRODUCTION_DATA`; no `/v1/court-decisions`, `data/court_decisions.json`, fetcher, importer, or full-text storage is added.
+
 | Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |
