@@ -2,7 +2,7 @@
 
 Audit date: 2026-10-07
 
-Latest reviewed application version: `0.22.0`
+Latest reviewed application version: `0.23.0`
 
 ## Readiness Conclusion
 
@@ -73,7 +73,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GE
 
 | Source group | Evidence quality | Unresolved questions | 1.0 decision |
 | --- | --- | --- | --- |
-| PortalVS classifiers 9, 10, 42 | source identified, low legal confidence | caching, transformation, redistribution, commercial use, attribution | must resolve or exclude affected endpoints |
+| PortalVS classifiers 9, 10, 42 | source identified, low legal confidence; 0.23.0 verified non-commercial-only portal copyright wording, the 2026-10-31 legacy end-of-support banner, and the `ciselniky2.portalvs.sk` successor | caching, transformation, redistribution, commercial use, attribution, final-snapshot contingency before 2026-10-31 | must resolve or exclude affected endpoints; prepared outreach in `docs/research/source-licence-outreach.md` |
 | RPO/company sources | seed pages identified; RPO API docs identify CC BY 4.0 | production acquisition method, official/mirror provenance, rate limits, redistribution, natural-person entrepreneurs, role-holder fields | keep seed-backed unless acquisition gate later approves production import |
 | VAT registrations | official ZIP/XML source verified; current export page says CC0 | Open Data catalogue licence discrepancy; no natural/legal subject marker | no public endpoint or production data until privacy gate is resolved |
 | ŽRSR/trade registrations | official human-facing search identified | no documented bulk/API/open-data source, reuse terms, or deterministic natural-person exclusion | no public endpoint, importer, or production data until all gates pass |

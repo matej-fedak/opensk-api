@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.22.0` pre-1.0 Slovak court-decision source-research milestone.
+Status: `0.23.0` pre-1.0 source-licence outreach and research-roadmap milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -62,6 +62,10 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.
 - `docs/1-0-readiness-audit.md` and `docs/release-readiness.md` track what remains before a future `1.0.0`.
 - `docs/1-0-scope.md` defines the candidate first stable release scope and excluded roadmap domains.
+- `docs/roadmap.md` is the living strategic roadmap (Now/Next/Watch/Later/Completed).
+- `docs/research/opensk-research-roadmap-2026-q4.md` is the 2026 Q4 consolidated source-licence and roadmap research report.
+- `docs/research/roadmap-council-notes.md` records the multi-perspective roadmap-council verdicts.
+- `docs/research/source-licence-outreach.md` contains ready-to-send licence outreach packages; nothing is sent automatically.
 - `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
 - `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
@@ -88,6 +92,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Institution-level school lookup is not public in `0.20.0`; official RIS/CVTI candidates were identified, but production import is blocked by reuse, acquisition, identifier, coverage, and privacy gates.
 - 0.21.0 freezes the candidate 1.0 scope: company/IČO remains seed-backed, PortalVS-backed districts/municipalities/PSC require compliance fixes, and research-only domains are excluded rather than treated as 1.0 blockers.
 - 0.22.0 verifies a Ministry court-decision OpenAPI source, but court-decision lookup remains research-only because reuse/redistribution and metadata-only privacy gates are unresolved.
+- 0.23.0 verifies PortalVS end-of-support (legacy support ends 2026-10-31; `ciselniky2.portalvs.sk` is the successor), confirms the portal's non-commercial copyright wording (districts/municipalities/PSC stay compliance-Red pending outreach), verifies ŠÚ SR elections open data as the next data spike, and prepares licence outreach packages; no endpoint or dataset is added.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
 - `/v1/court-decisions` is intentionally not implemented because no court-decision source has passed reuse/redistribution and privacy gates.
