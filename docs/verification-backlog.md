@@ -11,6 +11,7 @@
 - Healthcare-facilities gate: verify an official NCZI/e-VUC/data.gov.sk record-level distribution, reuse terms, IdZZ fields, refresh workflow, national or explicit coverage, and deterministic facility-only privacy filtering before adding `data/healthcare_facilities.json` or `/v1/healthcare-facilities`.
 - Public procurement gate: verify a current anonymous machine-readable ÚVO national notice distribution, explicit reuse/redistribution terms, refresh workflow, and privacy scope before changing `/v1/procurement-notices` from TED_PARTIAL to NATIONAL.
 - Retain exact TED/Publications Office attribution wording and verify whether a larger or scheduled TED snapshot remains compatible with source limits and OpenSK privacy scope.
+- Institution-level school-directory gate: verify explicit MŠVVaM/RIS/CVTI reuse rights, documented non-scraping export workflow, stable EDUID/current identifier semantics, national/scope coverage, refresh cadence, and privacy-safe institution-only fields before adding `/v1/schools` or `data/schools.json`.
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
 - Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.

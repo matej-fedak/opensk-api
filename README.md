@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.19.0` pre-1.0 public procurement TED_PARTIAL production milestone.
+Status: `0.20.0` pre-1.0 school-directory source research milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -40,7 +40,7 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/procurement-notices/search` | Public procurement notice search | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 
-`/v1/schools` is intentionally not implemented because the confirmed school source is aggregate-only data, not an institution-level school directory. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
+`/v1/schools` is intentionally not implemented. The confirmed MŠVVaM open-data CSV is aggregate-only, and the institution-level RIS/CVTI candidates still lack verified production reuse, acquisition, identifier, coverage, and privacy gates. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
 
 ## PSC Collection Surface
 
@@ -69,6 +69,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/streets-source.md` records why 0.17.0 remains research-only for Register adries / streets production data.
 - `docs/research/healthcare-facilities-source.md` records why 0.18.0 remains research-only for healthcare-facility/provider production data.
 - `docs/research/public-procurement-source.md` records why 0.19.0 uses a TED-backed partial public procurement snapshot rather than claiming ÚVO national coverage.
+- `docs/research/school-directory-source.md` records why 0.20.0 remains research/tooling-only for institution-level school directory data.
 - `docs/verification-backlog.md` tracks the remaining verification tasks.
 - `docs/known-limitations.md` collects the current public-readiness caveats.
 - `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
@@ -81,8 +82,9 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Streets/address lookup is not public in `0.17.0`; no approved official anonymous reproducible streets distribution was verified.
 - Healthcare-facility lookup is not public in `0.18.0`; no approved machine-readable non-scraping facility source with reuse rights and deterministic privacy filtering was verified.
 - Procurement notice lookup is public in `0.19.0` as a 100-record TED_PARTIAL snapshot only; it excludes national-only ÚVO notices and personal/contact/address/winner fields.
+- Institution-level school lookup is not public in `0.20.0`; official RIS/CVTI candidates were identified, but production import is blocked by reuse, acquisition, identifier, coverage, and privacy gates.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
-- `/v1/schools` is intentionally not implemented because the confirmed MŠVVaM school-register CSV is aggregate, not per-school, data.
+- `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
 
 ## Dataset Import Pipeline
 
@@ -225,6 +227,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Phone areas are imported from the telecom regulator's machine-processable workbook; licence/reuse verification remains pending.
 - Vehicle registration district codes are legacy/reference data from Slov-Lex legal text; they are not reliable for current plate lookup and do not decode full licence plates.
 - School facility counts are aggregate rows from the MŠVVaM `Register škôl a školských zariadení` CSV, valid as of `2025-09-15`; the API does not provide institution-level `/v1/schools` lookup.
+- Institution-level RIS/CVTI school-directory candidates are research-only in 0.20.0; no `data/schools.json` or `/v1/schools` endpoint is shipped.
 - School aggregate responses exclude school names, addresses, directors, staff, pupils, personal emails, and phone numbers.
 - Public procurement notices are a normalized 100-record TED Search API snapshot of Slovak-buyer notices, acquired 2026-09-29; coverage is `TED_PARTIAL`, not the complete national ÚVO vestník.
 - Procurement API responses exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML notice bodies.

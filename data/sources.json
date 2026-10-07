@@ -194,6 +194,27 @@
     "nextAction": "Verify a current anonymous machine-readable ÚVO national notice distribution with explicit reuse/redistribution terms before claiming NATIONAL coverage; retain exact TED attribution wording.",
     "notes": "0.19.0 imports the latest 100 Slovak-buyer notices returned by the verified anonymous TED Search API query `buyer-country = SVK`. Coverage is explicitly TED_PARTIAL because below-threshold national-only ÚVO vestník notices are not included. No personal/contact/address, winner, tenderer, subcontractor, beneficial-owner, or raw XML/PDF/HTML body fields are imported."
   },
+  "schoolsDirectory": {
+    "status": "research-and-tooling-only",
+    "coverage": "unknown",
+    "sourceName": "MŠVVaM/RIS/CVTI institution-level school-directory source research",
+    "sourceUrl": "https://www.minedu.sk/register-skol-a-skolskych-zariadeni-slovenskej-republiky/",
+    "candidateSourceUrls": [
+      "https://crinfo.iedu.sk/RISPortal/register/",
+      "https://crinfo.iedu.sk/RISPortal/catalogue/",
+      "https://www.cvtisr.sk/cvti-sr-vedecka-kniznica/informacie-o-skolstve/registre/zoznamy-skol-a-skolskych-zariadeni.html?page_id=9332"
+    ],
+    "licence": "No production licence/reuse grant verified for institution-level XLS/PDF/RIS exports. The existing MŠVVaM CSV licence applies only to the aggregate schoolFacilityCounts source.",
+    "licenceStatus": "blocked; reuse, caching, transformation, attribution, redistribution, and commercial downstream terms not verified for institution-level school directory data",
+    "redistributionStatus": "blocked; no production schools dataset redistributed",
+    "termsUrl": "pending",
+    "attribution": "Attribute MŠVVaM SR, CVTI SR, or RIS only if a future approved source explicitly permits reuse and specifies attribution.",
+    "riskLevel": "high",
+    "lastChecked": "2026-10-07",
+    "updateCadence": "Unknown for OpenSK; no approved anonymous reproducible institution-level refresh route was verified",
+    "nextAction": "Verify explicit reuse rights, a documented non-scraping export workflow, stable EDUID/current identifier semantics, national/scope coverage, refresh cadence, and privacy-safe fields before adding data/schools.json or /v1/schools.",
+    "notes": "0.20.0 identified official MŠVVaM PDF links, RIS public screens, and CVTI XLS category lists, but production import remains blocked. The confirmed MŠVVaM open-data CSV remains aggregate-only and separate under schoolFacilityCounts. No /v1/schools or /v1/education-institutions endpoint is added. Acquisition decision: RESEARCH_AND_TOOLING_ONLY."
+  },
   "phoneAreas": {
     "status": "imported",
     "coverage": "complete",

@@ -301,6 +301,10 @@ Where present, dataset metadata uses this shape:
 - This file contains aggregate rows only, not institution records. Do not add `schoolCode`, `schoolName`, `address`, director/staff/pupil fields, email, or phone fields.
 - `/v1/schools` is intentionally not implemented for this source.
 
+### `data/schools.json`
+
+This file is intentionally absent in 0.20.0. Institution-level school-directory candidates did not pass production acquisition gates. Do not create `data/schools.json` from aggregate `schoolFacilityCounts`, PDFs, frontend scraping, or XLS/RIS exports until reuse rights, documented acquisition, stable identifier semantics, coverage, refresh process, and privacy-safe field rules are verified.
+
 ### `data/procurement_notices.json`
 
 ```json

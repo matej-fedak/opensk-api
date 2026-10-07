@@ -9,6 +9,7 @@
 - Public procurement notices are explicitly `TED_PARTIAL`: the checked-in dataset contains 100 latest Slovak-buyer notices from TED, not the complete historical TED source and not the national ÚVO vestník.
 - Procurement notice geography links are null because TED city/postal fields do not provide stable official municipality identifiers; geography must not be inferred from city names or postal codes.
 - Procurement notice records exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML bodies.
+- Institution-level school lookup is not exposed in 0.20.0. MŠVVaM/RIS/CVTI candidates exist, but production import is blocked until reuse, documented acquisition, stable identifier, coverage, refresh, and privacy gates pass.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.

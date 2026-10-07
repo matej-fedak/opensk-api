@@ -2,7 +2,7 @@
 
 Audit date: 2026-09-18
 
-Latest reviewed application version: `0.19.0`
+Latest reviewed application version: `0.20.0`
 
 ## Readiness Conclusion
 
@@ -63,6 +63,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GE
 | Streets / Register adries | not promoted | 0 | research-only | checked 2026-09-29 | no production street reuse grant verified | no importer; no approved distribution verified | not applicable | source/reuse gate blocked; full address-point privacy risk | blocker until official distribution and scope resolved |
 | Healthcare facilities / providers | not promoted | 0 | research-only | checked 2026-09-29 | no production healthcare-facility reuse grant verified | no importer; no approved record-level distribution verified | not applicable | source/reuse/privacy gates blocked; e-VUC public data can include person/contact fields | blocker until official distribution and facility-only privacy scope resolved |
 | Public procurement notices | `data/procurement_notices.json` | 100 | TED_PARTIAL | checked/acquired 2026-09-29 | TED/Publications Office attribution-backed reuse; exact retained wording still required | TED fetch/importer exists | geography links intentionally null | partial source scope; source count 74,693 but checked-in snapshot is 100 | candidate after exact TED attribution wording retained and partial scope accepted |
+| Institution-level school directory | not promoted | 0 | research/tooling only | checked 2026-10-07 | no production institution-level reuse grant verified | no importer; approved export workflow not verified | not applicable | source/reuse/acquisition/identifier/coverage/privacy gates blocked | blocker until approved source strategy resolved |
 | Phone areas | `data/phone_areas.json` | 2,922 | complete imported | checked 2026-09-15 | licence/redistribution pending | importer and raw workbook retained | 2,919/2,922 linked | medium source/licence risk; 3 unmatched rows | candidate after source evidence or explicit warning |
 | Vehicle registration codes | `data/vehicle_registration_codes.json` | 93 | historical/reference | checked 2026-09-15 | Slov-Lex reuse pending | source text retained in docs | 84 district links; 93 region links | medium source/licence risk | candidate if historical scope explicit and source cleared |
 | School facility counts | `data/school_facility_counts.json` | 1,227 | aggregate-only imported | validity 2025-09-15; checked 2026-09-15 | Creative Commons BY listed; exact version/wording pending | importer and raw CSV retained | 1,227/1,227 linked | medium attribution-version risk | candidate after attribution wording retained |
@@ -78,6 +79,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GE
 | Streets/Register adries | official MV pages and services identified | data.gov distribution not verified; eID/mailbox workflow not suitable for automated open-source refresh; third-party API terms/provenance unapproved | no public endpoint, importer, or production data until source/reuse gates pass |
 | Healthcare facilities/providers | NCZI NR PZS official page, NCZI aggregate outputs, e-VUC portal, and IdZZ documentation identified | no documented public record-level export/API/feed, reuse terms unverified, privacy filtering needed for person/contact fields | no public endpoint, importer, or production data until source/reuse/privacy gates pass |
 | Public procurement notices | TED Search API/OpenAPI/live query verified; ÚVO national distribution not verified | ÚVO national machine-readable source, exact TED attribution wording, national-only notice exclusions | keep as explicit TED_PARTIAL until a verified ÚVO source can support NATIONAL |
+| Institution-level school directory | MŠVVaM aggregate CSV, MŠVVaM PDF register page, RIS screens, and CVTI XLS lists identified | institution-level reuse rights, documented non-scraping export, stable EDUID/current identifier semantics, coverage, refresh cadence, privacy-safe fields | no public endpoint, importer, or production data until all gates pass |
 | NBS bank directory | official source identified, medium confidence | exact terms, transformation, redistribution, commercial use | should resolve before 1.0 |
 | NBS holidays | source and legal act identified, medium confidence | exact disclaimer and curated JSON permission | should resolve before 1.0 |
 | Telecom regulator workbook | source and raw file retained, medium confidence | reuse and redistribution terms | should resolve before 1.0 |
@@ -96,6 +98,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GE
 | Streets/address lookup is source-blocked | A | 0.17.0 found no approved anonymous reproducible street distribution, so no endpoint or importer was added. |
 | Healthcare-facility lookup is source/privacy-blocked | A | 0.18.0 found no approved machine-readable source with reuse rights and deterministic facility-only privacy filtering, so no endpoint or importer was added. |
 | Public procurement notice endpoint is explicitly TED_PARTIAL | B preserve intentionally unless ÚVO is verified | 0.19.0 exposes a small institutional TED-backed snapshot and does not claim national ÚVO coverage. |
+| Institution-level school lookup is source/reuse/privacy-blocked | A | 0.20.0 found official candidates but no approved production import route, so no `/v1/schools`, dataset, or importer was added. |
 | PSC endpoint exposes partial dataset with lookup-like route | A before 1.0 | Must decide whether partial PSC is in 1.0 scope and document 404 semantics clearly. |
 | `metadata.version` is `v1` while project version is `0.x` | B preserve intentionally | This is already documented as API namespace/contract marker. |
 | School facility endpoint name is aggregate-specific instead of `/schools` | B preserve intentionally | Correctly avoids implying an institution-level directory. |

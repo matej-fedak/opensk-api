@@ -59,6 +59,18 @@ This log records evidence checked for source and licence decisions. It is intent
 - e-VUC AMBULANCIA page checked by direct request: `https://www.e-vuc.sk/e-vuc/pre-poskytovatelov-zdravotnej-starostlivosti/aplikacia-ambulancia.html?page_id=92224`; it describes the authenticated provider application backed by Register zdravotnictva.
 - `data.gov.sk` search/API attempts for healthcare-provider terms returned HTML application shell in this environment; no working distribution URL was verified.
 
+## 2026-10-07 Institution-Level School Directory
+
+- MŠVVaM aggregate open-data page checked by direct request: `https://www.minedu.sk/dataset-register-skol-a-skolskych-zariadeni/`. It lists RIS origin, validity `15.9.2025`, periodicity `polročne`, licence `Creative Commons BY`, format `CSV`, contact `opendata@minedu.sk`, and download URL `https://data.slovensko.sk/download?id=2ca3a9f8-819a-4ea1-8315-769c4fcc57da`; source remains aggregate-only.
+- MŠVVaM institution register page checked by direct request: `https://www.minedu.sk/register-skol-a-skolskych-zariadeni-slovenskej-republiky/`. It exposes category PDF links hosted under CVTI, including `stat_ms.pdf`, `stat_zs.pdf`, `siet_ss.pdf`, and `stat_cvc.pdf`; no open licence/reuse terms were verified for PDF extraction.
+- Representative PDF HEAD checks returned HTTP 200 and `application/pdf` for kindergarten, primary-school, secondary-school, and other-school/facility PDFs.
+- RIS portal checked by direct request: `https://crinfo.iedu.sk/RISPortal/register/` and `https://crinfo.iedu.sk/RISPortal/catalogue/`. The register page HTML contains `register/ExportCSV?id={{item.poradie}}`, and the catalogue page exposes EDUID, institution name, address, pupil/employee counts, RFO matching counts, batch status, and error-file columns. No documented stable public bulk/API contract or reuse terms were verified.
+- CVTI current-register page checked by direct request: `https://www.cvtisr.sk/cvti-sr-vedecka-kniznica/informacie-o-skolstve/registre/aktualne-registre.html?page_id=9331`. It says register contents can be opened in Excel and links to RIS.
+- CVTI XLS list page checked by direct request: `https://www.cvtisr.sk/cvti-sr-vedecka-kniznica/informacie-o-skolstve/registre/zoznamy-skol-a-skolskych-zariadeni.html?page_id=9332`. It exposes direct XLS category files, says lists contain address, contact data mail and phone while current contact data is not provided based on MŠVVaM instruction, total pupil/client/accommodation counts, and only schools/facilities submitting statistical reports.
+- Representative XLS HEAD checks returned HTTP 200 and `application/vnd.ms-excel` for `ms_z.xls`, `zs_z.xls`, `GYM_Z.XLS`, and `cvc_z.xls`; no explicit open licence/reuse terms were verified.
+- `data.gov.sk` / `data.slovensko.sk` search attempts for school-register terms returned JavaScript application shells in this environment; no separate institution-level machine-readable distribution was verified.
+- Production decision: `RESEARCH_AND_TOOLING_ONLY`; no `/v1/schools`, `/v1/education-institutions`, `data/schools.json`, or importer is added.
+
 | Source | Exact page checked | Date checked | Evidence quote or paraphrase | Result | Confidence | Remaining uncertainty |
 | --- | --- | --- | --- | --- | --- | --- |
 | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `2026-05-27` | The project records the Slovak regions as verified offline against the LAU 2025 workbook; Eurostat legal notice URL is tracked separately. | Regions source is identified and official; redistribution conditions still need exact retained wording. | medium | Exact workbook notice and attribution requirements should be kept on file. |
