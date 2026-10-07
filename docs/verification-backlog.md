@@ -1,9 +1,15 @@
 # Verification Backlog
 
-- Retain exact Eurostat LAU 2025 workbook reuse notice and attribution requirements.
-- PortalVS classifier 42 PSC licence, caching, transformation, commercial-use, and redistribution verification.
-- PortalVS classifier 9 municipality licence, caching, transformation, commercial-use, and redistribution verification.
-- PortalVS classifier 10 district licence, caching, transformation, commercial-use, and redistribution verification.
+## Must Fix For Candidate 1.0 Scope
+
+- PortalVS classifier 42 PSC licence, caching, transformation, commercial-use, and redistribution verification; otherwise exclude PSC from the stable contract.
+- PortalVS classifier 9 municipality licence, caching, transformation, commercial-use, and redistribution verification; otherwise exclude municipalities from the stable contract.
+- PortalVS classifier 10 district licence, caching, transformation, commercial-use, and redistribution verification; otherwise exclude districts from the stable contract.
+- Retain exact source/licence evidence for candidate included Yellow datasets: Eurostat regions, NBS banks, NBS holidays, telecom regulator phone areas, Slov-Lex vehicle registration codes, MŠVVaM school facility counts, and TED procurement notices.
+- Keep company/IČO documentation explicitly seed-backed before including it in 1.0.
+
+## Other Follow-Ups And Excluded Domains
+
 - RPO acquisition gate: verify official or otherwise justified bulk/local snapshot source, provenance, licence, attribution, rate limits, privacy filtering, commercial-use, and redistribution before replacing the seed-backed company dataset.
 - VAT registration privacy gate: identify a reliable natural/legal subject discriminator, or approve a documented minimum-data privacy policy, before adding `GET /v1/vat/{ico}` or promoting `data/vat_registrations.json`.
 - ŽRSR acquisition gate: find official documented bulk/API/open-data access, reuse terms, non-scraping refresh workflow, and deterministic natural-person exclusion before adding trade-registration importer, dataset, or endpoint.

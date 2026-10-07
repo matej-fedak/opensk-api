@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.20.0` pre-1.0 school-directory source research milestone.
+Status: `0.21.0` pre-1.0 research-paper roadmap audit and scope-freeze milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -61,6 +61,8 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/api-status.md` lists the endpoint status categories.
 - `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.
 - `docs/1-0-readiness-audit.md` and `docs/release-readiness.md` track what remains before a future `1.0.0`.
+- `docs/1-0-scope.md` defines the candidate first stable release scope and excluded roadmap domains.
+- `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
 - `docs/privacy-review.md` records the current privacy review.
 - `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
@@ -83,6 +85,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Healthcare-facility lookup is not public in `0.18.0`; no approved machine-readable non-scraping facility source with reuse rights and deterministic privacy filtering was verified.
 - Procurement notice lookup is public in `0.19.0` as a 100-record TED_PARTIAL snapshot only; it excludes national-only ÚVO notices and personal/contact/address/winner fields.
 - Institution-level school lookup is not public in `0.20.0`; official RIS/CVTI candidates were identified, but production import is blocked by reuse, acquisition, identifier, coverage, and privacy gates.
+- 0.21.0 freezes the candidate 1.0 scope: company/IČO remains seed-backed, PortalVS-backed districts/municipalities/PSC require compliance fixes, and research-only domains are excluded rather than treated as 1.0 blockers.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
 
@@ -251,6 +254,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Research notes for company/IČO work live in `docs/research/ico-sources.md`.
 - Remaining verification tasks are tracked in `docs/verification-backlog.md`.
+- Candidate 1.0 inclusion and exclusion decisions are tracked in `docs/1-0-scope.md`.
 - Dataset compliance status is summarized in `docs/source-compliance.md`.
 - Verification evidence and draft licence questions are tracked under `docs/research/`.
 - Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.

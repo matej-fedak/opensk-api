@@ -4,6 +4,8 @@ The runtime serves local JSON only and does not call upstream sources during req
 
 OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development milestones, not formal stable public releases. The `/v1` route prefix remains the API namespace and does not imply a finalized `1.0.0` contract.
 
+The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing routes are intended stable only after source-compliance fixes; research-only domains without routes are excluded from the first stable release.
+
 ## Public Endpoint Index
 
 | Endpoint | Purpose | Coverage/status | Notes |
@@ -46,6 +48,16 @@ OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development
 | `GET /v1/psc/search` | partial dataset | Local PSC search; PortalVS source terms are restrictive |
 | `GET /v1/psc/stats` | partial dataset | Local PSC stats; PortalVS source terms are restrictive |
 | `GET /v1/psc/{psc}` | partial dataset | Local PSC lookup; PortalVS source terms are restrictive |
+
+## 1.0 Scope Status
+
+| Route/domain | Scope status | Requirement before 1.0 |
+| --- | --- | --- |
+| `/`, `/v1/health`, `/v1/iban/validate/{iban}` | stable candidate | Final deployment verification. |
+| Regions, banks, phone areas | stable candidate after evidence | Retain exact source/reuse evidence. |
+| Districts, municipalities, PSC | `INCLUDE_AFTER_COMPLIANCE_FIX` | Resolve PortalVS reuse/redistribution/commercial-use terms or exclude from stable contract. |
+| Holidays, companies/IČO, vehicle registration codes, school facility counts, procurement notices | limited stable candidate | Keep limitations explicit and retain source evidence. |
+| VAT, ŽRSR, streets, healthcare facilities, institution-level schools | excluded from 1.0 | Not blockers while excluded. |
 
 ## Notes
 

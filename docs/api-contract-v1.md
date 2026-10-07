@@ -6,7 +6,7 @@ Status: pre-1.0 candidate. This document describes the intended compatibility su
 
 - Public API routes use the `/v1` namespace.
 - Response `metadata.version` is the API contract marker and remains `"v1"`.
-- Project SemVer, such as `0.20.0`, is separate from the `/v1` API namespace.
+- Project SemVer, such as `0.21.0`, is separate from the `/v1` API namespace.
 - Root metadata exposes both project version and API namespace fields.
 
 ## Success Envelope
@@ -69,6 +69,18 @@ Runtime routes read checked-in local JSON datasets or perform local validation o
 - Collection routes use plural nouns where practical.
 - Static `/search` and `/stats` routes must be registered before dynamic `/{code}` routes.
 - `/v1/ico/{ico}` is retained as an intentional compatibility alias for `/v1/companies/{ico}`.
+
+## Candidate Stable Route Groups
+
+The `1.0.0` candidate stable contract is scoped in `docs/1-0-scope.md`.
+
+Stable-candidate routes include service metadata/health, IBAN validation, regions, banks, and phone-area routes after source evidence is retained.
+
+Limited stable-candidate routes include districts, municipalities, PSC, holidays, seed-backed companies/IČO, vehicle registration codes, school facility counts, and TED_PARTIAL procurement notices only with their documented limitations and required source-compliance fixes.
+
+Research-only domains with no stable routes include VAT, ŽRSR/trade registrations, streets/Register adries, healthcare facilities, institution-level schools, court decisions, and national statistics endpoints.
+
+Routes whose source-compliance inclusion is unresolved before final `1.0.0` must be excluded from the stable contract or documented as experimental/pre-1.0 before release.
 
 ## Partial Datasets
 

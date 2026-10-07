@@ -4,6 +4,16 @@ OpenSK API serves checked-in JSON files at runtime. No API route calls upstream 
 
 This page records the current source-compliance posture. It is not legal advice. Keep conservative warnings until the relevant source owner confirms reuse and redistribution terms.
 
+## 1.0 Compliance Colours
+
+| Colour | Datasets | 1.0 meaning |
+| --- | --- | --- |
+| Green | None yet | No production dataset currently has enough retained evidence to remove all 1.0 source caveats. |
+| Yellow | Regions, banks, holidays, companies seed, phone areas, vehicle registration codes, school facility counts, procurement notices | Production or limited data exists, but exact attribution/reuse evidence must be tightened before stable release. |
+| Red | Districts, municipalities, PSC | Production data exists, but PortalVS redistribution uncertainty must be resolved before stable inclusion or the routes must be excluded from 1.0. |
+
+Research-only datasets are excluded from `1.0.0` unless separately approved; they do not block the stable release while excluded.
+
 | Dataset | Runtime scope | Source | Source URL | Terms URL | Licence status | Redistribution status | Attribution wording | Terms basis | Risk | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Regions | complete | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `https://ec.europa.eu/info/legal-notice_en` | Reuse terms identified; redistribution verification still required. | Verify before redistribution. | Attribute Eurostat as the source when reusing LAU correspondence data. | official terms page, exact workbook notice still pending in repo | medium | Retain exact Eurostat reuse notice for the LAU 2025 workbook and confirm redistribution conditions. |

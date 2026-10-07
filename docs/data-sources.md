@@ -6,6 +6,8 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 - `docs/source-compliance.md` is the detailed compliance matrix for licence, redistribution, attribution, and risk status.
 - `docs/research/source-verification-evidence.md` records retained source-verification evidence.
 - `docs/research/source-licence-questions.md` lists draft questions for source owners; questions are not sent automatically.
+- `docs/research/paper-roadmap-coverage.md` maps the original research-paper roadmap to the repository and verified source landscape.
+- `docs/1-0-scope.md` records which datasets are included, limited, or excluded from the candidate `1.0.0` scope.
 - Raw source material is handled offline.
 - The checked-in JSON files under `data/` are the curated runtime inputs.
 - Production requests read only those local JSON files.
@@ -62,3 +64,4 @@ Notes:
 - Record provenance should be checked before any production expansion or redistribution.
 - ORSR and ŽRSR remain reference-only in the research notes and are not scraped.
 - Keep source-compliance warnings until source-owner terms are retained or clarified.
+- For `1.0.0`, PortalVS-backed districts, municipalities, and PSC are `INCLUDE_AFTER_COMPLIANCE_FIX`, not already cleared stable sources.

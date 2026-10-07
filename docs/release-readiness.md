@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.20.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations.
+OpenSK API is pre-1.0 at `0.21.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
 
@@ -10,15 +10,9 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 
 | Blocker | Reason | Affected endpoint/dataset | Severity | Proposed resolution | Work type |
 | --- | --- | --- | --- | --- | --- |
-| Resolve high-risk PortalVS redistribution uncertainty for PSC, or exclude PSC from 1.0 scope | PSC is partial and has `riskLevel: high`; redistribution is treated as restricted. Shipping it as stable without a decision is risky. | `/v1/psc`, `/v1/psc/{psc}`, `/v1/psc/search`, `/v1/psc/stats`; `data/psc.json` | high | Obtain written/retained terms for caching, transformation, redistribution, commercial downstream use, and attribution; if unresolved, remove PSC from 1.0 public scope or mark it experimental outside the stable contract. | legal/source, documentation, possible code |
-| Resolve PortalVS district and municipality redistribution uncertainty, or document an explicit exclusion strategy | Districts and municipalities are foundational for geography links, but redistribution remains restricted/pending. | `/v1/districts`, `/v1/municipalities`, geography links in PSC, phone areas, school facility counts | high | Retain exact allowed-use evidence or decide whether these endpoints can be included in 1.0 under conservative terms. | legal/source, documentation |
-| Resolve company dataset strategy | Current company lookup remains seed-backed; 0.14.0 did not approve RPO production import. This is acceptable only if 1.0 explicitly commits to seed-backed lookup and does not imply comprehensive IČO search. | `/v1/companies/{ico}`, `/v1/ico/{ico}`; `data/companies.json` | high | Choose and document one final 1.0 strategy: keep seed-backed as stable with narrow scope, or defer company endpoints until RPO production acquisition is approved. | product, legal/source, documentation |
-| Resolve VAT registration privacy gate | 0.15.0 verified the official ZIP/XML source but production promotion is blocked because the XML has no reliable natural/legal subject marker. | Future `/v1/vat/{ico}`; future `data/vat_registrations.json` | high | Identify a reliable discriminator or approve a minimum-data privacy policy before adding a public endpoint. | privacy, legal/source, documentation |
-| Resolve ŽRSR source and privacy gates | 0.16.0 found only a human-facing search interface; no documented machine-readable source, reuse rights, non-scraping acquisition path, or deterministic natural-person exclusion was verified. | Future `/v1/trades/{ico}`; future `data/trade_registrations.json` | high | Find official documented bulk/API/open-data access with clear reuse terms and privacy-safe subject filtering before adding importer or endpoint code. | source, privacy, legal, documentation |
-| Resolve Register adries street source gate | 0.17.0 found MV services and a third-party API candidate but no approved anonymous reproducible street distribution with reuse rights. | Future `/v1/streets`; future `data/streets.json` | high | Verify an official data.gov.sk or MV-authorized distribution, stable identifiers, refresh workflow, and privacy-safe street-only scope. | source, legal, privacy, documentation |
-| Resolve healthcare-facilities source and privacy gates | 0.18.0 found authoritative NR PZS information and e-VUC IdZZ documentation but no approved public record-level export/API/feed with reuse rights. e-VUC public data can include person/contact/operational fields outside OpenSK scope. | Future `/v1/healthcare-facilities`; future `data/healthcare_facilities.json` | high | Verify an official NCZI/e-VUC/data.gov.sk distribution with IdZZ, clear reuse terms, refresh workflow, and facility-only privacy filtering. | source, legal, privacy, documentation |
+| Resolve high-risk PortalVS redistribution uncertainty for PSC, districts, and municipalities, or exclude them from the stable contract | These are candidate 1.0 routes, but PortalVS redistribution is treated as restricted until retained evidence says otherwise. | `/v1/psc*`, `/v1/districts*`, `/v1/municipalities*` | high | Obtain written/retained terms for caching, transformation, redistribution, commercial downstream use, and attribution; if unresolved, exclude affected routes from 1.0. | legal/source, documentation, possible code |
+| Keep company dataset explicitly seed-backed | Current company lookup remains seed-backed; 0.14.0 did not approve RPO production import. | `/v1/companies/{ico}`, `/v1/ico/{ico}`; `data/companies.json` | medium | Include as `INCLUDE_AS_SEED_BACKED`; no national RPO completeness implication. | product, documentation |
 | Decide whether explicit TED_PARTIAL procurement remains in 1.0 | 0.19.0 adds a small TED-backed Slovak-buyer snapshot, not national ÚVO coverage. It is only appropriate for 1.0 if partial scope and attribution are explicit. | `/v1/procurement-notices*`; `data/procurement_notices.json` | medium | Keep with explicit partial coverage and exact TED attribution wording, or defer from 1.0 until ÚVO national coverage/licensing is resolved. | product, legal/source, documentation |
-| Resolve institution-level school-directory source, reuse, and privacy gates before adding schools | 0.20.0 identified MŠVVaM/RIS/CVTI candidates but did not verify production reuse rights, a documented non-scraping acquisition workflow, stable identifier semantics, coverage, refresh cadence, or privacy-safe fields. | Future `/v1/schools` or `/v1/education-institutions`; future `data/schools.json` | high | Keep absent until every acquisition gate passes; keep aggregate `schoolFacilityCounts` separate. | source, legal, privacy, documentation |
 | Retain exact source/licence evidence for all datasets included in 1.0 | Several sources are identified but exact licence text, attribution wording, transformation permission, or redistribution permission is not retained. | Regions, banks, holidays, phone areas, vehicle registration codes, school facility counts, procurement notices | high | Store exact evidence quotes/links and update `data/sources.json`, `docs/source-compliance.md`, and evidence docs without removing warnings unless evidence supports it. | legal/source, documentation |
 | Keep CI required for PRs | 1.0 needs automated validation so dataset/API breakage does not merge unnoticed. | Repository-wide | high | Require the CI workflow added in 0.13.0 as a branch protection check before final 1.0. | operational, CI |
 | Complete final deployment verification from clean `main` | Public Render deployment must match the release commit and pass smoke tests. | `https://opensk-api.onrender.com/` | high | Deploy from clean `main`, verify root version, OpenAPI, representative endpoints, and public smoke test. | deployment, operational |
@@ -101,12 +95,12 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 14. Git tag created.
 15. GitHub Release created.
 
-Do not execute this release procedure during `0.20.0`.
+Do not execute this release procedure during `0.21.0`.
 
 ## Proposed Follow-Up Issues
 
-- Resolve 1.0 source and redistribution evidence for included datasets.
-- Decide PSC 1.0 inclusion strategy.
-- Decide company/IČO 1.0 scope; alias permanence is currently resolved in favor of retaining `/v1/ico/{ico}`.
+- Resolve 1.0 source and redistribution evidence for included datasets, especially PortalVS-backed PSC/districts/municipalities.
+- Keep PSC/districts/municipalities as `INCLUDE_AFTER_COMPLIANCE_FIX` or exclude before the final 1.0 PR.
+- Keep company/IČO as `INCLUDE_AS_SEED_BACKED`; alias permanence is currently resolved in favor of retaining `/v1/ico/{ico}`.
 - Freeze candidate v1 API contract and resolve response-shape decisions.
 - Complete production deployment and smoke-test release checklist.

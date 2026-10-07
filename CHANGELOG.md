@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.21.0
+
+- Audited the May 2026 research-paper source assumptions and Phase 1-3 endpoint roadmap against the actual repository and verified source landscape.
+- Added `docs/research/paper-roadmap-coverage.md` with paper-vs-repo classifications, data.gov.sk findings, architecture recommendations, best-practices audit, and coverage scores.
+- Added `docs/1-0-scope.md` to define the candidate `1.0.0` scope, excluded domains, and actual must-fix blockers.
+- Decided that company/IČO lookup is included as `INCLUDE_AS_SEED_BACKED`, while districts, municipalities, and PSC are `INCLUDE_AFTER_COMPLIANCE_FIX` because PortalVS rights remain unresolved.
+- Updated release/readiness docs to distinguish included 1.0 blockers from excluded research-only roadmap domains.
+- Updated project version metadata to `0.21.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.20.0
 
 - Researched institution-level Slovak school and school-facility directory sources for the Phase 3 schools roadmap item.
