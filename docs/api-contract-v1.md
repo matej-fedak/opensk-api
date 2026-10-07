@@ -6,7 +6,7 @@ Status: pre-1.0 candidate. This document describes the intended compatibility su
 
 - Public API routes use the `/v1` namespace.
 - Response `metadata.version` is the API contract marker and remains `"v1"`.
-- Project SemVer, such as `0.19.0`, is separate from the `/v1` API namespace.
+- Project SemVer, such as `0.20.0`, is separate from the `/v1` API namespace.
 - Root metadata exposes both project version and API namespace fields.
 
 ## Success Envelope

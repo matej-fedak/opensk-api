@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.20.0
+
+- Researched institution-level Slovak school and school-facility directory sources for the Phase 3 schools roadmap item.
+- Documented that the confirmed MŠVVaM open-data CSV remains aggregate-only and must stay separate from any future school-directory endpoint.
+- Identified official MŠVVaM/CVTI PDF and XLS candidates plus RIS/CRINFO public screens, but blocked production import because licence/reuse, stable documented acquisition, identifier semantics, coverage, and privacy gates are incomplete.
+- Added `schoolsDirectory` source-registry metadata as research-only/acquisition-blocked.
+- Did not add `/v1/schools`, `/v1/education-institutions`, an importer, or a production dataset.
+- Updated project version metadata to `0.20.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.19.0
 
 - Researched Slovak public procurement notice sources for the Phase 3 public-procurement roadmap item.

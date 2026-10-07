@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.19.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations.
+OpenSK API is pre-1.0 at `0.20.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
 
@@ -18,6 +18,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 | Resolve Register adries street source gate | 0.17.0 found MV services and a third-party API candidate but no approved anonymous reproducible street distribution with reuse rights. | Future `/v1/streets`; future `data/streets.json` | high | Verify an official data.gov.sk or MV-authorized distribution, stable identifiers, refresh workflow, and privacy-safe street-only scope. | source, legal, privacy, documentation |
 | Resolve healthcare-facilities source and privacy gates | 0.18.0 found authoritative NR PZS information and e-VUC IdZZ documentation but no approved public record-level export/API/feed with reuse rights. e-VUC public data can include person/contact/operational fields outside OpenSK scope. | Future `/v1/healthcare-facilities`; future `data/healthcare_facilities.json` | high | Verify an official NCZI/e-VUC/data.gov.sk distribution with IdZZ, clear reuse terms, refresh workflow, and facility-only privacy filtering. | source, legal, privacy, documentation |
 | Decide whether explicit TED_PARTIAL procurement remains in 1.0 | 0.19.0 adds a small TED-backed Slovak-buyer snapshot, not national ÚVO coverage. It is only appropriate for 1.0 if partial scope and attribution are explicit. | `/v1/procurement-notices*`; `data/procurement_notices.json` | medium | Keep with explicit partial coverage and exact TED attribution wording, or defer from 1.0 until ÚVO national coverage/licensing is resolved. | product, legal/source, documentation |
+| Resolve institution-level school-directory source, reuse, and privacy gates before adding schools | 0.20.0 identified MŠVVaM/RIS/CVTI candidates but did not verify production reuse rights, a documented non-scraping acquisition workflow, stable identifier semantics, coverage, refresh cadence, or privacy-safe fields. | Future `/v1/schools` or `/v1/education-institutions`; future `data/schools.json` | high | Keep absent until every acquisition gate passes; keep aggregate `schoolFacilityCounts` separate. | source, legal, privacy, documentation |
 | Retain exact source/licence evidence for all datasets included in 1.0 | Several sources are identified but exact licence text, attribution wording, transformation permission, or redistribution permission is not retained. | Regions, banks, holidays, phone areas, vehicle registration codes, school facility counts, procurement notices | high | Store exact evidence quotes/links and update `data/sources.json`, `docs/source-compliance.md`, and evidence docs without removing warnings unless evidence supports it. | legal/source, documentation |
 | Keep CI required for PRs | 1.0 needs automated validation so dataset/API breakage does not merge unnoticed. | Repository-wide | high | Require the CI workflow added in 0.13.0 as a branch protection check before final 1.0. | operational, CI |
 | Complete final deployment verification from clean `main` | Public Render deployment must match the release commit and pass smoke tests. | `https://opensk-api.onrender.com/` | high | Deploy from clean `main`, verify root version, OpenAPI, representative endpoints, and public smoke test. | deployment, operational |
@@ -44,6 +45,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Streets/address lookup remains absent until source acquisition, reuse, and street-only privacy handling are approved.
 - Healthcare-facility lookup remains absent until source acquisition, reuse, IdZZ-bearing record shape, and facility-only privacy handling are approved.
 - Public procurement notices may remain TED_PARTIAL if explicit attribution, 100-record snapshot scope, and non-ÚVO status are documented.
+- Institution-level school lookup remains absent until source acquisition, reuse, stable identifier, coverage, refresh, and privacy gates pass.
 - Free-tier Render cold starts are acceptable if smoke tests retry or operators account for them.
 
 ## Operational Readiness
@@ -68,6 +70,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Streets/address lookup after official source/reuse gates pass and dataset size is reviewed.
 - Healthcare-facility lookup after official source/reuse/privacy gates pass and dataset size is reviewed.
 - Verified ÚVO NATIONAL procurement replacement or larger TED refresh after exact attribution and acquisition review.
+- Institution-level schools endpoint after an approved MŠVVaM/RIS/CVTI source, stable identifier, privacy-safe field subset, and refresh workflow are verified.
 
 ## Required Verification For 1.0
 
@@ -98,7 +101,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 14. Git tag created.
 15. GitHub Release created.
 
-Do not execute this release procedure during `0.19.0`.
+Do not execute this release procedure during `0.20.0`.
 
 ## Proposed Follow-Up Issues
 

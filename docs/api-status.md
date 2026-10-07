@@ -23,6 +23,7 @@ OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development
 | `GET /v1/trades/{ico}` | Trade registration lookup | not implemented | 0.16.0 found no safe official machine-readable ŽRSR source and did not add a public endpoint. |
 | `GET /v1/streets` | Street list/search | not implemented | 0.17.0 researched Register adries but did not approve a production source or endpoint. |
 | `GET /v1/healthcare-facilities` | Healthcare facility/provider lookup | not implemented | 0.18.0 researched NCZI NR PZS and e-VUC but did not approve a production source or endpoint. |
+| `GET /v1/schools` | Institution-level school lookup | not implemented | 0.20.0 researched MŠVVaM/RIS/CVTI candidates but did not approve production import or an endpoint. |
 | `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, `GET /v1/phone-areas/search` | Phone-area list, lookup, and search | complete imported; 3 unmatched local geography links | Telecom regulator reuse verification pending. |
 | `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, `GET /v1/vehicle-registration-codes/search` | Legacy district-code reference | historical/reference | Not current plate lookup, full plate decoding, vehicle lookup, or owner lookup. |
 | `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
@@ -56,6 +57,7 @@ OpenSK API is currently pre-1.0. Earlier `v1.x` labels were internal development
 - Streets/address lookup is not exposed in 0.17.0 because no approved anonymous reproducible source and reuse path was verified.
 - Healthcare-facility lookup is not exposed in 0.18.0 because no approved machine-readable non-scraping source with reuse rights and deterministic privacy filtering was verified.
 - Public procurement lookup is exposed in 0.19.0 as a 100-record TED_PARTIAL snapshot only. It does not claim ÚVO national coverage and excludes personal/contact/address/winner fields.
+- Institution-level school lookup is not exposed in 0.20.0 because the confirmed open-data CSV is aggregate-only and the RIS/CVTI institution-level candidates still lack verified reuse, documented acquisition, stable identifier, coverage, and privacy gates.
 - Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
 - Districts are now complete, but PortalVS source terms remain restrictive.
