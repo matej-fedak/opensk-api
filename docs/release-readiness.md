@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.21.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
+OpenSK API is pre-1.0 at `0.22.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
 
@@ -40,6 +40,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Healthcare-facility lookup remains absent until source acquisition, reuse, IdZZ-bearing record shape, and facility-only privacy handling are approved.
 - Public procurement notices may remain TED_PARTIAL if explicit attribution, 100-record snapshot scope, and non-ÚVO status are documented.
 - Institution-level school lookup remains absent until source acquisition, reuse, stable identifier, coverage, refresh, and privacy gates pass.
+- Court-decision lookup remains absent until Ministry/court-source reuse/redistribution terms, metadata-only privacy projection, published-decision scope, Constitutional Court coverage, and full-text exclusion are approved.
 - Free-tier Render cold starts are acceptable if smoke tests retry or operators account for them.
 
 ## Operational Readiness
@@ -65,6 +66,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Healthcare-facility lookup after official source/reuse/privacy gates pass and dataset size is reviewed.
 - Verified ÚVO NATIONAL procurement replacement or larger TED refresh after exact attribution and acquisition review.
 - Institution-level schools endpoint after an approved MŠVVaM/RIS/CVTI source, stable identifier, privacy-safe field subset, and refresh workflow are verified.
+- Court-decision endpoint after approved Ministry/court source reuse terms, metadata-only privacy projection, stable source URLs, and full-text exclusion are verified.
 
 ## Required Verification For 1.0
 
@@ -95,7 +97,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 14. Git tag created.
 15. GitHub Release created.
 
-Do not execute this release procedure during `0.21.0`.
+Do not execute this release procedure during `0.22.0`.
 
 ## Proposed Follow-Up Issues
 

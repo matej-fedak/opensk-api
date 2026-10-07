@@ -11,6 +11,7 @@
 - Procurement notice records exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML bodies.
 - Institution-level school lookup is not exposed in 0.20.0. MŠVVaM/RIS/CVTI candidates exist, but production import is blocked until reuse, documented acquisition, stable identifier, coverage, refresh, and privacy gates pass.
 - 0.21.0 freezes the candidate 1.0 scope in `docs/1-0-scope.md`; excluded research-only domains do not block 1.0 while they remain excluded.
+- Court-decision lookup is not exposed in 0.22.0. The Ministry OpenAPI exists and includes decision metadata/ECLI fields, but production import is blocked until redistribution terms, metadata-only privacy projection, published-decision scope, and full-text exclusion are verified.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.
@@ -21,6 +22,7 @@
 - The API does not decode full licence plates, identify vehicles, or identify vehicle owners.
 - School facility counts are aggregate rows, not a school directory; `/v1/schools` and per-school lookup are intentionally not implemented.
 - School facility aggregate responses exclude institution names, addresses, staff, directors, pupils, emails, and phone numbers.
+- Court-decision research adds no public endpoint; future records must remain metadata-only and exclude full text, participants, representatives, judges, addresses, contact data, bank/account identifiers, and identity documents unless separately approved.
 - PSC and other checked-in datasets are partial or seed-backed where the upstream provenance is still being verified.
 - PSC `districtCode` is backfilled for current local PSC records from `municipalityCode` using verified municipality mappings, not from names or PSC patterns.
 - PSC source coverage remains partial and should not be presented as national coverage.

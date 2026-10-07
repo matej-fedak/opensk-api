@@ -42,6 +42,7 @@ PRODUCTION_DATASETS = {
     "healthcareFacilities",
     "procurementNotices",
     "schoolsDirectory",
+    "courtDecisions",
 }
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}

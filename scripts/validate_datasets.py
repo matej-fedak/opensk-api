@@ -572,6 +572,7 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
         "healthcareFacilities",
         "procurementNotices",
         "schoolsDirectory",
+        "courtDecisions",
     }
     allowed_coverages = {"complete", "partial", "seed-backed", "unknown"}
     allowed_risk_levels = {"low", "medium", "high", "pending"}

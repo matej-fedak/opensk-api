@@ -2,7 +2,9 @@
 
 OpenSK API is currently in pre-1.0 development.
 
-The current project version is `0.21.0`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
+0.22.0 is a conservative research-only milestone for Slovak court-decision sources. It does not add a public court-decision endpoint or dataset.
+
+The current project version is `0.22.0`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
 
 Earlier `v1.x` labels in the changelog and commit history were internal development milestone labels. They are retained as historical notes, but they are not formal stable public releases.
 

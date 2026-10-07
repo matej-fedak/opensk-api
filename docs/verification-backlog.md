@@ -18,6 +18,7 @@
 - Public procurement gate: verify a current anonymous machine-readable ÚVO national notice distribution, explicit reuse/redistribution terms, refresh workflow, and privacy scope before changing `/v1/procurement-notices` from TED_PARTIAL to NATIONAL.
 - Retain exact TED/Publications Office attribution wording and verify whether a larger or scheduled TED snapshot remains compatible with source limits and OpenSK privacy scope.
 - Institution-level school-directory gate: verify explicit MŠVVaM/RIS/CVTI reuse rights, documented non-scraping export workflow, stable EDUID/current identifier semantics, national/scope coverage, refresh cadence, and privacy-safe institution-only fields before adding `/v1/schools` or `data/schools.json`.
+- Court-decision gate: verify Ministry/court-source reuse, caching, transformation, attribution, redistribution, commercial downstream use, stable per-decision source URLs, published-decision scope, metadata-only privacy projection, and full-text exclusion before adding `/v1/court-decisions` or `data/court_decisions.json`.
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
 - Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.

@@ -2,7 +2,7 @@
 
 Review date: 2026-10-07
 
-Latest reviewed application version: `0.21.0`
+Latest reviewed application version: `0.22.0`
 
 Scope: production JSON datasets, public API schemas, and import guardrails for the pre-1.0 public API.
 
@@ -19,6 +19,7 @@ No intentional personal-data dataset is exposed. Current public data is institut
 - Healthcare facilities/providers: 0.18.0 adds no healthcare-facility dataset. NCZI NR PZS is authoritative and IdZZ is stable, but no approved source was verified. e-VUC public content can include doctors, nurses, phone numbers, absences, opening hours, individual practitioner names, and operational details, so future production scope must be facility/institution reference data only with deterministic filtering.
 - School facility counts: aggregate rows only. The API does not expose school names, school IDs, addresses, staff, directors, pupils, emails, or phone numbers.
 - Institution-level school directory: 0.20.0 adds no production dataset or endpoint. Future school-directory scope must recursively exclude directors, principals, deputies, staff/employee/person names, personal emails/phones, direct phones, responsible persons, birth data, personal identifiers, pupil/person-level data, RFO matching counts, batch status, error-file links, and operational/contact fields.
+- Court decisions: 0.22.0 adds no production dataset or endpoint. Future court-decision scope must be metadata-only and recursively exclude party/participant names, representatives, lawyers, judges unless separately approved, addresses, emails, phones, IBANs/bank accounts, birth data, identity documents, personal identifiers, raw participant structures, snippets/highlights, and full text. No de-anonymization, identity inference, correlation to other registers, address reconstruction, or participant fingerprinting is allowed.
 - Public procurement notices: 0.19.0 exposes a small TED_PARTIAL institutional notice-reference snapshot. It excludes personal/contact data, phone/email/fax, street-level addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, raw XML/PDF/HTML notice bodies, and narrative lot text. Buyer names are retained only as institutional buyer labels.
 - Vehicle registration codes: historical district abbreviations only. The API does not decode full plates and does not expose vehicles or owners.
 - Phone areas, PSC, regions, districts, and municipalities: public geography/reference data. Some source rows include place names, not person records.
@@ -33,4 +34,4 @@ No intentional personal-data dataset is exposed. Current public data is institut
 
 ## 1.0 Privacy Readiness
 
-Privacy posture is acceptable for the candidate 1.0 scope defined in `docs/1-0-scope.md` if company lookup remains seed-backed, VAT, ŽRSR, street/address, healthcare-facility lookup, and institution-level school lookup remain absent, school data remains aggregate-only, and procurement notices remain a minimal institutional TED_PARTIAL notice-reference snapshot. Any production RPO/company expansion, VAT registration endpoint, ŽRSR/trade-register endpoint, street/address endpoint, healthcare-facility endpoint, procurement winner/contact/address/XML-body expansion, or institution-level school directory would need a fresh privacy review before release.
+Privacy posture is acceptable for the candidate 1.0 scope defined in `docs/1-0-scope.md` if company lookup remains seed-backed, VAT, ŽRSR, street/address, healthcare-facility lookup, court-decision lookup, and institution-level school lookup remain absent, school data remains aggregate-only, and procurement notices remain a minimal institutional TED_PARTIAL notice-reference snapshot. Any production RPO/company expansion, VAT registration endpoint, ŽRSR/trade-register endpoint, street/address endpoint, healthcare-facility endpoint, court-decision endpoint, procurement winner/contact/address/XML-body expansion, institution-level school directory, or court-decision text/person-field expansion would need a fresh privacy review before release.

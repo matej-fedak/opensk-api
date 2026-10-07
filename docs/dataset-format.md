@@ -123,6 +123,13 @@ Each `companies[]` item uses this shape:
 - Do not expose personal/contact fields, phone/email/fax, street-level addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, raw XML/PDF/HTML bodies, or narrative lot text by default.
 - Dataset metadata must keep `complete: false`, `coverage: "partial"`, `coverageDecision: "TED_PARTIAL"`, and `acquisitionDecision: "PRODUCTION_IMPORT_APPROVED"`.
 
+## Court Decisions
+
+- `data/court_decisions.json` is not present in 0.22.0 because court-decision reuse/redistribution and privacy gates remain blocked.
+- No court-decision importer schema is defined for production because 0.22.0 chose `RESEARCH_AND_TOOLING_ONLY` and `NO_PRODUCTION_DATA`.
+- Future candidate records must be metadata-only and should include only an approved local id, ECLI, court id/name, case number, decision type, agenda, decision/publication/finality dates, source URL, and text-availability flag after rights and scope are verified.
+- Do not expose full text, snippets/highlights, party/participant names, representatives, lawyers, judges, addresses, emails, phones, IBANs/bank accounts, birth data, identity documents, personal identifiers, or raw participant structures by default.
+
 ## Healthcare Facilities / Providers
 
 - `data/healthcare_facilities.json` is not present in 0.18.0 because no approved production source was verified.
