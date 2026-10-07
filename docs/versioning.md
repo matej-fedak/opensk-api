@@ -2,9 +2,9 @@
 
 OpenSK API is currently in pre-1.0 development.
 
-0.22.0 is a conservative research-only milestone for Slovak court-decision sources. It does not add a public court-decision endpoint or dataset.
+0.23.0 is a source-licence outreach and research-roadmap milestone. It verifies PortalVS end-of-support and copyright findings, ŠÚ SR elections open data, and NBS/telecom/Slov-Lex/Eurostat/TED licence wording, and it adds research, council-notes, outreach, and living-roadmap documents. It does not add a public endpoint or dataset.
 
-The current project version is `0.22.0`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
+The current project version is `0.23.0`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
 
 Earlier `v1.x` labels in the changelog and commit history were internal development milestone labels. They are retained as historical notes, but they are not formal stable public releases.
 

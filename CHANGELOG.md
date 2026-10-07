@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.23.0
+
+- Completed a 2026 Q4 source-licence verification and multi-perspective roadmap review; added `docs/research/opensk-research-roadmap-2026-q4.md` as the consolidated research report.
+- Directly verified the PortalVS end-of-support banner ("Podpora doterajšieho systému končí 31.10.2026."), the MŠVVaM-operated `ciselniky2.portalvs.sk` successor REST API, and the non-commercial-only portal copyright wording; this keeps districts, municipalities, and PSC compliance-Red and adds a final-snapshot contingency before 2026-10-31.
+- Verified NBS website disclaimer wording, telecom workbook "ďalšie spracovanie" statement, Slov-Lex Copyright Act 185/2015 Z. z. § 5 písm. b) legal-text exclusion, Eurostat CC BY 4.0 reuse policy, TED free-reuse/CC0-metadata terms, and the unversioned MŠVVaM "Creative Commons BY" notice.
+- Directly verified `volby.statistics.sk/tree.html` as the official ŠÚ SR elections open-data source (OGP government resolution 59/2015) covering EP 2004-2024, NR SR 1994-2023, OSK 2001-2022, and OSO 2002+ down to okrsok granularity, and chose elections as the next bounded data spike.
+- Added `docs/research/source-licence-outreach.md` with ready-to-send Slovak outreach drafts for PortalVS, NBS banks, and the telecom regulator, plus evidence-retention actions for the remaining Yellow rows; nothing is sent automatically.
+- Added `docs/research/roadmap-council-notes.md` recording consensus/majority/contested/rejected verdicts, including the graph-aware PortalVS removal contingency and rejections of VAT-first, CRZ drop-in, personal-data endpoints, and scraping.
+- Added `docs/roadmap.md` as the living strategic roadmap (Now/Next/Watch/Later/Completed).
+- No new endpoints, datasets, importers, or runtime behavior changes.
+- Updated project version metadata to `0.23.0` while keeping `/v1` and response `metadata.version == "v1"` unchanged.
+
 ## 0.22.0
 
 - Researched official Slovak court-decision sources for a future Phase 3 court-decisions API.

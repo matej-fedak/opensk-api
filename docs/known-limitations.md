@@ -12,6 +12,9 @@
 - Institution-level school lookup is not exposed in 0.20.0. MŠVVaM/RIS/CVTI candidates exist, but production import is blocked until reuse, documented acquisition, stable identifier, coverage, refresh, and privacy gates pass.
 - 0.21.0 freezes the candidate 1.0 scope in `docs/1-0-scope.md`; excluded research-only domains do not block 1.0 while they remain excluded.
 - Court-decision lookup is not exposed in 0.22.0. The Ministry OpenAPI exists and includes decision metadata/ECLI fields, but production import is blocked until redistribution terms, metadata-only privacy projection, published-decision scope, and full-text exclusion are verified.
+- 0.23.0 directly verified the PortalVS banner: legacy classifier support ends 2026-10-31, and the MŠVVaM-operated successor is `ciselniky2.portalvs.sk` with `slovenske-obce`/`slovenske-okresy`/`psc-sk` equivalents. Refresh planning and a final-snapshot contingency are tracked in `docs/roadmap.md`.
+- 0.23.0 also verified the PortalVS portal copyright wording restricts use to non-commercial purposes unless clarified; districts, municipalities, and PSC therefore remain compliance-Red pending the prepared outreach (`docs/research/source-licence-outreach.md`).
+- Election results are not exposed in 0.23.0. ŠÚ SR open-data CSVs at `volby.statistics.sk` were verified as the next data-spike candidate; production promotion requires the elections spike (explicit reuse terms, encoding, municipality joins, file-size bounds) to pass.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.

@@ -86,4 +86,8 @@ Only included candidate endpoints create must-fix blockers:
 
 ## Next Milestone
 
-Recommended 0.22.0: `Source compliance remediation for 1.0`.
+Delivered 0.22.0: court-decision source research (research-only; see `docs/research/court-decisions-source.md`).
+
+Delivered 0.23.0: source-licence outreach and research roadmap (Ask & Evidence preparation; see `docs/research/opensk-research-roadmap-2026-q4.md`).
+
+Recommended next: complete outreach replies and evidence retention (Milestone 1 in `docs/roadmap.md`), then the Trust Surface milestone, then the elections data spike.

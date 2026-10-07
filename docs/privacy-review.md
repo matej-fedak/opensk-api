@@ -2,7 +2,7 @@
 
 Review date: 2026-10-07
 
-Latest reviewed application version: `0.22.0`
+Latest reviewed application version: `0.23.0`
 
 Scope: production JSON datasets, public API schemas, and import guardrails for the pre-1.0 public API.
 
@@ -20,6 +20,7 @@ No intentional personal-data dataset is exposed. Current public data is institut
 - School facility counts: aggregate rows only. The API does not expose school names, school IDs, addresses, staff, directors, pupils, emails, or phone numbers.
 - Institution-level school directory: 0.20.0 adds no production dataset or endpoint. Future school-directory scope must recursively exclude directors, principals, deputies, staff/employee/person names, personal emails/phones, direct phones, responsible persons, birth data, personal identifiers, pupil/person-level data, RFO matching counts, batch status, error-file links, and operational/contact fields.
 - Court decisions: 0.22.0 adds no production dataset or endpoint. Future court-decision scope must be metadata-only and recursively exclude party/participant names, representatives, lawyers, judges unless separately approved, addresses, emails, phones, IBANs/bank accounts, birth data, identity documents, personal identifiers, raw participant structures, snippets/highlights, and full text. No de-anonymization, identity inference, correlation to other registers, address reconstruction, or participant fingerprinting is allowed.
+- Elections results: 0.23.0 selects ŠÚ SR elections open data as the next data-spike candidate but adds no dataset or endpoint. Elections outputs are aggregate vote/turnout counts by territory tier; any future production scope must remain aggregate-only (SR/region/district/municipality/okrsky tallies) and must not expose voter-level data, candidate personal details beyond officially published result tables, or any record that could identify individual voters.
 - Public procurement notices: 0.19.0 exposes a small TED_PARTIAL institutional notice-reference snapshot. It excludes personal/contact data, phone/email/fax, street-level addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, raw XML/PDF/HTML notice bodies, and narrative lot text. Buyer names are retained only as institutional buyer labels.
 - Vehicle registration codes: historical district abbreviations only. The API does not decode full plates and does not expose vehicles or owners.
 - Phone areas, PSC, regions, districts, and municipalities: public geography/reference data. Some source rows include place names, not person records.

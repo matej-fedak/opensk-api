@@ -67,3 +67,5 @@ Notes:
 - ORSR and ŽRSR remain reference-only in the research notes and are not scraped.
 - Keep source-compliance warnings until source-owner terms are retained or clarified.
 - For `1.0.0`, PortalVS-backed districts, municipalities, and PSC are `INCLUDE_AFTER_COMPLIANCE_FIX`, not already cleared stable sources.
+- 0.23.0 verified the PortalVS legacy classifier end-of-support banner (support ends 2026-10-31) and the MŠVVaM-operated successor `ciselniky2.portalvs.sk` with `slovenske-obce`/`slovenske-okresy`/`psc-sk` equivalents; future refreshes must target the successor system, and a final snapshot is contingency-tracked in `docs/research/opensk-research-roadmap-2026-q4.md`.
+- Election results are not a production dataset in 0.23.0; `volby.statistics.sk` ("Údaje na stiahnutie") was verified as the official ŠÚ SR elections open-data source (OGP resolution 59/2015) and is the next bounded data-spike candidate per `docs/roadmap.md`.

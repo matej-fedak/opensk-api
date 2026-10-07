@@ -83,7 +83,7 @@ def _check_root(url: str) -> SmokeResult:
     try:
         data = body["data"]
         metadata = body["metadata"]
-        if data["version"] == "0.22.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
+        if data["version"] == "0.23.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
             return SmokeResult("root", True, "PASS")
     except Exception:
         return SmokeResult("root", False, "FAIL", f"unexpected body: {body!r}")
@@ -130,8 +130,8 @@ def _check_openapi(url: str) -> SmokeResult:
     missing = sorted(required_paths - paths)
     if missing:
         return SmokeResult("openapi", False, "FAIL", f"missing paths: {missing}")
-    if version != "0.22.0":
-        return SmokeResult("openapi", False, "FAIL", f"expected version 0.22.0, got {version!r}")
+    if version != "0.23.0":
+        return SmokeResult("openapi", False, "FAIL", f"expected version 0.23.0, got {version!r}")
 
     return SmokeResult("openapi", True, "PASS")
 
