@@ -58,11 +58,6 @@ def make_etag(body: bytes) -> str:
     return '"' + hashlib.sha256(body).hexdigest()[:32] + '"'
 
 
-def _http_date(iso_date: str) -> str:
-    parsed = date.fromisoformat(iso_date)
-    return format_datetime(datetime.combine(parsed, time.min, tzinfo=UTC), usegmt=True)
-
-
 def _parse_http_date(value: str) -> datetime | None:
     try:
         parsed = parsedate_to_datetime(value)
@@ -75,7 +70,7 @@ def _parse_http_date(value: str) -> datetime | None:
 
 def _last_modified_for(path: str) -> datetime | None:
     for prefix, iso_date in _LAST_MODIFIED_BY_PREFIX.items():
-        if path == prefix or path.startswith(prefix + "/") or path.startswith(prefix + "?"):
+        if path == prefix or path.startswith(prefix + "/"):
             return datetime.combine(date.fromisoformat(iso_date), time.min, tzinfo=UTC)
     return None
 
