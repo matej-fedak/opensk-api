@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.23.1
+
+- Added `GET /v1/sources` and `GET /v1/sources/{id}`: a typed (Pydantic) curated public provenance catalogue covering all 17 registered domains with a documented public/internal field boundary and deterministic status/coverage/licence mapping; unresolved licence states stay unresolved.
+- Added Slovak business-day utilities `GET /v1/business-days/check`, `GET /v1/business-days/add`, and `GET /v1/business-days/between` over the local holiday dataset, with supported years derived from the dataset (2024-2026) and strict `UNSUPPORTED_YEAR` errors outside coverage.
+- Added deterministic HTTP conditional caching: strong body-hash ETags with `If-None-Match`/304, semantic per-dataset `Last-Modified` with `If-Modified-Since`/304, and a documented Cache-Control policy (static 86400, search 900, meta 3600, health no-store; IBAN responses are now publicly cacheable).
+- Made root and error envelopes byte-stable by reporting `metadata.lastUpdated: null` when no dataset is involved (previously a daily-changing `date.today()`); dataset freshness values are unchanged.
+- Single-sourced the project SemVer into `version.PROJECT_VERSION`; app, root metadata, tests, and smoke expectations now derive from it.
+- Merged the duplicated CI workflows into one `CI` workflow, added Dependabot for pip and GitHub Actions, and added the manual/offline `scripts/check_source_urls.py` source-health checker.
+- Added docs: source-catalogue boundary, HTTP caching policy, future rate-limit contract (contract-only; `RATE_LIMIT_CONTRACT_ONLY`), dataset-domain contributor gates, and a bounded ECB exchange-rate source research note recommending a post-elections candidate.
+- No new datasets; runtime architecture stays materialized-local JSON with no upstream calls.
+
 ## 0.23.0
 
 - Completed a 2026 Q4 source-licence verification and multi-perspective roadmap review; added `docs/research/opensk-research-roadmap-2026-q4.md` as the consolidated research report.

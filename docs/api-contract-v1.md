@@ -25,7 +25,7 @@ Successful API responses use this envelope:
 }
 ```
 
-`data` may be an object, array, or collection wrapper depending on endpoint history. `metadata.source` should identify the local dataset or service source. `metadata.lastUpdated` should be present when the source has a known update date.
+`data` may be an object, array, or collection wrapper depending on endpoint history. `metadata.source` should identify the local dataset or service source. `metadata.lastUpdated` is the ISO freshness date of the underlying dataset; since 0.23.1 it is explicitly `null` (not the current date) for meta and error responses where no dataset is involved.
 
 ## Error Envelope
 
@@ -47,7 +47,11 @@ Application-level errors should use this envelope:
 }
 ```
 
-Malformed route or query values return 400. Unknown but valid resource identifiers return 404. Dataset-unavailable responses should use 503 only when a required local dataset cannot be loaded.
+Malformed route or query values return 400. Unknown but valid resource identifiers return 404. Dataset-unavailable responses should use 503 only when a required local dataset cannot be loaded. Dates outside verified holiday coverage on business-day routes return 400 with code `UNSUPPORTED_YEAR`.
+
+## HTTP Caching Semantics
+
+GET routes are conditionally cacheable: strong body-hash `ETag`, semantic per-dataset `Last-Modified`, `If-None-Match`/`If-Modified-Since` returning 304 with an empty body, and documented `Cache-Control` categories (static 86400, search 900, meta 3600, health no-store). See `docs/http-caching.md` for the normative policy. A future per-IP rate limit (429 + `RATE_LIMITED`) is contracted in `docs/rate-limiting-contract.md` and is not yet implemented.
 
 ## Pagination And Search
 

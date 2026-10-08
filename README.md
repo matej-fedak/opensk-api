@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.0` pre-1.0 source-licence outreach and research-roadmap milestone.
+Status: `0.23.1` pre-1.0 trust-and-utility-surface milestone.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -39,6 +39,11 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/procurement-notices/{id}` | Public procurement notice lookup | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/search` | Public procurement notice search | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
+| `GET /v1/sources` | Curated public source/licence provenance catalogue | 17 registered domains | unresolved licence status stays unresolved |
+| `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 17 registered domains | internal maintainer fields are excluded |
+| `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
+| `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
+| `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2026 holiday coverage | strict error outside supported years |
 
 `/v1/schools` is intentionally not implemented. The confirmed MŠVVaM open-data CSV is aggregate-only, and the institution-level RIS/CVTI candidates still lack verified production reuse, acquisition, identifier, coverage, and privacy gates. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
 
@@ -54,6 +59,10 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/import-pipeline.md` explains the offline raw -> checked-in JSON -> production runtime flow.
 - `docs/data-sources.md` lists the current dataset inventory and coverage notes.
 - `docs/source-compliance.md` summarizes licence, redistribution, attribution, and risk status for each production dataset.
+- `docs/source-catalogue.md` documents the curated `/v1/sources` public/internal field boundary and status mapping.
+- `docs/http-caching.md` documents ETag, Last-Modified, and Cache-Control semantics.
+- `docs/rate-limiting-contract.md` records the future per-IP rate-limiting contract (not implemented yet).
+- `docs/adding-a-dataset.md` lists the minimum gates for adding a new dataset domain.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `docs/research/source-verification-evidence.md` records retained source-verification evidence.
@@ -93,6 +102,8 @@ The repository keeps its reference data in local JSON files under `data/`.
 - 0.21.0 freezes the candidate 1.0 scope: company/IČO remains seed-backed, PortalVS-backed districts/municipalities/PSC require compliance fixes, and research-only domains are excluded rather than treated as 1.0 blockers.
 - 0.22.0 verifies a Ministry court-decision OpenAPI source, but court-decision lookup remains research-only because reuse/redistribution and metadata-only privacy gates are unresolved.
 - 0.23.0 verifies PortalVS end-of-support (legacy support ends 2026-10-31; `ciselniky2.portalvs.sk` is the successor), confirms the portal's non-commercial copyright wording (districts/municipalities/PSC stay compliance-Red pending outreach), verifies ŠÚ SR elections open data as the next data spike, and prepares licence outreach packages; no endpoint or dataset is added.
+- 0.23.1 adds the curated `/v1/sources` provenance catalogue, Slovak business-day utilities with strict 2024-2026 holiday coverage, deterministic ETag/Last-Modified conditional caching, project-version single-sourcing (`version.py`), unified CI, Dependabot, a manual source-health checker, and a documented (not implemented) rate-limit contract.
+- Root and error envelopes now use `metadata.lastUpdated: null` instead of a daily-changing date; dataset routes keep their real dataset dates.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
 - `/v1/court-decisions` is intentionally not implemented because no court-decision source has passed reuse/redistribution and privacy gates.
@@ -152,6 +163,8 @@ Company/IČO lookup is backed by a small checked-in local seed dataset, not full
   "error": null
 }
 ```
+
+`metadata.lastUpdated` carries the dataset freshness date; meta and error responses report an explicit `null` instead of a request-time date.
 
 Error responses use the same envelope with `data: null` and a structured error object.
 

@@ -2,7 +2,7 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.23.0`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 30 GET operations: root plus 29 `/v1` operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
+OpenSK API is pre-1.0 at `0.23.1`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 35 GET operations: root plus 34 `/v1` operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
 
@@ -97,7 +97,7 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 14. Git tag created.
 15. GitHub Release created.
 
-Do not execute this release procedure during `0.23.0`.
+Do not execute this release procedure during `0.23.1`.
 
 ## Proposed Follow-Up Issues
 

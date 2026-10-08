@@ -31,6 +31,8 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, `GET /v1/vehicle-registration-codes/search` | Legacy district-code reference | historical/reference | Not current plate lookup, full plate decoding, vehicle lookup, or owner lookup. |
 | `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
 | `GET /v1/procurement-notices`, `GET /v1/procurement-notices/{id}`, `GET /v1/procurement-notices/search`, `GET /v1/procurement-notices/stats` | Public procurement notice list, lookup, search, and stats | partial imported | 100-record TED_PARTIAL snapshot only; not the complete ÚVO national register. |
+| `GET /v1/sources`, `GET /v1/sources/{id}` | Curated public source/licence provenance catalogue | 17 registered domains | Typed public projection; internal maintainer fields excluded; unresolved licence states stay unresolved. |
+| `GET /v1/business-days/check`, `GET /v1/business-days/add`, `GET /v1/business-days/between` | Slovak business-day check, arithmetic, and counting | supported years 2024-2026 | Derived from the local holiday dataset; strict `UNSUPPORTED_YEAR` error outside coverage. |
 | `/docs`, `/openapi.json` | Interactive docs and schema | platform | Useful for parameter-level details. |
 
 ## Seed-backed
@@ -63,6 +65,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 ## Notes
 
 - No endpoint fetches live upstream data at request time.
+- 0.23.1 adds deterministic ETag/Last-Modified conditional caching on GET routes (`docs/http-caching.md`); root and error envelopes now report `metadata.lastUpdated: null` when no dataset is involved.
 - Endpoint availability does not yet equal a stable `1.0.0` compatibility guarantee; see `docs/versioning.md`.
 - Company lookup is backed by a small checked-in seed set; broader RPO coverage still awaits a verified production acquisition method, retained reuse evidence, and privacy approval.
 - VAT/DPH lookup is not exposed in 0.15.0 because the official XML has no reliable natural/legal subject marker.
