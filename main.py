@@ -1,12 +1,11 @@
-from datetime import date
-
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from routers.banks import router as banks_router
+from routers.business_days import router as business_days_router
 from routers.companies import router as companies_router
 from routers.districts import router as districts_router
 from routers.health import router as health_router
@@ -18,19 +17,24 @@ from routers.procurement_notices import router as procurement_notices_router
 from routers.psc import router as psc_router
 from routers.regions import router as regions_router
 from routers.school_facility_counts import router as school_facility_counts_router
+from routers.sources import router as sources_router
 from routers.vehicle_registration_codes import router as vehicle_registration_codes_router
-from schemas.common import API_SOURCE, error_detail, error_response, success_response
+from schemas.common import API_SOURCE, META_CACHE_CONTROL, error_detail, error_response, success_response
+from services.http_cache import ConditionalCachingMiddleware
+from version import PROJECT_VERSION
 
 
 app = FastAPI(
     title="OpenSK API",
     description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
-    version="0.23.0",
+    version=PROJECT_VERSION,
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     openapi_tags=[
         {"name": "meta", "description": "Project metadata."},
         {"name": "health", "description": "Basic service health checks."},
+        {"name": "sources", "description": "Curated public source and licence provenance for the served datasets."},
+        {"name": "business-days", "description": "Slovak business-day checks and arithmetic from the local holiday dataset."},
         {"name": "banks", "description": "Static Slovak bank data and lookup endpoints."},
         {"name": "iban", "description": "IBAN validation and bank resolution."},
         {"name": "holidays", "description": "Static Slovak public holiday data."},
@@ -72,7 +76,7 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException) 
     payload = error_response(
         error=_http_error_detail(exc.status_code, exc.detail),
         source=API_SOURCE,
-        last_updated=date.today().isoformat(),
+        last_updated=None,
     )
     return JSONResponse(status_code=exc.status_code, content=payload, headers=exc.headers)
 
@@ -82,9 +86,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     payload = error_response(
         error=error_detail("VALIDATION_ERROR", "Request validation failed", "Validácia požiadavky zlyhala"),
         source=API_SOURCE,
-        last_updated=date.today().isoformat(),
+        last_updated=None,
     )
     return JSONResponse(status_code=422, content=payload)
+
+
+app.add_middleware(ConditionalCachingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -96,7 +103,8 @@ app.add_middleware(
 
 
 @app.get("/", tags=["meta"], summary="Project info", description="Returns project SemVer, API namespace version, and the documentation URL.")
-def root() -> dict[str, object]:
+def root(response: Response) -> dict[str, object]:
+    response.headers["Cache-Control"] = META_CACHE_CONTROL
     return success_response(
         data={
             "name": app.title,
@@ -106,7 +114,7 @@ def root() -> dict[str, object]:
             "docs_url": app.docs_url or "/docs",
         },
         source=API_SOURCE,
-        last_updated=date.today().isoformat(),
+        last_updated=None,
     )
 
 
@@ -123,3 +131,5 @@ app.include_router(phone_areas_router, prefix="/v1")
 app.include_router(vehicle_registration_codes_router, prefix="/v1")
 app.include_router(school_facility_counts_router, prefix="/v1")
 app.include_router(procurement_notices_router, prefix="/v1")
+app.include_router(sources_router, prefix="/v1")
+app.include_router(business_days_router, prefix="/v1")

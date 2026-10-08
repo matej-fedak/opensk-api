@@ -8,6 +8,12 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
 - For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from PortalVS classifier 9 (`Obce`) with district mappings derived from `code_su`; districts are imported from PortalVS classifier 10 filtered to Slovak rows.
 
+## Source Registry And Public Projection
+
+`data/sources.json` is the internal, maintainer-facing registry. The public `GET /v1/sources*` surface serves a typed curated projection only (`services/sources_service.py`); internal fields such as `redistributionStatus`, `riskLevel`, `nextAction`, `notes`, `sourceFileUrl`, `sourceDocumentationUrl`, and `candidateSourceUrls` are never exposed. The public schema, field boundary, and status mapping are documented in `docs/source-catalogue.md`.
+
+Since 0.23.1, API `metadata.lastUpdated` is an ISO dataset-freshness date or an explicit `null` for meta and error responses; it is never the request-time date.
+
 ## Company Seed Dataset
 
 The repository now includes a small checked-in company seed dataset for the local lookup endpoints. Broader coverage is still research-only.

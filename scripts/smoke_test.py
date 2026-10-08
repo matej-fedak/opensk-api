@@ -12,9 +12,16 @@ import json
 import sys
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
+
+try:
+    from version import PROJECT_VERSION as EXPECTED_PROJECT_VERSION
+except ModuleNotFoundError:  # standalone CLI execution from the scripts directory
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from version import PROJECT_VERSION as EXPECTED_PROJECT_VERSION
 
 
 @dataclass
@@ -83,7 +90,7 @@ def _check_root(url: str) -> SmokeResult:
     try:
         data = body["data"]
         metadata = body["metadata"]
-        if data["version"] == "0.23.0" and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
+        if data["version"] == EXPECTED_PROJECT_VERSION and data["apiVersion"] == metadata["version"] == "v1" and data["apiNamespace"] == "/v1":
             return SmokeResult("root", True, "PASS")
     except Exception:
         return SmokeResult("root", False, "FAIL", f"unexpected body: {body!r}")
@@ -120,6 +127,11 @@ def _check_openapi(url: str) -> SmokeResult:
         "/v1/procurement-notices/search",
         "/v1/procurement-notices/stats",
         "/v1/procurement-notices/{id}",
+        "/v1/sources",
+        "/v1/sources/{source_id}",
+        "/v1/business-days/check",
+        "/v1/business-days/add",
+        "/v1/business-days/between",
     }
     try:
         paths = set(body["paths"])
@@ -130,8 +142,8 @@ def _check_openapi(url: str) -> SmokeResult:
     missing = sorted(required_paths - paths)
     if missing:
         return SmokeResult("openapi", False, "FAIL", f"missing paths: {missing}")
-    if version != "0.23.0":
-        return SmokeResult("openapi", False, "FAIL", f"expected version 0.23.0, got {version!r}")
+    if version != EXPECTED_PROJECT_VERSION:
+        return SmokeResult("openapi", False, "FAIL", f"expected version {EXPECTED_PROJECT_VERSION}, got {version!r}")
 
     return SmokeResult("openapi", True, "PASS")
 
@@ -245,6 +257,9 @@ def main(argv: list[str] | None = None) -> int:
         ("procurement-notice-stats", f"{base_url}/v1/procurement-notices/stats"),
         ("procurement-notice-item", f"{base_url}/v1/procurement-notices/670654-2026"),
         ("companies", f"{base_url}/v1/companies/50158635", 200),
+        ("sources", f"{base_url}/v1/sources"),
+        ("source-item", f"{base_url}/v1/sources/regions"),
+        ("business-days-check", f"{base_url}/v1/business-days/check?date=2026-10-08"),
     ]
 
     results: list[SmokeResult] = [_check_root(f"{base_url}/")]

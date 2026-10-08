@@ -2,7 +2,7 @@
 
 Audit date: 2026-10-07
 
-Latest reviewed application version: `0.23.0`
+Latest reviewed application version: `0.23.1`
 
 ## Readiness Conclusion
 
@@ -12,7 +12,7 @@ The largest blockers are not new endpoints or data modeling work. The 0.21.0 sco
 
 ## Public API Inventory
 
-This inventory is generated from the FastAPI/OpenAPI route surface. It has 30 GET operations total: root plus 29 `/v1` operations.
+This inventory is generated from the FastAPI/OpenAPI route surface. It has 35 GET operations total (0.23.1: root plus 34 `/v1` operations, including the sources catalogue and business-day utilities added in 0.23.1).
 
 | Method | Path | Purpose | Domain | Response shape | Stability status | Coverage | Source status | Known limitations |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |

@@ -15,6 +15,9 @@
 - 0.23.0 directly verified the PortalVS banner: legacy classifier support ends 2026-10-31, and the MŠVVaM-operated successor is `ciselniky2.portalvs.sk` with `slovenske-obce`/`slovenske-okresy`/`psc-sk` equivalents. Refresh planning and a final-snapshot contingency are tracked in `docs/roadmap.md`.
 - 0.23.0 also verified the PortalVS portal copyright wording restricts use to non-commercial purposes unless clarified; districts, municipalities, and PSC therefore remain compliance-Red pending the prepared outreach (`docs/research/source-licence-outreach.md`).
 - Election results are not exposed in 0.23.0. ŠÚ SR open-data CSVs at `volby.statistics.sk` were verified as the next data-spike candidate; production promotion requires the elections spike (explicit reuse terms, encoding, municipality joins, file-size bounds) to pass.
+- Business-day utilities (0.23.1) define a business day as Monday-Friday and not a known holiday in the local dataset; they are not a bank settlement calendar, company-specific schedule, or authority-specific closure model. Dates outside the holiday coverage (currently 2024-2026) are rejected with `UNSUPPORTED_YEAR`.
+- `GET /v1/sources` (0.23.1) exposes a curated projection of the internal registry; it is provenance documentation, not a licence or a guarantee, and unresolved licence states are shown as unresolved.
+- Rate limiting is documented as a future contract in `docs/rate-limiting-contract.md` but is not implemented; the API has no per-client request caps today.
 - RPO includes natural-person entrepreneurs and role-holder personal data.
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.

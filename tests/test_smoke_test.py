@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from scripts import smoke_test
+from version import PROJECT_VERSION
 
 
 def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
     iban = smoke_test._build_valid_slovak_iban("0900", "0000000000000001")
     responses = {
-        "/": (200, {"data": {"name": "OpenSK API", "version": "0.23.0", "apiVersion": "v1", "apiNamespace": "/v1"}, "metadata": {"version": "v1"}}),
+        "/": (200, {"data": {"name": "OpenSK API", "version": PROJECT_VERSION, "apiVersion": "v1", "apiNamespace": "/v1"}, "metadata": {"version": "v1"}}),
         "/v1/health": (200, {"data": {"status": "ok"}}),
         "/v1/holidays/2026": (200, {"data": [{}]}),
         "/v1/psc/81101": (200, {"data": {"psc": "81101"}}),
@@ -36,11 +37,14 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
         "/v1/procurement-notices/670654-2026": (200, {"data": {"id": "670654-2026"}}),
         "/v1/companies/50158635": (200, {"data": {"ico": "50158635"}}),
         "/v1/ico/50158635": (200, {"data": {"ico": "50158635"}}),
+        "/v1/sources": (200, {"data": []}),
+        "/v1/sources/regions": (200, {"data": {"id": "regions"}}),
+        "/v1/business-days/check?date=2026-10-08": (200, {"data": {"isBusinessDay": True}}),
         "/docs": (200, "docs"),
         "/openapi.json": (
             200,
             {
-                "info": {"version": "0.23.0"},
+                "info": {"version": PROJECT_VERSION},
                 "paths": {
                     "/v1/health": {},
                     "/v1/holidays/{year}": {},
@@ -61,6 +65,11 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
                     "/v1/procurement-notices/search": {},
                     "/v1/procurement-notices/stats": {},
                     "/v1/procurement-notices/{id}": {},
+                    "/v1/sources": {},
+                    "/v1/sources/{source_id}": {},
+                    "/v1/business-days/check": {},
+                    "/v1/business-days/add": {},
+                    "/v1/business-days/between": {},
                 },
             },
         ),

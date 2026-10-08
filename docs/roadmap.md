@@ -4,7 +4,7 @@ Living strategic roadmap for OpenSK API. This file is the source of truth for di
 
 Principles (council consensus): local materialized JSON only, no upstream calls at runtime; compliance evidence before promotion; no personal-data endpoints; no scraping; honest coverage/attribution wording as a feature; no public promotion while PortalVS redistribution is unresolved.
 
-## Now (0.23.0 cycle)
+## Now (0.23.x cycle)
 
 Data:
 
@@ -16,7 +16,9 @@ Trust & provenance:
 
 Reliability / ops:
 
-- CI job dedup; Dependabot; scheduled daily public smoke test.
+- Scheduled daily public smoke test (still open); rate-limit implementation per `docs/rate-limiting-contract.md` before public promotion.
+
+Delivered in 0.23.1: curated `/v1/sources` public provenance catalogue, Slovak business-day utilities (strict 2024-2026 coverage), ETag/Last-Modified conditional caching with documented Cache-Control policy, version single-sourcing (`version.py`), unified CI + Dependabot, manual source-health checker (`scripts/check_source_urls.py`), dataset-domain contributor gates (`docs/adding-a-dataset.md`), and the rate-limit contract document.
 
 ## Next (queued)
 
@@ -38,7 +40,7 @@ Data:
 
 - ITMS EU funds (licence capture needed).
 - ŠÚKL medicines (licence unstated).
-- NBS/ECB rates + business-days (after Milestone 2, once NBS wording retained; needs snapshot design for daily data).
+- ECB euro reference rates (bounded source check done in `docs/research/exchange-rates-source.md`: official daily feed, informational-only, reusable with attribution; recommend a candidate after the elections spike). Business-day utility itself is delivered in 0.23.1.
 - Slov-Lex legislation metadata catalogue (after elections; § 5 písm. b) exclusion verified).
 - NCZI healthcare facilities; CVTI/RIS institution-level schools; ÚVO national procurement; Ministry court-decision metadata — all gated, see `docs/source-compliance.md`.
 
@@ -61,6 +63,8 @@ Architecture:
 
 ## Completed (recent milestones)
 
+- 0.23.1: trust and utility surface — `/v1/sources` curated provenance catalogue, business-day check/add/between utilities, ETag/Last-Modified caching + cache policy, version single-sourcing, CI merge + Dependabot + source-health checker, rate-limit contract (implementation deferred).
+- 0.23.0: licence-outreach packages + council notes + living roadmap; PortalVS deadline (2026-10-31) and non-commercial wording verified; elections chosen as next data spike.
 - 0.22.0: court-decision source research (Ministry OpenAPI verified; research-only; no endpoint/dataset).
 - 0.21.0: paper-roadmap coverage audit; candidate `docs/1-0-scope.md` frozen.
 - 0.20.0–0.19.0: school-directory research (aggregate counts stay the only school surface); TED_PARTIAL procurement snapshot.

@@ -126,6 +126,9 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/matej-
 <!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
 
 ### Your First Code Contribution
+
+Adding a new dataset or domain? Follow the minimum-gates checklist in `docs/adding-a-dataset.md` (authoritative source, machine-readable acquisition, licence, privacy, stable identifiers, offline normalization, validation, referential integrity, source metadata, tests, and no runtime upstream dependency).
+
 <!-- TODO
 include Setup of env, IDE and typical getting started instructions?
 
