@@ -5,4 +5,4 @@ Single source of truth for the application SemVer. The public API namespace
 are intentionally not defined here; see `docs/versioning.md`.
 """
 
-PROJECT_VERSION = "0.23.1-dev"
+PROJECT_VERSION = "0.23.1"
