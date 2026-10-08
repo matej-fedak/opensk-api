@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from main import app
+from version import PROJECT_VERSION
 
 
 client = TestClient(app)
@@ -26,13 +27,28 @@ def test_root_returns_project_info() -> None:
     assert response.status_code == 200
     body = response.json()
     assert body["data"]["name"] == "OpenSK API"
-    assert body["data"]["version"] == "0.23.0"
+    assert body["data"]["version"] == PROJECT_VERSION
     assert body["data"]["apiVersion"] == "v1"
     assert body["data"]["apiNamespace"] == "/v1"
     assert body["metadata"]["source"] == "OpenSK API"
     assert body["metadata"]["version"] == "v1"
     assert "lastUpdated" in body["metadata"]
+    assert body["metadata"]["lastUpdated"] is None
     assert body["error"] is None
+
+
+def test_root_response_is_byte_stable() -> None:
+    first = client.get("/")
+    second = client.get("/")
+    assert first.content == second.content
+
+
+def test_error_responses_have_null_dataset_freshness_and_are_byte_stable() -> None:
+    first = client.get("/v1/regions/SK999")
+    second = client.get("/v1/regions/SK999")
+    assert first.status_code == 404
+    assert first.json()["metadata"]["lastUpdated"] is None
+    assert first.content == second.content
 
 
 def test_docs_or_openapi_is_available() -> None:
@@ -43,7 +59,7 @@ def test_docs_or_openapi_is_available() -> None:
     assert openapi_response.status_code == 200
 
     schema = openapi_response.json()
-    assert schema["info"]["version"] == "0.23.0"
+    assert schema["info"]["version"] == PROJECT_VERSION
     assert schema["paths"]["/"]["get"]["tags"] == ["meta"]
     assert "/v1/banks" in schema["paths"]
     assert "/v1/banks/{code}" in schema["paths"]
@@ -84,8 +100,8 @@ def test_project_version_reset_preserves_v1_route_namespace() -> None:
     schema = client.get("/openapi.json").json()
 
     root = client.get("/").json()
-    assert schema["info"]["version"] == "0.23.0"
-    assert root["data"]["version"] == "0.23.0"
+    assert schema["info"]["version"] == PROJECT_VERSION
+    assert root["data"]["version"] == PROJECT_VERSION
     assert root["data"]["apiVersion"] == root["metadata"]["version"] == "v1"
     assert "/v1/health" in schema["paths"]
     assert not any(path.startswith("/v0") for path in schema["paths"])
@@ -104,8 +120,8 @@ def test_every_openapi_operation_uses_public_tags_and_summaries() -> None:
             assert operation.get("tags"), path
             assert operation.get("summary"), path
 
-    assert len(get_operations) == 30
-    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 29
+    assert len(get_operations) == 35
+    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 34
 
 
 def test_static_search_and_stats_routes_are_not_shadowed() -> None:

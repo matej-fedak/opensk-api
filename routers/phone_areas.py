@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Response
 
-from schemas.common import API_SOURCE, PHONE_AREAS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
+from schemas.common import API_SOURCE, PHONE_AREAS_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_municipality_code_format, validate_region_code_format
 from services.phone_area_service import (
     PHONE_AREA_LIST_DEFAULT_LIMIT,
@@ -144,7 +144,7 @@ def search_phone_areas_endpoint(
         page = search_phone_areas(q, limit=parsed_limit, offset=parsed_offset)
     except PhoneAreaInvalidFormatError:
         raise _invalid_format("q must be at least 2 characters", "Parameter q musí mať aspoň 2 znaky")
-    response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
+    response.headers["Cache-Control"] = SEARCH_CACHE_CONTROL
     return success_response(
         data={"items": page, "count": len(page), "total": len(all_matches), "limit": parsed_limit, "offset": parsed_offset},
         source=f"{API_SOURCE} static phone area dataset",

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Query, Response
 
-from schemas.common import API_SOURCE, PSC_GEOGRAPHY_SOURCE, PSC_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
+from schemas.common import API_SOURCE, PSC_GEOGRAPHY_SOURCE, PSC_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_municipality_code_format, validate_region_code_format
 from services.psc_service import PSCInvalidFormatError, PSCNotFoundError, filter_psc_records, get_psc_stats, list_psc_records, lookup_psc, search_psc, search_psc_records, validate_psc_format
 
@@ -165,7 +165,7 @@ def search_psc_endpoint(
     except PSCInvalidFormatError:
         raise _invalid_format("q must be at least 2 characters or a 5-digit PSC", "Parameter q musí mať aspoň 2 znaky alebo byť 5-ciferné PSČ")
 
-    response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
+    response.headers["Cache-Control"] = SEARCH_CACHE_CONTROL
     return success_response(
         data={
             "items": page,

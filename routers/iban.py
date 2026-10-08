@@ -1,6 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 
-from schemas.common import API_SOURCE, BANKS_LAST_UPDATED, success_response
+from schemas.common import API_SOURCE, BANKS_LAST_UPDATED, STATIC_CACHE_CONTROL, success_response
 from services.bank_service import lookup_bank
 from services.iban_service import validate_iban
 
@@ -13,8 +13,9 @@ router = APIRouter(prefix="/iban", tags=["iban"])
     summary="Validate IBAN",
     description="Validates an IBAN with the ISO 13616 checksum and resolves Slovak bank data when available.",
 )
-def validate_iban_endpoint(iban: str) -> dict[str, object]:
+def validate_iban_endpoint(iban: str, response: Response) -> dict[str, object]:
     result = validate_iban(iban, bank_lookup=lookup_bank)
+    response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
         data=result,
         source=f"{API_SOURCE} static banks dataset",
