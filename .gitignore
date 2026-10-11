@@ -51,6 +51,10 @@ coverage.xml
 .pytest_cache/
 cover/
 
+# Generated offline-import previews are local research artifacts, never production data.
+/data/generated/*
+!/data/generated/.gitkeep
+
 # Translations
 *.mo
 *.pot

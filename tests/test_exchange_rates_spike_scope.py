@@ -21,14 +21,13 @@ def test_exchange_rates_spike_has_no_production_dataset() -> None:
 
 def test_exchange_rates_preview_output_stays_ignored() -> None:
     repo = Path(__file__).resolve().parents[1]
-    generated_ignore = (repo / "data" / "generated" / ".gitignore")
-    assert generated_ignore.is_file()
     import subprocess
 
     result = subprocess.run(
-        ["git", "check-ignore", "data/generated/exchange_rates_preview.json"],
+        ["git", "check-ignore", "-v", "data/generated/exchange_rates_preview.json"],
         cwd=repo,
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 0
+    assert result.returncode == 0, result.stderr
+    assert ".gitignore" in result.stdout
