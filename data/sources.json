@@ -28,7 +28,7 @@
     "riskLevel": "pending",
     "lastChecked": "2026-07-20",
     "updateCadence": "Manual",
-    "nextAction": "Ask PortalVS whether classifier 10 may be cached and redistributed through an open-source API and what attribution is required.",
+    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether classifier 10 may be cached and redistributed through an open-source API and what attribution is required.",
     "notes": "79 Slovak districts imported from the classifier export; source also contains Czech and foreign rows."
   },
   "municipalities": {
@@ -44,7 +44,7 @@
     "riskLevel": "pending",
     "lastChecked": "2026-09-07",
     "updateCadence": "Manual",
-    "nextAction": "Ask PortalVS whether classifier 9 may be cached and redistributed through an open-source API and whether excluded/special-purpose rows require any notice.",
+    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether classifier 9 may be cached and redistributed through an open-source API and whether excluded/special-purpose rows require any notice.",
     "notes": "2,927 current Slovak municipality rows match the checked-in dataset; districtCode is derived from PortalVS code_su and validated against districts. Special-purpose Slovak rows without code_su/county_code are excluded from the runtime dataset."
   },
   "psc": {
@@ -60,7 +60,7 @@
     "riskLevel": "high",
     "lastChecked": "2026-09-07",
     "updateCadence": "Unknown",
-    "nextAction": "Ask PortalVS whether classifier 42 postal-code rows may be cached, transformed, and redistributed; keep partial coverage warnings until answered.",
+    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether classifier 42 postal-code rows may be cached, transformed, and redistributed; keep partial coverage warnings until answered.",
     "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial. districtCode is backfilled from municipalityCode using local municipality district mappings; no districtCode values are inferred from names or PSC patterns."
   },
   "banks": {
@@ -76,7 +76,7 @@
     "riskLevel": "pending",
     "lastChecked": "2026-09-12",
     "updateCadence": "Manual refresh from NBS directory snapshots",
-    "nextAction": "Ask NBS whether the bank-code directory may be cached, transformed, and redistributed in an open-source API, including commercial downstream use.",
+    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether the bank-code directory may be cached, transformed, and redistributed in an open-source API, including commercial downstream use.",
     "notes": "30 domestic Slovak payment-system identification-code rows imported from NBS directory version 225, effective from 2026-05-18; 21 active and 9 inactive. Foreign/non-SK BIC rows in the source snapshot are excluded from the runtime dataset."
   },
   "holidays": {
@@ -229,7 +229,7 @@
     "riskLevel": "pending",
     "lastChecked": "2026-09-15",
     "updateCadence": "Manual refresh from local regulator workbook snapshots",
-    "nextAction": "Verify reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained official phone-area workbook.",
+    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained official phone-area workbook.",
     "notes": "2,922 unique municipality-to-primary-area rows imported from the official legacy Excel workbook; 2,919 rows link to local municipality, district, and region codes. Runtime routes read local JSON only."
   },
   "vehicleRegistrationCodes": {
@@ -284,7 +284,7 @@
     "riskLevel": "medium",
     "lastChecked": "2026-10-11",
     "updateCadence": "Historical snapshot, manual correction review; no approved automated acquisition",
-    "nextAction": "Send the prepared ŠÚ SR clarification package and retain confirmation of election-specific CC BY coverage and approved acquisition before production promotion.",
+    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Awaiting confirmation of election-specific CC BY coverage and approved acquisition before any production promotion.",
     "notes": "0.23.2 research spike only. Aggregate statistics and election-native geography; no candidate-personal data, public results routes, production JSON or runtime upstream dependency. General terms explicitly prohibit robots/crawlers/similar download tools; no exception is inferred for offered CSV files. Outreach READY_FOR_USER_TO_SEND, unsent."
   },
   "schoolFacilityCounts": {

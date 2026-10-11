@@ -2,7 +2,7 @@
 
 ## Must Fix For Candidate 1.0 Scope
 
-- Send the three human-dispatched outreach packages in `docs/research/source-licence-outreach.md` (PortalVS, NBS banks, telecom regulator); retain sent/received message text under `docs/research/`.
+- Await replies to the four outreach packages the human maintainer states were manually sent on 2026-10-11 (PortalVS, NBS banks, telecom regulator, ŠÚ SR elections; states in `docs/research/source-licence-outreach.md`). No reply received as of 2026-10-11; silence is not approval. If no reply arrives within a reasonable interval, record a follow-up date; retain received message text under `docs/research/` (redacting personal details).
 - PortalVS classifier 42 PSC licence, caching, transformation, commercial-use, and redistribution verification; otherwise exclude PSC from the stable contract.
 - PortalVS classifier 9 municipality licence, caching, transformation, commercial-use, and redistribution verification; otherwise exclude municipalities from the stable contract.
 - PortalVS classifier 10 district licence, caching, transformation, commercial-use, and redistribution verification; otherwise exclude districts from the stable contract.
@@ -22,7 +22,7 @@
 - Retain exact TED/Publications Office attribution wording and verify whether a larger or scheduled TED snapshot remains compatible with source limits and OpenSK privacy scope.
 - Institution-level school-directory gate: verify explicit MŠVVaM/RIS/CVTI reuse rights, documented non-scraping export workflow, stable EDUID/current identifier semantics, national/scope coverage, refresh cadence, and privacy-safe institution-only fields before adding `/v1/schools` or `data/schools.json`.
 - Court-decision gate: verify Ministry/court-source reuse, caching, transformation, attribution, redistribution, commercial downstream use, stable per-decision source URLs, published-decision scope, metadata-only privacy projection, and full-text exclusion before adding `/v1/court-decisions` or `data/court_decisions.json`.
-- Elections spike (next data candidate, `volby.statistics.sk`): confirm explicit ŠÚ SR reuse terms beyond the OGP resolution 59/2015 publication basis, verify CSV encoding (reported Windows-1250/CP1250) and format stability on import, measure municipality-code join rate against `data/municipalities.json` via "Územné členenie" tables, bound file sizes (some preferential-vote CSVs are near 1.5 GB), and produce a go/no-go record before any `/v1/elections*` production work.
+- Elections (spike completed 0.23.2, `GO_AFTER_LICENCE_EVIDENCE`; see `docs/research/elections-spike.md`): await the ŠÚ SR reply on election-specific CC BY 4.0 coverage, attribution and an approved acquisition workflow before any `/v1/elections*` production work. Technical findings (UTF-8/comma format, joins, totals) are done; the general policy's robot/download prohibition remains an open acquisition gate.
 - NBS bank-code directory source/licence, local-caching, transformation, attribution, commercial-use, and redistribution-term verification.
 - NBS holidays exact disclaimer retention and confirmation that curated JSON redistribution is permitted.
 - Telecom regulator phone-area licence/reuse verification and follow-up on 3 source municipality rows that do not link to local municipality codes.

@@ -47,7 +47,7 @@ They name **Creative Commons Attribution License (cc-by) 4.0**, require attribut
 
 Agent B downloaded the research files before Agent A's restriction finding was communicated. All subsequent work uses those local bytes; new scripted acquisition was stopped. Acquisition times and exploratory retries are disclosed in the schema track, not retrospectively called approved. No raw file is redistributed in this PR. A future approved manual snapshot could support an offline importer, but that workflow is a question for the publisher, not assumed permission.
 
-Fourth clarification package: [outreach §7](source-licence-outreach.md), To `info@statistics.sk`, CC `volby@statistics.sk`, both verified on the official election contact page. Status **READY_FOR_USER_TO_SEND**; email actually sent **NO**. PortalVS/NBS/telecom drafts remain unsent and do not block this technical spike.
+Fourth clarification package: [outreach §7](source-licence-outreach.md), To `info@statistics.sk`, CC `volby@statistics.sk`, both verified on the official election contact page. Status at spike completion was READY_FOR_USER_TO_SEND; update 2026-10-11 (0.23.3): the human maintainer states all four packages (ŠÚ SR, PortalVS, NBS, telecom) were sent manually on 2026-10-11 — **SENT_AWAITING_REPLY**, no replies received, no permission inferred.
 
 ## 4. Dataset inventory
 

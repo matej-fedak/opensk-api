@@ -8,8 +8,8 @@ Principles (council consensus): local materialized JSON only, no upstream calls 
 
 Data:
 
-- Milestone 1 "Ask & Evidence": send PortalVS, NBS, and telecom outreach (drafts ready in `docs/research/source-licence-outreach.md`); retain exact Eurostat/TED/NBS/Slov-Lex/MŠVVaM wording in evidence docs; archive a final PortalVS snapshot before the verified 2026-10-31 legacy end-of-support date.
-- Recommended next: **0.23.3 — Elections Reuse & Acquisition Evidence**. Send the prepared ŠÚ SR clarification manually and retain election-specific CC BY 4.0 coverage, attribution and an approved acquisition workflow. The general policy's automated-download prohibition is a real gate, not an inferred exception. All four outreach packages remain unsent; no other source reply is assumed.
+- Milestone 1 "Ask & Evidence": PortalVS, NBS, telecom and ŠÚ SR elections outreach packages were sent manually by the maintainer on 2026-10-11; all are `SENT_AWAITING_REPLY` and no permission is inferred (states in `docs/research/source-licence-outreach.md`). Retain exact Eurostat/TED/NBS/Slov-Lex/MŠVVaM wording in evidence docs; archive a final PortalVS snapshot before the verified 2026-10-31 legacy end-of-support date.
+- Elections evidence stays parked pending a ŠÚ SR reply: retain election-specific CC BY 4.0 coverage, attribution and an approved acquisition workflow. The general policy's automated-download prohibition is a real gate, not an inferred exception. No reply is assumed from any of the four packages.
 
 Trust & provenance:
 
@@ -64,7 +64,7 @@ Architecture:
 
 ## Completed (recent milestones)
 
-- 0.23.2: NR SR 2023 source/licence/schema/privacy spike and offline import prototype; `GO_AFTER_LICENCE_EVIDENCE`, `JSON_CONTINUE`. No public elections results endpoint or production data. NR SR 2020/referendum 2023 samples establish dialect and semantic drift; fourth outreach draft prepared, unsent. Evidence: `docs/research/elections-spike.md`.
+- 0.23.2: NR SR 2023 source/licence/schema/privacy spike and offline import prototype; `GO_AFTER_LICENCE_EVIDENCE`, `JSON_CONTINUE`. No public elections results endpoint or production data. NR SR 2020/referendum 2023 samples establish dialect and semantic drift; ŠÚ SR outreach sent manually 2026-10-11, awaiting reply. Evidence: `docs/research/elections-spike.md`.
 - 0.23.1: trust and utility surface — `/v1/sources` curated provenance catalogue, business-day check/add/between utilities, ETag/Last-Modified caching + cache policy, version single-sourcing, CI merge + Dependabot + source-health checker, rate-limit contract (implementation deferred).
 - 0.23.0: licence-outreach packages + council notes + living roadmap; PortalVS deadline (2026-10-31) and non-commercial wording verified; elections chosen as next data spike.
 - 0.22.0: court-decision source research (Ministry OpenAPI verified; research-only; no endpoint/dataset).

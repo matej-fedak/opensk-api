@@ -198,4 +198,4 @@ Unresolved:
 4. Confirm exact attribution, disclaimer/change/version notices and any table-specific third-party exceptions.
 5. Inspect actual selected distributions for embedded notices, hashes, version consistency after an approved acquisition path is chosen. This agent has no such byte-level evidence.
 
-Ready-to-send Slovak draft is appended to `docs/research/source-licence-outreach.md` under **NRSR2023 elections**; state `READY_FOR_USER_TO_SEND`, **unsent**. No raw dataset files were downloaded or placed in the repository by this agent. Any later raw downloads must stay in `C:\Users\matej\AppData\Local\Temp\opencode\elections`.
+Ready-to-send Slovak draft is appended to `docs/research/source-licence-outreach.md` under **NRSR2023 elections**. Update 2026-10-11 (0.23.3): the human maintainer states the message was sent manually on 2026-10-11; state is now `SENT_AWAITING_REPLY` — no reply received and no permission inferred from sending. No raw dataset files were downloaded or placed in the repository by this agent. Any later raw downloads must stay in `C:\Users\matej\AppData\Local\Temp\opencode\elections`.
