@@ -256,3 +256,77 @@ These are recorded so the compliance matrix can move from "terms page identified
 - Do not remove `Source/licence verification pending.` warnings before a reply or retained evidence exists.
 - Do not present the 31.10.2026 PortalVS deadline as an emergency removal trigger; the correct response is outreach plus a mirrored-snapshot contingency (see `docs/research/roadmap-council-notes.md`, contested item on removal order).
 - Do not claim official endorsement from any of these institutions.
+
+## 7. NRSR2023 Elections — COVERAGE AND ACQUISITION CLARIFICATION REQUIRED
+
+State: `READY_FOR_USER_TO_SEND`. **UNSENT — no message sent by the agent.** Existing outreach states above are unchanged.
+
+Verified **2026-10-11**: `https://volby.statistics.sk/nrsr/nrsr2023/sk/kontakty.html` lists `info@statistics.sk` as Informačný servis and `volby@statistics.sk` as Obsahový správca a technický prevádzkovateľ. These are verified public contacts, not an inferred licensing-officer address.
+
+To: `info@statistics.sk`; CC: `volby@statistics.sk`.
+
+Evidence: `docs/research/elections-source-licence.md`. General ŠÚ SR terms expressly permit distribution/commercial use and name CC BY 4.0, but also expressly prohibit robots/crawlers/similar data-gathering/download tools. Election-subdomain coverage and an approved acquisition route need clarification; offered downloads alone are not permission.
+
+Evidence retention: the maintainer should retain the sent message and dated reply privately, including the responding institution, named files, licence scope, acquisition permission and attribution conditions. Add exact relevant wording and its date to `source-verification-evidence.md`; redact personal contact details before publishing. Keep `READY_FOR_USER_TO_SEND` until the maintainer actually sends it; a draft is not permission and a sent request is not an approval.
+
+Subject: NRSR2023 — potvrdenie CC BY 4.0 a povoleného spôsobu získania a opakovaného použitia agregovaných výsledkov
+
+```text
+Dobrý deň,
+
+pripravujem výskumný prototyp verejného open-source projektu OpenSK API
+(vyplňte URL repozitára), ktorý má sprístupňovať slovenské verejné údaje
+cez jednotné JSON API. Volebné údaje zatiaľ do produkčného API nezaraďujeme.
+
+Chcel by som si overiť podmienky pre definitívne výsledky volieb do NR SR
+2023 z oficiálneho zdroja:
+https://volby.statistics.sk/nrsr/nrsr2023/sk/subory_na_stiahnutie.html
+
+Zamýšľaný rozsah je obmedzený na agregované výsledky (účasť, počty a podiely
+hlasov pre politické subjekty a mandáty), zoznam politických subjektov
+a volebné územné členenie. Neplánujeme preberať zápisnice volebných komisií,
+podpisy, grafické prvky ani osobné profily kandidátov či údaje o voličoch.
+
+Všeobecné podmienky ŠÚ SR na stránke
+https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/
+uvádzajú povolenie šírenia a komerčného využívania informácií a licenciu
+Creative Commons Attribution License (cc-by) 4.0. Súčasne výslovne zakazujú
+používanie robotov, pavúkov a podobných nástrojov na zhromažďovanie
+a sťahovanie dát. Preto si nechcem domýšľať rozsah povolení ani výnimky.
+
+Prosím o potvrdenie:
+
+1. Vzťahuje sa CC BY 4.0 aj na uvedené CSV/ODS/XLSX tabuľky NRSR2023
+   zverejnené na subdoméne volby.statistics.sk, vrátane zoznamu politických
+   subjektov a volebného územného členenia? Existujú výnimky pre konkrétne
+   tabuľky alebo práva tretích strán?
+2. Je podľa týchto podmienok dovolené lokálne uložiť snapshot, previesť CSV
+   do JSON, normalizovať názvy polí, filtrovať tabuľky a odvodiť agregované
+   ukazovatele, pričom úpravy a odvodené hodnoty budú zreteľne označené?
+3. Je dovolené takto spracované údaje redistribuovať cez verejné API
+   a zverejniť dátový snapshot alebo malú dátovú testovaciu vzorku vo
+   verejnom open-source repozitári s oddeleným označením dátovej licencie?
+   Zahŕňa povolenie aj následné komerčné použitie používateľmi API?
+4. Vzťahuje sa zákaz robotov a podobných nástrojov aj na jednorazové
+   skriptované stiahnutie výslovne ponúkaných CSV/ZIP súborov a prípadnú
+   kontrolu ich aktualizácií? Ak áno, prosím o odporučenie povoleného postupu
+   (napr. manuálne stiahnutie a následné offline spracovanie) alebo
+   oficiálneho strojového rozhrania a jeho prevádzkových podmienok.
+5. Akú presnú atribúciu a odkazy, označenie úprav, dátumu/verzie a prípadné
+   upozornenia na zodpovednosť máme zachovať v API, dokumentácii a repozitári?
+
+Navrhujeme uvádzať zdroj „Štatistický úrad Slovenskej republiky — Voľby do
+Národnej rady Slovenskej republiky 2023, definitívne výsledky“, odkaz na
+originálnu stránku a CC BY 4.0, opis našich úprav a výslovné upozornenie,
+že projekt nie je podporovaný ani schválený Štatistickým úradom SR.
+
+Ak tento dopyt patrí inému útvaru, prosím o jeho postúpenie alebo kontakt
+na príslušné pracovisko. Odpoveď použijeme ako podklad pre dokumentáciu
+licenčného stavu projektu; pred prípadným zverejnením odpovede odstránime
+osobné kontaktné údaje.
+
+Ďakujem za objasnenie.
+
+S pozdravom
+[Meno]
+```
