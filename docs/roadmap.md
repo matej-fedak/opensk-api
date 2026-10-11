@@ -9,6 +9,7 @@ Principles (council consensus): local materialized JSON only, no upstream calls 
 Data:
 
 - Milestone 1 "Ask & Evidence": send PortalVS, NBS, and telecom outreach (drafts ready in `docs/research/source-licence-outreach.md`); retain exact Eurostat/TED/NBS/Slov-Lex/MŠVVaM wording in evidence docs; archive a final PortalVS snapshot before the verified 2026-10-31 legacy end-of-support date.
+- Recommended next: **0.23.3 — Elections Reuse & Acquisition Evidence**. Send the prepared ŠÚ SR clarification manually and retain election-specific CC BY 4.0 coverage, attribution and an approved acquisition workflow. The general policy's automated-download prohibition is a real gate, not an inferred exception. All four outreach packages remain unsent; no other source reply is assumed.
 
 Trust & provenance:
 
@@ -24,7 +25,7 @@ Delivered in 0.23.1: curated `/v1/sources` public provenance catalogue, Slovak b
 
 Data:
 
-- Milestone 3 "Elections Spike": bounded analysis + import prototype for ŠÚ SR elections CSVs (recommended: NR SR 2023, obce-level + "Územné členenie" join table); verify encoding (CP1250), join rate, file-size bounds, and explicit reuse terms; production `/v1/elections/*` only on spike pass.
+- Elections production stays **pending evidence**, not scheduled: 0.23.2 concluded `GO_AFTER_LICENCE_EVIDENCE` (also acquisition permission). NR SR 2023 is UTF-8/comma/dot decimal, not the previously suspected CP1250; 2,926/2,927 current municipality matches and complete election-native joins. The official foreign-voting unit must remain independent of PortalVS. After rights/acquisition clearance, scope one aggregate historical election, not candidate/precinct services or a generic all-election framework.
 
 Trust & provenance:
 
@@ -63,6 +64,7 @@ Architecture:
 
 ## Completed (recent milestones)
 
+- 0.23.2: NR SR 2023 source/licence/schema/privacy spike and offline import prototype; `GO_AFTER_LICENCE_EVIDENCE`, `JSON_CONTINUE`. No public elections results endpoint or production data. NR SR 2020/referendum 2023 samples establish dialect and semantic drift; fourth outreach draft prepared, unsent. Evidence: `docs/research/elections-spike.md`.
 - 0.23.1: trust and utility surface — `/v1/sources` curated provenance catalogue, business-day check/add/between utilities, ETag/Last-Modified caching + cache policy, version single-sourcing, CI merge + Dependabot + source-health checker, rate-limit contract (implementation deferred).
 - 0.23.0: licence-outreach packages + council notes + living roadmap; PortalVS deadline (2026-10-31) and non-commercial wording verified; elections chosen as next data spike.
 - 0.22.0: court-decision source research (Ministry OpenAPI verified; research-only; no endpoint/dataset).

@@ -34,6 +34,8 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 
 Notes:
 
+- Elections (0.23.2) are research/tooling-only: official NR SR 2023 aggregate CSVs, verified UTF-8/comma/dot-decimal format and native geography. General ŠÚ SR CC BY 4.0 terms are retained, but election-specific coverage and approved acquisition need clarification. No production snapshot/results endpoint; details and measured files in `docs/research/elections-spike.md`.
+
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are sourced from PortalVS classifier 9 (`Obce`) and the runtime dataset currently covers 2,927 regular Slovak municipality rows with district mappings derived from `code_su`.
 - PortalVS source/licence verification remains pending, so the municipality dataset should not be treated as open redistribution material.

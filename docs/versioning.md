@@ -2,9 +2,9 @@
 
 OpenSK API is currently in pre-1.0 development.
 
-0.23.1 is a trust-and-utility milestone. It adds the curated `/v1/sources` provenance catalogue, Slovak business-day utilities over the local holiday dataset (2024-2026), deterministic ETag/Last-Modified conditional caching, project-version single-sourcing in `version.py`, unified CI plus Dependabot, a manual source-health checker, and a documented future rate-limit contract. Project version lives in `version.PROJECT_VERSION`; bump it there.
+0.23.2 is a Slovak elections research spike. It retains NR SR 2023 source, rights, schema and integration evidence and provides offline aggregate import tooling, but adds no production election dataset or results endpoint. Elections is research-only in the source catalogue. Project version lives in `version.PROJECT_VERSION`; bump it there.
 
-The current project version is `0.23.1`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
+The current project version is `0.23.2`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
 
 Earlier `v1.x` labels in the changelog and commit history were internal development milestone labels. They are retained as historical notes, but they are not formal stable public releases.
 

@@ -60,6 +60,8 @@ All keys are always present; unavailable values are explicit `null`, never omitt
 
 Per-id curated values (public names, limitations, update cadences, licence names) live in `services/sources_service.py`.
 
+0.23.2 adds an eighteenth domain, `elections`: `research`, coverage `null`, licence `pending`. General ŠÚ SR CC BY 4.0 terms are identified, but election-specific applicability and permitted acquisition require clarification. This entry does not make election results available or grant reuse permission.
+
 ## Filters
 
 `GET /v1/sources` supports `status`, `coverage`, and `q` (substring over id, public name, and source name). No pagination: the registry is small and list-style small routes in OpenSK return arrays directly.
