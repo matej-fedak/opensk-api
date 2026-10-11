@@ -270,6 +270,23 @@
     "nextAction": "Verify explicit reuse rights, documented acquisition, metadata-only privacy projection, published-decision scope, Constitutional Court coverage, and full-text exclusion before adding data/court_decisions.json or /v1/court-decisions.",
     "notes": "0.22.0 verified that the Ministry OpenAPI exposes anonymous-looking /v1/rozhodnutie list/detail/autocomplete endpoints with ECLI and decision metadata, but production import remains blocked by reuse/redistribution and privacy gates. Text decision: NO_PRODUCTION_DATA. Acquisition decision: RESEARCH_AND_TOOLING_ONLY."
   },
+  "elections": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "Štatistický úrad SR — NR SR 2023 aggregate election statistics",
+    "sourceUrl": "https://volby.statistics.sk/nrsr/nrsr2023/sk/subory_na_stiahnutie.html",
+    "sourceDocumentationUrl": "https://volby.statistics.sk/nrsr/nrsr2023/json/downloadSK.json",
+    "licence": "General ŠÚ SR statistical-information policy names CC BY 4.0 and permits distribution/commercial use; applicability to election downloads and permitted acquisition need confirmation.",
+    "licenceStatus": "pending election-specific applicability and acquisition clarification; general CC BY 4.0 policy retained",
+    "redistributionStatus": "research-only; no production election dataset or results endpoint; promotion pending rights and acquisition evidence",
+    "termsUrl": "https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/",
+    "attribution": "Proposed after confirmation: Štatistický úrad Slovenskej republiky, NR SR 2023 definitive results; retain source, CC BY 4.0 and modification notices; no endorsement.",
+    "riskLevel": "medium",
+    "lastChecked": "2026-10-11",
+    "updateCadence": "Historical snapshot, manual correction review; no approved automated acquisition",
+    "nextAction": "Send the prepared ŠÚ SR clarification package and retain confirmation of election-specific CC BY coverage and approved acquisition before production promotion.",
+    "notes": "0.23.2 research spike only. Aggregate statistics and election-native geography; no candidate-personal data, public results routes, production JSON or runtime upstream dependency. General terms explicitly prohibit robots/crawlers/similar download tools; no exception is inferred for offered CSV files. Outreach READY_FOR_USER_TO_SEND, unsent."
+  },
   "schoolFacilityCounts": {
     "status": "imported",
     "coverage": "complete",
