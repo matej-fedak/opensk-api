@@ -194,6 +194,30 @@ def test_reference_diagnostics_cannot_change_preview(inputs):
     assert importer.serialize_payload(malformed.payload) == importer.serialize_payload(without.payload)
 
 
+@pytest.mark.parametrize("name", [None, 123, [], {}])
+def test_malformed_reference_name_is_diagnostic_only(inputs, name):
+    path = inputs["tmp"] / "municipalities.json"
+    path.write_text(json.dumps({"municipalities": [{"code": "528595", "name": name}]}), encoding="utf-8")
+    without = run(inputs)
+    result = run(inputs, municipalities=path)
+    assert result.ok and not result.report["currentGeography"]["available"]
+    assert "reference name" in result.report["currentGeography"]["error"]
+    assert importer.serialize_payload(result.payload) == importer.serialize_payload(without.payload)
+
+
+def test_unrepresentable_percentage_is_a_validation_error():
+    with pytest.raises(ValueError, match="count magnitude"):
+        importer.check_percentage("0.00", 10**30, 3, "testPercent")
+
+
+def test_oversized_party_votes_fail_before_percentage_arithmetic(inputs):
+    inputs["rows"]["party_results"][0][10] = str(10**30)
+    change(inputs, "party_results")
+    result = run(inputs)
+    assert not result.ok and not result.payload and not result.wrote_files
+    assert "party votes exceed" in result.errors[0]
+
+
 def test_repeat_and_order_are_deterministic_without_clock_or_paths(inputs):
     first = run(inputs)
     for table in ("territory", "results", "party_results"):

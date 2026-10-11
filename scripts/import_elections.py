@@ -15,7 +15,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass, field
-from decimal import Decimal, InvalidOperation, ROUND_DOWN
+from decimal import Decimal, DecimalException, InvalidOperation, ROUND_DOWN
 from pathlib import Path
 from typing import Any
 
@@ -79,6 +79,12 @@ def municipality_join_report(records: list[dict[str, Any]], path: Path | None) -
     document = json.loads(path.read_text(encoding="utf-8"))
     local: dict[str, dict[str, Any]] = {}
     for record in document["municipalities"]:
+        if not isinstance(record, dict):
+            raise ValueError("municipality reference record must be an object")
+        if not isinstance(record.get("code"), str) or not re.fullmatch(r"[0-9]{6}", record["code"]):
+            raise ValueError("municipality reference code must be a six-digit string")
+        if not isinstance(record.get("name"), str) or not record["name"].strip():
+            raise ValueError("municipality reference name must be a nonempty string")
         code = record["code"]
         if code in local:
             raise ValueError(f"duplicate municipality reference code: {code}")
@@ -191,8 +197,11 @@ def source_count(value: str) -> int:
 
 
 def check_percentage(value: str, numerator: int, denominator: int, field: str) -> None:
-    expected = ((Decimal(numerator) * 100 / Decimal(denominator)).quantize(
-        Decimal("0.01"), rounding=ROUND_DOWN) if denominator else Decimal("0.00"))
+    try:
+        expected = ((Decimal(numerator) * 100 / Decimal(denominator)).quantize(
+            Decimal("0.01"), rounding=ROUND_DOWN) if denominator else Decimal("0.00"))
+    except DecimalException as exc:
+        raise ValueError(f"{field}: count magnitude cannot be represented as a percentage") from exc
     if parse_percentage(value) != expected:
         raise ValueError(f"{field}: percentage mismatch: {value} != {expected}")
 
@@ -337,6 +346,8 @@ def import_elections(territory: Path, results: Path, *, party_results: Path | No
                 votes, preferential = source_count(row[10]), source_count(row[12])
                 if not votes or preferential > votes:
                     raise ValueError("party rows must have positive votes and preferential voters <= votes")
+                if votes > aggregates[code]["validVotes"]:
+                    raise ValueError("party votes exceed municipality valid votes")
                 check_percentage(row[11], votes, aggregates[code]["validVotes"], "partyVotePercent")
                 check_percentage(row[13], preferential, votes, "preferentialVoterPercent")
                 municipal_sums[code] += votes
