@@ -29,6 +29,7 @@ EXPECTED_IDS = [
     "phoneAreas",
     "vehicleRegistrationCodes",
     "courtDecisions",
+    "elections",
     "schoolFacilityCounts",
 ]
 
@@ -49,6 +50,7 @@ EXPECTED_STATUS = {
     "phoneAreas": "production",
     "vehicleRegistrationCodes": "historical",
     "courtDecisions": "blocked",
+    "elections": "research",
     "schoolFacilityCounts": "production",
 }
 
@@ -69,6 +71,7 @@ EXPECTED_COVERAGE = {
     "phoneAreas": "complete",
     "vehicleRegistrationCodes": "complete",
     "courtDecisions": None,
+    "elections": None,
     "schoolFacilityCounts": "complete",
 }
 
@@ -89,6 +92,7 @@ EXPECTED_LICENCE_STATUS = {
     "phoneAreas": "pending",
     "vehicleRegistrationCodes": "pending",
     "courtDecisions": "blocked",
+    "elections": "pending",
     "schoolFacilityCounts": "identified",
 }
 
@@ -131,13 +135,13 @@ def _list_entries(*, params: str = "") -> list[dict[str, object]]:
 def test_sources_list_exposes_all_registered_domains() -> None:
     entries = _list_entries()
     assert [entry["id"] for entry in entries] == EXPECTED_IDS
-    assert len(entries) == 17
+    assert len(entries) == 18
 
 
 def test_sources_list_uses_standard_envelope_and_static_cache() -> None:
     response = client.get("/v1/sources")
     assert response.json()["metadata"]["source"] == "OpenSK API curated source catalogue"
-    assert response.json()["metadata"]["lastUpdated"] == "2026-10-07"
+    assert response.json()["metadata"]["lastUpdated"] == "2026-10-11"
     assert response.headers["cache-control"] == "public, max-age=86400"
 
 

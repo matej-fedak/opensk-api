@@ -69,6 +69,7 @@ _PUBLIC_NAMES: dict[str, str] = {
     "phoneAreas": "Telephone primary areas",
     "vehicleRegistrationCodes": "Vehicle registration district codes",
     "courtDecisions": "Court decisions",
+    "elections": "Slovak election aggregate results",
     "schoolFacilityCounts": "School facility counts",
 }
 
@@ -89,6 +90,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "phoneAreas": "manual",
     "vehicleRegistrationCodes": "static (historical)",
     "courtDecisions": "unknown",
+    "elections": "historical snapshot; manual correction review",
     "schoolFacilityCounts": "semiannual",
 }
 
@@ -121,10 +123,16 @@ _LIMITATIONS: dict[str, list[str]] = {
         "Does not decode full plates or identify vehicles or owners.",
     ],
     "courtDecisions": ["Reuse and privacy gates unresolved; no runtime dataset is served."],
+    "elections": [
+        "Research spike only; no election results endpoint or production dataset.",
+        "Election-specific reuse and permitted acquisition require clarification.",
+        "Aggregate-only scope; candidate and preference-vote files are excluded.",
+    ],
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
 }
 
 _LICENCE_NAMES: dict[str, str] = {
+    "elections": "CC BY 4.0 (general ŠÚ SR policy; election applicability pending)",
     "regions": "Eurostat reuse policy",
     "procurementNotices": "TED / Publications Office reuse terms",
     "schoolFacilityCounts": "Creative Commons BY (version not specified)",

@@ -103,3 +103,15 @@ This log records evidence checked for source and licence decisions. It is intent
 - If evidence is paraphrased, keep the confidence level below high.
 - Do not treat public availability as permission to redistribute.
 - Do not treat official-source status as official endorsement.
+
+## 2026-10-11 NRSR2023 Elections — 0.23.2 Source/Licence Spike
+
+- Direct official evidence and exact quotes: `docs/research/elections-source-licence.md` (actual local verification clock `2026-10-11T21:31:48+02:00`).
+- Official index: `https://volby.statistics.sk/nrsr/nrsr2023/sk/subory_na_stiahnutie.html`; page states `Zdroj: Štatistický úrad SR` and `Dátum a čas zverejnenia výsledkov: 01.10.2023 14:30`.
+- Page-driven file index: `https://volby.statistics.sk/nrsr/nrsr2023/json/downloadSK.json`; 33 advertised tables with CSV/ODS/XLSX links. ZIP link: `https://volby.statistics.sk/nrsr/nrsr2023/files/NRSR2023_SK_csv.zip` (advertised 215,5 MB, not downloaded/measured here).
+- General official terms: `https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/` (Slovak language page last update 15.03.2023; exact working language-specific URL retained in the election note). Exact permissions: `šíriť (kopírovať, sprostredkovávať a distribuovať verejnosti);`, `využívať a citovať v iných dielach;`, `využívať komerčne.` Policy names `Creative Commons Attribution License (cc-by) 4.0`, requires ŠÚ SR attribution/no endorsement, and excludes third-party IP.
+- Critical exact restriction: `používanie robotov, pavúkov (spiders, crawlers) a ďalších podobných nástrojov na zhromažďovanie a sťahovanie dát, je výslovne zakázané.` No automated-download exception inferred from the file index.
+- Contact verified from `https://volby.statistics.sk/nrsr/nrsr2023/sk/kontakty.html`: information service `info@statistics.sk`; content/technical administrator `volby@statistics.sk`.
+- Confidence: high for official provenance/index/general-policy wording/contact; medium for general policy coverage of election subdomain; no affirmative automated acquisition approval. Election minutes list a separate commission/MV source and are excluded from this scope.
+- Decision: retain `RESEARCH_AND_TOOLING_ONLY` / source/licence verification pending until election-specific coverage and approved acquisition workflow are clarified. Outreach is `READY_FOR_USER_TO_SEND`, unsent. No raw dataset downloads or production changes by source/licence agent.
+- Independent data-track byte/response/header/hash evidence and historical samples: `docs/research/elections-data-schema.md`. The lead's final offline transformation and rights/privacy/storage synthesis are in `docs/research/elections-spike.md`; raw files remain outside Git, with no new scripted acquisition after the restriction was communicated. Technical success does not supply acquisition or redistribution permission.

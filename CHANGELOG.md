@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.23.2
+
+- Completed the Slovak elections data spike for official NR SR 2023 aggregate statistics, with three independent source/licence, schema/data and integration/privacy reviews and an evidence-backed decision: `GO_AFTER_LICENCE_EVIDENCE` (including approved acquisition).
+- Verified UTF-8 (not CP1250), comma-delimited/dot-decimal 2023 files, 2,927 election-native units, 2,926 current municipality joins and exact national/party reconciliation; retain foreign-voting unit `599999` separately. Sampled NR SR 2020 and referendum 2023 demonstrate dialect/header/semantic drift.
+- Added offline, dry-run-first `scripts/import_elections.py` with strict 2023 headers, deterministic aggregate normalization, optional party/national controls, code-only geography diagnostics and synthetic offline tests. Writes are confined to ignored `data/generated/` previews; no fetcher, official raw files or preview datasets are committed.
+- Retained general ŠÚ SR CC BY 4.0 wording and its automated-download prohibition; prepared a fourth Slovak clarification draft, `READY_FOR_USER_TO_SEND`, unsent. No production clearance is inferred from OGP publication or downloadability.
+- Added the research-only `elections` source entry and curated public projection (18 domains; coverage unknown, licence pending); existing source entries/results behavior remain unchanged.
+- **No public elections results endpoint or production election dataset is added.** No SQLite or runtime upstream calls; `JSON_CONTINUE`. Project version is `0.23.2`; `/v1` and envelope `metadata.version == "v1"` remain unchanged.
+
 ## 0.23.1
 
 - Added `GET /v1/sources` and `GET /v1/sources/{id}`: a typed (Pydantic) curated public provenance catalogue covering all 17 registered domains with a documented public/internal field boundary and deterministic status/coverage/licence mapping; unresolved licence states stay unresolved.

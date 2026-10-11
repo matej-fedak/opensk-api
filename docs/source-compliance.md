@@ -14,6 +14,8 @@ This page records the current source-compliance posture. It is not legal advice.
 
 Research-only datasets are excluded from `1.0.0` unless separately approved; they do not block the stable release while excluded.
 
+Elections (0.23.2) remains research/tooling-only: `GO_AFTER_LICENCE_EVIDENCE` also requires acquisition permission. General ŠÚ SR terms explicitly permit public distribution and commercial use under CC BY 4.0, but election-subdomain coverage is not explicit and robots/crawlers/similar download tools are expressly prohibited. No production results or raw election files are redistributed by this spike. Exact wording and verified contacts: `docs/research/elections-source-licence.md`; technical synthesis: `docs/research/elections-spike.md`. The prepared clarification and existing PortalVS/NBS/telecom drafts are unsent.
+
 | Dataset | Runtime scope | Source | Source URL | Terms URL | Licence status | Redistribution status | Attribution wording | Terms basis | Risk | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Regions | complete | Eurostat LAU 2025 correspondence table | `https://ec.europa.eu/eurostat/web/nuts/local-administrative-units` | `https://ec.europa.eu/info/legal-notice_en` | Reuse terms identified; redistribution verification still required. | Verify before redistribution. | Attribute Eurostat as the source when reusing LAU correspondence data. | official terms page, exact workbook notice still pending in repo | medium | Retain exact Eurostat reuse notice for the LAU 2025 workbook and confirm redistribution conditions. |
@@ -55,7 +57,7 @@ Research-only datasets are excluded from `1.0.0` unless separately approved; the
 
 - Whether PortalVS classifiers can be redistributed through an open-source API and by downstream commercial users, given the 0.23.0-verified non-commercial-only portal copyright wording.
 - How the verified 2026-10-31 PortalVS legacy end-of-support date affects final snapshots, and whether the `ciselniky2.portalvs.sk` successor attaches different reuse terms (`slovenske-obce`, `slovenske-okresy`, `psc-sk`).
-- Whether ŠÚ SR attaches explicit reuse terms to the elections open-data CSVs beyond the OGP government resolution 59/2015 publication basis (needed before the elections spike can promote).
+- Whether the retained general ŠÚ SR CC BY 4.0 policy covers the selected election-subdomain CSVs and repository/API redistribution, and what acquisition workflow is permitted given its explicit automated-download prohibition. OGP resolution 59/2015 is publication context, not substitute licence evidence.
 - Whether transformed/local JSON snapshots count as modified data under NBS terms.
 - Whether the NBS bank-code directory has a specific attribution or no-modification requirement.
 - Whether RPO/MV SR/ŠÚ SR or a verified mirror permits local snapshot acquisition and public redistribution, especially when source material can include natural-person entrepreneurs or role-holder personal data.
