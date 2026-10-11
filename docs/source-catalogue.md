@@ -62,6 +62,8 @@ Per-id curated values (public names, limitations, update cadences, licence names
 
 0.23.2 adds an eighteenth domain, `elections`: `research`, coverage `null`, licence `pending`. General ŠÚ SR CC BY 4.0 terms are identified, but election-specific applicability and permitted acquisition require clarification. This entry does not make election results available or grant reuse permission.
 
+0.23.3 adds a nineteenth domain, `exchangeRates`: `research`, coverage `null`, licence `verified` (explicit ECB free-use permission retained; attribution and informational-only notices required). This entry does not make exchange rates available through any results route and grants no rights beyond the ECB's own wording.
+
 ## Filters
 
 `GET /v1/sources` supports `status`, `coverage`, and `q` (substring over id, public name, and source name). No pagination: the registry is small and list-style small routes in OpenSK return arrays directly.

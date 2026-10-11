@@ -2,6 +2,15 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-10-11 ECB Euro Reference Rates (0.23.3 SPIKE)
+
+- Verdict: **CLEAR** — ECB "Disclaimer & copyright" retains explicit free-use permission ("users of this website may make free use of the information obtained directly from it") subject to accurate reproduction, ECB attribution, explicit statement of modifications, and no framing; "for information purposes only / transaction use strongly discouraged" notice retained from the reference-rates page.
+- Full retained wording, checked URLs, feed byte/hash evidence and residual questions (sui-generis right, no published rate limits, undocumented revision policy): `docs/research/exchange-rates-source-verification.md` and `docs/research/exchange-rates-data-schema.md`. NBS verified as republication-only (excluded as canonical). Synthesis/decision: `docs/research/exchange-rates-spike.md`. Raw downloads stay in the temp dir; no raw upstream file is committed. No ECB outreach is required; an optional sui-generis draft remains `READY_FOR_USER_TO_SEND`, unsent.
+
+## 2026-10-11 PortalVS Legacy/Successor Resilience (0.23.3)
+
+- Both systems live-verified; the legacy end-of-support banner (2026-10-31) is unchanged; dated transition manifests + SHA-256 snapshots for legacy classifiers 9/10/42 and successor `slovenske-obce`/`slovenske-okresy`/`psc-sk` are retained in the maintainer's temp dir only (not committed; rights pending). Verdict `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES`; evidence and per-dataset analysis: `docs/research/portalvs-source-resilience.md`. No licence conclusion drawn.
+
 ## 2026-10-11 Outreach Dispatch Record (maintainer statement, no reply evidence)
 
 - The human maintainer states that four clarification packages in `docs/research/source-licence-outreach.md` were sent manually on **2026-10-11**: §1 PortalVS classifiers 9/10/42 (To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`), §2 NBS bank-code directory (To `info@nbs.sk`), §4 telecom-regulator phone-area workbook (To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`), §7 ŠÚ SR NRSR2023 elections (To `info@statistics.sk`, CC `volby@statistics.sk`).

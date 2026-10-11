@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.23.3
+
+- Recorded outreach state change: all four licence-clarification packages (PortalVS, NBS banks, telecom regulator, ŠÚ SR elections) were sent manually by the maintainer on 2026-10-11 and are `SENT_AWAITING_REPLY`; documentation and `data/sources.json` nextActions updated without changing any licence/redistribution status — sending a question is not permission.
+- PortalVS source resilience: re-verified both legacy `ciselniky.portalvs.sk` (end-of-support 2026-10-31 banner still present) and successor `ciselniky2.portalvs.sk` live; compact transition manifests with SHA-256 retained locally (not committed); verdict `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` — all three PortalVS-backed datasets rebuildable from the successor API with offline transforms only, no public contract change required. Licence remains pending.
+- Exchange-rates spike concluded **`GO_PRODUCTION_NEXT`**: ECB eurofxref feeds verified (1999-01-04 → present; 7,111 publication dates; 221,267 rate rows; full history only 3.48 MiB compact JSON), NBS confirmed as republication-only, ECB reuse permission explicitly written (attribution + modification notice). Added offline, dry-run-first `scripts/import_exchange_rates.py` with strict gesmes/XML/ISO/Decimal validation, numeric cross-feed dedup and 49 synthetic tests.
+- Added the research-only `exchangeRates` source entry and curated public projection (19 domains; coverage unknown, licence verified, no production dataset or endpoint). Public route count unchanged (`NO PUBLIC EXCHANGE-RATE ENDPOINT IS ADDED.`); `JSON_CONTINUE`; no runtime upstream calls.
+- Business-day finding: ECB publishes on TARGET working days only (zero weekend publications in 27 years; freshness can lag 4 calendar days) — the Slovak business-day utilities must not be reused for ECB publication semantics. No fallback/"previous business day" logic implemented or endorsed.
+
 ## 0.23.2
 
 - Completed the Slovak elections data spike for official NR SR 2023 aggregate statistics, with three independent source/licence, schema/data and integration/privacy reviews and an evidence-backed decision: `GO_AFTER_LICENCE_EVIDENCE` (including approved acquisition).

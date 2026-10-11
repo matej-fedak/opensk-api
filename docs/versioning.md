@@ -2,9 +2,9 @@
 
 OpenSK API is currently in pre-1.0 development.
 
-0.23.2 is a Slovak elections research spike. It retains NR SR 2023 source, rights, schema and integration evidence and provides offline aggregate import tooling, but adds no production election dataset or results endpoint. Elections is research-only in the source catalogue. Project version lives in `version.PROJECT_VERSION`; bump it there.
+0.23.3 is an exchange-rates spike and source-resilience milestone. It verifies ECB reuse terms/feeds with an offline importer prototype (`GO_PRODUCTION_NEXT`), verifies PortalVS legacy→successor compatibility (`SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES`), and records all four licence-outreach packages as sent awaiting reply. No production dataset or results endpoint is added. Project version lives in `version.PROJECT_VERSION`; bump it there.
 
-The current project version is `0.23.2`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
+The current project version is `0.23.3`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
 
 Earlier `v1.x` labels in the changelog and commit history were internal development milestone labels. They are retained as historical notes, but they are not formal stable public releases.
 
