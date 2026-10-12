@@ -10,7 +10,7 @@ Data:
 
 - Milestone 1 "Ask & Evidence": PortalVS, NBS, telecom and ŠÚ SR elections outreach packages were sent manually by the maintainer on 2026-10-11; all are `SENT_AWAITING_REPLY` and no permission is inferred (states in `docs/research/source-licence-outreach.md`). Retain exact Eurostat/TED/NBS/Slov-Lex/MŠVVaM wording in evidence docs.
 - PortalVS transition: 0.23.3 verified both systems live and concluded `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` — temp-dir manifests/snapshots retained locally (not committed), successor rebuild is offline transforms only. Keep watching the 2026-10-31 legacy end-of-support date and the outreach reply (`docs/research/portalvs-source-resilience.md`).
-- Recommended next: **0.23.4 — Exchange Rates Production Surface**. 0.23.3 concluded `GO_PRODUCTION_NEXT`: ECB reuse permission is explicit, acquisition is the intended machine channel, the offline importer is prototype-tested, and full-history JSON is ~3.5 MiB. If an outreach reply arrives first, evaluate whether a small evidence-driven compliance/promotion milestone supersedes it.
+- 0.23.4 delivered the exchange-rates production surface (see Completed). Next milestone is reassessed from: (1) any of the four outreach replies, (2) production behavior of exchange rates, (3) outstanding launch-readiness work (rate limiting, scheduled public smoke monitoring), (4) developer adoption priorities.
 - Elections evidence stays parked pending a ŠÚ SR reply: retain election-specific CC BY 4.0 coverage, attribution and an approved acquisition workflow. The general policy's automated-download prohibition is a real gate, not an inferred exception. No reply is assumed from any of the four packages.
 
 Trust & provenance:
@@ -43,7 +43,7 @@ Data:
 
 - ITMS EU funds (licence capture needed).
 - ŠÚKL medicines (licence unstated).
-- ECB euro reference rates: promoted out of Watch by 0.23.3 (`GO_PRODUCTION_NEXT`; synthesis in `docs/research/exchange-rates-spike.md`). Business-day utility itself is delivered in 0.23.1.
+- ECB euro reference rates: promoted to production in 0.23.4 (see Completed); business-day utility delivered in 0.23.1.
 - Slov-Lex legislation metadata catalogue (after elections; § 5 písm. b) exclusion verified).
 - NCZI healthcare facilities; CVTI/RIS institution-level schools; ÚVO national procurement; Ministry court-decision metadata — all gated, see `docs/source-compliance.md`.
 
@@ -66,6 +66,7 @@ Architecture:
 
 ## Completed (recent milestones)
 
+- 0.23.4: ECB exchange-rate production surface — `GET /v1/exchange-rates/latest` + `GET /v1/exchange-rates/{date}` (37 GET operations total), full-history `data/exchange_rates.json` snapshot (1999-01-04→2026-10-12, 7,112 dates, 221,296 rows, 6,006,060 bytes), decimal-string rates, exact-date/no-fallback semantics, optional `?currency=` filter, production `exchangeRates` catalogue entry (licence verified), ETag/Last-Modified + per-route Cache-Control, production importer with historical-change refresh guard, manual offline refresh policy. No runtime upstream calls; no database (`JSON_CONTINUE`; ~74 ms cold parse, ~23 MiB retained heap measured). Elections stay research-only; the four outreach replies remain pending.
 - 0.23.3: exchange-rates spike (`GO_PRODUCTION_NEXT`, `JSON_CONTINUE`) + PortalVS source resilience (`SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES`) + outreach state alignment (all four packages `SENT_AWAITING_REPLY` since 2026-10-11). ECB eurofxref feeds measured (1999-01-04→present, 7,111 dates, 221,267 rows), offline importer prototype with strict validation; research-only `exchangeRates` source entry; **no public exchange-rate or elections endpoint, no production dataset**. Evidence: `docs/research/exchange-rates-spike.md`, `docs/research/portalvs-source-resilience.md`.
 - 0.23.2: NR SR 2023 source/licence/schema/privacy spike and offline import prototype; `GO_AFTER_LICENCE_EVIDENCE`, `JSON_CONTINUE`. No public elections results endpoint or production data. NR SR 2020/referendum 2023 samples establish dialect and semantic drift; ŠÚ SR outreach sent manually 2026-10-11, awaiting reply. Evidence: `docs/research/elections-spike.md`.
 - 0.23.1: trust and utility surface — `/v1/sources` curated provenance catalogue, business-day check/add/between utilities, ETag/Last-Modified caching + cache policy, version single-sourcing, CI merge + Dependabot + source-health checker, rate-limit contract (implementation deferred).

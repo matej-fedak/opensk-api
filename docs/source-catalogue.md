@@ -62,7 +62,7 @@ Per-id curated values (public names, limitations, update cadences, licence names
 
 0.23.2 adds an eighteenth domain, `elections`: `research`, coverage `null`, licence `pending`. General ŠÚ SR CC BY 4.0 terms are identified, but election-specific applicability and permitted acquisition require clarification. This entry does not make election results available or grant reuse permission.
 
-0.23.3 adds a nineteenth domain, `exchangeRates`: `research`, coverage `null`, licence `verified` (explicit ECB free-use permission retained; attribution and informational-only notices required). This entry does not make exchange rates available through any results route and grants no rights beyond the ECB's own wording.
+0.23.3 added a nineteenth domain, `exchangeRates`, as `research` with licence `verified`. 0.23.4 promotes it to `production` with coverage `complete` (complete relative to the imported ECB full-history eurofxref feed — not all world currencies, not live FX, not every calendar date): `data/exchange_rates.json` is a checked-in runtime dataset served by `/v1/exchange-rates`, its `lastUpdated` tracks `EXCHANGE_RATES_LAST_UPDATED`, and its limitations state the informational-only/ECB-publication-date semantics plus the manual offline refresh lag.
 
 ## Filters
 

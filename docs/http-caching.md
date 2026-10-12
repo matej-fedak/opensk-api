@@ -22,7 +22,13 @@ OpenSK responses are computed from checked-in deterministic JSON datasets, so HT
 | Static lists/details/stats/utilities | all dataset list, detail, stats, lookup, IBAN, business-days, and sources routes | `public, max-age=86400` | Content changes only on dataset releases (days to months). |
 | Search | `/v1/psc/search`, `/v1/phone-areas/search`, `/v1/vehicle-registration-codes/search`, `/v1/procurement-notices/search` | `public, max-age=900` | Query-shaped traffic; shorter lifetime limits stale-search windows. |
 | Meta | `/` | `public, max-age=3600` | Stable metadata; cheap to revalidate anyway via ETag. |
+| Exchange-rate latest | `/v1/exchange-rates/latest` | `public, max-age=3600` | Snapshot-latest alias changes whenever the local ECB snapshot is refreshed. |
 | Health | `/v1/health` | `no-store` | Live check must never be served from cache. |
+
+Historical exact-date exchange-rate responses (`/v1/exchange-rates/{date}`, including
+filtered variants) use the static 86400 policy: they are stable within a checked-in
+snapshot. Both exchange-rate routes carry `Last-Modified` from
+`EXCHANGE_RATES_LAST_UPDATED` (the newest ECB publication date in the snapshot).
 
 Error responses keep the route-level `Cache-Control` they already carried; the middleware does not modify them.
 

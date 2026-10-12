@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.3` pre-1.0 exchange-rates spike & source-resilience milestone - research/tooling only; no public exchange-rate or elections endpoint.
+Status: `0.23.4` pre-1.0 exchange-rates production milestone — materialized ECB euro reference rates served from local data; no elections endpoint.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -44,8 +44,12 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2026 holiday coverage | strict error outside supported years |
+| `GET /v1/exchange-rates/latest` | Latest ECB EUR reference rates in the local snapshot (not live rates) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
+| `GET /v1/exchange-rates/{date}` | ECB EUR reference rates for an exact publication date (404 otherwise; optional `?currency=` filter) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
 
 `/v1/schools` is intentionally not implemented. The confirmed MŠVVaM open-data CSV is aggregate-only, and the institution-level RIS/CVTI candidates still lack verified production reuse, acquisition, identifier, coverage, and privacy gates. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
+
+Exchange rates are official European Central Bank reference rates, normalized from the ECB eurofxref XML feed into local JSON (rate values reproduced verbatim as decimal strings). `1 EUR = X units of the foreign currency` — for example `USD = "1.16"` means 1 EUR = 1.16 USD. Exact ECB publication dates only: there is no weekend, TARGET-holiday or nearest-date fallback, and `latest` means the newest publication date in the OpenSK snapshot (it can lag the ECB until the offline refresh runs). The ECB publishes these rates for information purposes only and strongly discourages using them for transaction or settlement purposes; they are not live market prices. Currency availability changes historically (legacy series such as SKK and suspended series such as RUB are included for their publication windows).
 
 ## PSC Collection Surface
 
@@ -109,6 +113,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Root and error envelopes now use `metadata.lastUpdated: null` instead of a daily-changing date; dataset routes keep their real dataset dates.
 - 0.23.2 investigates NR SR 2023 aggregate election statistics with an offline, dry-run-first import prototype. Decision: `GO_AFTER_LICENCE_EVIDENCE` (including approved acquisition). `/v1/sources/elections` is research-only with pending licence status; no results endpoint or production election JSON is added. Raw official files and generated previews are not committed.
 - 0.23.3 verifies ECB exchange-rate sources and PortalVS legacy→successor resilience. Decisions: `GO_PRODUCTION_NEXT` (exchange rates, production milestone recommended) and `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` (PortalVS). `/v1/sources/exchangeRates` is research-only (licence verified); no exchange-rate results endpoint or production dataset is added. All four licence-outreach packages are `SENT_AWAITING_REPLY` since 2026-10-11.
+- 0.23.4 promotes ECB euro reference rates to production: `GET /v1/exchange-rates/latest` and `GET /v1/exchange-rates/{date}` serve the full-history ECB snapshot (1999-01-04 onwards) materialized offline at `data/exchange_rates.json`. Rates are decimal strings (`1 EUR = rate units of the foreign currency`), exact publication dates only (404 with no weekend/TARGET fallback), optional `?currency=` filter, ECB attribution and "information purposes only / transaction use strongly discouraged" notices, ETag/Last-Modified conditional caching. `/v1/sources/exchangeRates` is now production (licence verified). No runtime upstream calls; elections stay research-only; the four outreach replies remain pending (no permission inferred from silence).
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
 - `/v1/court-decisions` is intentionally not implemented because no court-decision source has passed reuse/redistribution and privacy gates.
