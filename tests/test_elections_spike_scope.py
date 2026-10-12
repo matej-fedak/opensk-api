@@ -11,7 +11,8 @@ def test_elections_spike_adds_no_results_routes() -> None:
     client = TestClient(app)
     paths = client.get("/openapi.json").json()["paths"]
     assert not any(path.startswith("/v1/elections") for path in paths)
-    assert sum("get" in methods for methods in paths.values()) == 35
+    # 35 pre-0.23.4 operations plus the two exchange-rates production routes.
+    assert sum("get" in methods for methods in paths.values()) == 37
     root = client.get("/").json()
     assert root["data"]["apiNamespace"] == "/v1"
     assert root["metadata"]["version"] == "v1"

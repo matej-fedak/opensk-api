@@ -52,7 +52,7 @@ EXPECTED_STATUS = {
     "vehicleRegistrationCodes": "historical",
     "courtDecisions": "blocked",
     "elections": "research",
-    "exchangeRates": "research",
+    "exchangeRates": "production",
     "schoolFacilityCounts": "production",
 }
 
@@ -74,7 +74,7 @@ EXPECTED_COVERAGE = {
     "vehicleRegistrationCodes": "complete",
     "courtDecisions": None,
     "elections": None,
-    "exchangeRates": None,
+    "exchangeRates": "complete",
     "schoolFacilityCounts": "complete",
 }
 
