@@ -233,7 +233,8 @@ def test_openapi_models_keep_rates_as_strings() -> None:
     data_schema = openapi["components"]["schemas"]["ExchangeRatesData"]
     rates_schema = data_schema["properties"]["rates"]
     assert rates_schema["additionalProperties"]["type"] == "string"
-    assert data_schema["properties"]["base"] == {"const": "EUR", "title": "Base", "type": "string"} or True
+    base_schema = data_schema["properties"]["base"]
+    assert base_schema["type"] == "string" and base_schema["const"] == "EUR"
     date_schema = openapi["components"]["schemas"]["ExchangeRatesResponseMetadata"]
     assert "lastUpdated" in date_schema["properties"]
 
