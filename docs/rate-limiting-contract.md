@@ -19,7 +19,7 @@ Rate limiting protects OpenSK only. It has nothing to do with protecting ECB, Po
 ## Policy
 
 - **100 requests per 60 seconds per client IP**, fixed window.
-- Fixed-window boundary behavior is a accepted simplification for this deployment: a client may send up to 2× the limit inside a narrow window straddling a boundary. This is documented rather than eliminated with a more complex algorithm.
+- Fixed-window boundary behavior is an accepted simplification for this deployment: a client may send up to 2× the limit inside a narrow window straddling a boundary. This is documented rather than eliminated with a more complex algorithm.
 - Scope: `GET` requests to `/` and `/v1/*`.
 - Exempt: `GET /v1/health` (uptime/monitoring must never be throttled; health responses also carry no rate-limit headers).
 - Out of scope (unchanged): `/docs`, `/redoc`, `/openapi.json` (framework paths outside `/v1`), and CORS `OPTIONS` preflights (handled by the outer CORS middleware, never reaching the limiter).
@@ -28,7 +28,8 @@ Rate limiting protects OpenSK only. It has nothing to do with protecting ECB, Po
 
 Bucket identity is a validated IP address:
 
-- **On Render** (`RENDER=true`): read `X-Forwarded-For`, walk entries **right-to-left**, skip entries that are not parseable IP addresses and entries inside **published Cloudflare IP ranges** (<https://www.cloudflare.com/ips-v4/>, `ips-v6/`, captured 2026-10-12); take the first remaining entry. Cloudflare always appends the real connecting peer on the right, so walking right-to-left past Cloudflare's own egress hops yields the real client even if Render's load balancer appends another hop. Entries a client forged sit to the *left* of the appended real IP and are never reached, so **fake headers cannot mint fresh identities** (worst case they are ignored). If no usable entry exists, fall back to a shared fail-closed `"unknown"` bucket.
+- **On Render** (`RENDER=true`): read `X-Forwarded-For` (all header instances), walk entries **right-to-left**, skip entries that are not parseable IP addresses, are not globally routable (private/reserved/loopback/link-local), or fall inside **published Cloudflare IP ranges** (<https://www.cloudflare.com/ips-v4/>, `ips-v6/`, captured 2026-10-12); take the first remaining entry. Cloudflare always appends the real connecting peer on the right, so walking right-to-left past proxy hops (including a hop Render's load balancer may append) yields the real client whenever the client connects from a normal ISP address. Entries a client forged sit to the *left* of the appended real IP and are never reached, so **fake headers cannot mint fresh identities**. If no global, non-Cloudflare entry survives, fall back to the rightmost valid entry — fail-closed into a coarse shared-ish bucket, never a bypass.
+- Known residual caveat: a client connecting **through Cloudflare itself** (e.g. a Cloudflare Worker fetch) presents a Cloudflare egress IP as the real peer, which the walk skips in favor of entries further left; such a client can shift identity within its own forged left-hand entries. This is accepted for the stated threat model (accidental loops, simple abuse) and shared by any X-Forwarded-For-based design behind Cloudflare; `CF-Ray` in Render logs remains the audit signal if abuse emerges.
 - **Off Render**: use the immediate peer (`request.scope["client"]`). Arbitrary `X-Forwarded-For` is ignored entirely — there is no trusted-proxy configuration for local/test runs.
 - Malformed/missing identity never bypasses limiting; it maps to the shared `"unknown"` bucket.
 - IPv4 and IPv6 are both supported (Python `ipaddress`).
@@ -50,6 +51,7 @@ Unknown values fall back to `auto`. No configuration library is used; `os.enviro
 - State is **in-memory, process-local, best-effort**: a map `identity -> count` plus the current window identifier, protected by a lock; when the window rolls over the map is discarded, so no per-IP state accumulates across windows.
 - Restarts/deploys wipe counters — acceptable; the limiter is a guardrail, not a quota product.
 - It does **not** provide a globally exact quota if OpenSK later runs multiple workers/instances. **Review trigger:** if OpenSK moves to multiple serving processes/instances, or rate-limit accuracy becomes a product requirement, revisit edge/shared-state limiting (then out of current scope; no Redis today).
+- Buckets are per client **IP**, so everyone behind one NAT (office, school, carrier-grade NAT) shares a bucket; 100/minute is generous for a cached read-only data API, but a noisy-neighbor 429 heals within ≤60 s with `Retry-After`. Similarly, forcing `OPENSK_RATE_LIMIT_ENABLED=true` on a self-hosted deployment behind an untracked reverse proxy yields a single shared bucket (peer = proxy IP) unless the proxy topology matches the Render trust model.
 
 ## Response Contract
 
@@ -89,4 +91,4 @@ Limited responses (any status, including 304) carry:
 
 ## Scheduled Public Smoke Monitoring
 
-A separate GitHub Actions workflow (`.github/workflows/public-smoke.yml`) runs the smoke suite daily against `https://opensk-api.onrender.com` (UTC cron, `workflow_dispatch` also available), warm-starting the free-tier instance through `/v1/health` first. It behaves like a normal external developer — no rate-limit bypass — and its ~40 requests sit comfortably below the 100/minute limit. See `docs/release-readiness.md` for what this monitoring is and is not (best-effort daily check, not an uptime SLA).
+A separate GitHub Actions workflow (`.github/workflows/public-smoke.yml`) runs the smoke suite daily against `https://opensk-api.onrender.com` (06:17 UTC, `workflow_dispatch` also available), warm-starting the free-tier instance through `/v1/health` first (~2 minutes of retries, worst case ~7 minutes including request timeouts). It behaves like a normal external developer — no rate-limit bypass — and its 40 requests sit comfortably below the 100/minute limit. A green run requires production to be deployed from the same ref, so a manual dispatch from a pre-merge branch legitimately fails the version and (pre-deploy) rate-limit checks. GitHub disables scheduled workflows after 60 days of repository inactivity; wake it by any commit/re-enable. See `docs/release-readiness.md` for what this monitoring is and is not (best-effort daily check, not an uptime SLA).

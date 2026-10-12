@@ -2,9 +2,9 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.23.1`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 35 GET operations: root plus 34 `/v1` operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
+OpenSK API is pre-1.0 at `0.23.5`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 37 GET operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
 
-OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence and CI/release operations are not yet strong enough for a stable public release.
+OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence (notably PortalVS) is still unresolved — and sending clarification outreach is not permission. Operational guardrails (application rate limiting, daily scheduled public smoke monitoring) are in place since 0.23.5; public promotion remains gated by source compliance, not by operations.
 
 ## Must-Fix Before 1.0
 
@@ -48,7 +48,9 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - Render configuration is checked in as `render.yaml`.
 - Build command is `pip install -r requirements.txt`.
 - Start command is `uvicorn main:app --host 0.0.0.0 --port $PORT`.
-- No application-specific environment variables are required beyond Render-provided `PORT`.
+- No application-specific environment variables are required beyond Render-provided `PORT` and `RENDER`; the rate limiter is auto-enabled under `RENDER=true` and can be overridden with `OPENSK_RATE_LIMIT_ENABLED` (`auto|true|false`).
+- The application rate limiter (100 requests/60 s/client-IP, fixed window, in-memory process-local) protects the single-instance deployment; policy and evidence in `docs/rate-limiting-contract.md`. It is not a globally exact quota across multiple instances; revisit shared-state limiting on that documented trigger.
+- The `Public Smoke` GitHub Actions workflow runs `scripts/smoke_test.py --expect-rate-limit` daily (06:17 UTC, `workflow_dispatch` available) against the public deployment with a bounded `/v1/health` warm-up for free-tier cold starts. It is a best-effort daily external check — not an uptime SLA, incident management, or latency monitoring. Its own Actions failure status is the alerting channel; no external monitoring service is used. Caveat: GitHub auto-disables scheduled workflows after 60 days of repository inactivity — re-enable via any commit or the Actions UI.
 - Runtime datasets are checked in under `data/`; missing required files should fail fast through tests, dataset validation, or endpoint errors rather than silently fetching upstream data.
 - `/v1/health`, `/docs`, `/openapi.json`, and `scripts/smoke_test.py` are the minimum deployment verification surfaces.
 - Public smoke tests may show stale deployment versions until Render has redeployed the latest `main`.
