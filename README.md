@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.2` pre-1.0 Slovak elections data spike — research/tooling only; no public elections endpoint.
+Status: `0.23.3` pre-1.0 exchange-rates spike & source-resilience milestone - research/tooling only; no public exchange-rate or elections endpoint.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -39,8 +39,8 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/procurement-notices/{id}` | Public procurement notice lookup | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/search` | Public procurement notice search | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
-| `GET /v1/sources` | Curated public source/licence provenance catalogue | 18 registered domains | unresolved licence status stays unresolved |
-| `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 18 registered domains | internal maintainer fields are excluded |
+| `GET /v1/sources` | Curated public source/licence provenance catalogue | 19 registered domains | unresolved licence status stays unresolved |
+| `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 19 registered domains | internal maintainer fields are excluded |
 | `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2026 holiday coverage | strict error outside supported years |
@@ -78,6 +78,8 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
 - `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
 - `docs/research/elections-spike.md` records the NR SR 2023 spike decision, source/schema evidence, offline prototype and production gates.
+- `docs/research/exchange-rates-spike.md` records the ECB exchange-rates spike decision and the offline importer evidence.
+- `docs/research/portalvs-source-resilience.md` records the PortalVS legacy→successor compatibility verdict and retained transition evidence.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
 - `docs/privacy-review.md` records the current privacy review.
 - `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
@@ -106,6 +108,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - 0.23.1 adds the curated `/v1/sources` provenance catalogue, Slovak business-day utilities with strict 2024-2026 holiday coverage, deterministic ETag/Last-Modified conditional caching, project-version single-sourcing (`version.py`), unified CI, Dependabot, a manual source-health checker, and a documented (not implemented) rate-limit contract.
 - Root and error envelopes now use `metadata.lastUpdated: null` instead of a daily-changing date; dataset routes keep their real dataset dates.
 - 0.23.2 investigates NR SR 2023 aggregate election statistics with an offline, dry-run-first import prototype. Decision: `GO_AFTER_LICENCE_EVIDENCE` (including approved acquisition). `/v1/sources/elections` is research-only with pending licence status; no results endpoint or production election JSON is added. Raw official files and generated previews are not committed.
+- 0.23.3 verifies ECB exchange-rate sources and PortalVS legacy→successor resilience. Decisions: `GO_PRODUCTION_NEXT` (exchange rates, production milestone recommended) and `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` (PortalVS). `/v1/sources/exchangeRates` is research-only (licence verified); no exchange-rate results endpoint or production dataset is added. All four licence-outreach packages are `SENT_AWAITING_REPLY` since 2026-10-11.
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
 - `/v1/court-decisions` is intentionally not implemented because no court-decision source has passed reuse/redistribution and privacy gates.

@@ -35,6 +35,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 Notes:
 
 - Elections (0.23.2) are research/tooling-only: official NR SR 2023 aggregate CSVs, verified UTF-8/comma/dot-decimal format and native geography. General ŠÚ SR CC BY 4.0 terms are retained, but election-specific coverage and approved acquisition need clarification. No production snapshot/results endpoint; details and measured files in `docs/research/elections-spike.md`.
+- Exchange rates (0.23.3) are research/tooling-only: ECB eurofxref feeds verified (explicit free-use permission with attribution; NBS merely republishes ECB), offline importer prototype, full-history JSON ≈ 3.5 MiB. Decision `GO_PRODUCTION_NEXT`; no production dataset or endpoint yet. Details in `docs/research/exchange-rates-spike.md`. PortalVS successor compatibility evidence: `docs/research/portalvs-source-resilience.md` (verdict `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES`; licence still pending).
 
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
 - Municipalities are sourced from PortalVS classifier 9 (`Obce`) and the runtime dataset currently covers 2,927 regular Slovak municipality rows with district mappings derived from `code_su`.

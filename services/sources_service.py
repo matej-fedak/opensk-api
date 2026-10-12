@@ -70,6 +70,7 @@ _PUBLIC_NAMES: dict[str, str] = {
     "vehicleRegistrationCodes": "Vehicle registration district codes",
     "courtDecisions": "Court decisions",
     "elections": "Slovak election aggregate results",
+    "exchangeRates": "EUR reference exchange rates",
     "schoolFacilityCounts": "School facility counts",
 }
 
@@ -91,6 +92,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "vehicleRegistrationCodes": "static (historical)",
     "courtDecisions": "unknown",
     "elections": "historical snapshot; manual correction review",
+    "exchangeRates": "upstream TARGET working days; snapshot cadence undecided",
     "schoolFacilityCounts": "semiannual",
 }
 
@@ -128,11 +130,17 @@ _LIMITATIONS: dict[str, list[str]] = {
         "Election-specific reuse and permitted acquisition require clarification.",
         "Aggregate-only scope; candidate and preference-vote files are excluded.",
     ],
+    "exchangeRates": [
+        "Research spike complete; no exchange-rate endpoint or production dataset yet.",
+        "Rates are official informational reference values, not tradable or live prices.",
+        "Source is ECB (EU-level); NBS merely republishes the ECB feed.",
+    ],
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
 }
 
 _LICENCE_NAMES: dict[str, str] = {
     "elections": "CC BY 4.0 (general ŠÚ SR policy; election applicability pending)",
+    "exchangeRates": "ECB free-use permission (attribution required)",
     "regions": "Eurostat reuse policy",
     "procurementNotices": "TED / Publications Office reuse terms",
     "schoolFacilityCounts": "Creative Commons BY (version not specified)",

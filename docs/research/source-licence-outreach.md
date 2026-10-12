@@ -2,15 +2,17 @@
 
 These are prepared outreach packages for the human maintainer to send. Do not send emails automatically. This document pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and a ready-to-send Slovak message where a message is still required.
 
+**Dispatch status 2026-10-11 (0.23.3):** the human maintainer states that four packages were manually sent on **2026-10-11**: section 1 (PortalVS, To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`), section 2 (NBS bank-code directory, To `info@nbs.sk`), section 4 (telecom regulator, To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`), and section 7 (ŠÚ SR NRSR2023 elections, To `info@statistics.sk`, CC `volby@statistics.sk`). All four are now `SENT_AWAITING_REPLY`: no reply has been received, and sending a question grants no permission. No Message-ID, delivery confirmation or exact sent body is independently retained in this repository; the drafts below are the prepared texts and are not asserted to be byte-for-byte identical to what was sent. No mailbox headers or personal metadata are published.
+
 Related documents:
 
 - `docs/research/source-licence-questions.md` holds the original draft question lists.
 - `docs/research/source-verification-evidence.md` holds retained source evidence.
 - `docs/source-compliance.md` holds the per-dataset compliance matrix.
 
-## 1. PortalVS Classifiers 9, 10, and 42 — SEND REQUIRED (highest priority)
+## 1. PortalVS Classifiers 9, 10, and 42 — SENT_AWAITING_REPLY (highest priority)
 
-State: `READY_FOR_USER_TO_SEND`.
+State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`). No reply received as of 2026-10-11; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
 
 Datasets affected: districts, municipalities, PSC. These three datasets are `INCLUDE_AFTER_COMPLIANCE_FIX` for the candidate 1.0 scope, so this outreach is the single highest-value compliance action in the project.
 
@@ -79,9 +81,9 @@ S pozdravom
 [Meno]
 ```
 
-## 2. NBS Bank-Code Directory — SEND REQUIRED
+## 2. NBS Bank-Code Directory — SENT_AWAITING_REPLY
 
-State: `READY_FOR_USER_TO_SEND`.
+State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `info@nbs.sk`). No reply received as of 2026-10-11; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
 
 Dataset affected: banks (complete imported; candidate 1.0 Yellow).
 
@@ -162,9 +164,9 @@ Required action even without an email:
 
 If the NBS bank-directory reply (section 2) reveals stricter terms than expected, re-evaluate holidays contact at that time.
 
-## 4. Telecom Regulator Phone-Area Workbook — SEND REQUIRED
+## 4. Telecom Regulator Phone-Area Workbook — SENT_AWAITING_REPLY
 
-State: `READY_FOR_USER_TO_SEND`.
+State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`). No reply received as of 2026-10-11; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
 
 Dataset affected: phone areas (complete imported; candidate 1.0 Yellow; 3 unmatched source municipality rows remain).
 
@@ -244,10 +246,10 @@ These are recorded so the compliance matrix can move from "terms page identified
 
 ## Dispatch Checklist
 
-1. Send section 1 (PortalVS) first; it blocks the Red compliance rows and the candidate 1.0 inclusion of districts, municipalities, and PSC.
-2. Send section 2 (NBS banks) and section 4 (telecom) in the same week; replies determine whether their Yellow rows can advance.
+1. ~~Send section 1 (PortalVS) first~~ — done 2026-10-11 (`SENT_AWAITING_REPLY`); the reply still blocks the Red compliance rows and the candidate 1.0 inclusion of districts, municipalities, and PSC.
+2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11 (`SENT_AWAITING_REPLY`); replies determine whether their Yellow rows can advance. Section 7 (ŠÚ SR elections) was dispatched the same day.
 3. After each reply, update `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` in the same commit so they stay aligned.
-4. Retain the exact sent message text and received replies under `docs/research/` (redact personal email addresses before committing, if desired).
+4. Retain the exact sent message text and received replies under `docs/research/` (redact personal email addresses before committing, if desired). The exact sent bodies are currently retained privately by the maintainer, not in this repository.
 5. If no reply arrives within a reasonable interval, record a follow-up date in `docs/verification-backlog.md` rather than letting the item go stale.
 
 ## What Not To Do
@@ -259,7 +261,7 @@ These are recorded so the compliance matrix can move from "terms page identified
 
 ## 7. NRSR2023 Elections — COVERAGE AND ACQUISITION CLARIFICATION REQUIRED
 
-State: `READY_FOR_USER_TO_SEND`. **UNSENT — no message sent by the agent.** Existing outreach states above are unchanged.
+State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `info@statistics.sk`, CC `volby@statistics.sk`). No reply received as of 2026-10-11; no permission is inferred from sending, and a sent request is not an approval. The draft below is the prepared text, not a retained copy of the sent message.
 
 Verified **2026-10-11**: `https://volby.statistics.sk/nrsr/nrsr2023/sk/kontakty.html` lists `info@statistics.sk` as Informačný servis and `volby@statistics.sk` as Obsahový správca a technický prevádzkovateľ. These are verified public contacts, not an inferred licensing-officer address.
 
@@ -267,7 +269,7 @@ To: `info@statistics.sk`; CC: `volby@statistics.sk`.
 
 Evidence: `docs/research/elections-source-licence.md`. General ŠÚ SR terms expressly permit distribution/commercial use and name CC BY 4.0, but also expressly prohibit robots/crawlers/similar data-gathering/download tools. Election-subdomain coverage and an approved acquisition route need clarification; offered downloads alone are not permission.
 
-Evidence retention: the maintainer should retain the sent message and dated reply privately, including the responding institution, named files, licence scope, acquisition permission and attribution conditions. Add exact relevant wording and its date to `source-verification-evidence.md`; redact personal contact details before publishing. Keep `READY_FOR_USER_TO_SEND` until the maintainer actually sends it; a draft is not permission and a sent request is not an approval.
+Evidence retention: the maintainer retains the sent message and any dated reply privately, including the responding institution, named files, licence scope, acquisition permission and attribution conditions. Add exact relevant wording and its date to `source-verification-evidence.md`; redact personal contact details before publishing. Human-dispatched 2026-10-11 per the dispatch-status note at the top of this document; a draft is not permission and a sent request is not an approval.
 
 Subject: NRSR2023 — potvrdenie CC BY 4.0 a povoleného spôsobu získania a opakovaného použitia agregovaných výsledkov
 

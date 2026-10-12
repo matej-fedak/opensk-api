@@ -2,6 +2,20 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-10-11 ECB Euro Reference Rates (0.23.3 SPIKE)
+
+- Verdict: **CLEAR** — ECB "Disclaimer & copyright" retains explicit free-use permission ("users of this website may make free use of the information obtained directly from it") subject to accurate reproduction, ECB attribution, explicit statement of modifications, and no framing; "for information purposes only / transaction use strongly discouraged" notice retained from the reference-rates page.
+- Full retained wording, checked URLs, feed byte/hash evidence and residual questions (sui-generis right, no published rate limits, undocumented revision policy): `docs/research/exchange-rates-source-verification.md` and `docs/research/exchange-rates-data-schema.md`. NBS verified as republication-only (excluded as canonical). Synthesis/decision: `docs/research/exchange-rates-spike.md`. Raw downloads stay in the temp dir; no raw upstream file is committed. No ECB outreach is required; an optional sui-generis draft remains `READY_FOR_USER_TO_SEND`, unsent.
+
+## 2026-10-11 PortalVS Legacy/Successor Resilience (0.23.3)
+
+- Both systems live-verified; the legacy end-of-support banner (2026-10-31) is unchanged; dated transition manifests + SHA-256 snapshots for legacy classifiers 9/10/42 and successor `slovenske-obce`/`slovenske-okresy`/`psc-sk` are retained in the maintainer's temp dir only (not committed; rights pending). Verdict `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES`; evidence and per-dataset analysis: `docs/research/portalvs-source-resilience.md`. No licence conclusion drawn.
+
+## 2026-10-11 Outreach Dispatch Record (maintainer statement, no reply evidence)
+
+- The human maintainer states that four clarification packages in `docs/research/source-licence-outreach.md` were sent manually on **2026-10-11**: §1 PortalVS classifiers 9/10/42 (To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`), §2 NBS bank-code directory (To `info@nbs.sk`), §4 telecom-regulator phone-area workbook (To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`), §7 ŠÚ SR NRSR2023 elections (To `info@statistics.sk`, CC `volby@statistics.sk`).
+- All four states are `SENT_AWAITING_REPLY`. No reply has been received as of 2026-10-11 and silence is not approval. No Message-ID, delivery receipt, timestamp beyond the date, or exact sent body is independently retained here; the repository keeps the prepared drafts only. No mailbox headers or personal metadata are published.
+
 ## 2026-09-28 VAT Registrations
 
 - Official source: Finančná správa SR `Zoznam daňových subjektov registrovaných pre DPH`.
@@ -113,5 +127,5 @@ This log records evidence checked for source and licence decisions. It is intent
 - Critical exact restriction: `používanie robotov, pavúkov (spiders, crawlers) a ďalších podobných nástrojov na zhromažďovanie a sťahovanie dát, je výslovne zakázané.` No automated-download exception inferred from the file index.
 - Contact verified from `https://volby.statistics.sk/nrsr/nrsr2023/sk/kontakty.html`: information service `info@statistics.sk`; content/technical administrator `volby@statistics.sk`.
 - Confidence: high for official provenance/index/general-policy wording/contact; medium for general policy coverage of election subdomain; no affirmative automated acquisition approval. Election minutes list a separate commission/MV source and are excluded from this scope.
-- Decision: retain `RESEARCH_AND_TOOLING_ONLY` / source/licence verification pending until election-specific coverage and approved acquisition workflow are clarified. Outreach is `READY_FOR_USER_TO_SEND`, unsent. No raw dataset downloads or production changes by source/licence agent.
+- Decision: retain `RESEARCH_AND_TOOLING_ONLY` / source/licence verification pending until election-specific coverage and approved acquisition workflow are clarified. Outreach was `READY_FOR_USER_TO_SEND` at spike completion; update 2026-10-11 (0.23.3): the human maintainer states the message was sent manually on 2026-10-11 — `SENT_AWAITING_REPLY`, no reply received, no permission inferred. No raw dataset downloads or production changes by source/licence agent.
 - Independent data-track byte/response/header/hash evidence and historical samples: `docs/research/elections-data-schema.md`. The lead's final offline transformation and rights/privacy/storage synthesis are in `docs/research/elections-spike.md`; raw files remain outside Git, with no new scripted acquisition after the restriction was communicated. Technical success does not supply acquisition or redistribution permission.
