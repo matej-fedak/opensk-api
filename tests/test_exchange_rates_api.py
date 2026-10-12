@@ -81,6 +81,14 @@ def test_malformed_dates_are_400_invalid_format(day: str) -> None:
     assert _body(response)["error"]["code"] == "INVALID_FORMAT"
 
 
+@pytest.mark.parametrize("day", ["2026-02-30", "2026-13-40", "2025-02-29"])
+def test_impossible_calendar_dates_are_400_not_404(day: str) -> None:
+    # Shape-valid but nonexistent calendar dates are malformed input, not "no publication".
+    response = client.get(f"/v1/exchange-rates/{day}")
+    assert response.status_code == 400
+    assert _body(response)["error"]["code"] == "INVALID_FORMAT"
+
+
 def test_latest_is_not_swallowed_by_dynamic_date_route() -> None:
     response = client.get(LATEST)
     assert response.status_code == 200
@@ -145,7 +153,9 @@ def test_filter_on_missing_date_still_reports_date_error() -> None:
 def test_eur_is_never_an_acceptable_currency_filter() -> None:
     response = client.get(LATEST, params={"currency": "EUR"})
     assert response.status_code == 400
-    assert _body(response)["error"]["code"] == "UNSUPPORTED_CURRENCY"
+    error = _body(response)["error"]
+    assert error["code"] == "UNSUPPORTED_CURRENCY"
+    assert "base currency" in error["message"]
 
 
 # --- HTTP caching ---------------------------------------------------------------------

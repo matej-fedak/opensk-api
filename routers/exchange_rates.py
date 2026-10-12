@@ -1,4 +1,5 @@
 import re
+from datetime import date as calendar_date
 
 from fastapi import APIRouter, HTTPException, Query, Response
 
@@ -76,6 +77,13 @@ def _respond(day: str | None, currency: str | None, cache_control: str,
     try:
         record = get_latest(normalized) if day is None else get_for_date(day, normalized)
     except UnsupportedCurrencyError as exc:
+        if normalized == "EUR":
+            raise _http_error(
+                400, "UNSUPPORTED_CURRENCY",
+                "EUR is the fixed base currency and is never quoted against itself "
+                "(every rate already means 1 EUR = rate units of the foreign currency)",
+                "EUR je pevná základná mena a nikdy nie je kotované samo proti sebe",
+            )
         raise _http_error(
             400, "UNSUPPORTED_CURRENCY",
             f"Currency {exc.currency} has no rate anywhere in the ECB reference-rate "
@@ -150,5 +158,13 @@ def get_rates_for_date(
             400, "INVALID_FORMAT",
             f"date must be an ISO YYYY-MM-DD calendar date, got: {date!r}",
             f"Dátum musí byť kalendárny dátum vo formáte RRRR-MM-DD, zadané: {date!r}",
+        )
+    try:
+        calendar_date.fromisoformat(date)
+    except ValueError:
+        raise _http_error(
+            400, "INVALID_FORMAT",
+            f"date must be an existing calendar date, got: {date!r}",
+            f"Dátum musí byť existujúci kalendárny dátum, zadané: {date!r}",
         )
     return _respond(date, currency, STATIC_CACHE_CONTROL, response)
