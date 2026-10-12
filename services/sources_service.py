@@ -15,6 +15,7 @@ from pathlib import Path
 from schemas.common import (
     BANKS_LAST_UPDATED,
     DISTRICTS_LAST_UPDATED,
+    EXCHANGE_RATES_LAST_UPDATED,
     HOLIDAYS_LAST_UPDATED,
     MUNICIPALITIES_LAST_UPDATED,
     PHONE_AREAS_LAST_UPDATED,
@@ -47,6 +48,7 @@ _RUNTIME_DATASET_IDS = frozenset(
         "vehicleRegistrationCodes",
         "schoolFacilityCounts",
         "procurementNotices",
+        "exchangeRates",
     }
 )
 
@@ -92,7 +94,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "vehicleRegistrationCodes": "static (historical)",
     "courtDecisions": "unknown",
     "elections": "historical snapshot; manual correction review",
-    "exchangeRates": "upstream TARGET working days; snapshot cadence undecided",
+    "exchangeRates": "upstream every TARGET working day; manual offline snapshot refresh",
     "schoolFacilityCounts": "semiannual",
 }
 
@@ -131,9 +133,10 @@ _LIMITATIONS: dict[str, list[str]] = {
         "Aggregate-only scope; candidate and preference-vote files are excluded.",
     ],
     "exchangeRates": [
-        "Research spike complete; no exchange-rate endpoint or production dataset yet.",
-        "Rates are official informational reference values, not tradable or live prices.",
-        "Source is ECB (EU-level); NBS merely republishes the ECB feed.",
+        "ECB EUR reference rates only; informational values, not live, tradable or settlement prices.",
+        "Exact ECB publication dates only (TARGET working days); no weekend or fallback dates.",
+        "Currency availability changes historically (legacy euro-area and suspended series are included).",
+        "The snapshot is refreshed manually offline and can lag the latest ECB publication.",
     ],
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
 }
@@ -159,6 +162,7 @@ _RUNTIME_LAST_UPDATED: dict[str, str] = {
     "vehicleRegistrationCodes": VEHICLE_REGISTRATION_CODES_LAST_UPDATED,
     "schoolFacilityCounts": SCHOOL_FACILITY_COUNTS_LAST_UPDATED,
     "procurementNotices": PROCUREMENT_NOTICES_LAST_UPDATED,
+    "exchangeRates": EXCHANGE_RATES_LAST_UPDATED,
 }
 
 _COVERAGE_MAP = {"complete": "complete", "partial": "partial", "seed-backed": "seed", "unknown": None}

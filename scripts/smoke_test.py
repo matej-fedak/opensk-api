@@ -132,6 +132,8 @@ def _check_openapi(url: str) -> SmokeResult:
         "/v1/business-days/check",
         "/v1/business-days/add",
         "/v1/business-days/between",
+        "/v1/exchange-rates/latest",
+        "/v1/exchange-rates/{date}",
     }
     try:
         paths = set(body["paths"])
@@ -260,6 +262,10 @@ def main(argv: list[str] | None = None) -> int:
         ("sources", f"{base_url}/v1/sources"),
         ("source-item", f"{base_url}/v1/sources/regions"),
         ("business-days-check", f"{base_url}/v1/business-days/check?date=2026-10-08"),
+        ("exchange-rates-latest", f"{base_url}/v1/exchange-rates/latest"),
+        ("exchange-rates-exact", f"{base_url}/v1/exchange-rates/1999-01-04"),
+        ("exchange-rates-filter", f"{base_url}/v1/exchange-rates/latest?currency=usd"),
+        ("exchange-rates-weekend-404", f"{base_url}/v1/exchange-rates/2026-10-10", 404),
     ]
 
     results: list[SmokeResult] = [_check_root(f"{base_url}/")]

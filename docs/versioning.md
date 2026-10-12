@@ -2,7 +2,7 @@
 
 OpenSK API is currently in pre-1.0 development.
 
-0.23.3 is an exchange-rates spike and source-resilience milestone. It verifies ECB reuse terms/feeds with an offline importer prototype (`GO_PRODUCTION_NEXT`), verifies PortalVS legacy→successor compatibility (`SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES`), and records all four licence-outreach packages as sent awaiting reply. No production dataset or results endpoint is added. Project version lives in `version.PROJECT_VERSION`; bump it there.
+0.23.4 is an exchange-rates production milestone. It materializes the full-history ECB eurofxref snapshot at `data/exchange_rates.json`, adds `GET /v1/exchange-rates/latest` and `GET /v1/exchange-rates/{date}`, promotes `/v1/sources/exchangeRates` to production, and documents the manual offline refresh workflow. Elections remain research-only and no outreach reply changes any compliance state. Project version lives in `version.PROJECT_VERSION`; bump it there.
 
 The current project version is `0.23.3`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
 

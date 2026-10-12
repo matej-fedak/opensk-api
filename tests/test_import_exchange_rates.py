@@ -226,7 +226,7 @@ def test_preview_path_cannot_promote_to_production_or_escape(tmp_path: Path) -> 
     for path in (importer.ROOT / "data" / "exchange_rates.json", tmp_path / "preview.json",
                  importer.GENERATED_DIR / ".." / "exchange_rates.json",
                  importer.GENERATED_DIR / "preview.xml"):
-        with pytest.raises(ValueError, match="production writes are forbidden"):
+        with pytest.raises(ValueError, match="preview output must be"):
             importer.validate_preview_path(path)
 
 
@@ -288,3 +288,182 @@ def test_cli_dry_run_and_write_preview_are_mutually_exclusive(tmp_path: Path) ->
     report = json.loads(dry.stdout.decode("utf-8"))
     assert report["ok"] is True and report["dryRun"] is True
     assert report["merged"]["dates"] == 2
+
+
+URL_HIST = "https://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml"
+
+
+def hist_source(tmp_path: Path, raw: bytes) -> tuple[Path, str]:
+    path = tmp_path / "eurofxref-hist.xml"
+    path.write_bytes(raw)
+    return path, URL_HIST
+
+
+def production_target(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
+    target = tmp_path / "exchange_rates.json"
+    monkeypatch.setattr(importer, "PRODUCTION_OUTPUT", target)
+    return target
+
+
+def production_import(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, raw: bytes,
+                      **kwargs) -> importer.ImportResult:
+    target = production_target(tmp_path, monkeypatch)
+    source = hist_source(tmp_path, raw)
+    return importer.import_exchange_rates([source], dry_run=False, write_production=True,
+                                          output=target, **kwargs)
+
+
+def test_production_output_path_is_restricted(tmp_path: Path) -> None:
+    assert importer.validate_production_path(importer.PRODUCTION_OUTPUT) == \
+        importer.PRODUCTION_OUTPUT.resolve()
+    for path in (tmp_path / "exchange_rates.json", importer.DEFAULT_OUTPUT,
+                 importer.ROOT / "data" / "exchange_rates_preview.json"):
+        with pytest.raises(ValueError, match="restricted to data/exchange_rates.json"):
+            importer.validate_production_path(path)
+
+
+def test_production_mode_requires_single_canonical_source(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    target = production_target(tmp_path, monkeypatch)
+    wrong_url = import_errors(tmp_path, ("hist.xml", tiny()), dry_run=False, write_production=True,
+                              output=target)
+    assert "canonical URL" in wrong_url
+    path_a = tmp_path / "a.xml"
+    path_a.write_bytes(tiny())
+    path_b = tmp_path / "b.xml"
+    path_b.write_bytes(tiny())
+    two = importer.import_exchange_rates([(path_a, URL_HIST), (path_b, URL_HIST)], dry_run=False,
+                                         write_production=True, output=target)
+    assert not two.ok and "canonical URL" in two.errors[0]
+
+
+def test_production_modes_are_mutually_exclusive(tmp_path: Path) -> None:
+    path, url = write_source(tmp_path, "modes.xml", tiny())
+    for kwargs in (dict(dry_run=True, write_preview=True),
+                   dict(dry_run=True, write_production=True),
+                   dict(write_preview=True, write_production=True),
+                   dict(dry_run=False, write_preview=False, write_production=False)):
+        result = importer.import_exchange_rates([(path, url)], **kwargs)
+        assert not result.ok and "exactly one" in result.errors[0]
+
+
+def test_production_write_creates_house_payload(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    target = production_target(tmp_path, monkeypatch)
+    source = hist_source(tmp_path, tiny())
+    result = importer.import_exchange_rates([source], dry_run=False, write_production=True,
+                                            output=target)
+    assert result.ok, result.errors
+    assert result.report["dryRun"] is False and result.report["wroteProduction"] is True
+    assert result.report["refresh"] is None
+    written = json.loads(target.read_text(encoding="utf-8"))
+    metadata = written["metadata"]
+    assert metadata["publisher"] == "European Central Bank"
+    assert metadata["sourceUrl"] == URL_HIST
+    assert metadata["sourceSha256"] == hashlib.sha256(tiny()).hexdigest()
+    assert metadata["baseCurrency"] == "EUR"
+    assert metadata["directionSemantics"] == "1 EUR = rate units of the foreign currency"
+    assert "information purposes only" in metadata["notice"]
+    assert metadata["earliestDate"] == "2026-10-08" and metadata["latestDate"] == "2026-10-09"
+    assert metadata["lastUpdated"] == metadata["latestDate"] and metadata["complete"] is True
+    assert (metadata["dateCount"], metadata["rateRowCount"]) == (2, 6)
+    dates = written["dates"]
+    assert [entry["date"] for entry in dates] == ["2026-10-08", "2026-10-09"]
+    assert dates[1]["rates"] == {"CZK": "24.369", "GBP": "0.84763", "USD": "1.1206"}
+    # No research-preview marker, no floats, no local machine paths.
+    blob = target.read_bytes()
+    payload_text = blob.decode("utf-8")
+    assert "unapproved-research-preview" not in payload_text
+    assert '"1.1206"' in payload_text
+    assert str(tmp_path) not in payload_text and str(source[0]) not in payload_text
+    assert set(written) == {"metadata", "dates"}
+    assert result.payload == written
+    assert result.report["outputBytes"] == len(blob)
+    assert result.report["outputSha256"] == hashlib.sha256(blob).hexdigest()
+
+
+def test_production_write_is_deterministic(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first = production_import(tmp_path, monkeypatch, tiny())
+    assert first.ok
+    blob = (tmp_path / "exchange_rates.json").read_bytes()
+    again = production_import(tmp_path, monkeypatch, tiny())
+    assert again.ok
+    assert (tmp_path / "exchange_rates.json").read_bytes() == blob
+
+
+def test_production_refresh_reports_append_only_growth(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first = production_import(tmp_path, monkeypatch, tiny())
+    assert first.ok
+    grown = fixture({
+        "2026-10-08": {"USD": "1.1186", "CZK": "24.391", "GBP": "0.84712"},
+        "2026-10-09": {"USD": "1.1206", "CZK": "24.369", "GBP": "0.84763"},
+        "2026-10-12": {"USD": "1.1300", "CZK": "24.350", "GBP": "0.84800", "CHF": "0.9000"},
+    })
+    refresh = production_import(tmp_path, monkeypatch, grown)
+    assert refresh.ok, refresh.errors
+    diff = refresh.report["refresh"]
+    assert diff["oldLatestDate"] == "2026-10-09" and diff["newLatestDate"] == "2026-10-12"
+    assert (diff["oldDateCount"], diff["newDateCount"], diff["addedDates"]) == (2, 3, 1)
+    assert diff["addedDatesSample"] == ["2026-10-12"]
+    assert diff["removedDates"] == 0 and diff["historicalChanges"] == 0
+    assert diff["currenciesNewlySeen"] == ["CHF"]
+    assert diff["currenciesNoLongerOnLatest"] == []
+
+
+def test_production_refresh_reports_currency_leaving_latest(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first = production_import(tmp_path, monkeypatch, tiny())
+    assert first.ok
+    grown = fixture({
+        "2026-10-08": {"USD": "1.1186", "CZK": "24.391", "GBP": "0.84712"},
+        "2026-10-09": {"USD": "1.1206", "CZK": "24.369", "GBP": "0.84763"},
+        "2026-10-12": {"USD": "1.1300", "CZK": "24.350"},
+    })
+    refresh = production_import(tmp_path, monkeypatch, grown)
+    assert refresh.ok, refresh.errors
+    assert refresh.report["refresh"]["currenciesNoLongerOnLatest"] == ["GBP"]
+
+
+def test_production_refresh_blocks_historical_rewrite(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first = production_import(tmp_path, monkeypatch, tiny())
+    assert first.ok
+    before = (tmp_path / "exchange_rates.json").read_bytes()
+    rewritten = fixture({
+        "2026-10-08": {"USD": "1.9999", "CZK": "24.391", "GBP": "0.84712"},
+        "2026-10-09": {"USD": "1.1206", "CZK": "24.369", "GBP": "0.84763"},
+    })
+    blocked = production_import(tmp_path, monkeypatch, rewritten)
+    assert not blocked.ok
+    assert "rewrite or remove existing history" in blocked.errors[0]
+    assert "--acknowledge-changes" in blocked.errors[0]
+    assert (tmp_path / "exchange_rates.json").read_bytes() == before  # untouched
+    acknowledged = production_import(tmp_path, monkeypatch, rewritten, acknowledge_changes=True)
+    assert acknowledged.ok, acknowledged.errors
+    diff = acknowledged.report["refresh"]
+    assert diff["historicalChanges"] == 1
+    assert diff["historicalChangesSample"] == [
+        {"date": "2026-10-08", "currency": "USD", "from": "1.1186", "to": "1.9999"}]
+
+
+def test_production_refresh_blocks_truncated_history(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    first = production_import(tmp_path, monkeypatch, tiny())
+    assert first.ok
+    truncated = fixture({"2026-10-09": {"USD": "1.1206", "CZK": "24.369", "GBP": "0.84763"}})
+    blocked = production_import(tmp_path, monkeypatch, truncated)
+    assert not blocked.ok and "removedDates=1" in blocked.errors[0]
+    acknowledged = production_import(tmp_path, monkeypatch, truncated, acknowledge_changes=True)
+    assert acknowledged.ok
+    assert acknowledged.report["refresh"]["removedDatesSample"] == ["2026-10-08"]
+
+
+def test_cli_production_mode_guardrails(tmp_path: Path) -> None:
+    # Library-level production writes are covered above; CLI checks stay parser-level
+    # so tests never write into the real data/exchange_rates.json.
+    source = tmp_path / "hist.xml"
+    source.write_bytes(tiny())
+    script = importer.ROOT / "scripts" / "import_exchange_rates.py"
+    base = [sys.executable, str(script), "--source", f"{source}={URL_HIST}"]
+    stray_flag = subprocess.run(base + ["--dry-run", "--acknowledge-changes"],
+                                capture_output=True, text=True)
+    assert stray_flag.returncode != 0 and "only applies" in stray_flag.stderr
+    custom_output = subprocess.run(
+        base + ["--write-production", "--output", str(tmp_path / "elsewhere.json")],
+        capture_output=True, text=True)
+    assert custom_output.returncode != 0 and "not configurable" in custom_output.stderr
