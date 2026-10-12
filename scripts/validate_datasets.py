@@ -9,6 +9,7 @@ import re
 import sys
 from dataclasses import dataclass, field
 from datetime import date
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -1487,6 +1488,110 @@ def validate_procurement_notices_dataset(path: Path = DEFAULT_PROCUREMENT_NOTICE
     return report
 
 
+_ISO_DATE_RE = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}")
+_CURRENCY_CODE_RE = re.compile(r"[A-Z]{3}")
+_SHA256_RE = re.compile(r"[0-9a-f]{64}")
+_RATE_LEXEME_RE = re.compile(r"[0-9]+(?:\.[0-9]+)?")
+
+
+def validate_exchange_rates_dataset(path: Path) -> ValidationReport:
+    """Production ECB eurofxref snapshot: EUR base, string rates, sorted exact dates."""
+    report = ValidationReport("exchange_rates", path)
+    payload = _load_json(report, path)
+    if not isinstance(payload, dict):
+        return report
+
+    metadata = _validate_dataset_metadata(report, payload)
+    if metadata is None:
+        return report
+
+    if metadata.get("baseCurrency") != "EUR":
+        report.add_error("metadata.baseCurrency", "exchange-rate base currency must be EUR")
+    source_url = metadata.get("sourceUrl")
+    if not isinstance(source_url, str) or not source_url.startswith("https://www.ecb.europa.eu/"):
+        report.add_error("metadata.sourceUrl", "sourceUrl must be an official ECB HTTPS URL")
+    sha256 = metadata.get("sourceSha256")
+    if not isinstance(sha256, str) or not _SHA256_RE.fullmatch(sha256):
+        report.add_error("metadata.sourceSha256", "sourceSha256 must be a 64-char lowercase hex digest")
+
+    earliest = metadata.get("earliestDate")
+    latest = metadata.get("latestDate")
+    for value, field in ((earliest, "metadata.earliestDate"), (latest, "metadata.latestDate")):
+        _require_iso_date(report, value, field, f"{field} must be a non-empty ISO date")
+    if (isinstance(earliest, str) and isinstance(latest, str)
+            and _ISO_DATE_RE.fullmatch(earliest) and _ISO_DATE_RE.fullmatch(latest)
+            and earliest > latest):
+        report.add_error("metadata.earliestDate", "earliestDate must not be after latestDate")
+
+    dates = _require_list(report, payload.get("dates"), "dates", "dates must be an array")
+    if dates is None:
+        return report
+    if not dates:
+        report.add_error("dates", "dates array must not be empty")
+        return report
+
+    seen_dates: set[str] = set()
+    ordered_dates: list[str] = []
+    for index, entry in enumerate(dates):
+        item_path = f"dates[{index}]"
+        item = _require_dict(report, entry, item_path, f"{item_path} must be an object")
+        if item is None:
+            continue
+        day = _require_string(report, item.get("date"), f"{item_path}.date",
+                              f"{item_path}.date must be a non-empty string")
+        if isinstance(day, str):
+            _require_iso_date(report, day, f"{item_path}.date",
+                              f"{item_path}.date must be an ISO YYYY-MM-DD date")
+            if day in seen_dates:
+                report.add_error(item_path, f"duplicate publication date {day}")
+            seen_dates.add(day)
+            ordered_dates.append(day)
+            if _ISO_DATE_RE.fullmatch(day):
+                try:
+                    weekday = date.fromisoformat(day).weekday()
+                except ValueError:
+                    weekday = None
+                if weekday is not None and weekday >= 5:
+                    report.add_warning(item_path, f"publication date {day} falls on a weekend")
+        rates = _require_dict(report, item.get("rates"), f"{item_path}.rates",
+                              f"{item_path}.rates must be an object")
+        if rates is None:
+            continue
+        if not rates:
+            report.add_error(f"{item_path}.rates", "rates must not be empty")
+        currencies = list(rates.keys())
+        if currencies != sorted(currencies):
+            report.add_error(f"{item_path}.rates", "currency keys must be sorted deterministically")
+        for currency, rate in rates.items():
+            if not _CURRENCY_CODE_RE.fullmatch(currency):
+                report.add_error(f"{item_path}.rates",
+                                 f"invalid ISO 4217 alpha-3 currency code: {currency!r}")
+            elif currency == "EUR":
+                report.add_error(f"{item_path}.rates", "EUR must not appear as a quote currency")
+            if not isinstance(rate, str):
+                report.add_error(f"{item_path}.rates.{currency}",
+                                 "rates must be JSON strings, never floats")
+            elif not _RATE_LEXEME_RE.fullmatch(rate) or Decimal(rate) <= 0:
+                report.add_error(f"{item_path}.rates.{currency}",
+                                 f"rate must be a positive decimal string, got: {rate!r}")
+
+    if ordered_dates != sorted(ordered_dates):
+        report.add_error("dates", "publication dates must be sorted deterministically (ascending)")
+    if ordered_dates:
+        if isinstance(earliest, str) and earliest != ordered_dates[0]:
+            report.add_error("metadata.earliestDate",
+                             "earliestDate must match the oldest contained publication date")
+        if isinstance(latest, str) and latest != ordered_dates[-1]:
+            report.add_error("metadata.latestDate",
+                             "latestDate must match the newest contained publication date")
+        last_updated = metadata.get("lastUpdated")
+        if isinstance(last_updated, str) and isinstance(latest, str) and last_updated != latest:
+            report.add_error("metadata.lastUpdated",
+                             "lastUpdated must match the newest publication date in the snapshot")
+    report.record_count = len(dates)
+    return report
+
+
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
         validate_sources_registry(data_dir / "sources.json"),
@@ -1521,6 +1626,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
     vat_registrations_path = data_dir / "vat_registrations.json"
     if vat_registrations_path.is_file():
         reports.append(validate_vat_registrations_dataset(vat_registrations_path))
+
+    exchange_rates_path = data_dir / "exchange_rates.json"
+    if exchange_rates_path.is_file():
+        reports.append(validate_exchange_rates_dataset(exchange_rates_path))
 
     return reports
 
