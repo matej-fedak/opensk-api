@@ -288,21 +288,21 @@
     "notes": "0.23.2 research spike only. Aggregate statistics and election-native geography; no candidate-personal data, public results routes, production JSON or runtime upstream dependency. General terms explicitly prohibit robots/crawlers/similar download tools; no exception is inferred for offered CSV files. Clarification was sent manually by the maintainer on 2026-10-11 and the reply is still pending; no permission is inferred from sending."
   },
   "exchangeRates": {
-    "status": "research-only",
-    "coverage": "unknown",
+    "status": "imported",
+    "coverage": "complete",
     "sourceName": "European Central Bank — euro foreign exchange reference rates",
     "sourceUrl": "https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html",
     "sourceDocumentationUrl": "https://www.ecb.europa.eu/services/disclaimer/html/index.en.html",
     "licence": "ECB Disclaimer & copyright: users may make free use of information obtained directly from the ECB website subject to accurate reproduction, citation of the ECB as the source, explicit statement of modifications, and no framing; commercial sale requires disclosure that the information is available free of charge.",
     "licenceStatus": "verified 2026-10-11 (explicit ECB free-use permission recorded in docs/research/exchange-rates-source-verification.md); sui-generis database right unaddressed — documented low-risk residual question",
-    "redistributionStatus": "research-only after 0.23.3 spike; production candidate (GO_PRODUCTION_NEXT); no production dataset or public endpoint yet",
+    "redistributionStatus": "production since 0.23.4: full-history ECB eurofxref snapshot materialized offline at data/exchange_rates.json and served via /v1/exchange-rates; ECB attribution and informational-use notice attached; XML->JSON transformation disclosed",
     "termsUrl": "https://www.ecb.europa.eu/services/disclaimer/html/index.en.html",
     "attribution": "European Central Bank — euro foreign exchange reference rates. Rates are published for information purposes only; using them for transaction purposes is strongly discouraged (ECB). Normalize-to-JSON modifications must be explicitly stated.",
     "riskLevel": "low",
-    "lastChecked": "2026-10-11",
-    "updateCadence": "Upstream publishes every TARGET working day around 16:00 CET; RUB suspended since 2022-03-01; OpenSK snapshot cadence to be decided at production (manual/offline only)",
-    "nextAction": "Run the production milestone (recommended 0.23.4): choose dataset scope and snapshot cadence, wire scripts/import_exchange_rates.py output to a reviewed production dataset, add routes with attribution and informational-only notices, ETag/Last-Modified rules, and page caching.",
-    "notes": "0.23.3 spike verified ECB eurofxref feeds (daily/90-day/full history since 1999-01-04) and SDMX 2.1 API; NBS merely republishes the ECB feed (no Slovak-specific value, so ECB is canonical). Offline importer prototype exists; gitignored preview only, 6,155,292 bytes for full history (indent=2); compact full-history estimate 3.48 MiB. Rates are informational reference values, not tradable/live prices. Optional ECB outreach draft (sui-generis) retained in docs/research/exchange-rates-source-verification.md, unsent."
+    "lastChecked": "2026-10-12",
+    "updateCadence": "Upstream publishes every TARGET working day around 16:00 CET; RUB suspended since 2022-03-01; OpenSK snapshot refreshed manually offline via scripts/import_exchange_rates.py (--write-production) with historical-change guard; no scheduled automation",
+    "nextAction": "Refresh the materialized snapshot when needed: download the canonical eurofxref-hist.xml outside Git, verify SHA-256, dry-run the importer, review the refresh report (historical rewrites/removals require --acknowledge-changes), then --write-production, run dataset validation and tests, update EXCHANGE_RATES_LAST_UPDATED in schemas/common.py, commit.",
+    "notes": "0.23.4 production: ECB eurofxref full-history feed (eurofxref-hist.xml) is the sole canonical source; NBS merely republishes the ECB feed. Snapshot 2026-10-12: source 8,197,952 bytes sha256 420f9e07e66b3d02ab4d52cc6523bb43e65de61e96797317580a5e82d1c0a6f5; materialized data/exchange_rates.json 6,006,060 bytes covering 7,112 publication dates 1999-01-04..2026-10-12 (221,296 rate rows, 41 currencies including legacy SKK/EEK/LTL/... series), rates preserved as decimal strings. Complete = complete relative to the imported ECB full-history feed, not all world currencies or every calendar date. Rates are informational reference values, not tradable/live prices; ECB discourages transaction use. Optional ECB outreach draft (sui-generis) retained in docs/research/exchange-rates-source-verification.md, unsent."
   },
   "schoolFacilityCounts": {
     "status": "imported",

@@ -21,6 +21,7 @@ from starlette.responses import Response
 from schemas.common import (
     BANKS_LAST_UPDATED,
     DISTRICTS_LAST_UPDATED,
+    EXCHANGE_RATES_LAST_UPDATED,
     HOLIDAYS_LAST_UPDATED,
     MUNICIPALITIES_LAST_UPDATED,
     PHONE_AREAS_LAST_UPDATED,
@@ -51,6 +52,7 @@ _LAST_MODIFIED_BY_PREFIX: dict[str, str] = {
     "/v1/school-facility-counts": SCHOOL_FACILITY_COUNTS_LAST_UPDATED,
     "/v1/procurement-notices": PROCUREMENT_NOTICES_LAST_UPDATED,
     "/v1/sources": SOURCES_LAST_UPDATED,
+    "/v1/exchange-rates": EXCHANGE_RATES_LAST_UPDATED,
 }
 
 

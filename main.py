@@ -8,6 +8,7 @@ from routers.banks import router as banks_router
 from routers.business_days import router as business_days_router
 from routers.companies import router as companies_router
 from routers.districts import router as districts_router
+from routers.exchange_rates import router as exchange_rates_router
 from routers.health import router as health_router
 from routers.holidays import router as holidays_router
 from routers.iban import router as iban_router
@@ -47,6 +48,7 @@ app = FastAPI(
         {"name": "vehicle-registration-codes", "description": "Static legacy Slovak vehicle registration district abbreviations; not a current plate lookup."},
         {"name": "school-facility-counts", "description": "Static MŠVVaM school facility aggregate counts; not an institution-level school directory."},
         {"name": "procurement-notices", "description": "Static partial TED Slovak-buyer procurement notice snapshot; not the complete national ÚVO register."},
+        {"name": "exchange-rates", "description": "Materialized ECB euro foreign exchange reference rates (EUR base, exact publication dates, informational use only)."},
     ],
 )
 
@@ -133,3 +135,4 @@ app.include_router(school_facility_counts_router, prefix="/v1")
 app.include_router(procurement_notices_router, prefix="/v1")
 app.include_router(sources_router, prefix="/v1")
 app.include_router(business_days_router, prefix="/v1")
+app.include_router(exchange_rates_router, prefix="/v1")
