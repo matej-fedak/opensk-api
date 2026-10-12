@@ -93,6 +93,45 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
             path = "/v1/procurement-notices/search?q=Bratislava"
         return responses[path]
 
-    monkeypatch.setattr(smoke_test, "_request_json", fake_request_json)
+    def fake_request_headers(url: str):
+        assert url.endswith("/v1/banks")
+        return 200, {
+            "x-ratelimit-limit": "100",
+            "x-ratelimit-remaining": "99",
+            "x-ratelimit-reset": "1760000060",
+        }
 
-    assert smoke_test.main(["--base-url", "http://example.com"]) == 0
+    monkeypatch.setattr(smoke_test, "_request_json", fake_request_json)
+    monkeypatch.setattr(smoke_test, "_request_headers", fake_request_headers)
+
+    assert smoke_test.main(["--base-url", "http://example.com", "--expect-rate-limit"]) == 0
+
+
+def test_smoke_client_identifies_itself(monkeypatch) -> None:
+    seen_headers: dict[str, str] = {}
+
+    def fake_urlopen(request, timeout):
+        seen_headers.update({key.lower(): value for key, value in request.headers.items()})
+
+        class _Response:
+            status = 200
+            headers: dict[str, str] = {}
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self):
+                return b"{}"
+
+        return _Response()
+
+    monkeypatch.setattr(smoke_test, "urlopen", fake_urlopen)
+
+    smoke_test._request_json("http://example.com/v1/health")
+    assert seen_headers["user-agent"] == f"OpenSK-Public-Smoke/{PROJECT_VERSION}"
+
+    smoke_test._request_headers("http://example.com/v1/banks")
+    assert seen_headers["user-agent"] == f"OpenSK-Public-Smoke/{PROJECT_VERSION}"
