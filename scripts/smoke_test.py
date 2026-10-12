@@ -74,6 +74,8 @@ def _request_headers(url: str) -> tuple[int, dict[str, str]]:
     try:
         with urlopen(request, timeout=15) as response:
             return response.status, {key.lower(): value for key, value in response.headers.items()}
+    except HTTPError as exc:
+        return exc.code, {key.lower(): value for key, value in exc.headers.items()}
     except (TimeoutError, URLError) as exc:
         reason = getattr(exc, "reason", exc)
         raise RuntimeError(str(reason)) from exc

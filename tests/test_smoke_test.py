@@ -107,6 +107,60 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
     assert smoke_test.main(["--base-url", "http://example.com", "--expect-rate-limit"]) == 0
 
 
+def test_rate_limit_header_check_negative_paths(monkeypatch) -> None:
+    monkeypatch.setattr(smoke_test, "_request_headers", lambda url: (200, {"x-ratelimit-limit": "100"}))
+    result = smoke_test._check_rate_limit_headers("http://example.com/v1/banks")
+    assert not result.ok and "missing headers" in result.detail
+
+    monkeypatch.setattr(smoke_test, "_request_headers", lambda url: (429, {}))
+    result = smoke_test._check_rate_limit_headers("http://example.com/v1/banks")
+    assert not result.ok and "expected 200, got 429" in result.detail
+
+
+def test_request_headers_case_normalization(monkeypatch) -> None:
+    """Mixed-case response headers must satisfy the lowercased check."""
+    from email.message import Message
+
+    real_headers = Message()
+    real_headers["X-RateLimit-Limit"] = "100"
+    real_headers["X-RATELIMIT-REMAINING"] = "99"
+    real_headers["X-RateLimit-Reset"] = "1"
+
+    class _Response:
+        status = 200
+        headers = real_headers
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *args):
+            return False
+
+    monkeypatch.setattr(smoke_test, "urlopen", lambda request, timeout: _Response())
+    status, headers = smoke_test._request_headers("http://example.com/v1/banks")
+    assert status == 200
+    assert headers == {"x-ratelimit-limit": "100", "x-ratelimit-remaining": "99", "x-ratelimit-reset": "1"}
+
+    monkeypatch.setattr(smoke_test, "_request_headers", lambda url: (status, headers))
+    assert smoke_test._check_rate_limit_headers("http://example.com/v1/banks").ok
+
+
+def test_rate_limit_check_skipped_without_flag(monkeypatch) -> None:
+    def fail_if_called(url: str):
+        raise AssertionError("_request_headers must not be called without --expect-rate-limit")
+
+    monkeypatch.setattr(smoke_test, "_request_headers", fail_if_called)
+    monkeypatch.setattr(smoke_test, "_request_json", lambda url: (_ for _ in ()).throw(AssertionError()))
+    for check_name in ("_check_root", "_check_ok", "_check_psc_stats", "_check_company_endpoint", "_check_company_alias", "_check_openapi"):
+        monkeypatch.setattr(
+            smoke_test,
+            check_name,
+            (lambda name: (lambda *args, **kwargs: smoke_test.SmokeResult(name, True, "PASS")))(check_name),
+        )
+
+    assert smoke_test.main(["--base-url", "http://example.com"]) == 0
+
+
 def test_smoke_client_identifies_itself(monkeypatch) -> None:
     seen_headers: dict[str, str] = {}
 

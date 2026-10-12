@@ -110,15 +110,17 @@ def test_identity_off_render_ignores_xff(client, env, clock):
     assert rate_limiter._counts["testclient"] == 2
 
 
-def test_identity_render_uses_rightmost_non_cloudflare(client, env, clock):
+def test_identity_render_uses_rightmost_global_non_cloudflare(client, env, clock):
     env.setenv("RENDER", "true")
-    client.get("/", headers={"X-Forwarded-For": "203.0.113.10"})
-    client.get("/", headers={"X-Forwarded-For": "9.9.9.9, 203.0.113.11"})
-    client.get("/", headers={"X-Forwarded-For": "198.51.100.5, 172.64.0.9"})  # right-most is Cloudflare egress
+    client.get("/", headers={"X-Forwarded-For": "81.0.113.10"})
+    client.get("/", headers={"X-Forwarded-For": "9.9.9.9, 81.0.113.11"})
+    client.get("/", headers={"X-Forwarded-For": "91.198.51.100, 172.64.0.9"})  # right-most is Cloudflare egress
+    client.get("/", headers={"X-Forwarded-For": "82.10.20.30, 10.0.0.7"})  # right-most is a private LB hop
     assert rate_limiter._counts == {
-        "203.0.113.10": 1,
-        "203.0.113.11": 1,
-        "198.51.100.5": 1,
+        "81.0.113.10": 1,
+        "81.0.113.11": 1,
+        "91.198.51.100": 1,
+        "82.10.20.30": 1,
     }
 
 
@@ -126,15 +128,24 @@ def test_identity_render_spoof_left_entries_share_bucket(client, env, clock):
     env.setenv("OPENSK_RATE_LIMIT_ENABLED", "true")
     env.setenv("RENDER", "true")
     for fake in ["1.1.1.1", "2.2.2.2", "3.3.3.3"]:
-        client.get("/", headers={"X-Forwarded-For": f"{fake}, 203.0.113.99"})
-    assert rate_limiter._counts == {"203.0.113.99": 3}
+        client.get("/", headers={"X-Forwarded-For": f"{fake}, 81.0.113.99"})
+    assert rate_limiter._counts == {"81.0.113.99": 3}
 
 
-def test_identity_render_ipv4_ipv6_and_malformed(client, env, clock):
+def test_identity_render_multiple_header_instances(client, env, clock):
+    env.setenv("RENDER", "true")
+    response = client.get("/", headers=[("X-Forwarded-For", "9.9.9.9"), ("X-Forwarded-For", "83.44.55.66")])
+    assert response.status_code == 200
+    assert rate_limiter._counts == {"83.44.55.66": 1}
+
+
+def test_identity_render_non_global_only_falls_back_not_bypass(client, env, clock):
     env.setenv("RENDER", "true")
     client.get("/", headers={"X-Forwarded-For": "2001:db8::1"})
     client.get("/", headers={"X-Forwarded-For": "garbage, 10.20.30.40"})
     client.get("/", headers={"X-Forwarded-For": "[2001:db8::2]:443"})
+    # No global address survives: fail closed to the rightmost valid entry,
+    # never to skipping the limit.
     assert rate_limiter._counts == {
         "2001:db8::1": 1,
         "10.20.30.40": 1,
@@ -212,6 +223,7 @@ def test_headers_limit_remaining_reset_and_retry_after(env, clock):
     clock[0] += WINDOW - 1  # boundary: same remaining logic never goes negative
     allowed = small_client.get("/v1/ping", headers=headers)
     assert int(allowed.headers["X-RateLimit-Remaining"]) >= 0
+    assert int(allowed.headers["X-RateLimit-Reset"]) == (clock[0] // WINDOW + 1) * WINDOW
 
 
 # --- health exemption -------------------------------------------------------

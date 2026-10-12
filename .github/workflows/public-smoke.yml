@@ -3,6 +3,9 @@ name: Public Smoke
 # Daily best-effort external smoke check of the public deployment. Cron is
 # UTC; 06:17 is deliberately off the top of the hour to avoid scheduler
 # congestion. Not part of PR/push CI. workflow_dispatch allows manual runs.
+# Note: a green run requires production to be deployed from this ref — a
+# dispatch from a pre-merge branch legitimately fails the root/openapi
+# version checks (and rate-limit checks before the limiter is deployed).
 on:
   schedule:
     - cron: "17 6 * * *"
@@ -33,8 +36,9 @@ jobs:
 
       - name: Warm up Render instance
         # Free-tier web services may sleep while idle. Poll /v1/health for
-        # up to ~2 minutes before running real checks so "waking up" is not
-        # reported as "broken".
+        # ~2 minutes of sleeps (12 attempts, 10 s apart; up to ~7 min total
+        # including hanging-request timeouts) before running real checks so
+        # "waking up" is not reported as "broken".
         run: |
           for attempt in $(seq 1 12); do
             if curl -fsS --max-time 15 "${BASE_URL}/v1/health" > /dev/null; then

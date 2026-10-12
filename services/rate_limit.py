@@ -108,20 +108,27 @@ def _parse_ip(token: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | Non
 def resolve_identity(request: Request, render_context: bool) -> str:
     """Return the validated client-IP bucket identity for the request.
 
-    Render: walk X-Forwarded-For right-to-left, skipping malformed entries
-    and Cloudflare egress hops; the first remaining entry is the real client.
+    Render: walk X-Forwarded-For right-to-left (all header instances),
+    skipping malformed entries, non-global addresses, and published
+    Cloudflare egress hops; the first remaining entry is the real client,
+    which Cloudflare appends to the right end before the request reaches
+    Render. If nothing global/non-Cloudflare survives, fall back to the
+    rightmost valid entry (fail-closed shared-ish bucket, never a bypass).
     Off Render: use the immediate peer from the connection only.
     """
     if render_context:
-        header = request.headers.get("x-forwarded-for")
-        if header:
-            entries = [_parse_ip(part) for part in header.split(",")]
-            valid = [entry for entry in entries if entry is not None]
+        headers = request.headers.getlist("x-forwarded-for")
+        valid = [
+            parsed
+            for header in headers
+            for parsed in (_parse_ip(part) for part in header.split(","))
+            if parsed is not None
+        ]
+        if valid:
             for entry in reversed(valid):
-                if not any(entry in network for network in _CLOUDFLARE_NETWORKS):
+                if entry.is_global and not any(entry in network for network in _CLOUDFLARE_NETWORKS):
                     return str(entry)
-            if valid:
-                return str(valid[-1])
+            return str(valid[-1])
         return _UNKNOWN_IDENTITY
 
     client = request.scope.get("client")
@@ -144,14 +151,16 @@ class FixedWindowRateLimiter:
         self._counts: dict[str, int] = {}
         self._lock = threading.Lock()
 
-    def hit(self, identity: str) -> tuple[bool, int, int]:
+    def hit(self, identity: str) -> tuple[bool, int, int, int]:
         """Consume one unit for identity.
 
-        Returns (allowed, remaining_after_this_request, window_reset_epoch).
+        Returns (allowed, remaining_after_this_request, window_reset_epoch,
+        clock_second). The clock is read inside the lock so the window can
+        never regress and Retry-After/Reset stay mutually consistent.
         """
-        now = self._clock()
-        window_id = int(now // self._window_seconds)
         with self._lock:
+            now = int(self._clock())
+            window_id = now // self._window_seconds
             if window_id != self._window_id:
                 self._counts = {}
                 self._window_id = window_id
@@ -159,7 +168,7 @@ class FixedWindowRateLimiter:
             self._counts[identity] = count
         reset_epoch = (window_id + 1) * self._window_seconds
         remaining = max(0, self._limit - count)
-        return count <= self._limit, remaining, reset_epoch
+        return count <= self._limit, remaining, reset_epoch, now
 
     def reset(self) -> None:
         with self._lock:
@@ -196,10 +205,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         identity = resolve_identity(request, render_context=_render_context())
-        allowed, remaining, reset_epoch = self._limiter.hit(identity)
+        allowed, remaining, reset_epoch, now = self._limiter.hit(identity)
 
         if not allowed:
-            retry_after = max(1, reset_epoch - int(self._limiter._clock()))
+            retry_after = max(1, reset_epoch - now)
             payload = error_response(
                 error=error_detail(
                     "RATE_LIMITED",
