@@ -285,7 +285,7 @@
     "lastChecked": "2026-10-11",
     "updateCadence": "Historical snapshot, manual correction review; no approved automated acquisition",
     "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Awaiting confirmation of election-specific CC BY coverage and approved acquisition before any production promotion.",
-    "notes": "0.23.2 research spike only. Aggregate statistics and election-native geography; no candidate-personal data, public results routes, production JSON or runtime upstream dependency. General terms explicitly prohibit robots/crawlers/similar download tools; no exception is inferred for offered CSV files. Outreach READY_FOR_USER_TO_SEND, unsent."
+    "notes": "0.23.2 research spike only. Aggregate statistics and election-native geography; no candidate-personal data, public results routes, production JSON or runtime upstream dependency. General terms explicitly prohibit robots/crawlers/similar download tools; no exception is inferred for offered CSV files. Clarification was sent manually by the maintainer on 2026-10-11 and the reply is still pending; no permission is inferred from sending."
   },
   "exchangeRates": {
     "status": "research-only",
