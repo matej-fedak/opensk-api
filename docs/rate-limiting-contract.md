@@ -13,8 +13,8 @@ Rate limiting protects OpenSK only. It has nothing to do with protecting ECB, Po
 - Render routes **all inbound web-service traffic through Cloudflare's global network**; Layer 3/4 and obviously flooded Layer 7 attacks are mitigated at the edge automatically, for free ([Render: How Render handles DDoS attacks](https://render.com/articles/how-render-handles-ddos-attacks), [Render: DDoS protection](https://render.com/docs/ddos-protection)).
 - Targeted Layer 7 traffic that looks like real requests ("API abuse, slow requests") is **explicitly the application's responsibility** — Render recommends application-level rate limiting. Render offers **no configurable per-client rate limiting** for normal inbound application traffic on web services. (Render's own API rate limits apply only to the Render *management* API at api.render.com — unrelated.)
 - Render always sets `RENDER=true` in the runtime environment ([Render: Default environment variables](https://render.com/docs/environment-variables)), which OpenSK uses as its Render detection signal. Render also sets `FORWARDED_ALLOW_IPS=*` for Python runtimes by default.
-- Cloudflare's `X-Forwarded-For` handling ([Cloudflare: HTTP headers](https://developers.cloudflare.com/fundamentals/reference/http-headers/)): if the client already sent an `X-Forwarded-For` header, Cloudflare **appends** the IP of the peer that connected to Cloudflare. A client-supplied value therefore survives as the **left-most** entries, and the **right-most** entry is the real connecting peer — meaning the left-most entry is **spoofable** and must not be used as a rate-limit identity. Cloudflare explicitly recommends `CF-Connecting-IP` over `X-Forwarded-For` for restoring the original visitor IP for the same reason.
-- Consequence for the old 0.23.1 hypothesis ("take the right-most entry"): the *left-most* entry is attacker-controlled; the right-most entry closest to the client is the last trustworthy hop appended by Cloudflare. uvicorn's `ProxyHeadersMiddleware` (`--proxy-headers`, with Render's default `FORWARDED_ALLOW_IPS=*`) resolves `request.client` to the **left-most** entry, so OpenSK must **not** use `request.client.host` as a rate-limit identity on Render. OpenSK implements its own Render-specific resolver instead.
+- Cloudflare's request headers ([Cloudflare: HTTP headers](https://developers.cloudflare.com/fundamentals/reference/http-headers/)): `CF-Connecting-IP` is the client's IP address as seen by Cloudflare's edge, sent to the origin on every request and controlled by the edge — a client-supplied inbound value does not survive, which is why Cloudflare recommends it (or Enterprise `True-Client-IP`) for restoring the original visitor IP. Separately, if the client sent an `X-Forwarded-For` header, Cloudflare **appends** the connecting peer: client-supplied values survive as **left-most** (spoofable) entries, and the right-most entry is the real connecting peer.
+- Consequences: the *left-most* X-Forwarded-For entry is attacker-controlled and must not be an identity; uvicorn's `ProxyHeadersMiddleware` (with Render's default `FORWARDED_ALLOW_IPS=*`) resolves `request.client` to the **left-most** entry, so OpenSK must **not** use `request.client.host` as a rate-limit identity on Render. OpenSK implements its own Render-specific resolver: prefer the edge-owned `CF-Connecting-IP`; fall back conservatively to the right-most X-Forwarded-For entry only.
 
 ## Policy
 
@@ -26,14 +26,13 @@ Rate limiting protects OpenSK only. It has nothing to do with protecting ECB, Po
 
 ## Client Identity Resolution
 
-Bucket identity is a validated IP address:
+Bucket identity is a validated IP address (IPv4 or IPv6, parsed with Python `ipaddress`):
 
-- **On Render** (`RENDER=true`): read `X-Forwarded-For` (all header instances), walk entries **right-to-left**, skip entries that are not parseable IP addresses, are not globally routable (private/reserved/loopback/link-local), or fall inside **published Cloudflare IP ranges** (<https://www.cloudflare.com/ips-v4/>, `ips-v6/`, captured 2026-10-12); take the first remaining entry. Cloudflare always appends the real connecting peer on the right, so walking right-to-left past proxy hops (including a hop Render's load balancer may append) yields the real client whenever the client connects from a normal ISP address. Entries a client forged sit to the *left* of the appended real IP and are never reached, so **fake headers cannot mint fresh identities**. If no global, non-Cloudflare entry survives, fall back to the rightmost valid entry — fail-closed into a coarse shared-ish bucket, never a bypass.
-- Known residual caveat: a client connecting **through Cloudflare itself** (e.g. a Cloudflare Worker fetch) presents a Cloudflare egress IP as the real peer, which the walk skips in favor of entries further left; such a client can shift identity within its own forged left-hand entries. This is accepted for the stated threat model (accidental loops, simple abuse) and shared by any X-Forwarded-For-based design behind Cloudflare; `CF-Ray` in Render logs remains the audit signal if abuse emerges.
-- **Off Render**: use the immediate peer (`request.scope["client"]`). Arbitrary `X-Forwarded-For` is ignored entirely — there is no trusted-proxy configuration for local/test runs.
+- **Render detection** uses the official `RENDER=true` environment variable; proxy headers are trusted only in that verified environment.
+- **On Render, primary signal**: `CF-Connecting-IP` — Cloudflare's original visitor IP header. Render routes all inbound traffic through Cloudflare, and Cloudflare's edge sets this header itself (a client-supplied value is not preserved across the edge — see [Cloudflare HTTP headers](https://developers.cloudflare.com/fundamentals/reference/http-headers/)). A forged `X-Forwarded-For` or a fake client-sent `CF-Connecting-IP` therefore cannot mint a fresh identity: the edge-owned value always wins. This avoids any project-maintained Cloudflare CIDR list and any proxy-topology assumptions.
+- **On Render, conservative fallback** (only when `CF-Connecting-IP` is missing or malformed): `X-Forwarded-For`, right-most parseable entry only. Cloudflare appends the real connecting peer at the right end, so client-supplied left-most entries are never considered. If nothing parseable remains, identity is the shared fail-closed `"unknown"` bucket — never a bypass. (Cloudflare-Workers-mediated clients resolve through the same edge-set header, so they no longer manipulate identity; the old right-to-left + CIDR-skip walk, the hardcoded Cloudflare network table, and the Workers-egress caveat are gone.)
+- **Off Render**: use the immediate peer (`request.scope["client"]`) only; `CF-Connecting-IP` and `X-Forwarded-For` are ignored entirely — there is no trusted-proxy configuration for local/test runs.
 - Malformed/missing identity never bypasses limiting; it maps to the shared `"unknown"` bucket.
-- IPv4 and IPv6 are both supported (Python `ipaddress`).
-- `CF-Connecting-IP` is deliberately **not** used: OpenSK trusts only the platform-verified `X-Forwarded-For` append semantics, not vendor-specific headers.
 - No raw client IP is written to disk or emitted in application logs from the middleware; bucket keys are ephemeral in-memory only.
 
 ## Enablement Model
@@ -42,9 +41,9 @@ Environment variable `OPENSK_RATE_LIMIT_ENABLED`:
 
 - `auto` (default): enabled when `RENDER=true`, disabled elsewhere.
 - `true`: always enabled (emergency/manual force-on, local testing).
-- `false`: always disabled (emergency kill switch without a redeploy of code).
+- `false`: always disabled (emergency kill switch).
 
-Unknown values fall back to `auto`. No configuration library is used; `os.environ` is read lazily per request so a dashboard env change takes effect on the next request. The limit/window (100 / 60 s) stays a code constant.
+Unknown values fall back to `auto`. No configuration library is used. Values are evaluated lazily inside the running process on each request (useful for tests and local servers), **but** on Render a Dashboard environment-variable change only reaches the process when Render applies the configuration through a new deploy/restart — this is an emergency override mechanism, not a live request-by-request remote switch. The limit/window (100 / 60 s) stays a code constant.
 
 ## State And Limits Of The Design
 
