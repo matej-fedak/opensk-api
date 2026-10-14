@@ -125,7 +125,7 @@ Scores: Value (1–5 developer/consumer value), Licence (confirmed/adequate/pend
 | 1 | Elections results (ŠÚ SR) | 5 | pending-explicit (OGP publication basis verified) | none (aggregates) | M | NEXT | Milestone 3 spike, then production if spike passes. |
 | 2 | Companies/RPO improvement | 5 | CC BY 4.0 identified for API docs, acquisition gate failed | high (natural persons in register) | L | GATED | Seed-backed lookup stays; expansion needs acquisition+privacy passes. |
 | 3 | CRZ contracts (central register) | 4 | unverified | high (contract content, personal data) | L | GATED | Rejected as procurement drop-in; revisit only with privacy gate resolution. |
-| 4 | ITMS EU funds | 3 | needs capture | low | M | WATCH | Candidate after Milestones 1–3 if licence evidence is clean. |
+| 4 | ITMS EU funds | 3 | ITMS21+ project-specific CC BY catalogue evidence verified (0.23.6) | medium (natural persons/free text upstream) | M | GO_PRODUCTION_NEXT | Research/tooling only; separate minimized project milestone after full-snapshot/privacy/title gates. JSON_CONTINUE; ITMS2014+ deferred separately. |
 | 5 | ŠÚKL medicines | 3 | unstated | low | M | WATCH | Licence wording not found; capture before any spike. |
 | 6 | NBS/ECB rates + business-days calculator | 3 | NBS disclaimer applies (A.2/A.3) | none | S | AFTER-M2 | Natural extension once NBS wording is retained; rates change daily → materialized snapshot design needed. |
 | 7 | Slov-Lex legislation metadata | 3 | § 5 písm. b) exclusion (A.5) | none | M | AFTER-M3 | Metadata-only catalogue (act numbers, titles, effective dates); retention rule: attribution to Slov-Lex. |

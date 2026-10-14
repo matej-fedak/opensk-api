@@ -2,6 +2,13 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-10-14 ITMS21+ EU Funds (0.23.6)
+
+- Official source: `https://api.itms21.sk/public/v1/`, anonymous project JSON, confirmed through the official portal and integration manual v1.0 (25.6.2025). Measured totals: 4,571 projects, 12,955 subjects, 9,075 ŽoNFP; counts are observed service totals, not an all-spending audit.
+- Licence: “Zoznam projektov ITMS21+”, `https://data.gov.sk/set/3dd34ab69156cd6dcdd6454f81727c88`, publisher MIRRI (`legal-subject/50349287`), distribution accessURL exactly `/public/v1/projekt`. Queried firsthand via `https://data.slovensko.sk/api/sparql`; `authorsWorkType`, `originalDatabaseType`, `databaseProtectedBySpecialRightsType` each equal `http://publications.europa.eu/resource/authority/licence/CC_BY`. Precise version URL not stated; personal-data catalogue marker is not trusted as anonymisation proof.
+- Verdict `GO_PRODUCTION_NEXT` / `JSON_CONTINUE`, **research-only** source registry and offline generated-preview tooling, no public EU-funds route or production dataset. Positive 28-form legal-entity gate; natural/unknown-form beneficiary identities and titles redacted, suppliers/partners/descriptions/addresses/contacts excluded.
+- Exact manual/project-capture hashes, URLs, quotes, licence query, privacy red-team, monetary distinctions, volume estimates and remaining production gates: `docs/research/eu-funds-itms21-spike.md`. Raw artifacts stay outside Git. No correspondence sent and no PortalVS/elections compliance change.
+
 ## 2026-10-11 ECB Euro Reference Rates (0.23.3 SPIKE)
 
 - Verdict: **CLEAR** — ECB "Disclaimer & copyright" retains explicit free-use permission ("users of this website may make free use of the information obtained directly from it") subject to accurate reproduction, ECB attribution, explicit statement of modifications, and no framing; "for information purposes only / transaction use strongly discouraged" notice retained from the reference-rates page.
