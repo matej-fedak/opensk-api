@@ -22,6 +22,7 @@ from routers.sources import router as sources_router
 from routers.vehicle_registration_codes import router as vehicle_registration_codes_router
 from schemas.common import API_SOURCE, META_CACHE_CONTROL, error_detail, error_response, success_response
 from services.http_cache import ConditionalCachingMiddleware
+from services.rate_limit import RateLimitMiddleware
 from version import PROJECT_VERSION
 
 
@@ -93,7 +94,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     return JSONResponse(status_code=422, content=payload)
 
 
+# Middleware order (outermost last): CORS -> rate limiter -> conditional
+# caching -> application. CORS wraps 429s for browsers, and rejected
+# requests never reach routing or ETag hashing.
 app.add_middleware(ConditionalCachingMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
@@ -101,6 +106,12 @@ app.add_middleware(
     allow_methods=["GET"],
     allow_headers=["*"],
     allow_credentials=False,
+    expose_headers=[
+        "X-RateLimit-Limit",
+        "X-RateLimit-Remaining",
+        "X-RateLimit-Reset",
+        "Retry-After",
+    ],
 )
 
 

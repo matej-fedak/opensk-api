@@ -2,6 +2,8 @@
 
 Audit date: 2026-10-07
 
+> Historical point-in-time audit. Rows marked `FUTURE`/`NOT_IMPLEMENTED` may since be delivered — notably rate limiting shipped in 0.23.5. Authoritative current status: `docs/roadmap.md` and `CHANGELOG.md`.
+
 Paper basis: `Community API Aggregators Research Report`, May 2026, prepared for the SlovakAPI project.
 
 This audit compares the paper's Section 6.1 source assumptions and Section 6.2 endpoint roadmap with the actual OpenSK API repository and verified 2026 source landscape. It does not rewrite the paper and does not add new runtime features.

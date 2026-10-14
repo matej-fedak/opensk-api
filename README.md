@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.4` pre-1.0 exchange-rates production milestone — materialized ECB euro reference rates served from local data; no elections endpoint.
+Status: `0.23.5` pre-1.0 public launch guardrails milestone — application rate limiting and daily scheduled public smoke monitoring added; operational guardrails ready, public promotion still gated by unresolved PortalVS compliance.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -65,7 +65,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/source-compliance.md` summarizes licence, redistribution, attribution, and risk status for each production dataset.
 - `docs/source-catalogue.md` documents the curated `/v1/sources` public/internal field boundary and status mapping.
 - `docs/http-caching.md` documents ETag, Last-Modified, and Cache-Control semantics.
-- `docs/rate-limiting-contract.md` records the future per-IP rate-limiting contract (not implemented yet).
+- `docs/rate-limiting-contract.md` is the authoritative per-IP rate-limiting policy (implemented since 0.23.5).
 - `docs/adding-a-dataset.md` lists the minimum gates for adding a new dataset domain.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
@@ -113,6 +113,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - Root and error envelopes now use `metadata.lastUpdated: null` instead of a daily-changing date; dataset routes keep their real dataset dates.
 - 0.23.2 investigates NR SR 2023 aggregate election statistics with an offline, dry-run-first import prototype. Decision: `GO_AFTER_LICENCE_EVIDENCE` (including approved acquisition). `/v1/sources/elections` is research-only with pending licence status; no results endpoint or production election JSON is added. Raw official files and generated previews are not committed.
 - 0.23.3 verifies ECB exchange-rate sources and PortalVS legacy→successor resilience. Decisions: `GO_PRODUCTION_NEXT` (exchange rates, production milestone recommended) and `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` (PortalVS). `/v1/sources/exchangeRates` is research-only (licence verified); no exchange-rate results endpoint or production dataset is added. All four licence-outreach packages are `SENT_AWAITING_REPLY` since 2026-10-11.
+- 0.23.5 adds a 100 requests/60 s/client-IP fixed-window application rate limiter (Render-enabled by default via `RENDER=true`, `429` with `Retry-After`, `X-RateLimit-*` headers, `/v1/health` exempt, process-local in-memory state) and a daily scheduled public smoke workflow with Render cold-start warm-up. No API keys, no new datastore, no data-domain changes.
 - 0.23.4 promotes ECB euro reference rates to production: `GET /v1/exchange-rates/latest` and `GET /v1/exchange-rates/{date}` serve the full-history ECB snapshot (1999-01-04 onwards) materialized offline at `data/exchange_rates.json`. Rates are decimal strings (`1 EUR = rate units of the foreign currency`), exact publication dates only (404 with no weekend/TARGET fallback), optional `?currency=` filter, ECB attribution and "information purposes only / transaction use strongly discouraged" notices, ETag/Last-Modified conditional caching. `/v1/sources/exchangeRates` is now production (licence verified). No runtime upstream calls; elections stay research-only; the four outreach replies remain pending (no permission inferred from silence).
 - Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
 - `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.

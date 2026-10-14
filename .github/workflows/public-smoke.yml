@@ -1,0 +1,59 @@
+name: Public Smoke
+
+# Daily best-effort external smoke check of the public deployment. Cron is
+# UTC; 06:17 is deliberately off the top of the hour to avoid scheduler
+# congestion. Not part of PR/push CI. workflow_dispatch allows manual runs.
+# Note: a green run requires production to be deployed from this ref — a
+# dispatch from a pre-merge branch legitimately fails the root/openapi
+# version checks (and rate-limit checks before the limiter is deployed).
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Scheduled and manual runs must not overlap; never cancel a running check.
+concurrency:
+  group: public-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: https://opensk-api.onrender.com
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Warm up Render instance
+        # Free-tier web services may sleep while idle. Poll /v1/health for
+        # ~2 minutes of sleeps (12 attempts, 10 s apart; up to ~7 min total
+        # including hanging-request timeouts) before running real checks so
+        # "waking up" is not reported as "broken".
+        run: |
+          for attempt in $(seq 1 12); do
+            if curl -fsS --max-time 15 "${BASE_URL}/v1/health" > /dev/null; then
+              echo "instance awake after ${attempt} attempt(s)"
+              exit 0
+            fi
+            echo "attempt ${attempt}: not awake yet; retrying in 10s"
+            sleep 10
+          done
+          echo "::error::/v1/health did not return 200 within ~2 minutes"
+          exit 1
+
+      - name: Run public smoke suite
+        # Runs like a normal external developer: no secrets, no rate-limit
+        # bypass. 40 requests, comfortably below the 100/minute limit.
+        # --expect-rate-limit also proves the deployed limiter advertises
+        # its headers end to end (it never intentionally exhausts the limit).
+        run: python scripts/smoke_test.py --base-url "${BASE_URL}" --expect-rate-limit

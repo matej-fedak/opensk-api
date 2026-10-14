@@ -24,6 +24,9 @@ except ModuleNotFoundError:  # standalone CLI execution from the scripts directo
     from version import PROJECT_VERSION as EXPECTED_PROJECT_VERSION
 
 
+USER_AGENT = f"OpenSK-Public-Smoke/{EXPECTED_PROJECT_VERSION}"
+
+
 @dataclass
 class SmokeResult:
     name: str
@@ -37,7 +40,7 @@ def _normalize_base_url(base_url: str) -> str:
 
 
 def _request_json(url: str) -> tuple[int, object]:
-    request = Request(url, headers={"Accept": "application/json"})
+    request = Request(url, headers={"Accept": "application/json", "User-Agent": USER_AGENT})
     last_error: BaseException | None = None
     for attempt in range(2):
         try:
@@ -64,6 +67,18 @@ def _request_json(url: str) -> tuple[int, object]:
     except json.JSONDecodeError:
         body = payload
     return status, body
+
+
+def _request_headers(url: str) -> tuple[int, dict[str, str]]:
+    request = Request(url, headers={"Accept": "application/json", "User-Agent": USER_AGENT})
+    try:
+        with urlopen(request, timeout=15) as response:
+            return response.status, {key.lower(): value for key, value in response.headers.items()}
+    except HTTPError as exc:
+        return exc.code, {key.lower(): value for key, value in exc.headers.items()}
+    except (TimeoutError, URLError) as exc:
+        reason = getattr(exc, "reason", exc)
+        raise RuntimeError(str(reason)) from exc
 
 
 def _check_ok(name: str, url: str, expected_status: int = 200) -> SmokeResult:
@@ -220,9 +235,38 @@ def _check_company_alias(url: str, expected_ico: str) -> SmokeResult:
     return SmokeResult("companies-alias", False, "FAIL", f"unexpected body: {body!r}")
 
 
+def _check_rate_limit_headers(url: str) -> SmokeResult:
+    """Verify the deployed rate limiter advertises its headers on a normal route.
+
+    Never exhausts the limit: 429 behavior belongs to offline tests.
+    """
+    try:
+        status, headers = _request_headers(url)
+    except RuntimeError as exc:
+        return SmokeResult("rate-limit-headers", False, "FAIL", str(exc))
+
+    if status != 200:
+        return SmokeResult("rate-limit-headers", False, "FAIL", f"expected 200, got {status}")
+
+    missing = [
+        header
+        for header in ("x-ratelimit-limit", "x-ratelimit-remaining", "x-ratelimit-reset")
+        if header not in headers
+    ]
+    if missing:
+        return SmokeResult("rate-limit-headers", False, "FAIL", f"missing headers: {missing}")
+
+    return SmokeResult("rate-limit-headers", True, "PASS")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Smoke test the public OpenSK API surface")
     parser.add_argument("--base-url", required=True, help="Base URL of the deployed API")
+    parser.add_argument(
+        "--expect-rate-limit",
+        action="store_true",
+        help="Also verify X-RateLimit-* headers are present (set when the target runs with the limiter enabled, e.g. production)",
+    )
     return parser
 
 
@@ -289,6 +333,8 @@ def main(argv: list[str] | None = None) -> int:
     results.append(_check_company_alias(f"{base_url}/v1/ico/50158635", "50158635"))
     results.append(_check_ok("docs", f"{base_url}/docs"))
     results.append(_check_openapi(f"{base_url}/openapi.json"))
+    if args.expect_rate_limit:
+        results.append(_check_rate_limit_headers(f"{base_url}/v1/banks"))
 
     for result in results:
         line = f"{result.status}: {result.name}"

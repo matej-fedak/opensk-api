@@ -51,7 +51,7 @@ Malformed route or query values return 400. Unknown but valid resource identifie
 
 ## HTTP Caching Semantics
 
-GET routes are conditionally cacheable: strong body-hash `ETag`, semantic per-dataset `Last-Modified`, `If-None-Match`/`If-Modified-Since` returning 304 with an empty body, and documented `Cache-Control` categories (static 86400, search 900, meta 3600, health no-store). See `docs/http-caching.md` for the normative policy. A future per-IP rate limit (429 + `RATE_LIMITED`) is contracted in `docs/rate-limiting-contract.md` and is not yet implemented.
+GET routes are conditionally cacheable: strong body-hash `ETag`, semantic per-dataset `Last-Modified`, `If-None-Match`/`If-Modified-Since` returning 304 with an empty body, and documented `Cache-Control` categories (static 86400, search 900, meta 3600, health no-store). See `docs/http-caching.md` for the normative policy. Per-IP rate limiting (100 requests/60 s, 429 + `RATE_LIMITED`, `Retry-After`, `X-RateLimit-*` headers) is implemented per `docs/rate-limiting-contract.md`; `/v1/health` is exempt.
 
 ## Pagination And Search
 
