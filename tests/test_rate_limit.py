@@ -101,56 +101,63 @@ def test_unknown_setting_falls_back_to_auto(monkeypatch):
 # --- identity ---------------------------------------------------------------
 
 
-def test_identity_off_render_ignores_xff(client, env, clock):
+def test_identity_off_render_ignores_forwarded_and_vendor_headers(client, env, clock):
     env.setenv("OPENSK_RATE_LIMIT_ENABLED", "true")
     client.get("/", headers={"X-Forwarded-For": "1.1.1.1"})
     client.get("/", headers={"X-Forwarded-For": "9.9.9.9"})
-    # Both requests land in the same peer bucket (TestClient peer), not the spoofed ones.
+    client.get("/", headers={"CF-Connecting-IP": "3.3.3.3", "X-Forwarded-For": "4.4.4.4"})
+    # All requests land in the same peer bucket (TestClient peer); forged
+    # CF-Connecting-IP and X-Forwarded-For values are ignored off Render.
     assert set(rate_limiter._counts.keys()) == {"testclient"}
-    assert rate_limiter._counts["testclient"] == 2
+    assert rate_limiter._counts["testclient"] == 3
 
 
-def test_identity_render_uses_rightmost_global_non_cloudflare(client, env, clock):
+def test_identity_render_prefers_valid_cf_connecting_ip(client, env, clock):
     env.setenv("RENDER", "true")
-    client.get("/", headers={"X-Forwarded-For": "81.0.113.10"})
-    client.get("/", headers={"X-Forwarded-For": "9.9.9.9, 81.0.113.11"})
-    client.get("/", headers={"X-Forwarded-For": "91.198.51.100, 172.64.0.9"})  # right-most is Cloudflare egress
-    client.get("/", headers={"X-Forwarded-For": "82.10.20.30, 10.0.0.7"})  # right-most is a private LB hop
+    client.get("/", headers={"CF-Connecting-IP": "81.0.113.10"})
+    client.get("/", headers={"CF-Connecting-IP": "2001:4860:4860::8888"})
     assert rate_limiter._counts == {
         "81.0.113.10": 1,
-        "81.0.113.11": 1,
-        "91.198.51.100": 1,
-        "82.10.20.30": 1,
+        "2001:4860:4860::8888": 1,
     }
 
 
-def test_identity_render_spoof_left_entries_share_bucket(client, env, clock):
+def test_identity_render_spoofed_xff_cannot_override_cf_visitor_ip(client, env, clock):
     env.setenv("OPENSK_RATE_LIMIT_ENABLED", "true")
     env.setenv("RENDER", "true")
     for fake in ["1.1.1.1", "2.2.2.2", "3.3.3.3"]:
-        client.get("/", headers={"X-Forwarded-For": f"{fake}, 81.0.113.99"})
+        client.get(
+            "/",
+            headers={"CF-Connecting-IP": "81.0.113.99", "X-Forwarded-For": f"{fake}, 9.9.9.9"},
+        )
+    # Spoofed XFF entries and a fake right-most XFF hop are ignored while a
+    # valid Cloudflare visitor IP is present.
     assert rate_limiter._counts == {"81.0.113.99": 3}
 
 
-def test_identity_render_multiple_header_instances(client, env, clock):
+def test_identity_render_multiple_xff_instances_cannot_mint_identity(client, env, clock):
     env.setenv("RENDER", "true")
-    response = client.get("/", headers=[("X-Forwarded-For", "9.9.9.9"), ("X-Forwarded-For", "83.44.55.66")])
+    response = client.get(
+        "/",
+        headers=[("CF-Connecting-IP", "83.44.55.66"), ("X-Forwarded-For", "9.9.9.9"), ("X-Forwarded-For", "8.8.4.4")],
+    )
     assert response.status_code == 200
     assert rate_limiter._counts == {"83.44.55.66": 1}
 
 
-def test_identity_render_non_global_only_falls_back_not_bypass(client, env, clock):
+def test_identity_render_invalid_cf_connecting_ip_uses_conservative_xff_fallback(client, env, clock):
     env.setenv("RENDER", "true")
-    client.get("/", headers={"X-Forwarded-For": "2001:db8::1"})
-    client.get("/", headers={"X-Forwarded-For": "garbage, 10.20.30.40"})
-    client.get("/", headers={"X-Forwarded-For": "[2001:db8::2]:443"})
-    # No global address survives: fail closed to the rightmost valid entry,
-    # never to skipping the limit.
-    assert rate_limiter._counts == {
-        "2001:db8::1": 1,
-        "10.20.30.40": 1,
-        "2001:db8::2": 1,
-    }
+    client.get("/", headers={"CF-Connecting-IP": "not-an-ip", "X-Forwarded-For": "9.9.9.9, 82.10.20.30"})
+    client.get("/", headers={"X-Forwarded-For": "9.9.9.9, 82.44.55.66"})
+    assert rate_limiter._counts == {"82.10.20.30": 1, "82.44.55.66": 1}
+
+
+def test_identity_render_malformed_or_missing_fails_closed(client, env, clock):
+    env.setenv("RENDER", "true")
+    client.get("/", headers={"CF-Connecting-IP": "garbage", "X-Forwarded-For": "also-not-an-ip"})
+    client.get("/")  # no forwarded headers at all
+    client.get("/", headers={"CF-Connecting-IP": "not.an.ip"})
+    assert rate_limiter._counts == {"unknown": 3}
 
 
 def test_identity_render_missing_or_invalid_fails_closed(client, env, clock):

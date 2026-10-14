@@ -5,13 +5,13 @@ seconds / client IP) protecting the single-instance Render deployment from
 accidental client loops and simple abusive traffic.
 
 Client identity is a validated IP address. On Render (`RENDER=true`), all
-inbound traffic passes through Cloudflare, which *appends* the real peer IP
-to `X-Forwarded-For`; the resolver therefore walks the header right-to-left,
-skipping malformed entries and published Cloudflare egress ranges. Client-
-supplied (left-most) entries are never trusted, so fake headers cannot mint
-fresh identities. Off Render, `X-Forwarded-For` is ignored entirely and the
-immediate peer is used. Unresolvable identity maps to a shared fail-closed
-bucket. No client IP is written to disk or logged.
+inbound traffic passes through Cloudflare, whose `CF-Connecting-IP` header
+carries the original visitor IP and is set by Cloudflare's edge (a client
+cannot influence it, so spoofed `X-Forwarded-For` entries cannot mint fresh
+identities); the resolver prefers it, falling back conservatively to the
+right-most `X-Forwarded-For` entry and then to a shared fail-closed bucket.
+Off Render, all forwarded/vendor headers are ignored and the immediate
+connection peer is used. No client IP is written to disk or logged.
 
 See `docs/rate-limiting-contract.md` for the full policy and evidence.
 """
@@ -33,45 +33,15 @@ REQUEST_LIMIT = 100
 RATE_LIMIT_HEADERS_PREFIX = "X-RateLimit"
 _UNKNOWN_IDENTITY = "unknown"
 
-# Published Cloudflare egress ranges (https://www.cloudflare.com/ips-v4/,
-# https://www.cloudflare.com/ips-v6/), captured 2026-10-12. Used only to skip
-# proxy hops while walking X-Forwarded-For right-to-left on Render; membership
-# changes at worst coarsen a bucket (fail-closed), never enable spoofing.
-_CLOUDFLARE_NETWORKS = tuple(
-    ipaddress.ip_network(cidr)
-    for cidr in (
-        "173.245.48.0/20",
-        "103.21.244.0/22",
-        "103.22.200.0/22",
-        "103.31.4.0/22",
-        "141.101.64.0/18",
-        "108.162.192.0/18",
-        "190.93.240.0/20",
-        "188.114.96.0/20",
-        "197.234.240.0/22",
-        "198.41.128.0/17",
-        "162.158.0.0/15",
-        "104.16.0.0/13",
-        "104.24.0.0/14",
-        "172.64.0.0/13",
-        "131.0.72.0/22",
-        "2400:cb00::/32",
-        "2606:4700::/32",
-        "2803:f800::/32",
-        "2405:b500::/32",
-        "2405:8100::/32",
-        "2a06:98c0::/29",
-        "2c0f:f248::/32",
-    )
-)
-
 
 def rate_limit_enabled(env: Callable[[str], str | None] = os.environ.get) -> bool:
     """Resolve OPENSK_RATE_LIMIT_ENABLED: auto (default) | true | false.
 
     `auto` enables the limiter only on Render (`RENDER=true`). Unknown values
-    behave as `auto`. Read lazily per call so dashboard env changes apply
-    without a restart.
+    behave as `auto`. Values are evaluated lazily inside the running process
+    on each request (useful for tests and local servers); on Render itself a
+    Dashboard env change only reaches the process when Render applies it via
+    a new deploy/restart — this is an emergency override, not a live switch.
     """
     setting = (env("OPENSK_RATE_LIMIT_ENABLED") or "auto").strip().lower()
     if setting == "true":
@@ -108,26 +78,35 @@ def _parse_ip(token: str) -> ipaddress.IPv4Address | ipaddress.IPv6Address | Non
 def resolve_identity(request: Request, render_context: bool) -> str:
     """Return the validated client-IP bucket identity for the request.
 
-    Render: walk X-Forwarded-For right-to-left (all header instances),
-    skipping malformed entries, non-global addresses, and published
-    Cloudflare egress hops; the first remaining entry is the real client,
-    which Cloudflare appends to the right end before the request reaches
-    Render. If nothing global/non-Cloudflare survives, fall back to the
-    rightmost valid entry (fail-closed shared-ish bucket, never a bypass).
-    Off Render: use the immediate peer from the connection only.
+    Render: prefer a valid `CF-Connecting-IP` (Cloudflare's visitor IP,
+    set at the edge and not client-controllable). If missing or malformed,
+    fall back to the right-most parseable `X-Forwarded-For` entry only
+    (Cloudflare appends the real peer at the right end); never trust
+    client-supplied left-most entries. If nothing resolves, use the shared
+    fail-closed `"unknown"` bucket — never a bypass.
+    Off Render: use the immediate peer from the connection only; ignore
+    `CF-Connecting-IP` and `X-Forwarded-For` entirely.
     """
     if render_context:
-        headers = request.headers.getlist("x-forwarded-for")
+        # Primary: Cloudflare's visitor IP header, set at Cloudflare's edge;
+        # client-supplied values for it are not preserved across the edge.
+        visitor_ip = request.headers.get("cf-connecting-ip")
+        if visitor_ip is not None:
+            parsed = _parse_ip(visitor_ip)
+            if parsed is not None:
+                return str(parsed)
+
+        # Conservative fallback: Cloudflare appends the real connecting peer
+        # to the right end of X-Forwarded-For, so only the right-most parseable
+        # entry can reflect trusted append behavior. Left-most client-supplied
+        # entries are never considered.
         valid = [
             parsed
-            for header in headers
+            for header in request.headers.getlist("x-forwarded-for")
             for parsed in (_parse_ip(part) for part in header.split(","))
             if parsed is not None
         ]
         if valid:
-            for entry in reversed(valid):
-                if entry.is_global and not any(entry in network for network in _CLOUDFLARE_NETWORKS):
-                    return str(entry)
             return str(valid[-1])
         return _UNKNOWN_IDENTITY
 
