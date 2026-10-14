@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.23.6
+
+- Added the research-only ITMS21+ EU-funds source spike: official anonymous JSON and integration manual v1.0 verified; 4,571 project service total observed, 100-row sample analysed, eight distinct NUTS3 region codes matched. Verdict **`GO_PRODUCTION_NEXT`**, storage **`JSON_CONTINUE`**; full evidence and separate promotion gates in `docs/research/eu-funds-itms21-spike.md`.
+- Retained project-specific MIRRI national-catalogue CC BY declarations on author/database/sui-generis layers, exact URLs and query. Attribution/modification notices required; precise licence-version link unresolved (not inferred from “OpenData” or anonymous access). ITMS2014+ is independently live and deferred with distinct schema/terms.
+- Added offline `scripts/import_itms21_projects.py`: dry-run default, generated-preview only, no production mode/network calls; exact Decimal-safe strings, source hashes, duplicate/schema/detail-identity checks, positive reviewed legal-form gate. Natural-person/unknown/unspecified-form beneficiaries and project titles are redacted; addresses, contacts, tax IDs, partners, suppliers and free-text descriptions excluded. Irregularities/debts remain out of initial scope.
+- Added research-only `euFunds` provenance entry (20 catalogue domains) and offline importer/scope tests. No production EU-funds JSON or endpoint, procurement fusion, SQLite or runtime acquisition. 37 GET operations, `/v1`, envelope namespace and PortalVS/elections/outreach states unchanged. No merge, tag or release is part of this milestone.
+
 ## 0.23.5
 
 - Added the application-level rate limiter planned in 0.23.1: **100 requests per 60 seconds per client IP**, fixed window, for `GET /` and `/v1/*`, with `GET /v1/health` fully exempt. Rejected requests return `429` with the standard OpenSK error envelope (`RATE_LIMITED`), `Retry-After`, `Cache-Control: no-store`, and no ETag/Last-Modified; allowed responses (including 304s) carry `X-RateLimit-Limit`/`X-RateLimit-Remaining`/`X-RateLimit-Reset`, exposed to browsers via CORS `Access-Control-Expose-Headers`. No API keys; `docs/rate-limiting-contract.md` is now the authoritative implementation/policy document (was `RATE_LIMIT_CONTRACT_ONLY`).

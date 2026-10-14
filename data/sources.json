@@ -322,5 +322,22 @@
     "updateCadence": "Semiannual MŠVVaM open-data refresh",
     "nextAction": "Retain exact Creative Commons BY attribution wording and monitor future semiannual CSV refreshes.",
     "notes": "Aggregate school facility count rows from RIS, valid as of 2025-09-15. This is not an institution-level school directory; no per-school lookup, addresses, staff, director, pupil, email, or phone data is exposed."
+  },
+  "euFunds": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "ITMS21+ OpenData API — Zoznam projektov 2021–2027 (MIRRI SR)",
+    "sourceUrl": "https://api.itms21.sk/public/v1/",
+    "sourceDocumentationUrl": "https://eurofondy.gov.sk/wp-content/uploads/2025/06/Final_ManualOpenDataAPI_ITMS21.docx",
+    "licence": "MIRRI SR publishes ITMS21+ datasets as 'Dataset publikačného minima OVS' in the national open-data catalogue (data.gov.sk / data.slovensko.sk) under CC BY on all three rights layers (author's work, original database, sui generis database right), machine-readable via the catalogue graph; integration manual v1.0 (25.6.2025) itself contains no licence text.",
+    "licenceStatus": "verified 2026-10-14 (NKOD SPARQL terms-of-use node queried firsthand; publisher legal-subject/50349287 = MIRRI SR); CC-BY attribution and modification notice required on any future redistribution",
+    "redistributionStatus": "research-and-tooling only; no production EU-funds dataset redistributed; importer writes gitignored data/generated/ previews only",
+    "termsUrl": "https://data.gov.sk/set/3dd34ab69156cd6dcdd6454f81727c88",
+    "attribution": "MIRRI SR / ITMS21+ OpenData API, published under CC BY; any OpenSK projection is modified and transformed data, not an official representation.",
+    "riskLevel": "medium",
+    "lastChecked": "2026-10-14",
+    "updateCadence": "Upstream catalogue daily; manual offline snapshot review. Observed 2026-10-14: 4,571 projects / 12,955 subjects / 9,075 ŽoNFP. Refresh requires full re-list plus detail reconciliation; tested seconds-form modifiedSince did not filter, and nested changes are not reliably tracked.",
+    "nextAction": "A separate approved production milestone must retain the project-specific CC BY declaration (precise version link unresolved), acquire consistent full coverage, review title/privacy policy and the positive legal-form allowlist, and measure normalized JSON costs. No correspondence sent.",
+    "notes": "0.23.6 research spike: GO_PRODUCTION_NEXT / JSON_CONTINUE. Five of 100 sampled subjects were natural persons; zero of 100 sampled project beneficiaries matched the natural-person set (different populations). The importer redacts beneficiary identity and project title for natural-person, unspecified, missing or unreviewed legal forms; only 28 positively reviewed legal-entity codes can expose beneficiary identity. The 24 natural/person-adjacent codes plus unspecified 1009995 are documented. Partners, suppliers, descriptions, addresses, tax IDs and contacts are never projected. Irregularities/receivables are OUT_OF_INITIAL_SCOPE. ITMS2014+ is separately live with different routes/catalogue terms, deferred historical work. No runtime upstream dependency or production dataset."
   }
 }

@@ -74,6 +74,7 @@ _PUBLIC_NAMES: dict[str, str] = {
     "elections": "Slovak election aggregate results",
     "exchangeRates": "EUR reference exchange rates",
     "schoolFacilityCounts": "School facility counts",
+    "euFunds": "EU funds projects 2021-2027 (ITMS21+)",
 }
 
 _UPDATE_CADENCE: dict[str, str] = {
@@ -96,6 +97,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "elections": "historical snapshot; manual correction review",
     "exchangeRates": "upstream every TARGET working day; manual offline snapshot refresh",
     "schoolFacilityCounts": "semiannual",
+    "euFunds": "upstream daily; manual offline full-refresh only",
 }
 
 _LIMITATIONS: dict[str, list[str]] = {
@@ -139,6 +141,11 @@ _LIMITATIONS: dict[str, list[str]] = {
         "The snapshot is refreshed manually offline and can lag the latest ECB publication.",
     ],
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
+    "euFunds": [
+        "Research spike only; no EU funds endpoint or production dataset.",
+        "Upstream subject data includes natural persons; previews redact beneficiary identities and titles for unreviewed or unsafe legal forms.",
+        "Irregularities and receivables are out of scope and not published by ITMS21+.",
+    ],
 }
 
 _LICENCE_NAMES: dict[str, str] = {
@@ -149,6 +156,7 @@ _LICENCE_NAMES: dict[str, str] = {
     "schoolFacilityCounts": "Creative Commons BY (version not specified)",
     "vatRegistrations": "CC0 per export page; CC 4.0 international per catalogue (discrepancy on file)",
     "holidays": "NBS website disclaimer (attribution, no modification)",
+    "euFunds": "CC BY (ITMS21+ national open-data catalogue terms)",
 }
 
 _RUNTIME_LAST_UPDATED: dict[str, str] = {

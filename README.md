@@ -39,8 +39,8 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/procurement-notices/{id}` | Public procurement notice lookup | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/search` | Public procurement notice search | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
-| `GET /v1/sources` | Curated public source/licence provenance catalogue | 19 registered domains | unresolved licence status stays unresolved |
-| `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 19 registered domains | internal maintainer fields are excluded |
+| `GET /v1/sources` | Curated public source/licence provenance catalogue | 20 registered domains | unresolved licence status stays unresolved |
+| `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 20 registered domains | internal maintainer fields are excluded |
 | `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2026 holiday coverage | strict error outside supported years |
@@ -70,6 +70,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `docs/research/source-verification-evidence.md` records retained source-verification evidence.
+- `docs/research/eu-funds-itms21-spike.md` records the research-only ITMS21+ EU-funds spike (`GO_PRODUCTION_NEXT`, `JSON_CONTINUE`); no EU-funds endpoint or production dataset exists.
 - `docs/research/source-licence-questions.md` contains draft clarification questions; nothing is sent automatically.
 - `docs/api-status.md` lists the endpoint status categories.
 - `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.
