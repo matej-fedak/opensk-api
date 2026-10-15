@@ -86,7 +86,7 @@ EXPECTED_LICENCE_STATUS = {
     "districts": "pending",
     "municipalities": "pending",
     "psc": "pending",
-    "banks": "pending",
+    "banks": "verified",
     "holidays": "identified",
     "companies": "identified",
     "vatRegistrations": "identified",

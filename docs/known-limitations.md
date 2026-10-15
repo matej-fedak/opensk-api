@@ -23,7 +23,7 @@
 - Personal, stakeholder, statutory-body, and similar fields are intentionally excluded from the public company response.
 - Districts are complete in coverage, but PortalVS terms may restrict reuse.
 - Municipalities are now mapped to districts via PortalVS classifier 9, but source/licence verification is still pending and the dataset should not be presented as open redistribution material.
-- Banks are expanded from an offline NBS directory snapshot, but source/licence verification remains pending and inactive rows are retained with `activeParty: false`.
+- Banks remain offline NBS v225 / 2026-05-18; the 2026-10-14 reply resolves reuse with attribution/disclosure. `activeParty` and `activePartyMarker` are OpenSK-derived from `Payment system SIPS`, not NBS's `Akt. úč.` or current institutional operating status. No v226 refresh here; NBS does not guarantee completeness/content integrity, and commercial users should verify correctness. MIT covers code, not NBS data.
 - Phone areas are imported from the telecom regulator workbook, but licence/reuse verification remains pending and 3 source municipality rows do not link to local municipality codes.
 - Vehicle registration district codes are legacy/reference data only; Slovakia changed plate allocation, so these abbreviations are not reliable for current plate lookup.
 - The API does not decode full licence plates, identify vehicles, or identify vehicle owners.

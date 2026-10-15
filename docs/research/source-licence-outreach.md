@@ -2,7 +2,16 @@
 
 These are prepared outreach packages for the human maintainer to send. Do not send emails automatically. This document pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and a ready-to-send Slovak message where a message is still required.
 
-**Dispatch status 2026-10-11 (0.23.3):** the human maintainer states that four packages were manually sent on **2026-10-11**: section 1 (PortalVS, To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`), section 2 (NBS bank-code directory, To `info@nbs.sk`), section 4 (telecom regulator, To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`), and section 7 (ŠÚ SR NRSR2023 elections, To `info@statistics.sk`, CC `volby@statistics.sk`). All four are now `SENT_AWAITING_REPLY`: no reply has been received, and sending a question grants no permission. No Message-ID, delivery confirmation or exact sent body is independently retained in this repository; the drafts below are the prepared texts and are not asserted to be byte-for-byte identical to what was sent. No mailbox headers or personal metadata are published.
+**Dispatch/reply status, updated 2026-10-14:** the human maintainer sent all four packages manually on **2026-10-11**. NBS's bank-directory reply was received **2026-10-14** and resolves bank reuse under its Terms of Use. Current states:
+
+| Package | State |
+| --- | --- |
+| PortalVS (§1) | `SENT_AWAITING_REPLY` |
+| NBS banks (§2) | `REPLY_RECEIVED_RESOLVED` |
+| Telecom regulator (§4) | `SENT_AWAITING_REPLY` |
+| ŠÚ SR elections (§7) | `SENT_AWAITING_REPLY` |
+
+No permission is inferred for the three unanswered items. No Message-ID, mail headers, delivery confirmation or exact sent/received body is independently archived in this repository. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. The NBS substantive clarification is recorded below and in `nbs-bank-reuse-clarification.md`, without unnecessary email metadata.
 
 Related documents:
 
@@ -81,23 +90,28 @@ S pozdravom
 [Meno]
 ```
 
-## 2. NBS Bank-Code Directory — SENT_AWAITING_REPLY
+## 2. NBS Bank-Code Directory — REPLY_RECEIVED_RESOLVED
 
-State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `info@nbs.sk`). No reply received as of 2026-10-11; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
+State: **`REPLY_RECEIVED_RESOLVED`** — sent manually 2026-10-11 (To `info@nbs.sk`); institutional clarification received by the maintainer **2026-10-14** from NBS, odbor komunikácie značky NBS a inštitucionálnych vzťahov. This is real reply evidence, not inferred permission. The original mail remains private; the draft below is historical.
 
-Dataset affected: banks (complete imported; candidate 1.0 Yellow).
+Dataset affected: banks; reuse resolved, served snapshot still **v225 / 2026-05-18**. The reply identified upstream **v226 / 2026-10-08**; refresh is separate and not performed in PR #33.
 
 ### Verified 2026-10-07 findings
 
 The NBS website disclaimer (retained wording from the official NBS legal/disclaimer page): "Information published on this website may be stored, reproduced, and further used provided that the source is acknowledged and that neither the content nor other properties of the respective electronic file are modified in any way."
 
-Interpretation split, recorded conservatively:
+### Resolved by the 2026-10-14 reply
 
-- The disclaimer permits storage, reproduction, and further use with attribution.
-- The disclaimer prohibits modification of the content or other properties of the respective file.
-- OpenSK converts the NBS CSV to JSON, normalizes field names, and derives `activeParty`. It is unresolved upstream whether that normalization counts as "modification" within the meaning of the disclaimer. Contact: `info@nbs.sk`.
+- Local storage and public open-source API redistribution are permitted with NBS attribution.
+- Value-preserving CSV → JSON conversion and field renaming are permitted; transformed JSON is **not the original NBS file**. Link the source and disclose the source-column mapping.
+- OpenSK-derived fields are permitted if separately labelled, not presented as NBS-supplied data. Audit: `activePartyMarker` normalizes **Payment system SIPS** and `activeParty` derives a boolean from it; neither reads NBS's **Akt. úč.** column. Detailed mapping and limitations: `nbs-bank-reuse-clarification.md`.
+- Commercial downstream use is allowed under the same conditions, including downstream attribution. NBS gives no completeness/content-integrity guarantee or associated damages liability; commercial users should verify correctness.
+- **MIT covers code, not NBS data**. NBS data remains under <https://nbs.sk/disclaimer-sk/> plus the clarification, not a new CC licence.
+- Recommended attribution preserves NBS, converter title, actual version/effective date, original-source URL, OpenSK JSON conversion and separation of derived fields. The exact recommended sentence is not mandatory wording.
+- Future refresh should retain version/effective/download dates; v225's actual download date is not established here. NBS logo/flag/symbols require separate approval and are not used.
+- Holidays remain a separate unresolved transformation/evidence question; this reply does not grant blanket holiday clearance.
 
-### Open questions the message must cover
+### Historical questions in the dispatched package (answered above)
 
 - Whether converting the CSV directory to JSON, normalizing field names, adding `activeParty`, and filtering inactive/non-SK rows counts as a modification under the NBS disclaimer.
 - Whether redistribution of the normalized bank-code dataset through an open-source public API is allowed.
@@ -162,7 +176,7 @@ Required action even without an email:
 - Retain the Act 241/1993 Z. z. reference (© Slov-Lex legal text; see section 5 for the legal-text copyright position).
 - Keep attribution "National Bank of Slovakia holidays page and Act 241/1993 Z. z." in docs and dataset metadata.
 
-If the NBS bank-directory reply (section 2) reveals stricter terms than expected, re-evaluate holidays contact at that time.
+The 2026-10-14 bank-directory reply (section 2) does not expressly cover curated holidays. Keep the holidays evidence/interpretation work separate.
 
 ## 4. Telecom Regulator Phone-Area Workbook — SENT_AWAITING_REPLY
 
@@ -247,7 +261,7 @@ These are recorded so the compliance matrix can move from "terms page identified
 ## Dispatch Checklist
 
 1. ~~Send section 1 (PortalVS) first~~ — done 2026-10-11 (`SENT_AWAITING_REPLY`); the reply still blocks the Red compliance rows and the candidate 1.0 inclusion of districts, municipalities, and PSC.
-2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11 (`SENT_AWAITING_REPLY`); replies determine whether their Yellow rows can advance. Section 7 (ŠÚ SR elections) was dispatched the same day.
+2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11. NBS banks are `REPLY_RECEIVED_RESOLVED` on 2026-10-14; telecom and ŠÚ SR elections remain `SENT_AWAITING_REPLY`.
 3. After each reply, update `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` in the same commit so they stay aligned.
 4. Retain the exact sent message text and received replies under `docs/research/` (redact personal email addresses before committing, if desired). The exact sent bodies are currently retained privately by the maintainer, not in this repository.
 5. If no reply arrives within a reasonable interval, record a follow-up date in `docs/verification-backlog.md` rather than letting the item go stale.

@@ -18,7 +18,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse. |
 | `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | Local PSC coverage is not national coverage. |
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and stats | partial imported | Static `/search` and `/stats` routes are intentionally registered before `/{psc}`. |
-| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported | NBS source/licence verification pending. |
+| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported v225 snapshot | Reuse clarified by NBS 2026-10-14; attribution and transformation disclosure, not MIT data licensing. |
 | `GET /v1/holidays/{year}` | Holiday calendar | partial curated seed | Years outside the seed return 404. |
 | `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage; 0.14.0 did not approve RPO production import. |
 | `GET /v1/vat/{ico}` | VAT registration lookup | not implemented | 0.15.0 verified the official Finančná správa ZIP/XML source but blocked production import on privacy grounds. |
@@ -83,7 +83,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 - Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
 - Districts are now complete, but PortalVS source terms remain restrictive.
-- Banks are imported from an offline NBS directory snapshot and include inactive rows; source/licence verification remains pending.
+- Banks remain offline NBS v225 / 2026-05-18. Reuse is resolved by the 2026-10-14 reply; participation flags are OpenSK-derived from `Payment system SIPS`, not `Akt. úč.` or a general bank-status guarantee. Snapshot refresh and row-level field reconciliation are separate; bank responses are unchanged.
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
 - Phone areas are imported from the official telecom regulator Excel workbook, with licence/reuse verification still pending.
 - Vehicle registration codes are historical district abbreviations only; the API does not expose `GET /v1/vehicles/{spz}` and does not decode full plates.

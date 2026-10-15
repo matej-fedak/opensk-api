@@ -108,7 +108,12 @@ _LIMITATIONS: dict[str, list[str]] = {
         "Not national coverage.",
         "PortalVS redistribution terms are unresolved.",
     ],
-    "banks": [],
+    "banks": [
+        "Served converter snapshot is v225, effective 2026-05-18; v226 refresh is a separate follow-up.",
+        "JSON is an OpenSK transformation, not the original NBS file; activeParty and activePartyMarker are OpenSK-derived from Payment system SIPS, not Akt. úč.",
+        "MIT covers OpenSK code, not NBS data; downstream users must retain NBS attribution and source conditions.",
+        "NBS does not guarantee completeness/content integrity or accept damages liability; commercial users should verify correctness.",
+    ],
     "holidays": ["Covers only the years present in the local dataset."],
     "companies": [
         "Seed-backed sample only, not full RPO coverage.",
@@ -149,6 +154,7 @@ _LIMITATIONS: dict[str, list[str]] = {
 }
 
 _LICENCE_NAMES: dict[str, str] = {
+    "banks": "NBS Terms of Use (attribution; transformation clarified by NBS)",
     "elections": "CC BY 4.0 (general ŠÚ SR policy; election applicability pending)",
     "exchangeRates": "ECB free-use permission (attribution required)",
     "regions": "Eurostat reuse policy",

@@ -39,7 +39,7 @@ Applies to future company/RPO expansion and any broader IČO lookup work.
 
 ## NBS Bank-Code Directory
 
-Applies to the NBS directory of domestic payment-system identification codes.
+Historical question list for the NBS bank-code directory. **Resolved by the institutional reply received 2026-10-14**, under NBS Terms of Use; see `nbs-bank-reuse-clarification.md`. Not a new outreach request. Actual v225 → v226 refresh and column reconciliation remain separate work; holidays are not covered by this clarification.
 
 1. Is reuse of the directory data allowed outside the NBS website?
 2. Is redistribution of normalized bank-code data through an open-source public API allowed?

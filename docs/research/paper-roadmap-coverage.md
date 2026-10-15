@@ -48,7 +48,7 @@ Raw classifications are authoritative; the scores do not imply source compliance
 | Regions | SUSR / data.gov.sk open API | Eurostat LAU 2025 correspondence table | `PRODUCTION_COMPLETE` | `data/regions.json` | 8 regions | Yellow: exact Eurostat evidence needed | Low | Include after attribution evidence | Shipped with different source. |
 | Districts | SUSR / open API | PortalVS classifier 10 | `PRODUCTION_COMPLETE` | `data/districts.json` | 79 Slovak districts | Red: PortalVS redistribution unclear | Low | `INCLUDE_AFTER_COMPLIANCE_FIX` | Complete data but source rights block 1.0 commitment. |
 | Municipalities | SUSR / data.gov.sk CSV/JSON | PortalVS classifier 9 | `PRODUCTION_COMPLETE` | `data/municipalities.json` | 2,927 current regular municipalities | Red: PortalVS redistribution unclear | Low | `INCLUDE_AFTER_COMPLIANCE_FIX` | Complete runtime data; terms remain unresolved. |
-| Banks | NBS HTML/PDF | NBS domestic payment-system identification-code directory | `PRODUCTION_COMPLETE` | `data/banks.json` | 30 domestic rows | Yellow: source terms pending | Low | Include after source evidence | Shipped in intended domain. |
+| Banks | NBS HTML/PDF | NBS domestic payment-system identification-code directory | `PRODUCTION_COMPLETE` | `data/banks.json` | 30 domestic v225 rows | Reuse resolved by NBS reply 2026-10-14 | Low | Include with attribution/transformation disclosure | v225 unchanged; refresh and column reconciliation separate. |
 | Company / ORSR / ICO | ORSR scraping / registry lookup | Small verified legal-entity seed plus RPO research | `SEED_BACKED` | `data/companies.json` | 4 seed records | Yellow: seed-specific evidence, RPO not approved | Personal role-holder fields excluded | `INCLUDE_AS_SEED_BACKED` | Stable semantics only; no national RPO/ORSR coverage promise. |
 | ŽRSR | HTML/JSON public machine-readable access | ŽRSR human-facing search only verified | `RESEARCH_ONLY_BLOCKED` | No production dataset | None | Blocked: no machine-readable reuse grant | Natural-person entrepreneurs risk | Exclude from 1.0 | Paper claim is incorrect for production use. |
 | VAT / DPH | XML / JSON download | Financial Administration ZIP/XML verified | `RESEARCH_ONLY_BLOCKED` | Generated tooling only | Source available, not exposed | Source usable; privacy gate blocks production | No natural/legal subject discriminator | Exclude from 1.0 | Source claim partly confirmed, production blocked by privacy. |
@@ -109,8 +109,8 @@ Do not create an OpenSK API endpoint for the catalogue itself in the 1.0 scope.
 
 | Colour | Datasets | Meaning |
 | --- | --- | --- |
-| Green | None yet | No production dataset currently has retained evidence strong enough to remove all 1.0 source caveats. |
-| Yellow | regions, banks, holidays, companies seed, phone areas, vehicle registration codes, school facility counts, procurement notices | Production or limited data exists, but exact attribution/reuse evidence needs tightening before stable release. |
+| Green | banks (reuse) | NBS clarification received 2026-10-14 resolves reuse; freshness/field-mapping maintenance remains separate. |
+| Yellow | regions, holidays, companies seed, phone areas, vehicle registration codes, school facility counts, procurement notices | Production or limited data exists, but exact attribution/reuse evidence needs tightening before stable release. |
 | Red | districts, municipalities, PSC | Production data exists, but PortalVS redistribution uncertainty is high enough that these must be resolved before inclusion in 1.0 or excluded. |
 
 Research-only datasets are not 1.0 blockers when explicitly excluded from the stable scope.
