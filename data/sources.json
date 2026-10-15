@@ -324,20 +324,21 @@
     "notes": "Aggregate school facility count rows from RIS, valid as of 2025-09-15. This is not an institution-level school directory; no per-school lookup, addresses, staff, director, pupil, email, or phone data is exposed."
   },
   "euFunds": {
-    "status": "research-only",
-    "coverage": "unknown",
+    "status": "imported",
+    "coverage": "partial",
     "sourceName": "ITMS21+ OpenData API — Zoznam projektov 2021–2027 (MIRRI SR)",
-    "sourceUrl": "https://api.itms21.sk/public/v1/",
+    "sourceUrl": "https://api.itms21.sk/public/v1/projekt",
     "sourceDocumentationUrl": "https://eurofondy.gov.sk/wp-content/uploads/2025/06/Final_ManualOpenDataAPI_ITMS21.docx",
     "licence": "MIRRI SR publishes ITMS21+ datasets as 'Dataset publikačného minima OVS' in the national open-data catalogue (data.gov.sk / data.slovensko.sk) under CC BY on all three rights layers (author's work, original database, sui generis database right), machine-readable via the catalogue graph; integration manual v1.0 (25.6.2025) itself contains no licence text.",
-    "licenceStatus": "verified 2026-10-14 (NKOD SPARQL terms-of-use node queried firsthand; publisher legal-subject/50349287 = MIRRI SR); CC-BY attribution and modification notice required on any future redistribution",
-    "redistributionStatus": "research-and-tooling only; no production EU-funds dataset redistributed; importer writes gitignored data/generated/ previews only",
+    "licenceStatus": "verified 2026-10-15: project distribution retains MIRRI publisher and CC_BY on author, original-database and sui-generis rights layers; precise licence version not separately declared",
+    "redistributionStatus": "production since 0.23.7: partial ITMS21+ project-reference domain, positively reviewed legal-entity beneficiary projects only; MIRRI attribution and transformation/privacy-minimization disclosure",
     "termsUrl": "https://data.gov.sk/set/3dd34ab69156cd6dcdd6454f81727c88",
-    "attribution": "MIRRI SR / ITMS21+ OpenData API, published under CC BY; any OpenSK projection is modified and transformed data, not an official representation.",
+    "attribution": "MIRRI SR / ITMS21+ OpenData API; CC BY as declared by the Slovak national open-data catalogue (version not separately identified). OpenSK transformed and privacy-minimized the data; not an official representation.",
     "riskLevel": "medium",
-    "lastChecked": "2026-10-14",
-    "updateCadence": "Upstream catalogue daily; manual offline snapshot review. Observed 2026-10-14: 4,571 projects / 12,955 subjects / 9,075 ŽoNFP. Refresh requires full re-list plus detail reconciliation; tested seconds-form modifiedSince did not filter, and nested changes are not reliably tracked.",
-    "nextAction": "A separate approved production milestone must retain the project-specific CC BY declaration (precise version link unresolved), acquire consistent full coverage, review title/privacy policy and the positive legal-form allowlist, and measure normalized JSON costs. No correspondence sent.",
-    "notes": "0.23.6 research spike: GO_PRODUCTION_NEXT / JSON_CONTINUE; REVIEWED_LEGAL_ENTITY_PROJECTS_ONLY. The observed source population is 4,571 projects, not measured eligible coverage. The importer includes projects only for 28 positively reviewed legal-entity beneficiary forms; known natural persons/SZČO, unspecified, missing and unreviewed forms exclude entire projects, including IDs, URLs, amounts, locations, state/timestamps and title. Generated metadata contains no excluded-row code list, raw filenames or excluded-detail URLs. Matching excluded details cannot reintroduce a project. Five of 100 sampled subjects were natural persons, while all 100 sampled project beneficiaries passed the positive gate (different populations). Partners, suppliers, descriptions, addresses, tax IDs and contacts never pass through. Irregularities/receivables are OUT_OF_INITIAL_SCOPE; ITMS2014+ stays a distinct deferred source. No production dataset or runtime upstream dependency."
+    "lastChecked": "2026-10-15",
+    "lastUpdated": "2026-10-15",
+    "updateCadence": "Manual offline complete-list acquisition and reviewed import; no runtime or scheduled fetching. Do not rely on modifiedSince for nested changes.",
+    "nextAction": "Refresh manually with bounded acquisition outside Git, review all legal forms, run manifest-backed dry-run and inspect refresh report. Compare the new complete acquisition against committed production JSON for safe refresh/removal checks, including from a fresh clone. A securely retained previous acquisition is optional and only enriches source-transition diagnostics; old raw pages need not be retained indefinitely. Disappearance of published projects requires --acknowledge-removals. Keep titles/rich domains and ITMS2014+ excluded.",
+    "notes": "0.23.7 production: 4,574 source projects acquired 2026-10-15T11:37:24Z..11:42:27Z, 19 bounded pages / 95,271,314 raw bytes, canonical manifest SHA-256 93b104884e9405581a775762e0af2fab1c804c0954d575eca3c35bd55801a30f. 4,561 projects included; 13 excluded entirely (3 natural persons, 4 unspecified, 6 ambiguous; no missing/new unreviewed forms observed). 46 source forms reviewed, 40 positively approved. Titles and implementation dates omitted. List-only financials.contractedTotal preserves total contracted amount as a decimal string; manual does not establish currency, so no EUR claim. Eight verified Slovak NUTS3 references, no PortalVS/RPO join. No raw source bodies, excluded identifiers or personal fixtures committed. No detail acquisition, runtime upstream access, payments/procurement/irregularity surface or ITMS2014+. JSON_CONTINUE. Evidence/refresh: docs/eu-funds.md."
   }
 }

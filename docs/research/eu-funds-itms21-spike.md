@@ -1,5 +1,16 @@
 # 0.23.6 — EU Funds / ITMS21+ Source Spike
 
+> Historical spike record. **0.23.7 now promotes the narrow title-free production
+> project-reference slice** described in [`../eu-funds.md`](../eu-funds.md).
+> Its full acquisition is 4,574 source / 4,561 included / 13 wholly excluded,
+> not the historical 4,571 population or 100-row research sample below. Current
+> runtime has two EU-funds routes and 39 GET operations. Production uses
+> `contractedTotal` without an unsupported currency claim, omits implementation
+> dates/titles, removes ambiguous CZ325 from the seed allowlist, and requires
+> complete list manifests (not details). All “not implemented”/promotion gates
+> below describe the **0.23.6** outcome; current contract/refresh evidence lives
+> in the production guide. CC BY remains generic after the 2026-10-15 recheck.
+
 Checked **2026-10-14**. Research and offline tooling only. **No public EU-funds endpoint or production EU-funds dataset is added.** `/v1`, `metadata.version == "v1"`, and the existing 37 GET operations remain unchanged.
 
 ## 1. Executive decision

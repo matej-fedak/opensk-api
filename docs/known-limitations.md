@@ -1,5 +1,6 @@
 # Known Limitations
 
+- EU funds (0.23.7) are ITMS21+ 2021–2027 **project references only**, public coverage partial: 4,561 of 4,574 acquired projects, 13 wholly excluded for privacy (3 natural persons/SZČO, 4 unspecified, 6 ambiguous). Positive legal-form eligibility, no titles/descriptions/addresses/contacts/tax IDs, implementation dates, partners/suppliers or rich fields. No ITMS2014+, payments, procurement fusion, irregularities or debts. Manual 2026-10-15 snapshot can lag upstream; complete acquisition is not universal public coverage or an upstream transactional guarantee. `contractedTotal` is total contracted amount as an exact decimal string; currency is not independently established, so no EUR claim. MIRRI catalogue CC BY (version not separately identified), OpenSK transformed/minimized, not official. Details/refresh: `docs/eu-funds.md`.
 - RPO company production expansion is blocked until a safe acquisition method, reuse terms, provenance, rate limits, and privacy filtering are verified.
 - Company lookup is backed by a small checked-in seed set, not a complete company register or full RPO coverage.
 - VAT/DPH lookup is not exposed in 0.15.0. The official source was verified, but production import is blocked because natural-person entrepreneurs cannot be excluded deterministically from the current XML.

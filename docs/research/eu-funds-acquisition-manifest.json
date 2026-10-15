@@ -1,0 +1,223 @@
+{
+  "profile": "itms21-project-list-acquisition-v1",
+  "collectionUrl": "https://api.itms21.sk/public/v1/projekt",
+  "startedAt": "2026-10-15T11:37:24Z",
+  "completedAt": "2026-10-15T11:42:27Z",
+  "sourceProjectCount": 4574,
+  "rowsAcquired": 4574,
+  "pageSize": 250,
+  "completeAcquisition": true,
+  "pages": [
+    {
+      "file": "page-00000.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=0&limit=250",
+      "offset": 0,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 6274886,
+      "sha256": "7b4527f089d544e32f2097fab71e86f47be53873be5b81a3d43a0e8473ffee50",
+      "retrievedAt": "2026-10-15T11:37:34Z"
+    },
+    {
+      "file": "page-00001.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=250&limit=250",
+      "offset": 250,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5099444,
+      "sha256": "fe84bd2dcbd4b0e9fa267906cda2fe3edbc156af938fbf3331a097046d874e3e",
+      "retrievedAt": "2026-10-15T11:37:46Z"
+    },
+    {
+      "file": "page-00002.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=500&limit=250",
+      "offset": 500,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5005338,
+      "sha256": "0d8c2a604e8cd5bfabf0ab82aba5def3697dfc24e0b4057c072e9dfa18d520e9",
+      "retrievedAt": "2026-10-15T11:37:59Z"
+    },
+    {
+      "file": "page-00003.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=750&limit=250",
+      "offset": 750,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 3236685,
+      "sha256": "291b473a63bb6c8e636411fe535c2507a0a85dd253b289ca2e6ed5a2c9f2ef7d",
+      "retrievedAt": "2026-10-15T11:38:13Z"
+    },
+    {
+      "file": "page-00004.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=1000&limit=250",
+      "offset": 1000,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 3374203,
+      "sha256": "8ca6015bd9fc242c34094f52e004f50e271c66f5729a809159e1f124023530e7",
+      "retrievedAt": "2026-10-15T11:38:24Z"
+    },
+    {
+      "file": "page-00005.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=1250&limit=250",
+      "offset": 1250,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5160095,
+      "sha256": "b7e70b0f371aa4cdef7fe3b0f1da3494929fdfb259fb4463bf4ba3ecc0443142",
+      "retrievedAt": "2026-10-15T11:38:38Z"
+    },
+    {
+      "file": "page-00006.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=1500&limit=250",
+      "offset": 1500,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5492411,
+      "sha256": "9e30823bb40eb0e231f28eb0f071006b3b94dbc5032e98d36e4a66261a3b1447",
+      "retrievedAt": "2026-10-15T11:38:51Z"
+    },
+    {
+      "file": "page-00007.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=1750&limit=250",
+      "offset": 1750,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 6734740,
+      "sha256": "f4d6bc0b9dabf742a550dea7ffae013b29d4c4095ab108e1feaedf6351d4cb05",
+      "retrievedAt": "2026-10-15T11:39:08Z"
+    },
+    {
+      "file": "page-00008.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=2000&limit=250",
+      "offset": 2000,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5014143,
+      "sha256": "956395ce97009ea439bad9665652bc2d60c32d95642640806ad31a4a02cd87ab",
+      "retrievedAt": "2026-10-15T11:39:25Z"
+    },
+    {
+      "file": "page-00009.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=2250&limit=250",
+      "offset": 2250,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5091316,
+      "sha256": "31832a36d2b374ba446ed3ec1480cf711808a3b911904daec287b78370e1a09b",
+      "retrievedAt": "2026-10-15T11:39:40Z"
+    },
+    {
+      "file": "page-00010.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=2500&limit=250",
+      "offset": 2500,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 4945378,
+      "sha256": "3fce6a23c6f3c8f67a36a6b9726e3d057bc3822361e42b0c96d9204b8e448f4b",
+      "retrievedAt": "2026-10-15T11:39:56Z"
+    },
+    {
+      "file": "page-00011.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=2750&limit=250",
+      "offset": 2750,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 4586496,
+      "sha256": "1b10a9f38a6d54d02d3e6058f46949c4769bd827198a81af1730c1dd7806cfce",
+      "retrievedAt": "2026-10-15T11:40:13Z"
+    },
+    {
+      "file": "page-00012.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=3000&limit=250",
+      "offset": 3000,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 4598657,
+      "sha256": "acadd37721eea4888570ffeab11584baa46098a02249d04163edeb0d6ad46024",
+      "retrievedAt": "2026-10-15T11:40:30Z"
+    },
+    {
+      "file": "page-00013.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=3250&limit=250",
+      "offset": 3250,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 4992138,
+      "sha256": "c5050474fcfbb50101cfa5c4806aff05ae4bd047be9e854024b7376ff7626c43",
+      "retrievedAt": "2026-10-15T11:40:47Z"
+    },
+    {
+      "file": "page-00014.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=3500&limit=250",
+      "offset": 3500,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5937219,
+      "sha256": "92afd993c989f9e3446f25d1986367cebe722473f5ba32458c61ecfe9783386f",
+      "retrievedAt": "2026-10-15T11:41:06Z"
+    },
+    {
+      "file": "page-00015.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=3750&limit=250",
+      "offset": 3750,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 5799389,
+      "sha256": "0a0b828e06a5c39c9fd7d02d21b98da1f41670bd20bf543f7e447d98aed0f977",
+      "retrievedAt": "2026-10-15T11:41:24Z"
+    },
+    {
+      "file": "page-00016.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=4000&limit=250",
+      "offset": 4000,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 7513624,
+      "sha256": "70218201a961e7b6a8a57e1d34ef83088cb6f28dc6f93160305c868f554f1612",
+      "retrievedAt": "2026-10-15T11:41:45Z"
+    },
+    {
+      "file": "page-00017.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=4250&limit=250",
+      "offset": 4250,
+      "limit": 250,
+      "size": 4574,
+      "rows": 250,
+      "bytes": 4998006,
+      "sha256": "b38aebdae37dc9606dd09431e75dccdbdfbf8a9600d6e74301e438de8065cb7c",
+      "retrievedAt": "2026-10-15T11:42:03Z"
+    },
+    {
+      "file": "page-00018.json",
+      "url": "https://api.itms21.sk/public/v1/projekt?offset=4500&limit=250",
+      "offset": 4500,
+      "limit": 250,
+      "size": 4574,
+      "rows": 74,
+      "bytes": 1417146,
+      "sha256": "418d8dd3658f7e7e008846f5a4a20e9f48761d10830980e990e69bd2e432f6c1",
+      "retrievedAt": "2026-10-15T11:42:16Z"
+    }
+  ],
+  "boundaryRecheckSha256": "7b4527f089d544e32f2097fab71e86f47be53873be5b81a3d43a0e8473ffee50",
+  "manifestSha256": "93b104884e9405581a775762e0af2fab1c804c0954d575eca3c35bd55801a30f"
+}

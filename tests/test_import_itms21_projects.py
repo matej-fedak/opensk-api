@@ -587,10 +587,10 @@ def test_cli_dry_run_and_modes(tmp_path: Path) -> None:
     assert '"ok": true' in proc.stdout
 
 
-def test_production_write_flag_does_not_exist(capsys) -> None:
+def test_research_captures_cannot_write_production(capsys) -> None:
     with pytest.raises(SystemExit):
         importer.main(["--projects", f"capture.json={LIST_URL}", "--write-production"])
-    assert "unrecognized arguments: --write-production" in capsys.readouterr().err
+    assert "requires --manifest" in capsys.readouterr().err
 
 
 def test_input_size_limit_enforced(tmp_path: Path) -> None:

@@ -15,6 +15,8 @@ from typing import Any
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 DEFAULT_DATA_DIR = ROOT_DIR / "data"
 DEFAULT_BANKS_PATH = DEFAULT_DATA_DIR / "banks.json"
 DEFAULT_HOLIDAYS_PATH = DEFAULT_DATA_DIR / "holidays.json"
@@ -1593,6 +1595,31 @@ def validate_exchange_rates_dataset(path: Path) -> ValidationReport:
     return report
 
 
+def validate_eu_funds_projects_payload(payload: Any, path: Path | None = None) -> ValidationReport:
+    """Exact nested production schema, not just a forbidden-field name scan."""
+    from pydantic import ValidationError
+    from schemas.eu_funds import Dataset
+
+    path = path or DEFAULT_DATA_DIR / "eu_funds_projects.json"
+    report = ValidationReport("euFundsProjects", path)
+    try:
+        dataset = Dataset.model_validate(payload)
+        report.record_count = len(dataset.projects)
+    except ValidationError as exc:
+        for error in exc.errors(include_input=False, include_url=False):
+            report.add_error(".".join(map(str, error["loc"])), error["msg"])
+    return report
+
+
+def validate_eu_funds_projects_dataset(path: Path | None = None) -> ValidationReport:
+    path = path or DEFAULT_DATA_DIR / "eu_funds_projects.json"
+    report = ValidationReport("euFundsProjects", path)
+    payload = _load_json(report, path)
+    if payload is None:
+        return report
+    return validate_eu_funds_projects_payload(payload, path)
+
+
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
         validate_sources_registry(data_dir / "sources.json"),
@@ -1631,6 +1658,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
     exchange_rates_path = data_dir / "exchange_rates.json"
     if exchange_rates_path.is_file():
         reports.append(validate_exchange_rates_dataset(exchange_rates_path))
+
+    eu_funds_path = data_dir / "eu_funds_projects.json"
+    if eu_funds_path.is_file():
+        reports.append(validate_eu_funds_projects_dataset(eu_funds_path))
 
     return reports
 

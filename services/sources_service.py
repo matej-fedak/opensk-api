@@ -16,6 +16,7 @@ from schemas.common import (
     BANKS_LAST_UPDATED,
     DISTRICTS_LAST_UPDATED,
     EXCHANGE_RATES_LAST_UPDATED,
+    EU_FUNDS_LAST_UPDATED,
     HOLIDAYS_LAST_UPDATED,
     MUNICIPALITIES_LAST_UPDATED,
     PHONE_AREAS_LAST_UPDATED,
@@ -49,6 +50,7 @@ _RUNTIME_DATASET_IDS = frozenset(
         "schoolFacilityCounts",
         "procurementNotices",
         "exchangeRates",
+        "euFunds",
     }
 )
 
@@ -97,7 +99,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "elections": "historical snapshot; manual correction review",
     "exchangeRates": "upstream every TARGET working day; manual offline snapshot refresh",
     "schoolFacilityCounts": "semiannual",
-    "euFunds": "upstream daily; manual offline full-refresh only",
+    "euFunds": "manual offline complete-list snapshot; not live",
 }
 
 _LIMITATIONS: dict[str, list[str]] = {
@@ -147,9 +149,12 @@ _LIMITATIONS: dict[str, list[str]] = {
     ],
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
     "euFunds": [
-        "Research spike only; no EU funds endpoint or production dataset.",
-        "Research preview includes only projects whose beneficiary legal form is positively reviewed as a legal entity; natural-person, unspecified, missing and unreviewed forms are excluded entirely.",
-        "Irregularities and receivables are out of scope and not published by ITMS21+.",
+        "ITMS21+ 2021-2027 project references only; not all EU funds in Slovakia; no ITMS2014+ history.",
+        "Only positively reviewed legal-entity beneficiary projects; natural-person, ambiguous, unspecified, missing and unreviewed projects are excluded entirely.",
+        "Project titles, descriptions, implementation dates, addresses and contacts omitted.",
+        "Manually materialized snapshot can lag upstream; no payments, procurement, irregularities or debts surface.",
+        "MIRRI SR source transformed/minimized by OpenSK, not an official representation. CC BY per national catalogue; version not separately identified.",
+        "contractedTotal is the total contracted amount; currency is not independently established in the manual, so no EUR suffix is claimed.",
     ],
 }
 
@@ -162,7 +167,7 @@ _LICENCE_NAMES: dict[str, str] = {
     "schoolFacilityCounts": "Creative Commons BY (version not specified)",
     "vatRegistrations": "CC0 per export page; CC 4.0 international per catalogue (discrepancy on file)",
     "holidays": "NBS website disclaimer (attribution, no modification)",
-    "euFunds": "CC BY (ITMS21+ national open-data catalogue terms)",
+    "euFunds": "CC BY per Slovak national catalogue (version not separately identified)",
 }
 
 _RUNTIME_LAST_UPDATED: dict[str, str] = {
@@ -177,6 +182,7 @@ _RUNTIME_LAST_UPDATED: dict[str, str] = {
     "schoolFacilityCounts": SCHOOL_FACILITY_COUNTS_LAST_UPDATED,
     "procurementNotices": PROCUREMENT_NOTICES_LAST_UPDATED,
     "exchangeRates": EXCHANGE_RATES_LAST_UPDATED,
+    "euFunds": EU_FUNDS_LAST_UPDATED,
 }
 
 _COVERAGE_MAP = {"complete": "complete", "partial": "partial", "seed-backed": "seed", "unknown": None}

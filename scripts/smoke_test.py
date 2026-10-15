@@ -149,6 +149,8 @@ def _check_openapi(url: str) -> SmokeResult:
         "/v1/business-days/between",
         "/v1/exchange-rates/latest",
         "/v1/exchange-rates/{date}",
+        "/v1/eu-funds/projects",
+        "/v1/eu-funds/projects/{projectCode}",
     }
     try:
         paths = set(body["paths"])
@@ -259,6 +261,12 @@ def _check_rate_limit_headers(url: str) -> SmokeResult:
     return SmokeResult("rate-limit-headers", True, "PASS")
 
 
+def _known_eu_project_code() -> str:
+    """Choose only from the checked-in public snapshot, never an upstream ID."""
+    path = Path(__file__).resolve().parents[1] / "data" / "eu_funds_projects.json"
+    return json.loads(path.read_text(encoding="utf-8"))["projects"][0]["projectCode"]
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Smoke test the public OpenSK API surface")
     parser.add_argument("--base-url", required=True, help="Base URL of the deployed API")
@@ -310,6 +318,8 @@ def main(argv: list[str] | None = None) -> int:
         ("exchange-rates-exact", f"{base_url}/v1/exchange-rates/1999-01-04"),
         ("exchange-rates-filter", f"{base_url}/v1/exchange-rates/latest?currency=usd"),
         ("exchange-rates-weekend-404", f"{base_url}/v1/exchange-rates/2026-10-10", 404),
+        ("eu-funds-projects", f"{base_url}/v1/eu-funds/projects"),
+        ("eu-funds-project", f"{base_url}/v1/eu-funds/projects/{quote(_known_eu_project_code())}"),
     ]
 
     results: list[SmokeResult] = [_check_root(f"{base_url}/")]

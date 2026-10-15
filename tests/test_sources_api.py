@@ -55,7 +55,7 @@ EXPECTED_STATUS = {
     "elections": "research",
     "exchangeRates": "production",
     "schoolFacilityCounts": "production",
-    "euFunds": "research",
+    "euFunds": "production",
 }
 
 EXPECTED_COVERAGE = {
@@ -78,7 +78,7 @@ EXPECTED_COVERAGE = {
     "elections": None,
     "exchangeRates": "complete",
     "schoolFacilityCounts": "complete",
-    "euFunds": None,
+    "euFunds": "partial",
 }
 
 EXPECTED_LICENCE_STATUS = {
@@ -149,7 +149,7 @@ def test_sources_list_exposes_all_registered_domains() -> None:
 def test_sources_list_uses_standard_envelope_and_static_cache() -> None:
     response = client.get("/v1/sources")
     assert response.json()["metadata"]["source"] == "OpenSK API curated source catalogue"
-    assert response.json()["metadata"]["lastUpdated"] == "2026-10-14"
+    assert response.json()["metadata"]["lastUpdated"] == "2026-10-15"
     assert response.headers["cache-control"] == "public, max-age=86400"
 
 
@@ -236,7 +236,7 @@ def test_status_filter() -> None:
 
 def test_coverage_filter() -> None:
     partial = _list_entries(params="?coverage=partial")
-    assert {entry["id"] for entry in partial} == {"psc", "holidays", "procurementNotices"}
+    assert {entry["id"] for entry in partial} == {"psc", "holidays", "procurementNotices", "euFunds"}
 
 
 def test_query_filter_matches_name_source_or_id() -> None:
