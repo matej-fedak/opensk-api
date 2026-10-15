@@ -644,11 +644,27 @@ def validate_sources_registry(path: Path = DEFAULT_SOURCES_PATH) -> ValidationRe
 def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
     report = ValidationReport("banks", path)
     payload = _load_json(report, path)
+    if payload is None:
+        return report
+    return validate_banks_payload(payload, path)
+
+
+def validate_banks_payload(payload: Any, path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
+    from pydantic import ValidationError
+    from schemas.banks import BankDatasetMetadata, BankRecord
+
+    report = ValidationReport("banks", path)
     if not isinstance(payload, dict):
+        report.add_error("root", "bank dataset must be an object")
         return report
 
     metadata = _validate_dataset_metadata(report, payload)
     _warn_if_seed(report, metadata)
+    try:
+        BankDatasetMetadata.model_validate(metadata)
+    except ValidationError as exc:
+        for error in exc.errors(include_input=False, include_url=False):
+            report.add_error("metadata." + ".".join(map(str, error["loc"])), error["msg"])
 
     banks = _require_list(report, payload.get("banks"), "banks", "banks must be an array")
     if banks is None:
@@ -661,11 +677,17 @@ def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
     _warn_from_source_registry(report, "banks", registry.get("banks") if isinstance(registry, dict) else None)
 
     seen_codes: set[str] = set()
+    seen_bics: set[str] = set()
     for index, bank in enumerate(banks):
         item_path = f"banks[{index}]"
         item = _require_dict(report, bank, item_path, f"{item_path} must be an object")
         if item is None:
             continue
+        try:
+            BankRecord.model_validate(item)
+        except ValidationError as exc:
+            for error in exc.errors(include_input=False, include_url=False):
+                report.add_error(item_path + "." + ".".join(map(str, error["loc"])), error["msg"])
 
         code = _require_string(report, item.get("code"), f"{item_path}.code", "bank code must be a non-empty string")
         if code is not None:
@@ -686,6 +708,13 @@ def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
                 report.add_error(f"{item_path}.{field_name}", f"bank {field_name} must be null or uppercase alphanumeric length 8 or 11, got {identifier!r}")
 
         alphabetic_code = item.get("alphabeticCode")
+        if item.get("swift") != item.get("bic"):
+            report.add_error(f"{item_path}.swift", "swift must remain the compatibility alias of bic")
+        bic = item.get("bic")
+        if isinstance(bic, str):
+            if bic in seen_bics:
+                report.add_error(f"{item_path}.bic", "duplicate bank BIC")
+            seen_bics.add(bic)
         if alphabetic_code is not None and (not isinstance(alphabetic_code, str) or not _BANK_ALPHABETIC_CODE_RE.fullmatch(alphabetic_code)):
             report.add_error(f"{item_path}.alphabeticCode", f"bank alphabeticCode must be null or uppercase alphanumeric, got {alphabetic_code!r}")
 
@@ -703,6 +732,9 @@ def validate_banks_dataset(path: Path = DEFAULT_BANKS_PATH) -> ValidationReport:
                     report.add_error(f"{item_path}.activeParty", f"bank activeParty {active_party!r} does not match activePartyMarker {active_party_marker!r}")
 
     report.record_count = len(banks)
+    codes = [bank.get("code") for bank in banks if isinstance(bank, dict)]
+    if all(isinstance(code, str) for code in codes) and codes != sorted(codes):
+        report.add_error("banks", "bank rows must be deterministically sorted by code")
     return report
 
 

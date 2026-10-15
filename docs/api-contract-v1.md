@@ -27,6 +27,16 @@ Successful API responses use this envelope:
 
 `data` may be an object, array, or collection wrapper depending on endpoint history. `metadata.source` should identify the local dataset or service source. `metadata.lastUpdated` is the ISO freshness date of the underlying dataset; since 0.23.1 it is explicitly `null` (not the current date) for meta and error responses where no dataset is involved.
 
+Standard metadata keys are `source`, `lastUpdated`, `version`; **dataset-specific
+metadata MAY add provenance fields** without replacing them or requiring every
+endpoint to adopt source-specific fields. Since 0.23.8, bank/IBAN success metadata
+adds `sourceVersion`, `sourceEffectiveDate`, `sourceDownloadedAt`, `sourceUrl`,
+`sourceFileUrl`, `sourceSha256`, `sourceBytes`, `termsUrl`, `attribution`,
+`transformation`, all from the local NBS dataset. Effective date determines
+freshness/Last-Modified, not download date. NBS supplies Slovak bank resolution;
+OpenSK performs ISO checksum validation. Bank list data stays an array, lookup
+stays an object; no provenance route added. Generic error metadata is unchanged.
+
 ## Error Envelope
 
 Application-level errors should use this envelope:

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.23.8
+
+- Refreshed NBS **v225 → v226**, effective **2026-10-08**, downloaded **2026-10-15T16:23:00Z**, 1,953 source bytes / SHA-256 `b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64`. Current official page verified before acquisition; 38 source rows → 30 domestic rows, eight Czech BIC rows excluded. No codes added/removed; names changed at 3100/7930 and Payout BIC/alias at 9956 became `PYYUSK22`. All domestic rows reconciled; 21 true / nine false SIPS projections unchanged.
+- Added explicit reviewed Slovak CSV/title-row profile; actual source CP1250 despite its HTTP UTF-8 label. Unknown headings/widths/markers fail closed. `Systém SIPS` alone drives OpenSK-derived participation fields; HTML `Akt. úč.` is not a second CSV input. Preserve CSV names (including `Aktiengesselschaft` spelling), technical whitespace/code/BIC normalization only; no inferred BIC/alphabetic codes.
+- Importer requires explicit version, effective date, actual download timestamp and official file URL; calculates byte hash/size, validates before writing, reports deterministic added/removed/changed/provider/BIC/SIPS comparisons, and no longer emits pending-licence metadata or fabricated current-date freshness.
+- Existing bank/IBAN responses expose typed additive metadata from `data/banks.json`: NBS source/version/effective/download/URLs/hash/attribution/transformation. IBAN metadata separates **OpenSK / ISO 13616 checksum validation** from **NBS Slovak bank resolution**. Bank data shapes and standard v1 metadata retained; global errors unchanged. `BANKS_LAST_UPDATED=2026-10-08`, static ETag/Last-Modified/304 caching retained; **39 GET operations**, no route additions.
+- NBS data remains under **NBS Terms of Use + institutional clarification**, not MIT/CC; MIT covers code. Transformed JSON is not the original NBS file; downstream attribution and NBS limitations apply. No NBS symbols, runtime/scheduled fetching, DB or new dependencies. Other datasets/outreach unchanged. Evidence/refresh: `docs/research/nbs-bank-reuse-clarification.md`.
+- Validation: **694 tests**, **0 dataset errors / 44 existing warnings**, referential integrity/compileall/diff checks passed; local smoke **41/41**. Metadata-only ETag changes, effective-date Last-Modified and conditional 304s covered.
+
 ## 0.23.7
 
 - Added exactly `GET /v1/eu-funds/projects` and `GET /v1/eu-funds/projects/{projectCode}`: typed, local-only ITMS21+ 2021–2027 project references, default/max page 50/200, exact programme/call/beneficiary IČO/boolean/NUTS filters with AND semantics. Standard 400 `INVALID_FORMAT` / 404 `NOT_FOUND`, static caching, ETag/Last-Modified and conditional 304s; **37 → 39 GET operations**, `/v1` and envelope version unchanged.

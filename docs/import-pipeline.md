@@ -10,7 +10,7 @@ OpenSK API keeps runtime requests fully local. Import tooling exists so new or u
 - Geography imports for regions should be checked against the Eurostat LAU 2025 correspondence table; municipalities should be imported from PortalVS classifier 9 (`Obce`) JSON/CSV exports.
 - District imports are sourced from PortalVS classifier 10 filtered to Slovak rows; keep upstream notices and treat reuse as restricted until terms are fully settled.
 - PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. `scripts/backfill_psc_districts.py` backfills PSC `districtCode` from `municipalityCode` using local municipality mappings only; no values are inferred from names or PSC patterns. PSC coverage remains partial rather than national.
-- Bank imports use `scripts/import_banks.py` offline; runtime routes never call NBS. Reuse is clarified by NBS's 2026-10-14 reply. Existing source-column mappings and derived participation flags are audited in `research/nbs-bank-reuse-clarification.md`; JSON is not the original NBS file. Served v225 remains unchanged; updating source metadata/templates and reconciling v226 columns is separate refresh work.
+- Bank imports use `scripts/import_banks.py` offline, explicit source version/effective/download/file-URL arguments and automatic original-byte SHA-256/size. Current v226 / 2026-10-08 was downloaded 2026-10-15T16:23:00Z and audited row-by-row; unknown layouts/markers fail before writing. Reuse is resolved by NBS's 2026-10-14 reply; JSON is not the original NBS file, and bank/IBAN responses directly disclose provenance/attribution/derived fields. Review the deterministic refresh diff. Runtime never calls NBS. `research/nbs-bank-reuse-clarification.md`.
 - Phone-area imports are handled by `scripts/import_phone_areas.py` from local CSV/JSON/XLSX files. The official regulator source is a legacy `.xls` workbook retained under `data/raw/`; convert the `List1` sheet to CSV before importing. Runtime routes never call the regulator.
 - Vehicle registration district codes are manually curated from Slov-Lex legal text into `data/vehicle_registration_codes.json`. This historical/reference dataset has no runtime upstream calls and no full-plate decoder.
 - School facility aggregate counts are handled by `scripts/import_school_facility_counts.py` from the confirmed local MŠVVaM CSV. The source is aggregate RIS data, not an institution-level school directory, and runtime routes never call MŠVVaM.
@@ -98,7 +98,7 @@ python scripts/import_companies.py --input data/raw/rpo_sample.json --output dat
 ```
 
 ```bash
-python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --write --last-updated 2026-05-18
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --source-version 226 --effective-date 2026-10-08 --downloaded-at 2026-10-15T16:23:00Z --source-file-url "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true" --dry-run
 ```
 
 ```bash

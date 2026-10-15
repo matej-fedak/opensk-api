@@ -359,7 +359,8 @@ in Git. Exact nested schema + synthetic exclusion/hash/removal/HTTP regressions
 enforce the policy; this cannot independently guarantee upstream classification
 accuracy, so every refresh still requires review.
 
-NBS snapshot remains v225 / 2026-05-18; outreach states unchanged: banks
+At milestone 0.23.7, NBS remained v225 / 2026-05-18 (subsequently refreshed in
+0.23.8; see `research/nbs-bank-reuse-clarification.md`); outreach states unchanged: banks
 `REPLY_RECEIVED_RESOLVED`; PortalVS/telecom/ŠÚ SR `SENT_AWAITING_REPLY`.
 Platform public-promotion gate remains unresolved PortalVS compliance.
 

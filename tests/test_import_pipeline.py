@@ -10,12 +10,19 @@ import pytest
 
 from scripts.import_geography import run_import
 from scripts.import_banks import run_import as run_bank_import
+from schemas.banks import NBS_SOURCE, NBS_SOURCE_URL, NBS_TERMS_URL, NBS_LICENSE
+
 from scripts.import_utils import (
     build_dataset_payload,
     collect_referential_integrity_errors,
     load_dataset_records,
     write_json,
 )
+
+BANK_IMPORT_METADATA = {
+    "source_version": "226", "effective_date": "2026-10-08",
+    "downloaded_at": "2026-10-15T00:00:00Z", "source_file_url": "https://nbs.sk/dokument/synthetic.csv",
+}
 
 
 REGIONS = [
@@ -275,7 +282,7 @@ def test_bank_import_dry_run_filters_non_sk_bic_and_does_not_write(tmp_path: Pat
     output = tmp_path / "banks.json"
     _write_bank_csv(source)
 
-    result = run_bank_import(input_path=source, output_path=output, last_updated="2026-05-18", write=False)
+    result = run_bank_import(input_path=source, output_path=output, **BANK_IMPORT_METADATA, write=False)
 
     assert result.ok
     assert result.dry_run is True
@@ -291,17 +298,17 @@ def test_bank_import_write_outputs_normalized_payload(tmp_path: Path) -> None:
     output = tmp_path / "banks.json"
     _write_bank_csv(source)
 
-    result = run_bank_import(input_path=source, output_path=output, source="unit-test", last_updated="2026-05-18", write=True)
+    result = run_bank_import(input_path=source, output_path=output, **BANK_IMPORT_METADATA, write=True)
 
     assert result.ok
     assert result.wrote_files == [output.resolve()]
     payload = json.loads(output.read_text(encoding="utf-8"))
-    assert payload["metadata"] == {
-        "source": "unit-test",
-        "license": "Source/licence verification pending.",
-        "lastUpdated": "2026-05-18",
-        "complete": True,
-    }
+    assert payload["metadata"]["source"] == NBS_SOURCE
+    assert payload["metadata"]["sourceUrl"] == NBS_SOURCE_URL
+    assert payload["metadata"]["termsUrl"] == NBS_TERMS_URL
+    assert payload["metadata"]["license"] == NBS_LICENSE
+    assert payload["metadata"]["lastUpdated"] == "2026-10-08"
+    assert payload["metadata"]["complete"] is True
     assert payload["banks"] == [
         {
             "code": "1100",
@@ -342,7 +349,7 @@ def test_bank_import_json_preserves_k_active_marker(tmp_path: Path) -> None:
         ],
     )
 
-    result = run_bank_import(input_path=source, output_path=output, input_format="json", last_updated="2026-05-18", write=True)
+    result = run_bank_import(input_path=source, output_path=output, input_format="json", **BANK_IMPORT_METADATA, write=True)
 
     assert result.ok
     payload = json.loads(output.read_text(encoding="utf-8"))

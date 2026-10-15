@@ -1,5 +1,12 @@
 # Public Source Catalogue (`/v1/sources`)
 
+Since 0.23.8, `banks` is aligned with NBS v226 / effective 2026-10-08 / downloaded
+2026-10-15T16:23:00Z. Rights remain NBS Terms of Use + the 2026-10-14 clarification,
+not MIT data licensing. Bank/IBAN success metadata now also carries dataset-derived
+attribution, version/effective/download/file/hash/transformation provenance, so
+discovery does not depend solely on `/v1/sources/banks`. This does not add a route
+or expose internal registry fields in the source catalogue's curated model.
+
 `GET /v1/sources` and `GET /v1/sources/{id}` expose a **curated public projection** of the internal source registry (`data/sources.json`). The registry contains maintainer workflow material; the public surface deliberately exposes only consumer-relevant provenance. The registry file is never served verbatim.
 
 ## Public Schema

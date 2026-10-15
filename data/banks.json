@@ -1,8 +1,18 @@
 {
   "metadata": {
-    "source": "NBS directory of identification codes for the domestic payment system in Slovak Republic",
-    "license": "Source/licence verification pending.",
-    "lastUpdated": "2026-05-18",
+    "source": "Národná banka Slovenska — Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku",
+    "sourceUrl": "https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/",
+    "sourceFileUrl": "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true",
+    "termsUrl": "https://nbs.sk/disclaimer-sk/",
+    "sourceVersion": "226",
+    "sourceEffectiveDate": "2026-10-08",
+    "downloadedAt": "2026-10-15T16:23:00Z",
+    "sourceBytes": 1953,
+    "sourceSha256": "b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64",
+    "license": "NBS Terms of Use + institutional clarification received 2026-10-14; attribution required. MIT applies to OpenSK code, not NBS data.",
+    "attribution": "Zdroj: Národná banka Slovenska, Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku, verzia 226, platnosť od 2026-10-08, https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/. Údaje previedol do formátu JSON projekt OpenSK; odvodené polia nie sú údajmi NBS.",
+    "transformation": "NBS CSV converted to OpenSK JSON with field renaming, whitespace normalization, four-digit code padding and BIC normalization; not the original NBS file. activePartyMarker and activeParty are OpenSK-derived from Payment system SIPS (CSV: Systém SIPS), not a direct copy of Akt. úč. or a guarantee of bank operating status. country is an OpenSK-derived domestic scope label; alphabeticCode is a null schema placeholder when the source supplies no corresponding field. Derived fields are not NBS data.",
+    "lastUpdated": "2026-10-08",
     "complete": true
   },
   "banks": [
@@ -68,7 +78,7 @@
     },
     {
       "code": "3100",
-      "name": "Prima banka Slovensko, a.s. - Code for running payments",
+      "name": "Prima banka Slovensko, a.s. – kód pre dobeh platieb",
       "bic": "LUBASKBX",
       "swift": "LUBASKBX",
       "alphabeticCode": null,
@@ -128,7 +138,7 @@
     },
     {
       "code": "7930",
-      "name": "Wustenrot stavebná sporiteľňa, a.s.",
+      "name": "Bausparkasse Wüstenrot Aktiengesselschaft, pobočka zahraničnej banky",
       "bic": "WUSTSKBA",
       "swift": "WUSTSKBA",
       "alphabeticCode": null,
@@ -299,8 +309,8 @@
     {
       "code": "9956",
       "name": "Payout a.s.",
-      "bic": null,
-      "swift": null,
+      "bic": "PYYUSK22",
+      "swift": "PYYUSK22",
       "alphabeticCode": null,
       "activeParty": false,
       "activePartyMarker": "Ø",
