@@ -62,3 +62,51 @@ def test_retry_after_is_honored_or_stops():
     assert acquisition.retry_delay("13", 0) == 13
     with pytest.raises(ValueError, match="budget"):
         acquisition.retry_delay("10000", 0)
+
+
+def test_fixed_host_and_bounded_limit_are_enforced():
+    for url in ("https://example.com/projekt", acquisition.page_url(0, 999),
+                acquisition.COLLECTION + "?limit=-1"):
+        with pytest.raises(ValueError):
+            acquisition.fetch_page(url)
+
+
+def test_http_retry_after_then_success_without_logging_body(monkeypatch):
+    from urllib.error import HTTPError
+    from email.message import Message
+
+    headers = Message()
+    headers["Retry-After"] = "3"
+    attempts, sleeps = [], []
+
+    class Response:
+        status = 200
+        headers = {"Content-Type": "application/json"}
+        def __enter__(self): return self
+        def __exit__(self, *args): return False
+        def read(self, size): return b'{"synthetic": true}'
+
+    class Opener:
+        def open(self, request, timeout):
+            attempts.append(timeout)
+            if len(attempts) == 1:
+                raise HTTPError(request.full_url, 429, "rate limit", headers, None)
+            return Response()
+
+    monkeypatch.setattr(acquisition, "build_opener", lambda *a: Opener())
+    monkeypatch.setattr(acquisition.time, "sleep", sleeps.append)
+    assert acquisition.fetch_page(acquisition.page_url(0, 100)) == b'{"synthetic": true}'
+    assert sleeps == [3] and len(attempts) == 2
+
+
+def test_waf_challenge_is_not_retried(monkeypatch):
+    from urllib.error import HTTPError
+    attempts = []
+    class Opener:
+        def open(self, request, timeout):
+            attempts.append(1)
+            raise HTTPError(request.full_url, 403, "challenge", {}, None)
+    monkeypatch.setattr(acquisition, "build_opener", lambda *a: Opener())
+    with pytest.raises(ValueError, match="403"):
+        acquisition.fetch_page(acquisition.page_url(0, 100))
+    assert len(attempts) == 1

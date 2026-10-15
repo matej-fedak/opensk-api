@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline ITMS21+ EU-funds project-list importer (research prototype).
+"""Offline ITMS21+ EU-funds importer: production projection + research previews.
 
 No network access: inputs are explicitly supplied local JSON captures
 previously downloaded from the official ITMS21+ OpenData API
@@ -11,8 +11,10 @@ Modes (exactly one):
   --write-preview  write an unapproved research preview, restricted to
                    data/generated/ (gitignored)
 
-There is deliberately NO production-write mode in this milestone
-(0.23.6 is a research/source spike; no production EU-funds dataset).
+Production: --manifest PATH validates a complete external acquisition and
+uses the title-free, list-only production projection. --write-production
+writes only data/eu_funds_projects.json. Research --projects/--detail inputs
+cannot write production data. No network access in either importer mode.
 
 Privacy gate: only explicitly reviewed legal-entity beneficiary forms may
 produce a project record. Missing, unreviewed, natural-person or unspecified
@@ -37,6 +39,8 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 GENERATED_DIR = ROOT / "data" / "generated"
 DEFAULT_OUTPUT = GENERATED_DIR / "itms21_projects_preview.json"
 LIST_URL_RE = re.compile(r"https://api\.itms21\.sk/public/v1/projekt(?:\?\S*)?")
@@ -85,17 +89,11 @@ NATURAL_PERSON_FORMS = frozenset(
     }
 )
 
-# Reviewed legal-entity forms actually seen in the 100-project capture.
-# This is intentionally not "everything outside the denylist": new/unknown
-# forms exclude the project until a maintainer reviews the catalogue evidence.
-LEGAL_ENTITY_FORMS = frozenset({
-    "1009321", "1009921", "1009701", "100910", "1009382", "100906",
-    "1009803", "100904", "100909", "1009331", "100913", "1009121",
-    "100914", "1009801", "1009751", "1009CZ801", "1009CZ601",
-    "1009CZ661", "1009804", "1009CZ325", "1009120", "1009721",
-    "1009CZ141", "1009CZ771", "1009CZ331", "1009CZ361", "1009CZ804",
-    "1009CZ641",
-})
+# One positive policy shared with production; review may remove research
+# assumptions as well as intentionally approve new legal-entity forms.
+from services.eu_funds_policy import APPROVED_LEGAL_FORMS
+
+LEGAL_ENTITY_FORMS = APPROVED_LEGAL_FORMS
 
 PROJECT_CODE_RE = re.compile(r"[0-9A-Za-z][0-9A-Za-z\-/]{2,40}")
 MAX_PAGE = 100_000
@@ -214,7 +212,7 @@ def extract_identity(row: dict, where: str) -> tuple[int, str]:
     require(isinstance(row, dict), f"{where}: row must be an object")
     source_id = require_int(row, "id", where)
     kod = require_str(row, "kod", where)
-    require(PROJECT_CODE_RE.fullmatch(kod), f"{where}: invalid project code {kod!r}")
+    require(PROJECT_CODE_RE.fullmatch(kod), f"{where}: invalid project code (value not logged)")
     require(row.get("href") == f"/projekt/id/{source_id}", f"{where}: invalid 'href'")
     return source_id, kod
 
@@ -512,19 +510,37 @@ def import_itms21_projects(lists: list[tuple[Path, str]], details: list[tuple[Pa
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--projects", action="append", required=True, metavar="PATH=URL",
+    parser.add_argument("--projects", action="append", default=[], metavar="PATH=URL",
                         type=lambda v: parse_source_argument(v, LIST_URL_RE, "--projects"),
                         help="offline /public/v1/projekt list-page capture plus its canonical URL; repeatable")
     parser.add_argument("--detail", action="append", default=[], metavar="PATH=URL",
                         type=lambda v: parse_source_argument(v, DETAIL_URL_RE, "--detail"),
                         help="optional offline project-detail capture (id/kod URL); repeatable")
     parser.add_argument("--retrieved-at", help="UTC retrieval timestamp recorded into preview metadata")
+    parser.add_argument("--manifest", type=Path, help="complete external acquisition manifest (title-free production projection)")
+    parser.add_argument("--previous-manifest", type=Path, help="private previous acquisition, required for refresh transition counts")
+    parser.add_argument("--acknowledge-removals", action="store_true", help="allow reviewed disappearance of previously published projects")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true", help="default: validate/report without writing")
     mode.add_argument("--write-preview", action="store_true", help="explicit unapproved generated preview only")
+    mode.add_argument("--write-production", action="store_true", help="materialize fixed data/eu_funds_projects.json from a complete manifest")
     parser.add_argument("--output", type=Path, default=None,
                         help="preview output path (must stay inside data/generated/)")
     args = parser.parse_args(argv)
+    if args.manifest:
+        if args.projects or args.detail or args.retrieved_at:
+            parser.error("--manifest cannot be combined with research captures or an invented retrieval timestamp")
+        from scripts.itms21_production import materialize
+        result = materialize(args.manifest, write_production=args.write_production,
+                             write_preview=args.write_preview, output=args.output,
+                             previous_manifest=args.previous_manifest,
+                             acknowledge_removals=args.acknowledge_removals)
+        sys.stdout.buffer.write(serialize_payload(dict(result.report, ok=result.ok)))
+        return 0 if result.ok else 1
+    if args.write_production or args.previous_manifest or args.acknowledge_removals:
+        parser.error("production/refresh requires --manifest; research captures cannot be promoted")
+    if not args.projects:
+        parser.error("supply --manifest or research --projects captures")
     result = import_itms21_projects(
         args.projects, args.detail, retrieved_at=args.retrieved_at,
         dry_run=not args.write_preview, write_preview=args.write_preview,

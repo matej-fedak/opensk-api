@@ -10,20 +10,25 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
+from http.client import HTTPException
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from version import PROJECT_VERSION
 COLLECTION = "https://api.itms21.sk/public/v1/projekt"
 PROFILE = "itms21-project-list-acquisition-v1"
 MAX_RESPONSE_BYTES = 32 * 1024 * 1024
-USER_AGENT = "OpenSK-Source-Acquisition/0.23.7 (+https://github.com/matej-fedak/opensk-api)"
+USER_AGENT = f"OpenSK-Source-Acquisition/{PROJECT_VERSION} (+https://github.com/matej-fedak/opensk-api)"
 
 
 def utc_now() -> str:
@@ -56,6 +61,10 @@ def retry_delay(value: str | None, attempt: int) -> float:
 
 
 def fetch_page(url: str, *, timeout: float = 60, attempts: int = 3) -> bytes:
+    if not re.fullmatch(re.escape(COLLECTION) + r"\?offset=[0-9]+&limit=[0-9]{1,3}", url):
+        raise ValueError("only the fixed official bounded project-list URL is allowed")
+    if not 1 <= int(url.rsplit("=", 1)[1]) <= 250:
+        raise ValueError("page size must be bounded to 1..250")
     opener = build_opener(NoRedirect())
     for attempt in range(attempts):
         try:
@@ -74,7 +83,7 @@ def fetch_page(url: str, *, timeout: float = 60, attempts: int = 3) -> bytes:
             if attempt == attempts - 1:
                 raise ValueError("upstream transient HTTP retry budget exhausted") from None
             time.sleep(retry_delay(exc.headers.get("Retry-After"), attempt))
-        except (URLError, TimeoutError, ConnectionError):
+        except (URLError, TimeoutError, ConnectionError, HTTPException):
             if attempt == attempts - 1:
                 raise ValueError("upstream network retry budget exhausted") from None
             time.sleep(retry_delay(None, attempt))
@@ -84,7 +93,7 @@ def fetch_page(url: str, *, timeout: float = 60, attempts: int = 3) -> bytes:
 def acquire(output: Path, *, page_size: int = 200, pace: float = 1.5, fetch=fetch_page,
             sleep=time.sleep) -> dict:
     output = output.resolve()
-    if output.is_relative_to(ROOT.resolve()):
+    if output.is_relative_to(ROOT.resolve()) or any((parent / ".git").exists() for parent in [output, *output.parents]):
         raise ValueError("raw acquisition output must be outside the repository")
     if not 1 <= page_size <= 250 or pace < 1:
         raise ValueError("page size must be 1..250 and pacing at least one second")
@@ -113,7 +122,7 @@ def acquire(output: Path, *, page_size: int = 200, pace: float = 1.5, fetch=fetc
         if size != population or len(rows) != min(page_size, population - offset):
             raise ValueError("inconsistent source size or incomplete page")
         for row in rows:
-            if not isinstance(row, dict) or type(row.get("id")) is not int or not isinstance(row.get("kod"), str) or not row["kod"]:
+            if not isinstance(row, dict) or type(row.get("id")) is not int or row["id"] <= 0 or not isinstance(row.get("kod"), str) or not row["kod"]:
                 raise ValueError("invalid project identity (no body logged)")
             if row["id"] in ids or row["kod"] in codes:
                 raise ValueError("duplicate project ID/code; no consistent snapshot")
