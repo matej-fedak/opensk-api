@@ -1,5 +1,13 @@
 # Dataset Format
 
+ITMS21+ production addition (0.23.7): `data/eu_funds_projects.json` has strict
+`metadata` and sorted `projects` arrays, validated by `schemas/eu_funds.py`.
+Only title-free project references with positively reviewed legal-entity
+beneficiaries are permitted; every unknown key at every nested level is
+rejected. `financials.contractedTotal` is a decimal string without a verified
+currency claim. Exact fields/counts/privacy/manifest/refresh contract:
+[`eu-funds.md`](eu-funds.md). Raw ITMS21 payloads must stay outside Git.
+
 The repository stores its reference data as JSON files under `data/`. These files are loaded directly by the application, so codes should stay string-based and preserve leading zeros.
 
 - Raw source material is curated offline into the checked-in JSON files.

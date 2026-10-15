@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.5` pre-1.0 public launch guardrails milestone — application rate limiting and daily scheduled public smoke monitoring added; operational guardrails ready, public promotion still gated by unresolved PortalVS compliance.
+Status: `0.23.7` pre-1.0 — privacy-minimized ITMS21+ project-reference API; 39 GET operations. Operational guardrails remain ready, public promotion still gated by unresolved PortalVS compliance.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -46,10 +46,14 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2026 holiday coverage | strict error outside supported years |
 | `GET /v1/exchange-rates/latest` | Latest ECB EUR reference rates in the local snapshot (not live rates) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
 | `GET /v1/exchange-rates/{date}` | ECB EUR reference rates for an exact publication date (404 otherwise; optional `?currency=` filter) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
+| `GET /v1/eu-funds/projects` | Paginated ITMS21+ project references; exact programme/call/IČO/status/NUTS filters | partial, 2021–2027 reviewed legal-entity beneficiaries only | MIRRI / catalogue CC BY (version not separately identified); OpenSK transformed/minimized |
+| `GET /v1/eu-funds/projects/{projectCode}` | Official project-code lookup | same local privacy-approved snapshot | no titles, unsafe projects, payments, procurement or ITMS2014+ |
 
 `/v1/schools` is intentionally not implemented. The confirmed MŠVVaM open-data CSV is aggregate-only, and the institution-level RIS/CVTI candidates still lack verified production reuse, acquisition, identifier, coverage, and privacy gates. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
 
 Exchange rates are official European Central Bank reference rates, normalized from the ECB eurofxref XML feed into local JSON (rate values reproduced verbatim as decimal strings). `1 EUR = X units of the foreign currency` — for example `USD = "1.16"` means 1 EUR = 1.16 USD. Exact ECB publication dates only: there is no weekend, TARGET-holiday or nearest-date fallback, and `latest` means the newest publication date in the OpenSK snapshot (it can lag the ECB until the offline refresh runs). The ECB publishes these rates for information purposes only and strongly discourages using them for transaction or settlement purposes; they are not live market prices. Currency availability changes historically (legacy series such as SKK and suspended series such as RUB are included for their publication windows).
+
+EU-funds snapshot **2026-10-15**: 4,574 source projects acquired in full, **4,561 included**, 13 wholly excluded (3 natural persons/SZČO, 4 unspecified, 6 ambiguous). No project titles or raw source captures are committed. `financials.contractedTotal` is the exact total contracted amount as a decimal string; the integration manual does not separately establish currency, so no EUR claim is made. MIRRI SR / ITMS21+ data transformed and privacy-minimized by OpenSK, not an official representation. Manual snapshot, not live or all Slovak EU funds. Contract, evidence and refresh procedure: [`docs/eu-funds.md`](docs/eu-funds.md).
 
 ## PSC Collection Surface
 
@@ -70,7 +74,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/dataset-format.md` documents the JSON file layout and record shapes.
 - `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
 - `docs/research/source-verification-evidence.md` records retained source-verification evidence.
-- `docs/research/eu-funds-itms21-spike.md` records the research-only ITMS21+ EU-funds spike (`GO_PRODUCTION_NEXT`, `JSON_CONTINUE`); no EU-funds endpoint or production dataset exists.
+- `docs/research/eu-funds-itms21-spike.md` records the historical 0.23.6 spike; `docs/eu-funds.md` documents the 0.23.7 production projection, positive legal-form policy, manifest-backed acquisition, refresh guard and `JSON_CONTINUE` measurements.
 - `docs/research/source-licence-questions.md` contains draft clarification questions; nothing is sent automatically.
 - `docs/api-status.md` lists the endpoint status categories.
 - `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.

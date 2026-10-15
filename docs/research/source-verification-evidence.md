@@ -10,6 +10,12 @@ This log records evidence checked for source and licence decisions. It is intent
 - `activePartyMarker` is OpenSK categorical normalization of **Payment system SIPS**, and `activeParty` is its derived boolean; neither reads **Akt. úč.**. Code-path mapping, source-byte limitations, all permissions and NBS's recommended (not mandatory verbatim) attribution are retained in `docs/research/nbs-bank-reuse-clarification.md`.
 - Only NBS banks resolve. PortalVS, telecom and ŠÚ SR elections remain `SENT_AWAITING_REPLY`; holidays interpretation remains separate. No email sent by the agent.
 
+## 2026-10-15 ITMS21+ production recheck (0.23.7)
+
+- Project endpoint remains official/anonymous JSON; complete bounded list acquisition: 4,574 source rows, 19 pages, 2026-10-15T11:37:24Z–11:42:27Z. Exact per-page URLs/times/bytes/hashes and canonical digest retained in `eu-funds-acquisition-manifest.json`; no raw personal payloads committed. First-page boundary unchanged, all IDs/codes unique, totals/ranges consistent; no transactional upstream snapshot guarantee.
+- Project-specific catalogue publisher MIRRI `legal-subject/50349287`, distribution `/public/v1/projekt` and attached terms node remain unchanged. SPARQL recheck of all terms triples retains `authorsWorkType`, `originalDatabaseType`, `databaseProtectedBySpecialRightsType` = `http://publications.europa.eu/resource/authority/licence/CC_BY`; no new restriction on that node. Precise version not separately identified, **not** independently verified CC BY 4.0. Source query/URLs in the historical spike §6; current notices and evidence in `../eu-funds.md`.
+- All 46 observed forms reviewed against live 482-entry `/pravnaforma` catalogue: 40 positive code/label approvals, 4 ambiguous, one natural-person and one unspecified category. 4,561 projects included, 13 excluded entirely. Titles/dates/rich personal fields omitted; `contractedTotal` preserves total contracted amount without an unverified currency suffix. Full normalized storage measurements support `JSON_CONTINUE`. Two production routes, 39 GET operations; prior research-only statements below are historical.
+
 ## 2026-10-14 ITMS21+ EU Funds (0.23.6)
 
 - Official source: `https://api.itms21.sk/public/v1/`, anonymous project JSON, confirmed through the official portal and integration manual v1.0 (25.6.2025). Measured totals: 4,571 projects, 12,955 subjects, 9,075 ŽoNFP; counts are observed service totals, not an all-spending audit.

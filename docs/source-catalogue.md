@@ -64,7 +64,7 @@ Per-id curated values (public names, limitations, update cadences, licence names
 
 0.23.3 added a nineteenth domain, `exchangeRates`, as `research` with licence `verified`. 0.23.4 promotes it to `production` with coverage `complete` (complete relative to the imported ECB full-history eurofxref feed — not all world currencies, not live FX, not every calendar date): `data/exchange_rates.json` is a checked-in runtime dataset served by `/v1/exchange-rates`, its `lastUpdated` tracks `EXCHANGE_RATES_LAST_UPDATED`, and its limitations state the informational-only/ECB-publication-date semantics plus the manual offline refresh lag.
 
-0.23.6 adds a twentieth domain, `euFunds`: `research`, coverage `null`, licence `verified` (ITMS21+ datasets carry machine-readable CC BY terms issued by MIRRI SR in the national open-data catalogue). This entry documents the research-only ITMS21+ spike only — no EU-funds endpoint, production dataset, or results route exists.
+0.23.6 added a twentieth domain, `euFunds`, initially research-only. **0.23.7 promotes it to `production`, coverage `partial`, licence `verified`**: MIRRI project-specific national-catalogue CC BY declaration, version not separately identified. The local title-free ITMS21+ 2021–2027 project references include only positively reviewed legal-entity beneficiaries (4,561 of 4,574 acquired projects, 13 wholly privacy-excluded). Snapshot date 2026-10-15; manual refresh, not live/all Slovak funds, no ITMS2014+/payments/procurement/irregularity surface. Explicit MIRRI attribution and OpenSK transformation/privacy-minimization notice. Contract/acquisition/refresh: `docs/eu-funds.md`.
 
 ## Filters
 
