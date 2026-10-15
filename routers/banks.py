@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Response
 
-from schemas.common import API_SOURCE, BANKS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
-from services.bank_service import BankInvalidCodeError, BankNotFoundError, load_banks, lookup_bank
+from schemas.common import STATIC_CACHE_CONTROL, error_detail
+from schemas.banks import BankResponse, BanksResponse
+from services.bank_service import BankInvalidCodeError, BankNotFoundError, bank_response_metadata, load_banks, lookup_bank
 
 
 router = APIRouter(prefix="/banks", tags=["banks"])
@@ -10,21 +11,19 @@ router = APIRouter(prefix="/banks", tags=["banks"])
 @router.get(
     "",
     summary="List Slovak banks",
-    description="Returns the static Slovak bank dataset imported from the NBS domestic payment-system directory.",
+    description="Returns the local Národná banka Slovenska converter snapshot, transformed by OpenSK. Metadata carries NBS source/version/effective/download provenance and attribution. NBS Terms of Use apply to data, not MIT. Participation fields are OpenSK-derived from SIPS, not general bank operating status.",
+    response_model=BanksResponse,
 )
 def list_banks(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
-    return success_response(
-        data=load_banks(),
-        source=f"{API_SOURCE} static banks dataset",
-        last_updated=BANKS_LAST_UPDATED,
-    )
+    return {"data": load_banks(), "metadata": bank_response_metadata(), "error": None}
 
 
 @router.get(
     "/{code}",
     summary="Bank lookup by code",
-    description="Returns one Slovak bank from the static dataset imported from the NBS domestic payment-system directory.",
+    description="Returns one bank from the local NBS converter snapshot. Additive metadata identifies NBS, source version/effective/download provenance, attribution and OpenSK transformation/derived fields. JSON is not the original NBS file; MIT covers code, not NBS data.",
+    response_model=BankResponse,
 )
 def get_bank(code: str, response: Response) -> dict[str, object]:
     try:
@@ -52,8 +51,4 @@ def get_bank(code: str, response: Response) -> dict[str, object]:
         )
 
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
-    return success_response(
-        data=bank,
-        source=f"{API_SOURCE} static banks dataset",
-        last_updated=BANKS_LAST_UPDATED,
-    )
+    return {"data": bank, "metadata": bank_response_metadata(), "error": None}

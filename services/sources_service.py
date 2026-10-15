@@ -111,7 +111,7 @@ _LIMITATIONS: dict[str, list[str]] = {
         "PortalVS redistribution terms are unresolved.",
     ],
     "banks": [
-        "Served converter snapshot is v225, effective 2026-05-18; v226 refresh is a separate follow-up.",
+        "Manually materialized NBS converter, not live; bank/IBAN response metadata exposes actual source version, effective/download dates and attribution.",
         "JSON is an OpenSK transformation, not the original NBS file; activeParty and activePartyMarker are OpenSK-derived from Payment system SIPS, not Akt. úč.",
         "MIT covers OpenSK code, not NBS data; downstream users must retain NBS attribution and source conditions.",
         "NBS does not guarantee completeness/content integrity or accept damages liability; commercial users should verify correctness.",

@@ -36,7 +36,7 @@ def iban_checksum_valid(iban: str) -> bool:
 
 def validate_iban(
     iban: str,
-    bank_lookup: Callable[[str], dict[str, str]] | None = None,
+    bank_lookup: Callable[[str], dict[str, str | bool | None]] | None = None,
 ) -> dict[str, object]:
     normalized = normalize_iban(iban)
     country_code = extract_country_code(normalized)
