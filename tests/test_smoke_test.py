@@ -44,6 +44,8 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
         "/v1/exchange-rates/1999-01-04": (200, {"data": {"date": "1999-01-04", "rates": {}}}),
         "/v1/exchange-rates/latest?currency=usd": (200, {"data": {"rates": {"USD": "1.1574"}}}),
         "/v1/exchange-rates/2026-10-10": (404, {"data": None, "error": {"code": "RATE_DATE_NOT_FOUND"}}),
+        "/v1/eu-funds/projects": (200, {"data": {"items": []}}),
+        "/v1/eu-funds/projects/TEST000001": (200, {"data": {"projectCode": "TEST000001"}}),
         "/docs": (200, "docs"),
         "/openapi.json": (
             200,
@@ -76,6 +78,8 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
                     "/v1/business-days/between": {},
                     "/v1/exchange-rates/latest": {},
                     "/v1/exchange-rates/{date}": {},
+                    "/v1/eu-funds/projects": {},
+                    "/v1/eu-funds/projects/{projectCode}": {},
                 },
             },
         ),
@@ -103,6 +107,7 @@ def test_smoke_script_targets_seed_company_and_openapi(monkeypatch) -> None:
 
     monkeypatch.setattr(smoke_test, "_request_json", fake_request_json)
     monkeypatch.setattr(smoke_test, "_request_headers", fake_request_headers)
+    monkeypatch.setattr(smoke_test, "_known_eu_project_code", lambda: "TEST000001")
 
     assert smoke_test.main(["--base-url", "http://example.com", "--expect-rate-limit"]) == 0
 
@@ -146,6 +151,7 @@ def test_request_headers_case_normalization(monkeypatch) -> None:
 
 
 def test_rate_limit_check_skipped_without_flag(monkeypatch) -> None:
+    monkeypatch.setattr(smoke_test, "_known_eu_project_code", lambda: "TEST000001")
     def fail_if_called(url: str):
         raise AssertionError("_request_headers must not be called without --expect-rate-limit")
 
