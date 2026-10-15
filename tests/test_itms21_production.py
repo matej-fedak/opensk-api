@@ -222,3 +222,27 @@ def test_broad_or_branch_categories_are_not_assumed_legal(tmp_path, production_p
         result = importer.materialize(path)
         assert result.ok and len(result.payload["projects"]) == 1
         assert result.report["legalForms"][code]["decision"] == "EXCLUDE_AMBIGUOUS"
+
+
+@pytest.mark.parametrize("key", ["name", "title", "nazov", "address", "street", "postalCode", "email",
+                                "phone", "dic", "icDph", "contactPerson", "partner", "supplier", "evaluator",
+                                "bankAccount", "description", "purpose", "procurement", "irregularity", "debt"])
+def test_every_forbidden_project_key_is_rejected(tmp_path, production_path, key):
+    payload = importer.materialize(capture(tmp_path / "raw", [source_row()])).payload
+    payload["projects"][0][key] = "SYNTHETIC FORBIDDEN"
+    with pytest.raises(ValidationError):
+        Dataset.model_validate(payload)
+
+
+def test_excluded_invalid_identity_is_not_echoed_in_errors(tmp_path, production_path):
+    row = source_row("SYNTHETIC EXCLUDED PRIVATE CODE", 2, "1009101")
+    result = importer.materialize(capture(tmp_path / "raw", [source_row(), row]))
+    assert not result.ok
+    assert "SYNTHETIC EXCLUDED PRIVATE CODE" not in json.dumps(result.report)
+
+
+def test_changed_approved_form_label_fails_closed(tmp_path, production_path):
+    row = source_row()
+    row["prijimatel"]["pravnaForma"]["nazovSk"] = "Synthetic changed semantics"
+    result = importer.materialize(capture(tmp_path / "raw", [row]))
+    assert not result.ok

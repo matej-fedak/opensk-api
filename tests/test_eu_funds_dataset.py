@@ -45,3 +45,20 @@ def test_foreign_or_unreviewed_legal_forms_do_not_bypass_positive_gate():
     assert "1009CZ325" not in APPROVED_LEGAL_FORMS
     assert "1009101" not in APPROVED_LEGAL_FORMS
     assert "1009995" not in APPROVED_LEGAL_FORMS
+
+
+def test_implementation_nuts_matches_local_eurostat_regions_without_portalvs_join():
+    regions = json.loads((ROOT / "data" / "regions.json").read_text(encoding="utf-8"))
+    local_codes = {row["code"] for row in regions["regions"]}
+    dataset = Dataset.model_validate(json.loads((ROOT / "data" / "eu_funds_projects.json").read_text(encoding="utf-8")))
+    assert {place.nuts for row in dataset.projects for place in row.implementationRegions} == local_codes
+
+
+def test_no_raw_itms_pages_are_tracked_and_workflows_do_not_acquire():
+    import subprocess
+    tracked = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.splitlines()
+    for name in tracked:
+        assert not name.rsplit("/", 1)[-1].startswith("page-"), name
+        assert not (name.startswith("data/raw/") and "itms" in name.lower()), name
+    for path in (ROOT / ".github" / "workflows").glob("*.yml"):
+        assert "acquire_itms21_projects.py" not in path.read_text(encoding="utf-8")

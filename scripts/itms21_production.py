@@ -160,7 +160,8 @@ def project_record(row, report):
 
 def build_snapshot(manifest_path: Path):
     manifest, rows = load_manifest(manifest_path)
-    report = {"includedProjects": 0, "excludedNaturalPersonProjects": 0,
+    report = {"sourceProjectCount": manifest["sourceProjectCount"], "pageCount": len(manifest["pages"]),
+              "includedProjects": 0, "excludedNaturalPersonProjects": 0,
               "excludedUnreviewedBeneficiaryProjects": 0, "legalForms": {},
               "omittedInvalidIco": 0, "unexpectedGeography": Counter()}
     projects, source_codes, excluded_codes = [], set(), set()
@@ -192,6 +193,8 @@ def build_snapshot(manifest_path: Path):
                 "importerProfile": PROFILE}
     payload = {"metadata": metadata, "projects": projects}
     Dataset.model_validate(payload)
+    report["privacyExcludedProjectCount"] = len(excluded_codes)
+    report["legalFormCodeCount"] = len(report["legalForms"])
     report["unexpectedGeography"] = dict(sorted(report["unexpectedGeography"].items()))
     codes = [p["projectCode"] for p in projects]
     report["projectCodeReview"] = {"minLength": min(map(len, codes), default=0),
@@ -220,12 +223,15 @@ def materialize(manifest: Path, *, write_production=False, write_preview=False, 
             base.require(previous_manifest is not None, "refresh requires private --previous-manifest for accurate eligibility transitions")
             old_manifest, old_rows = load_manifest(previous_manifest)
             base.require(old_manifest["manifestSha256"] == old["metadata"]["sourceManifestSha256"], "previous manifest does not match served snapshot")
-            old_source_codes = {row["kod"] for row in old_rows}
+            old_source_codes, old_forms = set(), set()
+            for row in old_rows:
+                old_source_codes.add(row["kod"])
+                form_code, _, _ = classify(row)
+                old_forms.add(form_code or "MISSING")
             before = {p["projectCode"]: p for p in old["projects"]}
             after = {p["projectCode"]: p for p in payload["projects"]}
             removed, added = before.keys() - after.keys(), after.keys() - before.keys()
-            old_forms = {p["beneficiary"]["legalForm"]["code"] for p in old["projects"]}
-            new_forms = {p["beneficiary"]["legalForm"]["code"] for p in payload["projects"]}
+            new_forms = set(report["legalForms"])
             result.report["refresh"] = {
                 "previousIncludedCount": len(before), "newIncludedCount": len(after),
                 "addedProjectCodesCount": len(added), "removedProjectCodesCount": len(removed),
