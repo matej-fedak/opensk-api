@@ -28,10 +28,10 @@ All findings below were verified directly against official pages during this rev
 - VERIFIED: the portal copyright page reserves rights and allows content use "iba k nekomerčnému použitiu" (non-commercial use only). Whether this restriction reaches the classifier machine-readable exports is exactly the question outreach must answer; until answered, districts/municipalities/PSC stay compliance-Red for 1.0.
 - Contacts: `helpdesk@portalvs.sk`, `portalvs@portalvs.sk`. Full Slovak draft in the outreach document.
 
-### A.2 NBS bank-code directory — outreach required (transformation question)
+### A.2 NBS bank-code directory — reply received, reuse resolved (2026-10-14)
 
 - VERIFIED disclaimer wording (NBS website): "Information published on this website may be stored, reproduced, and further used provided that the source is acknowledged and that neither the content nor other properties of the respective electronic file are modified in any way."
-- Open question: whether CSV-to-JSON conversion, field renaming, and an `activeParty` marker constitute "modification". Contact `info@nbs.sk`. Full Slovak draft in the outreach document.
+- NBS's institutional reply received by the maintainer 2026-10-14 explicitly permits storage, value-preserving CSV → JSON/renaming, public API redistribution and commercial downstream use with attribution, transformation disclosure and separation of OpenSK-derived fields. MIT covers code, not NBS data; JSON is not the original NBS file. Full audit: `nbs-bank-reuse-clarification.md`. Served v225 remains unchanged; later v226 refresh retains version/effective/download dates and reconciles `Payment system SIPS` versus `Akt. úč.`. Holidays stay separate.
 
 ### A.3 NBS holidays — evidence retention, email likely unnecessary
 
@@ -87,7 +87,7 @@ The full record lives in `docs/research/roadmap-council-notes.md`. Applied conse
 
 Scope:
 
-- Send the three outreach messages in `docs/research/source-licence-outreach.md` (PortalVS, NBS banks, telecom). Human-sent, from the maintainer's address.
+- Outreach was sent manually 2026-10-11. NBS bank reuse resolved by reply received 2026-10-14; PortalVS, telecom and ŠÚ SR elections remain `SENT_AWAITING_REPLY` (`docs/research/source-licence-outreach.md`).
 - Retain exact wording for Eurostat CC BY 4.0, TED legal notice, NBS disclaimer, Slov-Lex § 5 písm. b) citation, MŠVVaM CC BY (resolve version via DCAT), in `docs/research/source-verification-evidence.md`.
 - Align `docs/source-compliance.md` and `data/sources.json` with retained evidence in the same commit per reply.
 - Download and archive a final PortalVS snapshot (classifiers 9, 10, 42 and their `ciselniky2` equivalents) before 2026-10-31 as contingency; record acquisition provenance in `docs/import-pipeline.md` terms.
@@ -125,7 +125,7 @@ Scores: Value (1–5 developer/consumer value), Licence (confirmed/adequate/pend
 | 1 | Elections results (ŠÚ SR) | 5 | pending-explicit (OGP publication basis verified) | none (aggregates) | M | NEXT | Milestone 3 spike, then production if spike passes. |
 | 2 | Companies/RPO improvement | 5 | CC BY 4.0 identified for API docs, acquisition gate failed | high (natural persons in register) | L | GATED | Seed-backed lookup stays; expansion needs acquisition+privacy passes. |
 | 3 | CRZ contracts (central register) | 4 | unverified | high (contract content, personal data) | L | GATED | Rejected as procurement drop-in; revisit only with privacy gate resolution. |
-| 4 | ITMS EU funds | 3 | needs capture | low | M | WATCH | Candidate after Milestones 1–3 if licence evidence is clean. |
+| 4 | ITMS EU funds | 3 | ITMS21+ project-specific CC BY evidence verified (0.23.6) | medium (persons/linkability/free text upstream) | M | GO_PRODUCTION_NEXT | Research-only reviewed-legal-entity projects; unsafe/unreviewed projects excluded entirely, not name-redacted. Full-snapshot/allowlist/title/schema gates remain. JSON_CONTINUE; ITMS2014+ deferred. |
 | 5 | ŠÚKL medicines | 3 | unstated | low | M | WATCH | Licence wording not found; capture before any spike. |
 | 6 | NBS/ECB rates + business-days calculator | 3 | NBS disclaimer applies (A.2/A.3) | none | S | AFTER-M2 | Natural extension once NBS wording is retained; rates change daily → materialized snapshot design needed. |
 | 7 | Slov-Lex legislation metadata | 3 | § 5 písm. b) exclusion (A.5) | none | M | AFTER-M3 | Metadata-only catalogue (act numbers, titles, effective dates); retention rule: attribution to Slov-Lex. |

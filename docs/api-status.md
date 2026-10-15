@@ -18,7 +18,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse. |
 | `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | Local PSC coverage is not national coverage. |
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and stats | partial imported | Static `/search` and `/stats` routes are intentionally registered before `/{psc}`. |
-| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported | NBS source/licence verification pending. |
+| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported v225 snapshot | Reuse clarified by NBS 2026-10-14; attribution and transformation disclosure, not MIT data licensing. |
 | `GET /v1/holidays/{year}` | Holiday calendar | partial curated seed | Years outside the seed return 404. |
 | `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage; 0.14.0 did not approve RPO production import. |
 | `GET /v1/vat/{ico}` | VAT registration lookup | not implemented | 0.15.0 verified the official Finančná správa ZIP/XML source but blocked production import on privacy grounds. |
@@ -31,7 +31,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, `GET /v1/vehicle-registration-codes/search` | Legacy district-code reference | historical/reference | Not current plate lookup, full plate decoding, vehicle lookup, or owner lookup. |
 | `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
 | `GET /v1/procurement-notices`, `GET /v1/procurement-notices/{id}`, `GET /v1/procurement-notices/search`, `GET /v1/procurement-notices/stats` | Public procurement notice list, lookup, search, and stats | partial imported | 100-record TED_PARTIAL snapshot only; not the complete ÚVO national register. |
-| `GET /v1/sources`, `GET /v1/sources/{id}` | Curated public source/licence provenance catalogue | 19 registered domains | Typed public projection; internal maintainer fields excluded; elections is research-only pending rights; exchangeRates is production with verified ECB terms. |
+| `GET /v1/sources`, `GET /v1/sources/{id}` | Curated public source/licence provenance catalogue | 20 registered domains | Typed public projection; internal maintainer fields excluded; elections stays research-only pending rights; exchangeRates is production; euFunds is research-only with verified project catalogue CC BY evidence (no EU-funds data endpoint). |
 | `GET /v1/business-days/check`, `GET /v1/business-days/add`, `GET /v1/business-days/between` | Slovak business-day check, arithmetic, and counting | supported years 2024-2026 | Derived from the local holiday dataset; strict `UNSUPPORTED_YEAR` error outside coverage. |
 | `GET /v1/exchange-rates/latest`, `GET /v1/exchange-rates/{date}` | ECB EUR reference rates (latest in snapshot; exact publication date) | complete (full ECB history 1999-01-04 onwards) | Decimal-string rates; exact dates only, 404 with no fallback; `?currency=` filter; informational use only, not live/tradable prices. |
 | `/docs`, `/openapi.json` | Interactive docs and schema | platform | Useful for parameter-level details. |
@@ -83,7 +83,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 - Municipalities now carry district mappings from PortalVS classifier 9 after offline import, but PortalVS source terms remain restrictive and redistribution verification is still pending.
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
 - Districts are now complete, but PortalVS source terms remain restrictive.
-- Banks are imported from an offline NBS directory snapshot and include inactive rows; source/licence verification remains pending.
+- Banks remain offline NBS v225 / 2026-05-18. Reuse is resolved by the 2026-10-14 reply; participation flags are OpenSK-derived from `Payment system SIPS`, not `Akt. úč.` or a general bank-status guarantee. Snapshot refresh and row-level field reconciliation are separate; bank responses are unchanged.
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
 - Phone areas are imported from the official telecom regulator Excel workbook, with licence/reuse verification still pending.
 - Vehicle registration codes are historical district abbreviations only; the API does not expose `GET /v1/vehicles/{spz}` and does not decode full plates.

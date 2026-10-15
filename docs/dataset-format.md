@@ -209,8 +209,9 @@ Where present, dataset metadata uses this shape:
 - `code` is the four-digit domestic payment-system identification code.
 - `bic` and `swift` are uppercase 8- or 11-character identifiers when available; both are retained for API compatibility.
 - `alphabeticCode` is `null` for current NBS CSV imports because the CSV snapshot does not expose a separate alphabetic domestic code.
-- `activePartyMarker` preserves the normalized NBS participation marker: `C` and `K` map to `activeParty: true`, `Ø` maps to `activeParty: false`.
-- `country` is `SK` for runtime bank rows.
+- `activePartyMarker` is **OpenSK-derived categorical normalization of `Payment system SIPS`**, not a verbatim NBS marker or the source's separate `Akt. úč.` column. The importer maps `X` to `C`, preserves `K`, and canonicalizes negative/empty markers to `Ø`; `activeParty` is OpenSK's derived boolean (`C`/`K` true, `Ø` false). These fields do not establish general institutional operating status.
+- `country` is OpenSK's derived `SK` scope label for runtime bank rows.
+- NBS data is subject to NBS Terms of Use + direct clarification received 2026-10-14, not the code's MIT licence. The unchanged v225 JSON is an OpenSK transformation, not the original NBS file. Full mapping, recommended attribution, legacy metadata caveat and later v226 refresh: `research/nbs-bank-reuse-clarification.md`.
 
 ### `data/regions.json`
 

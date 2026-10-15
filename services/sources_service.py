@@ -74,6 +74,7 @@ _PUBLIC_NAMES: dict[str, str] = {
     "elections": "Slovak election aggregate results",
     "exchangeRates": "EUR reference exchange rates",
     "schoolFacilityCounts": "School facility counts",
+    "euFunds": "EU funds projects 2021-2027 (ITMS21+)",
 }
 
 _UPDATE_CADENCE: dict[str, str] = {
@@ -96,6 +97,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "elections": "historical snapshot; manual correction review",
     "exchangeRates": "upstream every TARGET working day; manual offline snapshot refresh",
     "schoolFacilityCounts": "semiannual",
+    "euFunds": "upstream daily; manual offline full-refresh only",
 }
 
 _LIMITATIONS: dict[str, list[str]] = {
@@ -106,7 +108,12 @@ _LIMITATIONS: dict[str, list[str]] = {
         "Not national coverage.",
         "PortalVS redistribution terms are unresolved.",
     ],
-    "banks": [],
+    "banks": [
+        "Served converter snapshot is v225, effective 2026-05-18; v226 refresh is a separate follow-up.",
+        "JSON is an OpenSK transformation, not the original NBS file; activeParty and activePartyMarker are OpenSK-derived from Payment system SIPS, not Akt. úč.",
+        "MIT covers OpenSK code, not NBS data; downstream users must retain NBS attribution and source conditions.",
+        "NBS does not guarantee completeness/content integrity or accept damages liability; commercial users should verify correctness.",
+    ],
     "holidays": ["Covers only the years present in the local dataset."],
     "companies": [
         "Seed-backed sample only, not full RPO coverage.",
@@ -139,9 +146,15 @@ _LIMITATIONS: dict[str, list[str]] = {
         "The snapshot is refreshed manually offline and can lag the latest ECB publication.",
     ],
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
+    "euFunds": [
+        "Research spike only; no EU funds endpoint or production dataset.",
+        "Research preview includes only projects whose beneficiary legal form is positively reviewed as a legal entity; natural-person, unspecified, missing and unreviewed forms are excluded entirely.",
+        "Irregularities and receivables are out of scope and not published by ITMS21+.",
+    ],
 }
 
 _LICENCE_NAMES: dict[str, str] = {
+    "banks": "NBS Terms of Use (attribution; transformation clarified by NBS)",
     "elections": "CC BY 4.0 (general ŠÚ SR policy; election applicability pending)",
     "exchangeRates": "ECB free-use permission (attribution required)",
     "regions": "Eurostat reuse policy",
@@ -149,6 +162,7 @@ _LICENCE_NAMES: dict[str, str] = {
     "schoolFacilityCounts": "Creative Commons BY (version not specified)",
     "vatRegistrations": "CC0 per export page; CC 4.0 international per catalogue (discrepancy on file)",
     "holidays": "NBS website disclaimer (attribution, no modification)",
+    "euFunds": "CC BY (ITMS21+ national open-data catalogue terms)",
 }
 
 _RUNTIME_LAST_UPDATED: dict[str, str] = {

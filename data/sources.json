@@ -67,17 +67,17 @@
     "status": "imported",
     "coverage": "complete",
     "sourceName": "NBS directory of domestic payment system identification codes",
-    "sourceUrl": "https://nbs.sk/en/payments/general-information/directories-and-registers/directory-identification-codes-domestic-payment-system-in-sr/",
-    "licence": "Source/licence verification pending.",
-    "licenceStatus": "pending verification",
-    "redistributionStatus": "pending verification",
-    "termsUrl": "pending",
-    "attribution": "Attribute the National Bank of Slovakia (NBS) directory of domestic payment-system identification codes if reuse is approved; exact required wording is pending.",
-    "riskLevel": "pending",
-    "lastChecked": "2026-09-12",
+    "sourceUrl": "https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/",
+    "licence": "NBS Terms of Use plus direct institutional clarification received by the maintainer on 2026-10-14: storage, value-preserving format conversion/field renaming and public API redistribution allowed with attribution and transformation disclosure; derived fields must be labelled as OpenSK-derived. Commercial downstream use is allowed subject to the same conditions. Not an MIT or CC data licence.",
+    "licenceStatus": "verified 2026-10-14 by direct institutional clarification (NBS Terms of Use); source-code MIT licence does not govern NBS data",
+    "redistributionStatus": "allowed with NBS attribution, value-preserving transformation disclosure and explicit separation of OpenSK-derived fields, including commercial downstream use",
+    "termsUrl": "https://nbs.sk/disclaimer-sk/",
+    "attribution": "Zdroj: Národná banka Slovenska, Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku, verzia 225, platnosť od 2026-05-18, https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/. Údaje previedol do formátu JSON projekt OpenSK; odvodené polia nie sú údajmi NBS. Preserve source attribution downstream; this follows NBS recommended wording, not a mandatory exact sentence.",
+    "riskLevel": "low",
+    "lastChecked": "2026-10-14",
     "updateCadence": "Manual refresh from NBS directory snapshots",
-    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether the bank-code directory may be cached, transformed, and redistributed in an open-source API, including commercial downstream use.",
-    "notes": "30 domestic Slovak payment-system identification-code rows imported from NBS directory version 225, effective from 2026-05-18; 21 active and 9 inactive. Foreign/non-SK BIC rows in the source snapshot are excluded from the runtime dataset."
+    "nextAction": "Separate follow-up: refresh from the current converter (v226 effective 2026-10-08 at reply time), retain version/effective/actual download dates, reconcile source-column mappings including Akt. úč. versus Payment system SIPS, and label OpenSK-derived fields. PR #33 does not refresh bank data.",
+    "notes": "REPLY_RECEIVED_RESOLVED: sent 2026-10-11, NBS institutional reply received by the maintainer 2026-10-14. Served snapshot remains v225 effective 2026-05-18 (30 domestic rows; 21 true / 9 false participation projections); v226 effective 2026-10-08 was upstream at reply time, not imported here. Transformed JSON is not the original NBS file. activePartyMarker is OpenSK categorical normalization of Payment system SIPS; activeParty is a derived boolean, neither reads Akt. úč. MIT covers code, not NBS data. NBS gives no completeness/content-integrity guarantee or damages liability; commercial users should verify correctness. Logos/flag/symbols require separate approval and are not used. Detailed permissions and field audit: docs/research/nbs-bank-reuse-clarification.md. Frozen runtime metadata's old licence placeholder is superseded by this registry; no bank records or BANKS_LAST_UPDATED changed."
   },
   "holidays": {
     "status": "manual-seed",
@@ -322,5 +322,22 @@
     "updateCadence": "Semiannual MŠVVaM open-data refresh",
     "nextAction": "Retain exact Creative Commons BY attribution wording and monitor future semiannual CSV refreshes.",
     "notes": "Aggregate school facility count rows from RIS, valid as of 2025-09-15. This is not an institution-level school directory; no per-school lookup, addresses, staff, director, pupil, email, or phone data is exposed."
+  },
+  "euFunds": {
+    "status": "research-only",
+    "coverage": "unknown",
+    "sourceName": "ITMS21+ OpenData API — Zoznam projektov 2021–2027 (MIRRI SR)",
+    "sourceUrl": "https://api.itms21.sk/public/v1/",
+    "sourceDocumentationUrl": "https://eurofondy.gov.sk/wp-content/uploads/2025/06/Final_ManualOpenDataAPI_ITMS21.docx",
+    "licence": "MIRRI SR publishes ITMS21+ datasets as 'Dataset publikačného minima OVS' in the national open-data catalogue (data.gov.sk / data.slovensko.sk) under CC BY on all three rights layers (author's work, original database, sui generis database right), machine-readable via the catalogue graph; integration manual v1.0 (25.6.2025) itself contains no licence text.",
+    "licenceStatus": "verified 2026-10-14 (NKOD SPARQL terms-of-use node queried firsthand; publisher legal-subject/50349287 = MIRRI SR); CC-BY attribution and modification notice required on any future redistribution",
+    "redistributionStatus": "research-and-tooling only; no production EU-funds dataset redistributed; importer writes gitignored data/generated/ previews only",
+    "termsUrl": "https://data.gov.sk/set/3dd34ab69156cd6dcdd6454f81727c88",
+    "attribution": "MIRRI SR / ITMS21+ OpenData API, published under CC BY; any OpenSK projection is modified and transformed data, not an official representation.",
+    "riskLevel": "medium",
+    "lastChecked": "2026-10-14",
+    "updateCadence": "Upstream catalogue daily; manual offline snapshot review. Observed 2026-10-14: 4,571 projects / 12,955 subjects / 9,075 ŽoNFP. Refresh requires full re-list plus detail reconciliation; tested seconds-form modifiedSince did not filter, and nested changes are not reliably tracked.",
+    "nextAction": "A separate approved production milestone must retain the project-specific CC BY declaration (precise version link unresolved), acquire consistent full coverage, review title/privacy policy and the positive legal-form allowlist, and measure normalized JSON costs. No correspondence sent.",
+    "notes": "0.23.6 research spike: GO_PRODUCTION_NEXT / JSON_CONTINUE; REVIEWED_LEGAL_ENTITY_PROJECTS_ONLY. The observed source population is 4,571 projects, not measured eligible coverage. The importer includes projects only for 28 positively reviewed legal-entity beneficiary forms; known natural persons/SZČO, unspecified, missing and unreviewed forms exclude entire projects, including IDs, URLs, amounts, locations, state/timestamps and title. Generated metadata contains no excluded-row code list, raw filenames or excluded-detail URLs. Matching excluded details cannot reintroduce a project. Five of 100 sampled subjects were natural persons, while all 100 sampled project beneficiaries passed the positive gate (different populations). Partners, suppliers, descriptions, addresses, tax IDs and contacts never pass through. Irregularities/receivables are OUT_OF_INITIAL_SCOPE; ITMS2014+ stays a distinct deferred source. No production dataset or runtime upstream dependency."
   }
 }
