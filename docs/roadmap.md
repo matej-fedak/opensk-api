@@ -10,7 +10,7 @@ Data:
 
 - Milestone 1 "Ask & Evidence": four packages sent manually 2026-10-11. **NBS bank reuse resolved by reply received 2026-10-14** (`REPLY_RECEIVED_RESOLVED`); PortalVS, telecom and ŠÚ SR elections remain `SENT_AWAITING_REPLY`. See `docs/research/source-licence-outreach.md`; no permission inferred for unanswered domains.
 - Banks refreshed in **0.23.8** to v226 / effective 2026-10-08, downloaded 2026-10-15T16:23:00Z. All 30 domestic rows/columns reconciled; direct bank/IBAN provenance and attribution delivered. Monitor future versions manually, not another licence outreach. SIPS-derived fields remain distinct from HTML `Akt. úč.`; `docs/research/nbs-bank-reuse-clarification.md`.
-- PortalVS transition: 0.23.3 verified both systems live and concluded `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` — temp-dir manifests/snapshots retained locally (not committed), successor rebuild is offline transforms only. Keep watching the 2026-10-31 legacy end-of-support date and the outreach reply (`docs/research/portalvs-source-resilience.md`).
+- PortalVS transition: **0.23.9 — PSC Semantics & Successor Mapping Spike** is research-only; full-source evidence supersedes the 0.23.3 PSC feasibility assumptions. **`NO_GO_SUCCESSOR_PSC`**: 84 baseline unresolved non-street rows / 69 PSCs; 122 PSCs occur only in street rows. Official postal ZIP clarifies address-scoped assignments but does not clear administrative joins or rights. Production rematerialization stays paused; legacy local runtime data and current source identities remain unchanged, with no runtime dependency on old PortalVS. Districts and municipalities independently `GO_PRODUCTION_NEXT` (technical only). Keep watching the 2026-10-31 support deadline and outreach reply; `docs/research/portalvs-psc-successor-semantics.md`.
 - 0.23.5 delivered the public launch guardrails (see Completed): **operational guardrails are ready**, but **public promotion is still gated by unresolved PortalVS compliance** unless a real reply arrives. Priorities consider the three outstanding replies, PortalVS approaching 2026-10-31, production behavior and developer adoption.
 - Elections evidence stays parked pending a ŠÚ SR reply: retain election-specific CC BY 4.0 coverage, attribution and an approved acquisition workflow. The general policy's automated-download prohibition is a real gate, not an inferred exception. The NBS bank reply does not clear elections.
 
@@ -29,7 +29,7 @@ Delivered in 0.23.1: curated `/v1/sources` public provenance catalogue, Slovak b
 Data:
 
 - Elections production stays **pending evidence**, not scheduled: 0.23.2 concluded `GO_AFTER_LICENCE_EVIDENCE` (also acquisition permission). NR SR 2023 is UTF-8/comma/dot decimal, not the previously suspected CP1250; 2,926/2,927 current municipality matches and complete election-native joins. The official foreign-voting unit must remain independent of PortalVS. After rights/acquisition clearance, scope one aggregate historical election, not candidate/precinct services or a generic all-election framework.
-- Next data milestone is **not preselected** after 0.23.8: consider PortalVS, telecom and ŠÚ SR replies, developer usage, future source refreshes and other Watch domains. NBS v226 and ITMS21+ references are delivered (Completed); ITMS2014+ is not automatically next.
+- Queue **0.23.10 — PortalVS Successor Geography Migration**, **districts + municipalities only**, subject to the normal production review/validation and unchanged compliance gate. Preserve all public IDs; explicitly review two municipality display-suffix changes. PSC remains legacy-backed with historical provenance; no street-row import, hybrid PSC or source-wide promotion. PSC itself stays paused for authoritative mappings and a product decision, not another automatic rematerialization attempt. NBS v226 and ITMS21+ are delivered; no unrelated data domain is automatically next.
 
 Trust & provenance:
 
@@ -37,7 +37,7 @@ Trust & provenance:
 
 Developer adoption:
 
-- Typed OpenAPI models; version single-sourcing; dataset-domain contributor guide.
+- **Developer adoption pass next after source cleanup**: typed OpenAPI/contract correctness and developer-facing examples. Review the existing PSC grouped lookup/count discrepancy separately before future PSC promotion. Version single-sourcing and dataset-domain contributor guide are already delivered.
 
 ## Watch (sources identified, gates unresolved — no scheduled work)
 
@@ -68,6 +68,7 @@ Architecture:
 
 ## Completed (recent milestones)
 
+- 0.23.9: PortalVS PSC semantics/successor mapping **research spike, not production migration**. Complete retained successor capture reproduced (80 county / 2,928 town / 13,700 PSC rows); official postal ZIP evidence, offline deterministic analyzer and synthetic tests; curated 82-pair / 122-street-only-PSC / 69-affected-PSC diagnostics without streets/raw dumps. `NO_GO_SUCCESSOR_PSC`; districts/municipalities technically `GO_PRODUCTION_NEXT`. No production JSON/registry/source/outreach/route changes; 39 GET operations. `docs/research/portalvs-psc-successor-semantics.md`.
 - 0.23.8: NBS bank v226 / effective 2026-10-08 refresh (download 2026-10-15T16:23:00Z; URL/bytes/hash retained), 30 domestic rows, two names/one BIC changed, no code/SIPS changes. Current CSV/HTML field audit, deterministic refresh report, explicit importer provenance and validation. Existing bank/IBAN responses carry NBS source/version/effective/download/attribution/transformation metadata; checksum logic remains OpenSK/ISO. 39 GET operations; no runtime upstream, DB/dependencies/symbols or unrelated dataset/outreach changes. `docs/research/nbs-bank-reuse-clarification.md`.
 - 0.23.7: ITMS21+ title-free project-reference production API, exactly list and project-code lookup (**39 GET operations**). Complete bounded 2026-10-15 list acquisition: 4,574 source / 4,561 included / 13 privacy-excluded; 46 forms reviewed, 40 positively approved. Manifest-backed offline importer, refresh/removal guard, exact money strings without unsupported EUR claim, typed schema/static caching, MIRRI/generic catalogue CC BY attribution; public coverage partial. **JSON_CONTINUE**, ~5.33 MB / ~320 ms service cold load. No raw personal captures, runtime upstream, ITMS2014+, payment/procurement/irregularity expansion, DB or bank refresh. `docs/eu-funds.md`.
 - 0.23.6: ITMS21+ EU-funds source/licence/schema/privacy spike; `GO_PRODUCTION_NEXT`, `JSON_CONTINUE`. Official JSON and project-specific rights verified; 4,571 source projects observed, 100 eligible sample rows, eight NUTS3 codes matched. Offline generated-only importer with exact decimals and positive reviewed legal-form gate **excluding entire unsafe/unreviewed projects and identifiers/URLs**; research-only catalogue entry. NBS bank reuse clarification received/resolved; v225 unchanged. No EU-funds production route/data, DB, runtime acquisition or procurement fusion; PortalVS/telecom/elections states unchanged.

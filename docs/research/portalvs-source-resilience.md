@@ -1,5 +1,13 @@
 # PortalVS → IS Číselníky (ciselniky2) source resilience
 
+> **0.23.9 full-source correction (2026-10-15):** this is historical 0.23.3
+> feasibility evidence, **not proof of PSC promotion readiness**. Excluding
+> `ulica` retains 1,293, not 1,415 PSCs; 84 non-street rows lack the original
+> exact municipality join. `obce` may be a locality/municipality part; absence
+> of five PSCs does not establish legal retirement. See
+> [PSC semantics spike](portalvs-psc-successor-semantics.md) for the superseding
+> `NO_GO_SUCCESSOR_PSC` decision and independent geography GO verdicts.
+
 Milestone 0.23.3, verified live on **2026-10-11** (all timestamps UTC, same day).
 Scope: technical resilience and provenance only. Rights remain unresolved
 (non-commercial-only portal copyright wording; clarification `SENT_AWAITING_REPLY`
