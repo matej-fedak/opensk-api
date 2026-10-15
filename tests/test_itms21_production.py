@@ -139,7 +139,7 @@ def test_removal_guard_and_eligibility_transition_counts(tmp_path, production_pa
     assert not result.ok and "acknowledge-removals" in result.errors[0]
     assert production_path.read_bytes() == before
     refresh = result.report["refresh"]
-    assert refresh["removedProjectCodesCount"] == refresh["projectsBecomingPrivacyExcludedCount"] == 1
+    assert refresh["removedPublishedProjectCodesCount"] == refresh["projectsBecomingPrivacyExcludedCount"] == 1
     assert refresh["projectsBecomingNewlyEligibleCount"] == 1
     assert importer.materialize(new, write_production=True, previous_manifest=old,
                                 acknowledge_removals=True).ok
@@ -202,18 +202,22 @@ def test_ordinary_status_and_money_refresh_requires_no_removal_ack(tmp_path, pro
     row = source_row()
     row.update(ukonceny=True, vrealizacii=False, celkovaZazmluvnenaSuma=54321)
     new = capture(tmp_path / "new", [row])
-    result = importer.materialize(new, write_production=True, previous_manifest=old)
+    discard_capture(old)
+    result = importer.materialize(new, write_production=True)
     assert result.ok, result.errors
-    assert result.report["refresh"]["removedProjectCodesCount"] == 0
-    assert result.report["refresh"]["changedProjectsCount"] == 1
+    assert result.report["refresh"]["removedPublishedProjectCodesCount"] == 0
+    assert result.report["refresh"]["changedPublishedProjectsCount"] == 1
 
 
-def test_wrong_previous_manifest_cannot_fabricate_refresh_counts(tmp_path, production_path):
+@pytest.mark.parametrize("write_production", [False, True])
+def test_wrong_previous_manifest_cannot_fabricate_refresh_counts(tmp_path, production_path, write_production):
     old = capture(tmp_path / "old", [source_row()])
     assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
     wrong = capture(tmp_path / "wrong", [source_row("TEST000002", 2)])
-    result = importer.materialize(wrong, write_production=True, previous_manifest=wrong)
+    result = importer.materialize(wrong, write_production=write_production, previous_manifest=wrong)
     assert not result.ok and "does not match served" in result.errors[0]
+    assert production_path.read_bytes() == original_bytes
 
 
 def test_broad_or_branch_categories_are_not_assumed_legal(tmp_path, production_path):
@@ -246,3 +250,157 @@ def test_changed_approved_form_label_fails_closed(tmp_path, production_path):
     row["prijimatel"]["pravnaForma"]["nazovSk"] = "Synthetic changed semantics"
     result = importer.materialize(capture(tmp_path / "raw", [row]))
     assert not result.ok
+
+
+def discard_capture(manifest):
+    """Discard only the synthetic acquisition created by this test."""
+    for path in manifest.parent.iterdir():
+        path.unlink()
+    manifest.parent.rmdir()
+
+
+def test_fresh_clone_refresh_and_normal_addition_without_old_raw(tmp_path, production_path, monkeypatch):
+    old = capture(tmp_path / "old", [source_row()])
+    assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
+    discard_capture(old)
+    new = capture(tmp_path / "new", [source_row(), source_row("TEST000002", 2)])
+    load_manifest = importer.load_manifest
+
+    def only_new_manifest(path):
+        assert path == new  # Neither the old manifest nor its pages may be read.
+        return load_manifest(path)
+
+    monkeypatch.setattr(importer, "load_manifest", only_new_manifest)
+    dry_run = importer.materialize(new)
+    assert dry_run.ok, dry_run.errors
+    assert len(dry_run.payload["projects"]) == 2
+    assert not dry_run.wrote_files and production_path.read_bytes() == original_bytes
+    assert dry_run.report["refresh"] == {
+        "previousIncludedCount": 1, "newIncludedCount": 2,
+        "addedPublishedProjectCodesCount": 1, "removedPublishedProjectCodesCount": 0,
+        "projectsBecomingPrivacyExcludedCount": 0, "projectsRemovedUpstreamCount": 0,
+        "changedPublishedLegalFormCodeSet": {"added": [], "removed": []},
+        "sourcePopulationChange": 1, "changedPublishedProjectsCount": 0,
+        "previousRawAcquisitionUsed": False, "projectsBecomingNewlyEligibleCount": None,
+    }
+    written = importer.materialize(new, write_production=True)
+    assert written.ok, written.errors
+    assert written.report["refresh"] == dry_run.report["refresh"]
+    assert len(json.loads(production_path.read_bytes())["projects"]) == 2
+
+
+@pytest.mark.parametrize("transition", ["upstream-removal", "privacy-exclusion"])
+def test_removals_without_old_raw_require_acknowledgement(tmp_path, production_path, transition):
+    old = capture(tmp_path / "old", [source_row(), source_row("TEST000002", 2)])
+    assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
+    discard_capture(old)
+    rows = [source_row()]
+    if transition == "privacy-exclusion":
+        rows.append(source_row("TEST000002", 2, "1009101"))
+    new = capture(tmp_path / "new", rows)
+    dry_run = importer.materialize(new)
+    assert dry_run.ok, dry_run.errors
+    assert [p["projectCode"] for p in dry_run.payload["projects"]] == ["TEST000001"]
+    refresh = dry_run.report["refresh"]
+    assert refresh["removedPublishedProjectCodesCount"] == 1
+    assert refresh["projectsBecomingPrivacyExcludedCount"] == (transition == "privacy-exclusion")
+    assert refresh["projectsRemovedUpstreamCount"] == (transition == "upstream-removal")
+    assert refresh["previousRawAcquisitionUsed"] is False
+    assert refresh["projectsBecomingNewlyEligibleCount"] is None
+    blocked = importer.materialize(new, write_production=True)
+    assert not blocked.ok and "acknowledge-removals" in blocked.errors[0]
+    assert blocked.report["refresh"] == refresh
+    assert production_path.read_bytes() == original_bytes
+    written = importer.materialize(new, write_production=True, acknowledge_removals=True)
+    assert written.ok, written.errors
+    assert [p["projectCode"] for p in json.loads(production_path.read_bytes())["projects"]] == ["TEST000001"]
+    # Routine reports retain counts, not identifiers of the excluded/removed row.
+    assert "TEST000002" not in json.dumps(written.report)
+
+
+@pytest.mark.parametrize("write_production", [False, True])
+def test_unexplained_disappearance_fails_closed_even_with_ack(tmp_path, production_path, monkeypatch, write_production):
+    old = capture(tmp_path / "old", [source_row(), source_row("TEST000002", 2)])
+    assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
+    discard_capture(old)
+    new = capture(tmp_path / "new", [source_row(), source_row("TEST000002", 2, "1009101")])
+    build_snapshot = importer.build_snapshot
+
+    def unexplained_snapshot(path):
+        payload, report, source_codes, excluded = build_snapshot(path)
+        # Simulate a projection bug: B is in source, not public, not excluded.
+        excluded.clear()
+        return payload, report, source_codes, excluded
+
+    monkeypatch.setattr(importer, "build_snapshot", unexplained_snapshot)
+    result = importer.materialize(new, write_production=write_production, acknowledge_removals=True)
+    assert not result.ok and "unexplained disappearance" in result.errors[0]
+    assert "TEST000002" not in json.dumps(result.report)
+    assert production_path.read_bytes() == original_bytes
+
+
+def test_optional_previous_acquisition_enriches_only_known_transitions(tmp_path, production_path):
+    old = capture(tmp_path / "old", [source_row(), source_row("TEST000002", 2, "1009101")])
+    assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
+    new = capture(tmp_path / "new", [source_row(), source_row("TEST000002", 2), source_row("TEST000003", 3)])
+    ordinary = importer.materialize(new)
+    assert ordinary.ok, ordinary.errors
+    report = ordinary.report["refresh"]
+    assert report["addedPublishedProjectCodesCount"] == 2
+    assert report["previousRawAcquisitionUsed"] is False
+    assert report["projectsBecomingNewlyEligibleCount"] is None
+    assert "newUpstreamPublishedProjectsCount" not in report
+    assert "changedSourceLegalFormCodeSet" not in report
+    assert report["changedPublishedLegalFormCodeSet"] == {"added": [], "removed": []}
+    enriched = importer.materialize(new, previous_manifest=old)
+    assert enriched.ok, enriched.errors
+    assert enriched.payload == ordinary.payload
+    report = enriched.report["refresh"]
+    assert report["addedPublishedProjectCodesCount"] == 2
+    assert report["previousRawAcquisitionUsed"] is True
+    assert report["projectsBecomingNewlyEligibleCount"] == 1
+    assert report["newUpstreamPublishedProjectsCount"] == 1
+    assert report["changedSourceLegalFormCodeSet"] == {"added": [], "removed": ["1009101"]}
+    assert production_path.read_bytes() == original_bytes
+
+
+def test_supplied_previous_raw_pages_still_require_valid_hashes(tmp_path, production_path):
+    old = capture(tmp_path / "old", [source_row()])
+    assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
+    new = capture(tmp_path / "new", [source_row(), source_row("TEST000002", 2)])
+    (old.parent / "page-00000.json").write_bytes(b"synthetic corruption")
+    result = importer.materialize(new, write_production=True, previous_manifest=old)
+    assert not result.ok and "hash mismatch" in result.errors[0]
+    assert production_path.read_bytes() == original_bytes
+
+
+@pytest.mark.parametrize("write_production", [False, True])
+def test_cli_refresh_without_previous_raw(tmp_path, production_path, capfd, write_production):
+    from scripts.import_itms21_projects import main
+
+    old = capture(tmp_path / "old", [source_row()])
+    assert importer.materialize(old, write_production=True).ok
+    original_bytes = production_path.read_bytes()
+    discard_capture(old)
+    new = capture(tmp_path / "new", [source_row(), source_row("TEST000002", 2)])
+    args = ["--manifest", str(new)]
+    if write_production:
+        args.append("--write-production")
+    assert main(args) == 0
+    report = json.loads(capfd.readouterr().out)
+    assert report["ok"] and report["dryRun"] is not write_production
+    assert report["refresh"]["previousRawAcquisitionUsed"] is False
+    assert report["refresh"]["projectsBecomingNewlyEligibleCount"] is None
+    assert (production_path.read_bytes() != original_bytes) is write_production
+
+
+def test_optional_previous_manifest_requires_public_baseline(tmp_path, production_path):
+    path = capture(tmp_path / "raw", [source_row()])
+    result = importer.materialize(path, write_production=True, previous_manifest=path)
+    assert not result.ok and "existing production baseline" in result.errors[0]
+    assert not production_path.exists()

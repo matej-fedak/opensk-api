@@ -231,28 +231,36 @@ uses its existing `imported` status, mapped to production by the service).
    OpenSK-identifying User-Agent. Never called by runtime/CI/scheduler. A
    failure creates **no complete manifest**; discard/retry separately rather
    than merging captures. No detail-fetch explosion. Never log row bodies/names.
-3. Dry-run is default. For refresh, retain the previous **private** raw capture
-   and manifest to count newly eligible projects accurately:
+3. Dry-run is default. A **fresh clone** can refresh using the checked-in
+   `data/eu_funds_projects.json` as its previous baseline and only the **new**
+   complete private acquisition. No previous raw capture is required:
 
    ```powershell
-   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --previous-manifest "C:\external\old\manifest.json" --dry-run
+   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json"
    ```
 
-   First import omits `--previous-manifest`. Same-manifest reimport can reuse
-   itself. Raw byte sizes/hashes, manifest hash, offsets, sizes and unique
+   New raw byte sizes/hashes, manifest hash, offsets, sizes and unique
    IDs/codes must verify before any production write. The importer is offline.
    Reports contain counts/legal-form review, not excluded project lists.
 4. Review counts, legal-form decisions, geography anomalies and refresh report:
-   previous/new included counts, added/removed counts, privacy-exclusion and
-   newly-eligible transitions, changed legal-form set, changed project count,
-   source population change. Missing old captures is a refresh blocker, not
-   permission to fabricate eligibility history. Inspect status/money diffs.
+   previous/new included counts, added/removed **published** counts, current
+   privacy-exclusion/upstream-removal counts, changed **published** legal-form
+   set, changed published project count and source population change. Inspect
+   status/money diffs. Old raw is optional enrichment only (semantics below).
 5. Explicit `--write-production` writes **only** `data/eu_funds_projects.json`,
    atomically and deterministically. If previously public codes disappear or
    become excluded, review then explicitly add `--acknowledge-removals`.
    Ordinary money/status changes require no removal acknowledgement. Optional
    `--write-preview` stays inside ignored `data/generated/`; research
    `--projects/--detail` input cannot write production.
+
+   ```powershell
+   # No removals: no previous acquisition or acknowledgement needed.
+   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --write-production
+   # After reviewing published removals/privacy withdrawals:
+   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --write-production --acknowledge-removals
+   ```
+
 6. Update non-personal manifest/evidence, `EU_FUNDS_LAST_UPDATED` and source
    catalogue date from actual acquisition, then docs/counts/measurements. Run
    validators, integrity checks, pytest, compileall, local smoke and diff checks.
@@ -260,8 +268,58 @@ uses its existing `imported` status, mapped to production by the service).
    identifier diagnostics**. Review normalized diff before committing.
 
 Raw captures remain sensitive temporary maintainer material, not a public
-archive; restrict access/retention. This repository retains no raw bodies.
+archive; restrict access/retention. **They may be discarded after validating
+and importing them to the maintainer's satisfaction**. Secure archival is
+optional, never operationally required for future safe refreshes. Commit only
+the privacy-minimized dataset and non-personal manifest, never excluded
+identifiers or deterministic identity hashes as tracking substitutes.
+This repository retains no raw bodies.
 There is no automatic refresh, network importer, database or CI acquisition.
+
+### Refresh report and optional enrichment
+
+The base report always uses **old committed public JSON + new complete source**:
+
+| Field | Meaning without any previous raw acquisition |
+| --- | --- |
+| `previousIncludedCount`, `newIncludedCount` | Old/new public record counts |
+| `addedPublishedProjectCodesCount` | New public codes absent from old public JSON |
+| `removedPublishedProjectCodesCount` | Previously public codes absent from new public JSON |
+| `projectsBecomingPrivacyExcludedCount` | Removed public codes present in the new exclusion set |
+| `projectsRemovedUpstreamCount` | Removed public codes absent from the new complete source population |
+| `changedPublishedProjectsCount` | Previously public, still public records with changed normalized content |
+| `changedPublishedLegalFormCodeSet` | Added/removed form codes comparing public records to public records |
+| `sourcePopulationChange` | New source count minus old dataset metadata's source count |
+| `previousRawAcquisitionUsed` | `false` |
+| `projectsBecomingNewlyEligibleCount` | `null` (unknown split, never fabricated) |
+
+Every removed public project still present upstream must be accounted for by
+the new exclusion set; an unexplained disappearance **fails closed**, even
+with acknowledgement. All published removals require `--acknowledge-removals`
+before production replacement. Dry-run succeeds with a complete candidate and
+review report for explained removals; a blocked write leaves old JSON unchanged.
+Routine reports contain counts, not removed/excluded project identifiers.
+
+Without old raw evidence, a newly published code could be a new upstream
+project **or** a previously excluded one becoming eligible. Source IDs,
+timestamps, ordering and current legal forms cannot establish this distinction.
+Only the added-public count is known; no source-level legal-form-set change or
+new-upstream-public count is claimed in the base report.
+
+**Optional** richer comparison, only if a prior acquisition was securely kept:
+
+```powershell
+python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --previous-manifest "C:\secure\optional-archive\old\manifest.json"
+```
+
+The supplied old manifest must match the committed dataset's
+`sourceManifestSha256`, and all its pages/hashes/coverage must validate. A
+contradictory/corrupt supplied archive fails, never silently ignored. Successful
+enrichment sets `previousRawAcquisitionUsed=true` and reports
+`projectsBecomingNewlyEligibleCount` (added public codes in old source),
+`newUpstreamPublishedProjectsCount` (added public codes absent from old source)
+and `changedSourceLegalFormCodeSet` (old source forms versus new source forms).
+The candidate dataset and removal guard do not depend on this enrichment.
 
 ## Storage measurements
 
@@ -309,7 +367,10 @@ Platform public-promotion gate remains unresolved PortalVS compliance.
 
 - Dataset validation: **14 datasets, 0 errors / 44 existing compliance warnings**;
   EU-funds validator: 4,561 records, 0 errors/warnings.
-- Referential integrity: passed. Full offline suite: **632 tests passed**.
+- Referential integrity: passed. Full offline suite after the PR #34 refresh
+  correction: **643 tests passed** (including discarded-old-capture fresh-clone,
+  CLI, upstream/privacy removal, unexplained disappearance and optional-enrichment
+  regressions).
 - `compileall scripts routers services tests schemas` and diff whitespace checks:
   passed. Local HTTP smoke: **41/41 passed**, including both new routes and
   required typed OpenAPI paths.
@@ -321,3 +382,12 @@ Platform public-promotion gate remains unresolved PortalVS compliance.
   identities (zero overlap), without recording excluded identifiers.
 - No dependency/database/production scheduler change, no raw captures or real
   personal-subject fixtures added. CI results are attached to the milestone PR.
+
+Refresh follow-up red-team answers: **YES** a fresh clone can refresh without
+old raw; **YES** every published disappearance still needs acknowledgement;
+**YES** current privacy transitions and **YES** upstream removals are detectable
+from the new acquisition; **NO** newly-eligible history is invented without old
+evidence; **YES** optional old evidence enables richer statistics; **NO** old raw
+retention is mandatory; **NO** raw pages are committed; **NO** excluded identities
+or matching hashes are added; **YES** existing privacy/manifest/removal protections
+remain intact. The current 4,561-record / 2026-10-15 public snapshot is unchanged.

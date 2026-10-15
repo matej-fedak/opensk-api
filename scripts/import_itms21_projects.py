@@ -518,7 +518,7 @@ def main(argv: list[str] | None = None) -> int:
                         help="optional offline project-detail capture (id/kod URL); repeatable")
     parser.add_argument("--retrieved-at", help="UTC retrieval timestamp recorded into preview metadata")
     parser.add_argument("--manifest", type=Path, help="complete external acquisition manifest (title-free production projection)")
-    parser.add_argument("--previous-manifest", type=Path, help="private previous acquisition, required for refresh transition counts")
+    parser.add_argument("--previous-manifest", type=Path, help="optional private previous acquisition: enrich source-transition counts; not required for safe refresh/removal checks")
     parser.add_argument("--acknowledge-removals", action="store_true", help="allow reviewed disappearance of previously published projects")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true", help="default: validate/report without writing")

@@ -213,34 +213,58 @@ def materialize(manifest: Path, *, write_production=False, write_preview=False, 
             base.require(destination == PRODUCTION_OUTPUT.resolve(), "production output is fixed to data/eu_funds_projects.json")
         else:
             destination = base.validate_preview_path(Path(output or base.DEFAULT_OUTPUT))
+        base.require(previous_manifest is None or PRODUCTION_OUTPUT.exists(),
+                     "optional previous manifest requires an existing production baseline")
         payload, report, source_codes, excluded = build_snapshot(manifest)
         result.report.update(report)
         if PRODUCTION_OUTPUT.exists():
             old = json.loads(PRODUCTION_OUTPUT.read_text(encoding="utf-8"))
             Dataset.model_validate(old)
-            if previous_manifest is None and old["metadata"]["sourceManifestSha256"] == payload["metadata"]["sourceManifestSha256"]:
-                previous_manifest = manifest
-            base.require(previous_manifest is not None, "refresh requires private --previous-manifest for accurate eligibility transitions")
-            old_manifest, old_rows = load_manifest(previous_manifest)
-            base.require(old_manifest["manifestSha256"] == old["metadata"]["sourceManifestSha256"], "previous manifest does not match served snapshot")
-            old_source_codes, old_forms = set(), set()
-            for row in old_rows:
-                old_source_codes.add(row["kod"])
-                form_code, _, _ = classify(row)
-                old_forms.add(form_code or "MISSING")
             before = {p["projectCode"]: p for p in old["projects"]}
             after = {p["projectCode"]: p for p in payload["projects"]}
             removed, added = before.keys() - after.keys(), after.keys() - before.keys()
-            new_forms = set(report["legalForms"])
-            result.report["refresh"] = {
+            # The committed public baseline + NEW complete source population
+            # suffice for safety. Never require retention of old personal data.
+            base.require(not ((removed & source_codes) - excluded),
+                         "unexplained disappearance of published projects still present upstream")
+            old_public_forms = {p["beneficiary"]["legalForm"]["code"] for p in before.values()}
+            new_public_forms = {p["beneficiary"]["legalForm"]["code"] for p in after.values()}
+            refresh = {
                 "previousIncludedCount": len(before), "newIncludedCount": len(after),
-                "addedProjectCodesCount": len(added), "removedProjectCodesCount": len(removed),
+                "addedPublishedProjectCodesCount": len(added), "removedPublishedProjectCodesCount": len(removed),
                 "projectsBecomingPrivacyExcludedCount": len(removed & excluded),
-                "projectsBecomingNewlyEligibleCount": len(added & old_source_codes),
-                "changedLegalFormCodeSet": {"added": sorted(new_forms-old_forms), "removed": sorted(old_forms-new_forms)},
+                "projectsRemovedUpstreamCount": len(removed - source_codes),
+                "changedPublishedLegalFormCodeSet": {
+                    "added": sorted(new_public_forms - old_public_forms),
+                    "removed": sorted(old_public_forms - new_public_forms),
+                },
                 "sourcePopulationChange": payload["metadata"]["sourceProjectCount"] - old["metadata"]["sourceProjectCount"],
-                "changedProjectsCount": sum(before[c] != after[c] for c in before.keys() & after.keys()),
+                "changedPublishedProjectsCount": sum(before[c] != after[c] for c in before.keys() & after.keys()),
+                "previousRawAcquisitionUsed": False,
+                # An addition might be newly created OR previously excluded.
+                # No IDs/timestamps/form heuristics can establish that split.
+                "projectsBecomingNewlyEligibleCount": None,
             }
+            result.report["refresh"] = refresh
+            if previous_manifest is not None:
+                old_manifest, old_rows = load_manifest(previous_manifest)
+                base.require(old_manifest["manifestSha256"] == old["metadata"]["sourceManifestSha256"],
+                             "previous manifest does not match served snapshot")
+                old_source_codes, old_source_forms = set(), set()
+                for row in old_rows:
+                    old_source_codes.add(row["kod"])
+                    form_code, _, _ = classify(row)
+                    old_source_forms.add(form_code or "MISSING")
+                new_source_forms = set(report["legalForms"])
+                refresh.update({
+                    "previousRawAcquisitionUsed": True,
+                    "projectsBecomingNewlyEligibleCount": len(added & old_source_codes),
+                    "newUpstreamPublishedProjectsCount": len(added - old_source_codes),
+                    "changedSourceLegalFormCodeSet": {
+                        "added": sorted(new_source_forms - old_source_forms),
+                        "removed": sorted(old_source_forms - new_source_forms),
+                    },
+                })
             if write_production and removed and not acknowledge_removals:
                 raise ValueError("published projects disappear/become excluded; review refresh report and use --acknowledge-removals")
         raw = base.serialize_payload(payload)
