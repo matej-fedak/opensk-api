@@ -148,7 +148,7 @@ _LIMITATIONS: dict[str, list[str]] = {
     "schoolFacilityCounts": ["Aggregate counts only; not an institution-level school directory."],
     "euFunds": [
         "Research spike only; no EU funds endpoint or production dataset.",
-        "Upstream subject data includes natural persons; previews redact beneficiary identities and titles for unreviewed or unsafe legal forms.",
+        "Research preview includes only projects whose beneficiary legal form is positively reviewed as a legal entity; natural-person, unspecified, missing and unreviewed forms are excluded entirely.",
         "Irregularities and receivables are out of scope and not published by ITMS21+.",
     ],
 }

@@ -6,7 +6,7 @@ Checked **2026-10-14**. Research and offline tooling only. **No public EU-funds 
 
 **Milestone verdict: `GO_PRODUCTION_NEXT`. Storage verdict: `JSON_CONTINUE`.**
 
-The next separately approved milestone can implement a small ITMS21+ project-reference surface. Official anonymous JSON acquisition and project-specific catalogue CC BY evidence are verified. This is not authorization to publish the raw upstream payload, personal identities, or an all-period funding database. Production still needs the explicit promotion gates in section 25.
+The next separately approved milestone can implement a small **reviewed-legal-entity projects only** ITMS21+ reference surface. Official anonymous JSON acquisition and project-specific catalogue CC BY evidence are verified. Projects with natural-person, unspecified, missing or unreviewed beneficiary forms are **excluded entirely**, not retained with a redacted identity: stable project identifiers and canonical source URLs would make such rows trivially re-linkable. This is not authorization to publish raw upstream payloads, personal identities, all ITMS21+ projects or an all-period database. Production still needs the explicit promotion gates in section 25.
 
 Primary period: ITMS21+, **2021–2027**. ITMS2014+, **2014–2020**, is live but remains an independently licensed, differently modelled historical candidate. Do not combine the periods or mix this domain into TED procurement notices.
 
@@ -45,7 +45,7 @@ Manual §2.1 and §3 describe projects, programmes/priorities/objectives, calls/
 | --- | --- | --- |
 | Projects | `/projekt`, `/projekt/id/{id}`, documented code lookup | Primary slice |
 | Programme and call | Embedded in project; `/program`, `/vyzva` | Minimal references only |
-| Beneficiary | Embedded `prijimatel` subject with legal form | Reviewed legal entities only |
+| Beneficiary | Embedded `prijimatel` subject with legal form | Only positively reviewed legal-entity beneficiaries; all other projects excluded |
 | ŽoNFP / ŽoP | Separate application/payment processes | Defer; not synonymous with projects or paid totals |
 | Suppliers / partners / accounting / VO | Rich identity and relationship surface | Exclude initially |
 | Code lists / legal forms / NUTS | `/ciselniky`, `/pravnaforma`, `/nuts` | Research support, no new public code-list service |
@@ -164,9 +164,9 @@ District/municipality joins are not promised. Keep NUTS references self-containe
 
 | Field family | Classification | Initial treatment |
 | --- | --- | --- |
-| Codes, programme/call refs, aggregate amounts, state flags | Public project facts | Allowlist |
-| Beneficiary name/IČO/legal form | Identity; personal for sole traders | Only explicitly reviewed legal-entity forms |
-| Project title | Potential identifying text even without beneficiary name | Omit for redacted/unknown beneficiary; title review still required before production |
+| Codes, canonical source URLs, money, locations, state/timestamps | Linkable project facts, not anonymous merely because names are absent | Emit only for positively eligible legal-entity projects |
+| Beneficiary name/IČO/legal form | Identity; personal for sole traders | Positive reviewed legal-entity gate; otherwise exclude entire project |
+| Project title | Potential identifying text even without beneficiary name | Unsafe project excluded entirely; legal-entity title review still required before production |
 | Subject street/home address, DIČ, IČ DPH | High-risk personal identifiers | Always exclude |
 | Partners, suppliers, accounting-document identities | Additional personal/relationship surface | Always exclude |
 | `popis*`, `ucel`, capacity descriptions, VO free text | Arbitrary HTML/free text, possible names/contacts | Always exclude initially |
@@ -175,9 +175,9 @@ District/municipality joins are not promised. Keep NUTS references self-containe
 
 **IČO does not mean legal person.** Five of the first 100 subject rows were natural persons, including sole traders with IČO and private citizens without IČO. No real natural-person names, tax IDs or home addresses are retained in repository fixtures or this report.
 
-## 14. Legal-form gate and redaction
+## 14. Legal-form gate and whole-project exclusion
 
-Privacy verdict: **`LEGAL_ENTITIES_ONLY_SAFE` for the reviewed beneficiary identity subset**, with project-level fallback.
+Privacy verdict: **`REVIEWED_LEGAL_ENTITY_PROJECTS_ONLY`**. Whole-project exclusion is necessary; there is **no linkable project-level fallback** for unsafe beneficiaries. A name/title-redacted row with `projectCode`, `sourceId` or `sourceUrl` still exposes a trivial path to the underlying person.
 
 The 482-entry catalogue uses `pravnaForma.kod`; `kodZdroj` collides across countries. The manually identified natural/person-adjacent set is:
 
@@ -192,7 +192,11 @@ The 482-entry catalogue uses `pravnaForma.kod`; `kodZdroj` collides across count
 
 These 24 codes cover citizens, sole traders/farmers/liberal professions, foreign natural persons and the cautiously excluded association without legal personality. `1009995` (unspecified form) is separately unsafe. This is an inspected catalogue snapshot, **not** a proof that all other/future codes are legal entities.
 
-The prototype positively allows only **28 reviewed legal-entity codes seen in the project sample** (`LEGAL_ENTITY_FORMS` in the script). Missing, unknown, natural-person and unspecified codes redact the entire beneficiary block **and project title**; keep code, state, region and financial facts rather than biasing coverage by dropping the project. No fuzzy/name-based classification. Re-review new forms explicitly; do not extend the allowlist automatically from an absence in the denylist.
+The prototype positively allows only **28 reviewed legal-entity codes seen in the project sample** (`LEGAL_ENTITY_FORMS` in the script). Missing, unknown, natural-person and unspecified forms **exclude the entire project before output construction**, including all IDs, URLs, money, locations, state/timestamps and title. No fuzzy/name-based classification. Re-review new forms explicitly; absence from the natural-person denylist is never approval.
+
+Exclusions are aggregate counters only: `excludedNaturalPersonProjects` and `excludedUnreviewedBeneficiaryProjects` (the latter includes unspecified/missing forms). `includedProjects` counts only eligible rows. Generated preview metadata contains no excluded-row code list, raw capture filenames or excluded-detail URLs. Complete acquisition provenance stays in the **local diagnostic report**, not the public-style candidate payload.
+
+A supplied detail for an excluded project is recognized by matching code and ID but is not enriched, emitted or listed in preview source metadata. Identity mismatch or a detail with no corresponding list row still fails consistency validation; the mere presence of an excluded project's matching detail does not fail or reinstate it. If a richer detail explicitly supplies an unsafe/unreviewed beneficiary, it also excludes the project even when the earlier list row passed. Missing/non-object beneficiary blocks fail closed as exclusions. An all-excluded valid input yields an empty `projects` array and honest counters, not a privacy-unsafe fallback.
 
 ## 15. Privacy red-team answers
 
@@ -204,10 +208,10 @@ The prototype positively allows only **28 reviewed legal-entity codes seen in th
 6. Personal email/phone? Not observed in examined models; never allowed through.
 7. Home addresses? Yes in subject payloads; excluded even for legal entities.
 8. Natural-person suppliers? Possible; supplier links lack the discriminator, so exclude all supplier identities.
-9. Free-text risk? Yes; exclude descriptions and redact titles for unsafe beneficiaries.
+9. Free-text risk? Yes; descriptions are excluded. Unsafe beneficiary projects, including titles, are wholly excluded; legal-entity titles still need production review.
 10. Irregularities sensitivity? High; no initial import even if an endpoint appears later.
-11. Allowlist sufficient? For this preview's explicit fields, with residual title/schema review before production; **not** a blanket guarantee for upstream data.
-12. Project-level fallback viable? Yes; beneficiary/title redaction preserves useful project facts without requiring a company-register join.
+11. Allowlist sufficient? A positive reviewed-entity gate plus whole-project exclusion closes the identified re-linkability failure. Title/schema review remains a production gate; this is **not** a blanket guarantee for upstream data.
+12. Project-level fallback viable? **No for unsafe/unreviewed beneficiaries.** Code/ID/canonical URL makes a redacted row trivially dereferenceable. No RPO join is needed to exclude it fail-closed.
 
 ## 16. Pagination and incremental semantics
 
@@ -229,7 +233,7 @@ Future maintainer acquisition: paced official JSON requests, bounded pages, expl
 
 Re-list all project state coverage, compare IDs/codes and content, re-fetch required details, detect removed/changed records, and publish an atomic reviewed snapshot. Root `updatedAt` can help triage but **cannot** prove nested content is unchanged. Periodic full detail reconciliation remains necessary. Disappearance may be deletion or loss of publishability, not merely a transient failure (§1.3, L169–173).
 
-Preview imports accept partial list captures deliberately; `size=4571` with 100 rows does **not** make the result complete. Reject inconsistent page totals and duplicate IDs/codes. This prototype is not an acquisition crawler, scheduled refresh job or production atomic writer.
+Preview imports accept partial list captures deliberately; `size=4571` with 100 rows does **not** make the result complete. `sourcePopulationObserved` records the observed source total; `inputRows` counts captured rows; `includedProjects` counts only the approved beneficiary subset. Reject inconsistent page totals and duplicate IDs/codes, including duplicates among excluded rows. This prototype is not an acquisition crawler, scheduled refresh job or production atomic writer.
 
 ## 18. HTTP behavior and upstream load
 
@@ -247,7 +251,7 @@ No numeric rate limit was found. This is **not** unlimited-load authorization. R
 
 Raw 100-row page extrapolation: **about 128 MB** for 4,571 rows (wire JSON), not a downloaded full snapshot. A separate re-serialization estimate was ~135 MB; do not confuse that estimate with wire bytes. Detail expansion plausibly adds hundreds of MB and thousands of requests; those are estimates, not measured full acquisition.
 
-Reviewed projection of 100 projects plus two details: **152,498 bytes pretty / 103,999 compact**, approximately **7.0 MB pretty / 4.8 MB compact** extrapolated across 4,571 projects. Zero beneficiary redactions in that project sample; five natural-person subjects in the distinct subject sample must not be described as five natural-person project beneficiaries.
+With the corrected exclusion policy, the 100-project capture plus two matching details yields **100 eligible projects, 0 exclusions**, **152,272 bytes pretty / 103,791 compact**. This does not establish eligibility of all **4,571 observed source projects**. A roughly 7.0 MB pretty / 4.8 MB compact all-source-size extrapolation is a sizing scenario, **not** a complete candidate coverage claim. Five natural-person subjects in the distinct subject sample must not be described as five natural-person project beneficiaries.
 
 ## 20. Storage verdict
 
@@ -255,13 +259,13 @@ Reviewed projection of 100 projects plus two details: **152,498 bytes pretty / 1
 
 Projection timing/memory on a 100-row sample and runtime parse of the resulting preview are diagnostic only; a full normalized production snapshot is not yet acquired. Promotion should measure cold parse, retained/peak heap, filtered lookup cost and cold-start impact. Revisit storage if multi-period/deep child records materially grow those measured costs; do not trigger a datastore change just because the raw list is large.
 
-Local diagnostic (Python 3.14, one run, tracemalloc enabled): 100-row offline projection plus two details ~249 ms, ~17.7 MB peak / 0.54 MB retained traced heap; parsing the 152,498-byte preview ~4.0 ms, 0.72 MB peak / 0.42 MB retained. These are Python allocations, not process RSS or production-instance benchmarks; full-snapshot costs are not claimed as measured.
+Earlier local diagnostic (Python 3.14, one run, tracemalloc enabled, pre-review manifest shape): 100-row offline projection plus two details ~249 ms, ~17.7 MB peak / 0.54 MB retained traced heap; parsing that 152,498-byte preview ~4.0 ms, 0.72 MB peak / 0.42 MB retained. Those same 100 projects pass the stricter eligibility policy. These are Python allocations, not process RSS or production-instance benchmarks; full-snapshot costs are not claimed as measured.
 
 ## 21. Importer prototype and allowlist
 
 `scripts/import_itms21_projects.py` has **no network code** and no production-write mode. Default dry-run; explicit preview writes only `.json` beneath gitignored `data/generated/`, with resolved-path escape protection. Inputs are local UTF-8 JSON plus official URL provenance; money uses Decimal; source file hashes are reported.
 
-Initial output: project code/source ID, reviewed project title, source state label/flags, programme/call codes and names, reviewed legal-entity beneficiary name/IČO/form, NUTS location refs, contracted total, optional matching-detail NFP/provided amounts and timestamp instants, source updated instant and detail URL. Unknown source fields are never passed through. Partial/detail coverage is not silently filled with zero amounts.
+Output **only for positively reviewed legal-entity projects**: project code/source ID, reviewed project title, source state label/flags, programme/call codes and names, reviewed beneficiary name/IČO/form, NUTS location refs, contracted total, optional matching-detail NFP/provided amounts and timestamp instants, source updated instant and detail URL. Unsafe/unreviewed projects produce no output record at all. Unknown fields are never passed through; partial/detail coverage is not filled with zero amounts.
 
 Example using already downloaded local files (paths illustrative; this command does not download):
 
@@ -269,11 +273,11 @@ Example using already downloaded local files (paths illustrative; this command d
 python scripts/import_itms21_projects.py --projects "C:\captures\projects.json=https://api.itms21.sk/public/v1/projekt?offset=0&limit=100" --detail "C:\captures\25682.json=https://api.itms21.sk/public/v1/projekt/id/25682" --dry-run
 ```
 
-Add `--write-preview` instead of `--dry-run` only after reviewing the report. A supplied `--retrieved-at` is maintainer metadata, not independent evidence of the capture time. Preview manifests can contain local paths; they are not the future public dataset format.
+Add `--write-preview` instead of `--dry-run` only after reviewing the report. A supplied `--retrieved-at` is maintainer metadata, not independent evidence of capture time. Full input paths/URLs and per-detail acquisition metadata remain in the local stdout report. Preview manifests omit local paths/query filters and excluded-detail entries; excluded projects cannot leak back through their manifest URLs or filenames.
 
 ## 22. Candidate public contract — not implemented
 
-A later project-reference service could support lookup by `projectCode`, bounded list paging and simple programme/call/NUTS/state filters over local JSON only. It must explain partial/period coverage, beneficiary/title redaction, source snapshot date and differing monetary meanings.
+A later project-reference service is limited to **positively reviewed legal-entity beneficiary projects**. It must explain source population versus acquired/eligible coverage, whole-project privacy exclusions, source snapshot date and differing monetary meanings. It must never expose an unsafe project's identifiers/URLs as a redacted fallback. “Complete ITMS21+ projects” is not justified; “complete relative to the approved legal-entity projection” would require measured full acquisition plus eligibility coverage.
 
 Route naming, models, pagination, cache/freshness semantics and status vocabulary belong to that future milestone. **No proposed path is advertised as an available route.** No national procurement coverage claim and no join to `/v1/procurement-notices` (TED-based and independently scoped).
 
@@ -289,15 +293,15 @@ Historical extension must retain distinct source/period/license provenance and i
 
 Four independent research tracks were launched: **A** source/API/acquisition and historical operations; **B** licence/reuse; **C** schema/money/product; **D** privacy red-team. C and its retry timed out, but left captures and analysis notes; the lead completed C from those artifacts. D's retry delivered the privacy report. Reports/captures remain in the local research temp directory, not runtime/Git.
 
-Reconciliation corrections: licence proof is the **project-specific publisher graph**, not merely an unrelated ITMS catalogue entry; CC BY version was not explicit; `/2` is not proof of anonymisation; source GDPR transfer statements are not downstream licence restrictions; `modifiedSince` observations are unit-limited; SK010 is NUTS3; wire versus reserialized sizes differ; unknown forms must fail closed; unsafe beneficiary titles also need redaction; exact instants avoid UTC date loss; Decimal normalization must not round. Specialist recommendations were reviewed, not copied as authority.
+Reconciliation corrections: licence proof is the **project-specific publisher graph**, not merely an unrelated catalogue entry; CC BY version was not explicit; `/2` is not proof of anonymisation; source GDPR transfer statements are not downstream licence restrictions; `modifiedSince` observations are unit-limited; SK010 is NUTS3; wire versus reserialized sizes differ; unknown forms fail closed; exact instants avoid UTC date loss; Decimal normalization must not round. PR review additionally rejected the earlier name/title-redaction fallback: IDs/URLs remain linkable, so unsafe projects and their detail manifests are now excluded entirely. Specialist recommendations were reviewed, not copied as authority.
 
 ## 25. Production gates and remaining risks
 
 Before a separately approved promotion:
 
 1. Retain/recheck this exact project catalogue grant and resolve the version-specific licence link for public notices; attribute MIRRI, disclose transformation, no endorsement.
-2. Acquire consistent full project coverage with source manifests and matching-detail scope; distinguish partial from complete.
-3. Refresh and review the positive legal-form allowlist; unknowns redact. Review title text even for legal-entity projects; no free-text/contact/address/supplier/partner expansion by default.
+2. Acquire consistent source coverage and matching-detail scope; measure approved legal-entity coverage separately from the source population and distinguish partial from complete.
+3. Refresh/review the positive legal-form allowlist; natural-person, sole-trader, unspecified, missing and unreviewed forms exclude entire projects and identifiers/URLs, including any matching details. Review title text even for legal-entity projects; no free-text/contact/address/supplier/partner expansion by default.
 4. Finalize monetary/currency and timestamp/calendar semantics; no requested/contracted/provided conflation.
 5. Implement offline refresh/correction/removal review and validate nested changes; never rely solely on the tested seconds-form `modifiedSince`.
 6. Measure the full **normalized** dataset's JSON memory/latency and join/filter costs before storage reassessment.
@@ -307,14 +311,14 @@ No source correspondence is needed to continue research; optional clarification 
 
 ## 26. Validation and evidence retention
 
-Offline tests cover reviewed identity inclusion, natural/unknown-form redaction, title exclusion, forbidden-field non-passthrough, exact decimals, timestamp conversion, duplicate/schema errors, detail joins, deterministic records, source provenance, dry-run and generated-only path guards. Scope tests prohibit production EU-funds data/routes and preserve 37 GET operations plus `/v1` metadata.
+Offline tests cover reviewed-entity inclusion, entire-project exclusion for all unsafe/unreviewed categories, absence of excluded IDs/URLs/title/facts anywhere in preview JSON, safe handling of supplied excluded details, honest counters, forbidden-field non-passthrough, exact decimals, timestamp conversion, duplicate/schema errors, deterministic records, source provenance, dry-run and generated-only path guards. Scope tests prohibit production EU-funds data/routes and preserve 37 GET operations plus `/v1` metadata.
 
 Required final gates: dataset validation, referential integrity, full pytest, compileall, `git diff --check` and local smoke. No raw manual, upstream personal data, API capture or generated preview is committed. Source evidence is retained above as exact URLs/wording/date plus hashes; local raw-artifact retention is not a repository availability guarantee.
 
-Final local verification: **519 tests passed**, dataset validator **0 errors / 51 existing compliance warnings**, referential integrity passed, compileall passed, whitespace check passed, and **39/39 local smoke checks passed**. Real-capture dry-run and generated-preview output matched byte-for-byte for identical inputs (100 projects, two matching details); generated output remains ignored. The curated source catalogue now has 20 entries and snapshot date 2026-10-14, without adding a data route.
+Initial pre-review verification: 519 tests, 0 dataset errors / 51 compliance warnings and 39/39 smoke checks passed. **PR #33 follow-up: 542 tests passed; 0 dataset errors / 44 warnings; referential integrity, compileall and whitespace checks passed; local smoke 39/39 passed.** The bank warnings disappeared because the actual NBS reply resolves reuse, not because warnings were suppressed. Bank file SHA-256 and bank endpoint JSON match the pre-follow-up baseline; `BANKS_LAST_UPDATED=2026-05-18` and `PROJECT_VERSION=0.23.6` remain unchanged. The real-capture corrected dry-run includes 100 eligible projects/two details, with zero exclusions in that sample; generated output remains ignored. The curated catalogue has 20 entries, without a data route.
 
 ## 27. Final recommendation and next milestone
 
-Proceed only to a **separate, approved ITMS21+ project-reference production milestone**, not a generic EU-funds framework. Keep ITMS2014+ historical extension, ŽoNFP/ŽoP, suppliers/partners, procurement fusion, irregularities/debts, free-text descriptions and automated scheduled acquisition deferred.
+Proceed only with a **reviewed-legal-entity-projects-only candidate** in a separately approved promotion, not all-source coverage or a generic EU-funds framework. Unsafe/unreviewed beneficiaries exclude the whole project because stable codes and source URLs trivially re-link name-redacted records. Keep ITMS2014+ historical extension, ŽoNFP/ŽoP, suppliers/partners, procurement fusion, irregularities/debts, free-text descriptions and automated acquisition deferred.
 
 Final milestone verdict: **`GO_PRODUCTION_NEXT`**. Final storage verdict: **`JSON_CONTINUE`**. This branch delivers research, privacy-aware offline preview tooling and a research source catalogue entry only; it does not promote EU-funds data to production or change PortalVS/elections permissions.

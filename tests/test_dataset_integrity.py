@@ -128,8 +128,9 @@ def test_bank_codes_are_unique_and_valid() -> None:
 
     assert report.ok
     assert report.record_count == 30
-    assert report.warnings
-    assert any("source/licence verification is pending" in issue.message for issue in report.warnings)
+    # The NBS bank-specific reply resolves reuse; v225 record validation is
+    # unchanged and must not manufacture the old pending-licence warning.
+    assert not report.warnings
 
 
 def test_holidays_dataset_is_valid() -> None:

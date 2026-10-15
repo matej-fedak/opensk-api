@@ -35,6 +35,8 @@ def test_eu_funds_catalogue_entry_cannot_look_production_ready() -> None:
     assert entry["licence"]["status"] == "verified"
     assert entry["licence"]["termsUrl"].startswith("https://data.gov.sk/")
     assert any("no EU funds endpoint" in text for text in entry["limitations"])
+    assert any("excluded entirely" in text for text in entry["limitations"])
+    assert any("positively reviewed" in text for text in entry["limitations"])
     assert not {"nextAction", "notes", "riskLevel", "redistributionStatus"} & entry.keys()
 
 

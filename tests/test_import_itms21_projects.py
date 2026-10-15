@@ -116,7 +116,7 @@ def projected(result, kod: str = "408030I900") -> dict:
 
 def test_valid_list_page_projects_allowlist_record(tmp_path: Path) -> None:
     result = import_ok(tmp_path, page_bytes(row()))
-    assert result.ok and result.report["merged"]["projected"] == 1
+    assert result.ok and result.report["merged"]["includedProjects"] == 1
     record = projected(result)
     assert record["projectCode"] == "408030I900"
     assert record["sourceId"] == 25001
@@ -191,31 +191,46 @@ def test_missing_contracted_total_rejected(tmp_path: Path) -> None:
     assert not result.ok and "celkovaZazmluvnenaSuma" in result.errors[0]
 
 
-def test_sole_trader_beneficiary_redacted_but_record_kept(tmp_path: Path) -> None:
+def test_sole_trader_project_excluded_entirely(tmp_path: Path) -> None:
     result = import_ok(tmp_path, page_bytes(
         row(prijimatel=beneficiary(SOLE_TRADER_FORM, "Fiktívna Anna Osoba", "12345678"),
             nazov="Projekt Fiktívnej Anny Osoby")))
-    assert result.ok and result.report["merged"]["projected"] == 1
-    assert result.report["merged"]["redactedNaturalPerson"] == 1
-    record = projected(result)
-    assert "beneficiary" not in record
-    assert "name" not in record
-    assert "Fiktív" not in json.dumps(record, ensure_ascii=False)
+    assert result.ok and result.report["merged"]["includedProjects"] == 0
+    assert result.report["merged"]["excludedNaturalPersonProjects"] == 1
+    assert result.payload["projects"] == []
+    text = importer.serialize_payload(result.payload).decode("utf-8")
+    assert "Fiktív" not in text and "408030I900" not in text
 
 
-def test_plain_citizen_without_ico_redacted(tmp_path: Path) -> None:
+def test_plain_citizen_without_ico_excluded(tmp_path: Path) -> None:
     result = import_ok(tmp_path, page_bytes(
         row(prijimatel=beneficiary(CITIZEN_FORM, "Fiktívny Občan", None))))
-    assert result.ok and result.report["merged"]["redactedNaturalPerson"] == 1
-    assert "beneficiary" not in projected(result)
+    assert result.ok and result.report["merged"]["excludedNaturalPersonProjects"] == 1
+    assert result.payload["projects"] == []
 
 
-def test_missing_pravna_forma_redacts_beneficiary(tmp_path: Path) -> None:
+def test_missing_pravna_forma_excludes_project(tmp_path: Path) -> None:
     subject = beneficiary()
     del subject["pravnaForma"]
     result = import_ok(tmp_path, page_bytes(row(prijimatel=subject)))
-    assert result.ok and result.report["merged"]["redactedUnclassified"] == 1
-    assert "beneficiary" not in projected(result)
+    assert result.ok and result.report["merged"]["excludedUnreviewedBeneficiaryProjects"] == 1
+    assert result.payload["projects"] == []
+
+
+@pytest.mark.parametrize("subject", [None, "invalid subject", {}])
+def test_unclassifiable_beneficiary_excludes_project(tmp_path: Path, subject) -> None:
+    project = row()
+    project["prijimatel"] = subject
+    result = import_ok(tmp_path, page_bytes(project))
+    assert result.ok and result.payload["projects"] == []
+    assert result.payload["counts"]["excludedUnreviewedBeneficiaryProjects"] == 1
+
+
+def test_absent_beneficiary_excludes_project(tmp_path: Path) -> None:
+    project = row()
+    project.pop("prijimatel")
+    result = import_ok(tmp_path, page_bytes(project))
+    assert result.ok and result.payload["projects"] == []
 
 
 @pytest.mark.parametrize("code", ["", "1009NEW", "1009AT000"])
@@ -223,14 +238,15 @@ def test_unknown_legal_form_fails_closed(tmp_path: Path, code: str) -> None:
     result = import_ok(tmp_path, page_bytes(row(
         prijimatel=beneficiary({"kod": code, "nazovSk": "Unreviewed"}),
         nazov="Potential personal identity in title")))
-    assert result.ok and result.report["merged"]["redactedUnclassified"] == 1
-    assert "beneficiary" not in projected(result) and "name" not in projected(result)
+    assert result.ok and result.report["merged"]["excludedUnreviewedBeneficiaryProjects"] == 1
+    assert result.payload["projects"] == []
 
 
-def test_unspecified_legal_form_1009995_redacted(tmp_path: Path) -> None:
+def test_unspecified_legal_form_1009995_excluded(tmp_path: Path) -> None:
     result = import_ok(tmp_path, page_bytes(
         row(prijimatel=beneficiary(UNSPECIFIED_FORM, "Niečo n.t.b."))))
-    assert result.ok and result.report["merged"]["redactedNaturalPerson"] == 1
+    assert result.ok and result.report["merged"]["excludedUnreviewedBeneficiaryProjects"] == 1
+    assert result.payload["projects"] == []
 
 
 def test_legal_entity_form_included_and_counted_for_review(tmp_path: Path) -> None:
@@ -240,13 +256,114 @@ def test_legal_entity_form_included_and_counted_for_review(tmp_path: Path) -> No
     assert result.report["includedPravnaFormaCodes"] == {"1009701": 1}
 
 
-def test_all_denylist_codes_redacted_across_countries(tmp_path: Path) -> None:
+def test_all_denylist_codes_excluded_across_countries(tmp_path: Path) -> None:
     for code in importer.NATURAL_PERSON_FORMS:
         form = {"kod": code, "kodZdroj": code[4:], "nazovSk": "denylist test"}
         result = import_ok(tmp_path, page_bytes(
             row(prijimatel=beneficiary(form, f"Men{code}", None))))
         assert result.ok, code
-        assert "beneficiary" not in projected(result), code
+        assert result.payload["projects"] == [], code
+        assert result.payload["counts"]["includedProjects"] == 0
+
+
+@pytest.mark.parametrize("form", [CITIZEN_FORM, SOLE_TRADER_FORM, UNSPECIFIED_FORM,
+                                  {"kod": "1009NEW"}, {}, None])
+def test_unsafe_project_has_no_linkable_or_fact_leak_anywhere_in_preview(tmp_path: Path, form) -> None:
+    unsafe = row("UNSAFEFIXTUREONLY", 987654321012345,
+                 prijimatel=beneficiary(form, "Synthetic excluded identity", "12345678"),
+                 nazov="Synthetic excluded title", stav="UNSAFE_STATUS_SENTINEL",
+                 celkovaZazmluvnenaSuma=999987654.321,
+                 miestoRealizacie=[{"kodZdroj": "UNSAFE_LOCATION_SENTINEL"}],
+                 updatedAt=1800000000000)
+    source = write_list(tmp_path, page_bytes(row(), unsafe), "UNSAFEFIXTUREONLY.json")
+    # Even a supplied list URL/filter or filename must not leak the excluded ID.
+    url = LIST_URL + "&kod=UNSAFEFIXTUREONLY"
+    result = importer.import_itms21_projects([(source[0], url)], [])
+    assert result.ok and len(result.payload["projects"]) == 1
+    assert result.payload["counts"]["includedProjects"] == 1
+    assert projected(result)["beneficiary"]["legalForm"]["code"] in importer.LEGAL_ENTITY_FORMS
+    preview = importer.serialize_payload(result.payload).decode("utf-8")
+    for forbidden in ("UNSAFEFIXTUREONLY", "987654321012345", "Synthetic excluded identity",
+                      "Synthetic excluded title", "UNSAFE_STATUS_SENTINEL", "999987654.321",
+                      "UNSAFE_LOCATION_SENTINEL", "2027-01-15T08:00:00Z"):
+        assert forbidden not in preview
+    assert "redactedRows" not in preview
+    assert not any("file" in source for source in result.payload["sources"])
+
+
+def test_only_reviewed_projects_contribute_to_included_count(tmp_path: Path) -> None:
+    rows = [row(), row("NATURAL0001", 25002, prijimatel=beneficiary(CITIZEN_FORM)),
+            row("SOLE0000001", 25003, prijimatel=beneficiary(SOLE_TRADER_FORM)),
+            row("UNKNOWN0001", 25004, prijimatel=beneficiary({"kod": "NEW"})),
+            row("UNSPEC00001", 25005, prijimatel=beneficiary(UNSPECIFIED_FORM)),
+            row("MISSING0001", 25006, prijimatel={"nazov": "Synthetic missing form"}),
+            row("LEGAL000001", 25007, prijimatel=beneficiary(ASSOCIATION_FORM))]
+    result = import_ok(tmp_path, page_bytes(*rows, size=4571))
+    assert result.ok
+    assert result.payload["counts"] == {
+        "inputRows": 7, "sourcePopulationObserved": 4571, "includedProjects": 2,
+        "excludedNaturalPersonProjects": 2, "excludedUnreviewedBeneficiaryProjects": 3}
+    assert result.report["merged"] == {
+        "totalRows": 7, "includedProjects": 2, "excludedNaturalPersonProjects": 2,
+        "excludedUnreviewedBeneficiaryProjects": 3}
+    assert {r["projectCode"] for r in result.payload["projects"]} == {"408030I900", "LEGAL000001"}
+
+
+def test_excluded_detail_is_recognized_but_not_projected_or_persisted(tmp_path: Path) -> None:
+    kod, source_id = "EXCLUDEDONLY0001", 987654321012345
+    path = tmp_path / f"{kod}.json"
+    # Rich unsafe fields need not have the approved projection's money schema.
+    path.write_text(json.dumps({"id": source_id, "kod": kod,
+                               "nazov": "Synthetic private detail title",
+                               "popis": "Synthetic private description"}), encoding="utf-8")
+    source = (path, f"{importer.API_BASE}/projekt/kod/{kod}")
+    result = import_ok(tmp_path, page_bytes(
+        row(), row(kod, source_id, prijimatel=beneficiary(SOLE_TRADER_FORM))), details=[source])
+    assert result.ok and result.payload["counts"]["includedProjects"] == 1
+    assert result.payload["counts"]["excludedNaturalPersonProjects"] == 1
+    assert not any(s["role"] == "detail" for s in result.payload["sources"])
+    preview = importer.serialize_payload(result.payload).decode("utf-8")
+    assert kod not in preview and str(source_id) not in preview and "Synthetic private" not in preview
+
+
+def test_excluded_project_detail_still_requires_identity_consistency(tmp_path: Path) -> None:
+    source = write_detail(tmp_path)
+    source[0].write_text(json.dumps(detail(source_id=999)), encoding="utf-8")
+    result = import_ok(tmp_path, page_bytes(row(prijimatel=beneficiary(CITIZEN_FORM))), details=[source])
+    assert not result.ok and "ID mismatch" in result.errors[0]
+
+
+def test_detail_cannot_override_gate_with_unsafe_beneficiary(tmp_path: Path) -> None:
+    source = write_detail(tmp_path)
+    source[0].write_text(json.dumps(detail(prijimatel=beneficiary(SOLE_TRADER_FORM))), encoding="utf-8")
+    result = import_ok(tmp_path, page_bytes(row()), details=[source])
+    assert result.ok and result.payload["projects"] == []
+    assert result.payload["counts"]["excludedNaturalPersonProjects"] == 1
+    assert not any(s["role"] == "detail" for s in result.payload["sources"])
+
+
+def test_excluded_project_is_not_fully_built(tmp_path: Path) -> None:
+    unsafe = row(prijimatel=beneficiary(CITIZEN_FORM))
+    for key in ("nazov", "vyzva", "miestoRealizacie", "celkovaZazmluvnenaSuma", "updatedAt"):
+        unsafe.pop(key)
+    result = import_ok(tmp_path, page_bytes(unsafe))
+    assert result.ok and result.payload["projects"] == []
+
+
+def test_duplicate_excluded_project_still_rejected(tmp_path: Path) -> None:
+    unsafe = row(prijimatel=beneficiary(CITIZEN_FORM))
+    result = import_ok(tmp_path, page_bytes(unsafe), page_bytes(unsafe))
+    assert not result.ok and "duplicate project code" in result.errors[0]
+
+
+def test_exclusion_projection_serializes_deterministically(tmp_path: Path) -> None:
+    sources = [write_list(tmp_path, page_bytes(row(), size=2), "approved.json"),
+               write_list(tmp_path, page_bytes(row("EXCLUDED0001", 25002,
+                          prijimatel=beneficiary(CITIZEN_FORM)), size=2), "unsafe.json")]
+    first = importer.import_itms21_projects(sources, [])
+    second = importer.import_itms21_projects(list(reversed(sources)), [])
+    assert first.ok and second.ok
+    assert importer.serialize_payload(first.payload) == importer.serialize_payload(second.payload)
 
 
 def test_detail_enrichment_adds_nfp_amounts_and_planned_dates(tmp_path: Path) -> None:
@@ -327,7 +444,6 @@ def test_direct_import_source_url_validated(tmp_path: Path) -> None:
      "missing NUTS code"),
     (lambda r: r["prijimatel"].update({"ico": "12-34"}), "invalid 'ico'"),
     (lambda r: r.pop("vyzva"), "missing 'vyzva' link"),
-    (lambda r: r.pop("prijimatel"), "missing 'prijimatel'"),
 ])
 def test_schema_drift_rejected(tmp_path: Path, mutation, match: str) -> None:
     broken = row()
@@ -370,12 +486,15 @@ def test_preview_payload_carries_privacy_and_licence_metadata(tmp_path: Path) ->
     result = import_ok(tmp_path, raw)
     assert result.ok
     privacy = result.payload["privacy"]
-    assert privacy["naturalPersonBeneficiariesRedacted"] is True
+    assert privacy["unsafeProjectsExcluded"] is True
+    assert privacy["policy"] == "REVIEWED_LEGAL_ENTITY_PROJECTS_ONLY"
     assert set(privacy["denylist"]) == set(sorted(importer.NATURAL_PERSON_FORMS))
     assert "CC BY" in result.payload["licence"] and "MIRRI" in result.payload["licence"]
     assert result.payload["status"] == "unapproved-research-preview"
-    assert result.payload["counts"] == {"inputRows": 2, "projects": 2, "redactedBeneficiaries": 0}
-    assert result.payload["sources"][0]["sourceUrl"] == LIST_URL
+    assert result.payload["counts"] == {
+        "inputRows": 2, "sourcePopulationObserved": 2, "includedProjects": 2,
+        "excludedNaturalPersonProjects": 0, "excludedUnreviewedBeneficiaryProjects": 0}
+    assert result.payload["sources"][0]["sourceUrl"] == f"{importer.API_BASE}/projekt"
     assert len(result.payload["sources"][0]["sha256"]) == 64
 
 
@@ -466,6 +585,12 @@ def test_cli_dry_run_and_modes(tmp_path: Path) -> None:
                           capture_output=True, text=True)
     assert proc.returncode == 0
     assert '"ok": true' in proc.stdout
+
+
+def test_production_write_flag_does_not_exist(capsys) -> None:
+    with pytest.raises(SystemExit):
+        importer.main(["--projects", f"capture.json={LIST_URL}", "--write-production"])
+    assert "unrecognized arguments: --write-production" in capsys.readouterr().err
 
 
 def test_input_size_limit_enforced(tmp_path: Path) -> None:

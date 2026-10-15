@@ -26,8 +26,10 @@ def test_bank_catalogue_records_resolved_reply_without_refresh() -> None:
 def test_bank_snapshot_is_unchanged_v225() -> None:
     # Explicit no-refresh scope guard. A future approved refresh must update it.
     path = Path(__file__).resolve().parents[1] / "data" / "banks.json"
-    assert hashlib.sha256(path.read_bytes()).hexdigest() == (
-        "8bd46f255f6e06f29a14217a760f19e9cee29d1309fe306e8685c6c640ade514"
+    # Git checks out CRLF on Windows and LF on Linux CI. Ignore only that
+    # checkout conversion, not any metadata or record-value changes.
+    assert hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest() == (
+        "933d45dd5f16eb3bfbc1de2cec85fa9875f0ba44fb9feb7725f9c8264f9239d1"
     )
 
 

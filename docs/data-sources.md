@@ -6,7 +6,7 @@ The API serves static JSON files from `data/` at runtime. No upstream API calls 
 - `docs/source-compliance.md` is the detailed compliance matrix for licence, redistribution, attribution, and risk status.
 - `docs/research/source-verification-evidence.md` records retained source-verification evidence.
 - `docs/research/source-licence-questions.md` lists draft questions for source owners; questions are not sent automatically.
-- EU funds / ITMS21+ (0.23.6): research/tooling only, `GO_PRODUCTION_NEXT` / `JSON_CONTINUE`; project-specific MIRRI CC BY catalogue evidence, offline generated-only importer, reviewed legal-entity beneficiary/title policy. **No production EU-funds dataset or endpoint.** Evidence and gates: `docs/research/eu-funds-itms21-spike.md`. ITMS2014+ is a distinct deferred historical source.
+- EU funds / ITMS21+ (0.23.6): research/tooling only, `GO_PRODUCTION_NEXT` / `JSON_CONTINUE`; MIRRI CC BY evidence, offline generated-only importer for **positively reviewed legal-entity projects only**. Unsafe/unreviewed beneficiary projects and linkable identifiers/URLs are excluded entirely. Observed source population is not eligible candidate coverage. **No production dataset or endpoint.** Gates: `docs/research/eu-funds-itms21-spike.md`; ITMS2014+ stays distinct/deferred.
 - `docs/research/paper-roadmap-coverage.md` maps the original research-paper roadmap to the repository and verified source landscape.
 - `docs/1-0-scope.md` records which datasets are included, limited, or excluded from the candidate `1.0.0` scope.
 - Raw source material is handled offline.

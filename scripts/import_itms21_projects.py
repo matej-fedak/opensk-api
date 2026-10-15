@@ -14,9 +14,9 @@ Modes (exactly one):
 There is deliberately NO production-write mode in this milestone
 (0.23.6 is a research/source spike; no production EU-funds dataset).
 
-Privacy gate: only explicitly reviewed legal-entity forms may expose a
-beneficiary identity. Missing, unreviewed, natural-person or unspecified
-forms keep the project facts but redact the beneficiary block and title.
+Privacy gate: only explicitly reviewed legal-entity beneficiary forms may
+produce a project record. Missing, unreviewed, natural-person or unspecified
+forms exclude the ENTIRE project, including identifiers and source URLs.
 Partner and supplier blocks,
 free-text descriptions, addresses, contacts and any natural-person data
 are never projected. Money is parsed as Decimal (json parse_float),
@@ -55,10 +55,10 @@ LICENCE = (
 # Natural-person legal forms from the live /public/v1/pravnaforma catalogue
 # (482 entries, captured 2026-10-14): SK/CZ/AT natural persons, sole traders,
 # farmers, liberal professions and associations of natural persons without
-# legal personality. For these beneficiaries the person block is redacted
-# (the project record is kept - dropping it would bias against programmes
-# funding individuals). "1009995" is "Nešpecifikovaná právna forma"
-# (unspecified legal form) - ambiguous, hence fail-closed redaction.
+# legal personality. These projects are excluded entirely: stable project
+# identifiers/URLs make name-only redaction trivially re-linkable.
+# "1009995" is "Nešpecifikovaná právna forma" (unspecified legal form),
+# counted separately from known natural persons but also excluded.
 # Match ONLY on pravnaForma.kod (kodZdroj collides across countries).
 NATURAL_PERSON_FORMS = frozenset(
     {
@@ -87,7 +87,7 @@ NATURAL_PERSON_FORMS = frozenset(
 
 # Reviewed legal-entity forms actually seen in the 100-project capture.
 # This is intentionally not "everything outside the denylist": new/unknown
-# forms redact identities until a maintainer reviews the catalogue evidence.
+# forms exclude the project until a maintainer reviews the catalogue evidence.
 LEGAL_ENTITY_FORMS = frozenset({
     "1009321", "1009921", "1009701", "100910", "1009382", "100906",
     "1009803", "100904", "100909", "1009331", "100913", "1009121",
@@ -209,14 +209,20 @@ def load_detail(raw: bytes, label: str) -> dict:
     return detail
 
 
-def extract_project(row: dict, where: str) -> tuple[dict, dict]:
-    """Project one ITMS21+ list-row into the reviewed OpenSK allowlist."""
+def extract_identity(row: dict, where: str) -> tuple[int, str]:
+    """Validate identities for consistency checks, including excluded rows."""
     require(isinstance(row, dict), f"{where}: row must be an object")
     source_id = require_int(row, "id", where)
     kod = require_str(row, "kod", where)
     require(PROJECT_CODE_RE.fullmatch(kod), f"{where}: invalid project code {kod!r}")
-    href = row.get("href")
-    require(href == f"/projekt/id/{source_id}", f"{where}: invalid 'href'")
+    require(row.get("href") == f"/projekt/id/{source_id}", f"{where}: invalid 'href'")
+    return source_id, kod
+
+
+def extract_project(row: dict, where: str) -> dict:
+    """Build a record only after the beneficiary has passed the positive gate."""
+    source_id, kod = extract_identity(row, where)
+    href = row["href"]
     name = require_str(row, "nazov", where)
     in_implementation = require_bool(row, "vrealizacii", where)
     completed = require_bool(row, "ukonceny", where)
@@ -238,9 +244,6 @@ def extract_project(row: dict, where: str) -> tuple[dict, dict]:
         programme["shortName"] = program["skratka"]
     if isinstance(program.get("kodCCI"), str):
         programme["cci"] = program["kodCCI"]
-
-    prijimatel = row.get("prijimatel")
-    require(isinstance(prijimatel, dict), f"{where}: missing 'prijimatel'")
 
     places = row.get("miestoRealizacie")
     require(isinstance(places, list), f"{where}: missing 'miestoRealizacie'")
@@ -284,17 +287,21 @@ def extract_project(row: dict, where: str) -> tuple[dict, dict]:
             actual_end, where, "skutocnaRealizaciaKoniec")
     if not record["dates"]:
         del record["dates"]
-    return record, prijimatel
+    return record
 
 
-def classify_beneficiary(prijimatel: dict, where: str) -> tuple[dict | None, str | None]:
-    """Project the beneficiary for legal entities; else redact with reason."""
+def classify_beneficiary(prijimatel: Any, where: str) -> tuple[dict | None, str | None]:
+    """Project a reviewed legal entity; otherwise return an exclusion reason."""
+    if not isinstance(prijimatel, dict):
+        return None, "unclassifiable-beneficiary"
     pravna_forma = prijimatel.get("pravnaForma")
     if not isinstance(pravna_forma, dict) or not isinstance(pravna_forma.get("kod"), str):
         return None, "unclassifiable-pravnaForma"  # fail-closed: unknown subject type
     form_code = pravna_forma["kod"]
+    if form_code == "1009995":
+        return None, "unspecified-pravnaForma"
     if form_code in NATURAL_PERSON_FORMS:
-        return None, "natural-person-or-unspecified-form"
+        return None, "natural-person"
     if form_code not in LEGAL_ENTITY_FORMS:
         return None, "unreviewed-pravnaForma"
     beneficiary: dict[str, Any] = {"name": require_str(prijimatel, "nazov", where),
@@ -362,8 +369,9 @@ def import_itms21_projects(lists: list[tuple[Path, str]], details: list[tuple[Pa
     result = ImportResult(report={
         "profile": PROFILE,
         "inputs": {},
-        "merged": {"totalRows": 0, "projected": 0, "redactedNaturalPerson": 0,
-                   "redactedUnclassified": 0, "redactedRows": []},
+        "merged": {"totalRows": 0, "includedProjects": 0,
+                   "excludedNaturalPersonProjects": 0,
+                   "excludedUnreviewedBeneficiaryProjects": 0},
         "includedPravnaFormaCodes": {},
         "errors": [], "dryRun": True,
     })
@@ -397,6 +405,7 @@ def import_itms21_projects(lists: list[tuple[Path, str]], details: list[tuple[Pa
 
         rows: dict[str, dict] = {}
         seen_ids: set[int] = set()
+        seen_codes: dict[str, int] = {}
         list_sizes: list[int] = []
         for path, url in lists:
             raw = read_source_bytes(path)
@@ -408,64 +417,77 @@ def import_itms21_projects(lists: list[tuple[Path, str]], details: list[tuple[Pa
                                            "rows": len(page_rows), "size": size}
             for row in page_rows:
                 where = f"{path.name}"
-                record, prijimatel = extract_project(row, where)
-                kod = record["projectCode"]
-                require(kod not in rows, f"duplicate project code {kod!r} across captures")
-                require(record["sourceId"] not in seen_ids, "duplicate project source ID")
-                seen_ids.add(record["sourceId"])
-                beneficiary, redaction = classify_beneficiary(prijimatel, where)
-                if redaction == "natural-person-or-unspecified-form":
-                    report["merged"]["redactedNaturalPerson"] += 1
-                elif redaction is not None:
-                    report["merged"]["redactedUnclassified"] += 1
-                if redaction is not None:
-                    report["merged"]["redactedRows"].append({"projectCode": kod, "reason": redaction})
-                    # A project title can itself contain its applicant's name.
-                    # Retain financial/location facts, not that unreviewed text.
-                    del record["name"]
-                else:
-                    form_code = beneficiary["legalForm"]["code"]
-                    codes = report["includedPravnaFormaCodes"]
-                    codes.setdefault(form_code, 0)
-                    codes[form_code] += 1
-                    record["beneficiary"] = beneficiary
+                source_id, kod = extract_identity(row, where)
+                require(kod not in seen_codes, f"duplicate project code {kod!r} across captures")
+                require(source_id not in seen_ids, "duplicate project source ID")
+                seen_ids.add(source_id)
+                seen_codes[kod] = source_id
+                prijimatel = row.get("prijimatel")
+                if kod in detail_by_code:
+                    require(source_id == detail_by_code[kod]["id"], "detail/list ID mismatch")
+                beneficiary, exclusion = classify_beneficiary(prijimatel, where)
+                if exclusion is None and kod in detail_by_code and "prijimatel" in detail_by_code[kod]:
+                    # A richer/newer detail must not bypass a privacy change
+                    # merely because the list capture had a reviewed form.
+                    _, exclusion = classify_beneficiary(detail_by_code[kod]["prijimatel"], where)
+                if exclusion is not None:
+                    counter = ("excludedNaturalPersonProjects" if exclusion == "natural-person"
+                               else "excludedUnreviewedBeneficiaryProjects")
+                    report["merged"][counter] += 1
+                    continue
+                record = extract_project(row, where)
+                record["beneficiary"] = beneficiary
+                form_code = beneficiary["legalForm"]["code"]
+                codes = report["includedPravnaFormaCodes"]
+                codes[form_code] = codes.get(form_code, 0) + 1
                 if kod in detail_by_code:
                     enrich_from_detail(record, detail_by_code[kod], f"detail {kod}")
                 rows[kod] = record
-                report["merged"]["projected"] += 1
+                report["merged"]["includedProjects"] += 1
             report["merged"]["totalRows"] += len(page_rows)
 
         require(len(set(list_sizes)) <= 1, "list sizes vary between captures; review snapshot consistency")
-        require(not set(detail_by_code) - set(rows), "detail has no matching list project")
-        require(rows, "no project rows projected")
+        require(not set(detail_by_code) - set(seen_codes), "detail has no matching list project")
+        require(seen_codes, "no input project rows")
+
+        # Raw file paths, query filters and excluded-detail URLs can identify
+        # unsafe projects. Keep full acquisition manifests in the local report,
+        # not the normalized preview. Only approved details get a manifest.
+        sources = []
+        for path, url in sorted([*lists, *details], key=lambda source: (source[1], str(source[0]))):
+            meta = report["inputs"][path.name]
+            if meta["role"] == "detail":
+                code = meta["projectCode"]
+                if code not in rows:
+                    continue
+                canonical_url = rows[code]["sourceUrl"]
+            else:
+                canonical_url = f"{API_BASE}/projekt"
+            sources.append({"sourceUrl": canonical_url, "role": meta["role"],
+                            "sha256": meta["sha256"], "bytes": meta["bytes"],
+                            **({"retrievedAt": retrieved_at} if retrieved_at else {})})
 
         payload = {
             "profile": PROFILE,
             "status": "unapproved-research-preview",
             "licence": LICENCE,
-            "sources": [
-                {"file": str(path), "sourceUrl": url, "role": report["inputs"][path.name]["role"],
-                 "sha256": report["inputs"][path.name]["sha256"],
-                 "bytes": report["inputs"][path.name]["bytes"],
-                 **({"retrievedAt": retrieved_at} if retrieved_at else {})}
-                for path, url in sorted([*lists, *details], key=lambda source: (source[1], str(source[0])))
-            ],
+            "sources": sources,
             "privacy": {
-                "naturalPersonBeneficiariesRedacted": True,
+                "policy": "REVIEWED_LEGAL_ENTITY_PROJECTS_ONLY",
+                "unsafeProjectsExcluded": True,
                 "denylist": sorted(NATURAL_PERSON_FORMS),
                 "reviewedLegalEntityForms": sorted(LEGAL_ENTITY_FORMS),
-                "redactedNaturalPerson": report["merged"]["redactedNaturalPerson"],
-                "redactedUnclassified": report["merged"]["redactedUnclassified"],
-                "projection": "beneficiary name/IČO/legal-form only for classifiable legal "
-                              "entities; beneficiary block and project title redacted otherwise; no addresses, "
+                "projection": "only positively reviewed legal-entity beneficiary projects; "
+                              "all other projects excluded entirely, including identifiers/URLs; no addresses, "
                               "contacts, partners, suppliers, free-text descriptions or "
                               "natural-person data",
             },
             "counts": {
                 "inputRows": report["merged"]["totalRows"],
-                "projects": report["merged"]["projected"],
-                "redactedBeneficiaries": report["merged"]["redactedNaturalPerson"]
-                                         + report["merged"]["redactedUnclassified"],
+                "sourcePopulationObserved": list_sizes[0],
+                "includedProjects": report["merged"]["includedProjects"],
+                "excludedNaturalPersonProjects": report["merged"]["excludedNaturalPersonProjects"],
+                "excludedUnreviewedBeneficiaryProjects": report["merged"]["excludedUnreviewedBeneficiaryProjects"],
             },
             "projects": [rows[kod] for kod in sorted(rows)],
         }
