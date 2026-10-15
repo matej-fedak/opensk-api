@@ -31,7 +31,7 @@ All findings below were verified directly against official pages during this rev
 ### A.2 NBS bank-code directory — reply received, reuse resolved (2026-10-14)
 
 - VERIFIED disclaimer wording (NBS website): "Information published on this website may be stored, reproduced, and further used provided that the source is acknowledged and that neither the content nor other properties of the respective electronic file are modified in any way."
-- NBS's institutional reply received by the maintainer 2026-10-14 explicitly permits storage, value-preserving CSV → JSON/renaming, public API redistribution and commercial downstream use with attribution, transformation disclosure and separation of OpenSK-derived fields. MIT covers code, not NBS data; JSON is not the original NBS file. Full audit: `nbs-bank-reuse-clarification.md`. Served v225 remains unchanged; later v226 refresh retains version/effective/download dates and reconciles `Payment system SIPS` versus `Akt. úč.`. Holidays stay separate.
+- NBS's 2026-10-14 institutional reply resolves bank storage/transformation/public API/commercial reuse with attribution and derived-field disclosure. MIT covers code, not NBS data; JSON is not the original file. **0.23.8 delivers v226 / effective 2026-10-08**, downloaded 2026-10-15T16:23:00Z, row/column reconciliation and direct bank/IBAN provenance metadata. CSV SIPS, not HTML Akt. úč., drives derived fields. Future versions stay manual/offline. Audit: `nbs-bank-reuse-clarification.md`; holidays remain separate.
 
 ### A.3 NBS holidays — evidence retention, email likely unnecessary
 

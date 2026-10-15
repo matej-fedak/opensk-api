@@ -66,6 +66,7 @@ def test_new_effective_date_and_conditional_cache(path):
 
 
 def test_provenance_comes_from_dataset_not_router_constants(tmp_path, monkeypatch):
+    original_etag = client.get("/v1/banks/1100").headers["ETag"]
     payload = json.loads(DATA.read_text(encoding="utf-8"))
     metadata = payload["metadata"]
     metadata.update(sourceVersion="999", sourceEffectiveDate="2026-01-01", lastUpdated="2026-01-01",
@@ -79,6 +80,7 @@ def test_provenance_comes_from_dataset_not_router_constants(tmp_path, monkeypatc
             response = client.get(url).json()["metadata"]
             assert response["sourceVersion"] == "999" and response["sourceEffectiveDate"] == "2026-01-01"
             assert response["lastUpdated"] == "2026-01-01" and response["sourceDownloadedAt"] == "2026-01-02T01:02:03Z"
+        assert client.get("/v1/banks/1100").headers["ETag"] != original_etag
     finally:
         bank_service.load_banks_data.cache_clear()
 

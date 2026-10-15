@@ -198,3 +198,18 @@ body ETags change with new data/provenance; Last-Modified is 2026-10-08 for the
 three routes, with both conditional 304 forms retained. No route added:
 **39 GET operations**, namespace `/v1`, metadata version `v1`. Other datasets,
 outreach states and holidays' separate licence question are unchanged.
+
+### 0.23.8 verification
+
+- Dataset validation: 14 datasets, **0 errors / 44 existing compliance warnings**;
+  banks: 30 rows, no errors/warnings. Referential integrity passed.
+- **694 pytest tests passed**; synthetic English/Slovak/CP1250 inputs, explicit
+  provenance, source hashes, duplicate/BIC/schema guards, contradictory SIPS versus
+  Akt. úč., deterministic diffs and normal bank/IBAN metadata/cache behavior covered.
+- Compileall and whitespace checks passed; local HTTP smoke **41/41 passed**
+  with no additional requests/endpoints. Metadata-only changes invalidate ETags;
+  effective-date Last-Modified, both 304 forms and stale-v225-date 200 verified.
+- Every unrelated dataset's bytes and every non-bank source registry entry
+  matched the pre-milestone baseline; outreach file/states and dependencies
+  unchanged. No source raw file or generated backup committed. Final project
+  version **0.23.8**; GitHub CI results are attached to the milestone PR.

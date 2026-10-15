@@ -92,7 +92,7 @@ def test_unknown_source_columns_fail_closed(tmp_path):
 
 
 def test_cp1250_source_values_are_preserved(tmp_path):
-    path = source(tmp_path, "123;Syntetická banka;TESTSKBX;x;Ø\n", slovak=True)
+    path = source(tmp_path, "123;Syntetická banka;TESTSKBX;x;0\n", slovak=True)
     path.write_bytes(path.read_text(encoding="utf-8-sig").encode("cp1250"))
     result = run_import(input_path=path, **OPTIONS)
     assert result.ok, result.errors

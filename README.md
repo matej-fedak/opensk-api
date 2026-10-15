@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.7` pre-1.0 — privacy-minimized ITMS21+ project-reference API; 39 GET operations. Operational guardrails remain ready, public promotion still gated by unresolved PortalVS compliance.
+Status: `0.23.8` pre-1.0 — NBS bank refresh with direct bank/IBAN attribution and provenance metadata; still 39 GET operations. Public promotion remains gated by unresolved PortalVS compliance.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -26,7 +26,7 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse |
 | `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | PortalVS terms may restrict reuse |
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and dataset stats | partial imported | PortalVS terms may restrict reuse |
-| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete imported v225 snapshot | NBS reuse clarified; attribution and transformation disclosure required |
+| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete domestic v226 snapshot, effective 2026-10-08 | NBS attribution/version/effective/download provenance directly in response metadata |
 | `GET /v1/holidays/{year}` | Slovak holiday calendar by year | partial curated seed | NBS/legal-act provenance tracked |
 | `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Seed-backed company lookup and IČO alias | seed-backed | RPO expansion/licence/privacy verification pending |
 | `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}` | Phone-area list and lookup | complete imported; 3 unmatched local geography links | telecom regulator licence verification pending |
@@ -133,8 +133,7 @@ python scripts/import_geography.py --dataset municipalities --input data/raw/por
 python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
 python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
-python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --dry-run
-python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --write
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --source-version 226 --effective-date 2026-10-08 --downloaded-at 2026-10-15T16:23:00Z --source-file-url "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true" --dry-run
 python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write
 python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --dry-run
@@ -263,7 +262,7 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - Production requests read those local JSON files only.
 - Holiday responses currently use a static seed dataset.
 - Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
-- Banks remain the NBS converter **v225 / 2026-05-18** snapshot. Reuse, public API redistribution and commercial use are clarified by NBS's 2026-10-14 reply under its [Terms of Use](https://nbs.sk/disclaimer-sk/), with attribution and transformation/derived-field disclosure. This JSON is not the original NBS file; **MIT applies to OpenSK code, not NBS data**. Both participation flags derive from `Payment system SIPS`, not `Akt. úč.`; [field mapping and clarification](docs/research/nbs-bank-reuse-clarification.md). Refresh to v226 (2026-10-08 at reply time) is separate; no bank records changed here. NBS symbols are not used.
+- Banks now serve NBS converter **v226 / effective 2026-10-08**, downloaded **2026-10-15T16:23:00Z** (30 domestic rows). Bank/IBAN metadata carries NBS attribution, version, effective/download dates, URLs/hash and transformation notice. IBAN checksum validation is OpenSK/ISO logic; NBS supplies only Slovak bank resolution. Reuse is resolved under [NBS Terms of Use](https://nbs.sk/disclaimer-sk/) + the 2026-10-14 clarification; **MIT covers code, not NBS data**, and JSON is not the original NBS file. Participation fields remain OpenSK-derived from CSV `Systém SIPS`, not a direct `Akt. úč.` copy or general operating-status guarantee. No NBS symbols. [Acquisition, column audit, three-record diff and refresh workflow](docs/research/nbs-bank-reuse-clarification.md#0238-production-refresh). The import example uses this actual capture; future imports must use then-current version/effective date and their own actual download timestamp.
 - Phone areas are imported from the telecom regulator's machine-processable workbook; licence/reuse verification remains pending.
 - Vehicle registration district codes are legacy/reference data from Slov-Lex legal text; they are not reliable for current plate lookup and do not decode full licence plates.
 - School facility counts are aggregate rows from the MŠVVaM `Register škôl a školských zariadení` CSV, valid as of `2025-09-15`; the API does not provide institution-level `/v1/schools` lookup.
