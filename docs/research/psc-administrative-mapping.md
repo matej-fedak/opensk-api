@@ -514,5 +514,25 @@ grouping/matchCount and cache behavior remain untouched. No district/municipalit
 rematerialization, source-registry promotion, street API, DB, Redis, SDK,
 scheduled/manual-outreach dispatch or runtime upstream code was added.
 
-Final validator/integrity/pytest/compileall/diff/smoke results are recorded after
-the local gate run and in the PR; hosted CI is separate. No auto-merge/tag/release.
+Local final gates (2026-10-16):
+
+- `python scripts/validate_datasets.py`: **0 errors / 44 existing warnings**, 14
+  datasets; no rights/coverage warning suppressed.
+- `python scripts/check_referential_integrity.py`: passed.
+- `python -m pytest -q`: **834 passed** including **35 new synthetic evidence and
+  negative-control cases**; no live calls or retained official archives required.
+- `python -m compileall scripts routers services tests schemas`: passed.
+- `git diff --check`: passed; full-branch/staged checks before push.
+- Local HTTP smoke (`scripts/smoke_test.py`): **41 passed / 0 failed**.
+- All 14 production JSON byte hashes match the pre-work main baseline. `data/`,
+  routers/services/schemas, dependency files and outreach package have no diff.
+- **39 GET operations**, project **0.23.11**, `/v1` and metadata version **v1**;
+  PSC conditional caching/freshness checked unchanged.
+- All **105 curated blocker table rows** exactly checked against the generated
+  evidence report, including missing region context. Full analysis repeated
+  byte-identically with network access forbidden. Acquisition-host canonical
+  report SHA-256:
+  `ba1a23524047474a3034e97c322b927af6e1bb84c986d0987dbc743ee98ef5e8`.
+
+Hosted CI is reported by PR checks separately from local results. No auto-merge,
+tag, release, production deployment or source promotion is part of this spike.

@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.10` pre-1.0 — districts and municipalities are successor-backed (fresh 2026-10-16 snapshot); all IDs preserved, two reviewed municipality display corrections. PSC stays byte-identical and legacy-backed. Still 39 GET operations; public promotion remains gated by unresolved PortalVS compliance.
+Status: `0.23.11` pre-1.0 — PSC administrative mapping research remains NO_GO; PSC is parked and developer adoption/OpenAPI correctness is next. All production data is unchanged: districts/municipalities stay successor-backed, PSC stays legacy-backed. Still 39 GET operations; public promotion remains gated by unresolved PortalVS compliance. Evidence: `docs/research/psc-administrative-mapping.md`.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
