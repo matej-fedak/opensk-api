@@ -1,0 +1,43 @@
+{
+  "profile": "portalvs-successor-geography-acquisition-v1",
+  "startedAt": "2026-10-16T08:04:42Z",
+  "openApiUrl": "https://ciselniky2.portalvs.sk/api/docs.json",
+  "sources": {
+    "districts": {
+      "url": "https://ciselniky2.portalvs.sk/api/county.json?validity=valid",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "etag": "\"10ce57242fccfa16\"",
+      "acquiredAt": "2026-10-16T08:04:42Z",
+      "file": "districts.json",
+      "bytes": 30459,
+      "sha256": "308d1b35a2bbd7a82fa99966a8cac4d044fd62aa19ae249db36d864179d36194",
+      "rows": 80,
+      "schemaKeys": [
+        "additionalInfo", "code", "excludes", "includes", "includesAlso",
+        "info", "infoEn", "mediumTitle", "mediumTitleEn", "note", "noteEn",
+        "officialTitle", "officialTitleEn", "shortTitle", "shortTitleEn",
+        "sortNumber", "unitOfMeasure", "validFrom"
+      ]
+    },
+    "municipalities": {
+      "url": "https://ciselniky2.portalvs.sk/api/town.json?validity=valid",
+      "status": 200,
+      "contentType": "application/json; charset=utf-8",
+      "etag": "\"a4aeef064766d663\"",
+      "acquiredAt": "2026-10-16T08:04:44Z",
+      "file": "municipalities.json",
+      "bytes": 1105510,
+      "sha256": "5e13f5162f560d9d4409d91aad26569e7fe21f8342b78fc25179a0574630ad94",
+      "rows": 2928,
+      "schemaKeys": [
+        "additionalInfo", "code", "excludes", "includes", "includesAlso",
+        "info", "infoEn", "mediumTitle", "mediumTitleEn", "note", "noteEn",
+        "officialTitle", "officialTitleEn", "shortTitle", "shortTitleEn",
+        "sortNumber", "unitOfMeasure", "validFrom"
+      ]
+    }
+  },
+  "acquiredAt": "2026-10-16T08:04:45Z",
+  "manifestSha256": "24fc83e400fce0cffda4fcae44607c1bf5785519e59966f6af00380f900ce224"
+}
