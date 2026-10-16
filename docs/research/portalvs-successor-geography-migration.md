@@ -148,6 +148,11 @@ rewritten to follow the source migration.
 
 `data/psc.json` before **and** after SHA-256:
 `4b7346bbef19a86576fa5ecaa5f7d7c2afa36be5ff711753281b3a042b42bc55`.
+This is the unchanged **Windows CRLF working-tree** byte hash. The unchanged
+**Git/LF blob** SHA-256 is
+`db9cd5c2d833cec0d199f4a7199f9c13f77346572bbd1507503ce01774b0dc24`.
+Tests pin both exact platform checkout representations and separately require
+strict before/after byte equality for imports; no PSC newline rewrite is made.
 The entire PSC registry entry remains identical (canonical JSON SHA-256
 `9a72cd6fa891ad312612b9caab22234916761dd030e4c1e9e45fcc8c4e5e0462`).
 `PSC_LAST_UPDATED` remains **2026-06-02**. All five legacy-only keys remain:
@@ -166,6 +171,8 @@ Protected production JSON review:
 | sources.json | `a28423df4afb64ef3fa23d03b388d22306075e8014af95689b002f522435618b` | `ac94dcf62f12b42806d15d121f006a7b766ba2f895bc02586da219aa51b136e8` |
 
 Only these three production JSON files changed; **all 11 others are byte-identical**.
+Before/after byte hashes in this table refer to the acquisition host's Windows
+working tree; Git can use LF where that checkout uses CRLF.
 Registry differences are limited to districts/municipalities; PSC and all other
 entries stay identical. No raw captures are committed.
 

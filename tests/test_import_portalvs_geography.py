@@ -16,6 +16,10 @@ from scripts import import_portalvs_geography as importer
 
 ROOT = Path(__file__).resolve().parents[1]
 PSC_SHA = "4b7346bbef19a86576fa5ecaa5f7d7c2afa36be5ff711753281b3a042b42bc55"
+# Git stores LF; existing Windows core.autocrlf checkout uses CRLF. Both are
+# pinned exact bytes, not normalized JSON. Import tests ALSO require byte-for-
+# byte equality with their own pre-import snapshot on every platform.
+PSC_GIT_SHA = "db9cd5c2d833cec0d199f4a7199f9c13f77346572bbd1507503ce01774b0dc24"
 STAMP = "2020-01-02T10:00:00Z"
 
 
@@ -183,7 +187,8 @@ def test_success_replaces_both_only_and_is_repeatable(prepared):
     importer.run_import(raw / "manifest.json", raw, write=True)
     after = content(data)
     assert {k for k in before if before[k] != after[k]} == {"districts.json", "municipalities.json"}
-    assert hashlib.sha256(after["psc.json"]).hexdigest() == PSC_SHA
+    assert after["psc.json"] == before["psc.json"]
+    assert hashlib.sha256(after["psc.json"]).hexdigest() in {PSC_SHA, PSC_GIT_SHA}
     for kind in importer.KINDS:
         metadata = json.loads(after[kind + ".json"])["metadata"]
         assert metadata["lastUpdated"] == "2020-01-02" and metadata["downloadedAt"] == STAMP
@@ -321,7 +326,7 @@ def test_geography_acquisition_never_requests_psc(tmp_path):
 
 def test_current_production_snapshot_and_psc_freeze():
     sources = json.loads((ROOT / "data/sources.json").read_bytes())
-    assert hashlib.sha256((ROOT / "data/psc.json").read_bytes()).hexdigest() == PSC_SHA
+    assert hashlib.sha256((ROOT / "data/psc.json").read_bytes()).hexdigest() in {PSC_SHA, PSC_GIT_SHA}
     psc = json.loads((ROOT / "data/psc.json").read_bytes())
     assert {"83006", "83155", "91931", "93539", "97651"} <= set(psc)
     assert sources["psc"]["sourceUrl"] == "https://ciselniky.portalvs.sk/classifier/show/42/"
