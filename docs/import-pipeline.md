@@ -2,13 +2,28 @@
 
 OpenSK API keeps runtime requests fully local. Import tooling exists so new or updated public datasets can be normalized offline before anything is promoted into `data/*.json`.
 
+## Current PortalVS geography workflow (0.23.10)
+
+Districts/municipalities now use **successor county/town only**, with raw captures
+**outside Git**, a geography-only acquisition manifest and the dedicated
+`scripts/import_portalvs_geography.py` importer (dry-run default, explicit
+`--write-production`). It stages/validates both datasets with full surrounding
+context, blocks unreviewed drift and supports paired rollback/interruption
+recovery. Stop readers before writing; there is no live multi-file transaction.
+Commands, fixed paths, recovery and acquisition-date freshness:
+[`research/portalvs-successor-geography-migration.md`](research/portalvs-successor-geography-migration.md).
+No previous private capture or legacy export is needed for a future refresh.
+**PSC stays frozen, legacy-backed and byte-identical**; the older PSC tooling
+examples below document historical capabilities, not approval to refresh PSC or
+import successor street/detail rows. Rights remain `SENT_AWAITING_REPLY`.
+
 ## Storage Layers
 
 - `data/raw/` stores downloaded or manually supplied source material.
 - `data/generated/` stores normalized preview output from import scripts.
 - `data/*.json` remains the production runtime input for the API.
-- Geography imports for regions should be checked against the Eurostat LAU 2025 correspondence table; municipalities should be imported from PortalVS classifier 9 (`Obce`) JSON/CSV exports.
-- District imports are sourced from PortalVS classifier 10 filtered to Slovak rows; keep upstream notices and treat reuse as restricted until terms are fully settled.
+- Geography imports for regions should be checked against the Eurostat LAU 2025 correspondence table. Current municipalities use successor town JSON with verified note IDs/composite district context; classifier 9 examples below are historical only.
+- Current districts use successor county JSON with evidence-checked statistical/letter-code projection. Classifier 10 is historical only; keep upstream notices and treat reuse as restricted until terms are settled.
 - PSC imports are handled by `scripts/import_psc.py`; source/licence verification is still pending, so do not treat the input as redistributable without checking upstream terms. `scripts/backfill_psc_districts.py` backfills PSC `districtCode` from `municipalityCode` using local municipality mappings only; no values are inferred from names or PSC patterns. PSC coverage remains partial rather than national.
 - Bank imports use `scripts/import_banks.py` offline, explicit source version/effective/download/file-URL arguments and automatic original-byte SHA-256/size. Current v226 / 2026-10-08 was downloaded 2026-10-15T16:23:00Z and audited row-by-row; unknown layouts/markers fail before writing. Reuse is resolved by NBS's 2026-10-14 reply; JSON is not the original NBS file, and bank/IBAN responses directly disclose provenance/attribution/derived fields. Review the deterministic refresh diff. Runtime never calls NBS. `research/nbs-bank-reuse-clarification.md`.
 - Phone-area imports are handled by `scripts/import_phone_areas.py` from local CSV/JSON/XLSX files. The official regulator source is a legacy `.xls` workbook retained under `data/raw/`; convert the `List1` sheet to CSV before importing. Runtime routes never call the regulator.
@@ -82,7 +97,9 @@ python scripts/import_vat_registrations.py data/raw/ds_dphs.zip --output data/ge
 
 ## Write Workflow
 
-Only `--write` writes files.
+For the older generic examples below, `--write` enables output. The current
+successor geography importer instead requires `--write-production` as described
+above; these legacy examples are not the current production geography workflow.
 
 ```bash
 python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write

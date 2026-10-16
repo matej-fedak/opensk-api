@@ -28,8 +28,9 @@ URLS = {
     "psc": BASE + "/api/postal_code_sk.json",
 }
 PROFILE = "portalvs-successor-acquisition-v1"
+GEOGRAPHY_PROFILE = "portalvs-successor-geography-acquisition-v1"
 MAX_BYTES = 32 * 1024 * 1024
-USER_AGENT = "OpenSK-Offline-Source-Acquisition/0.23.9 (+https://github.com/matej-fedak/opensk-api)"
+USER_AGENT = "OpenSK-Offline-Source-Acquisition/0.23.10 (+https://github.com/matej-fedak/opensk-api)"
 
 
 def now():
@@ -83,15 +84,17 @@ def fetch(url):
     raise ValueError("no response")
 
 
-def acquire(output: Path, *, fetcher=fetch, sleep=time.sleep):
+def acquire(output: Path, *, geography_only=False, fetcher=fetch, sleep=time.sleep):
     output = output.resolve()
     if output.is_relative_to(ROOT) or any((parent / ".git").exists() for parent in [output, *output.parents]):
         raise ValueError("raw acquisition directory must be outside any Git repository")
     if output.exists() and any(output.iterdir()):
         raise ValueError("acquisition directory must be new/empty")
     output.mkdir(parents=True, exist_ok=True)
-    manifest = {"profile": PROFILE, "startedAt": now(), "openApiUrl": OPENAPI_URL, "sources": {}}
-    for dataset, url in URLS.items():
+    selected = {k: v for k, v in URLS.items() if not geography_only or k != "psc"}
+    manifest = {"profile": GEOGRAPHY_PROFILE if geography_only else PROFILE,
+                "startedAt": now(), "openApiUrl": OPENAPI_URL, "sources": {}}
+    for dataset, url in selected.items():
         raw, evidence = fetcher(url)
         rows = json.loads(raw)
         if not isinstance(rows, list) or not rows or not all(isinstance(row, dict) for row in rows):
@@ -111,9 +114,10 @@ def acquire(output: Path, *, fetcher=fetch, sleep=time.sleep):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", required=True, type=Path)
+    parser.add_argument("--geography-only", action="store_true", help="capture county/town only; no PSC request")
     args = parser.parse_args(argv)
     try:
-        result = acquire(args.output_dir)
+        result = acquire(args.output_dir, geography_only=args.geography_only)
         print(f"Complete acquisition: {result['acquiredAt']}, manifest {result['manifestSha256']}")
         return 0
     except (OSError, ValueError) as exc:

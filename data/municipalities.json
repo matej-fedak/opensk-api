@@ -1,7 +1,12 @@
 {
   "metadata": {
-    "source": "PortalVS classifier 9 (Obce), local REST export filtered to current Slovak municipalities",
-    "lastUpdated": "2026-09-07",
+    "source": "PortalVS / IS Číselníky — Slovenské obce",
+    "license": "Source/licence verification pending; PortalVS terms may restrict reuse.",
+    "sourceUrl": "https://ciselniky2.portalvs.sk/api/town.json?validity=valid",
+    "downloadedAt": "2026-10-16T08:04:45Z",
+    "sourceBytes": 1105510,
+    "sourceSha256": "5e13f5162f560d9d4409d91aad26569e7fe21f8342b78fc25179a0574630ad94",
+    "lastUpdated": "2026-10-16",
     "complete": true
   },
   "municipalities": [
@@ -1295,7 +1300,7 @@
     },
     {
       "code": "504173",
-      "name": "Vozokany (okres (Galanta)",
+      "name": "Vozokany (okres Galanta)",
       "regionCode": "SK021",
       "districtCode": "SK0212",
       "country": "SK"
@@ -2037,7 +2042,7 @@
     },
     {
       "code": "504742",
-      "name": "Radošovce (Skalica)",
+      "name": "Radošovce (okres Skalica)",
       "regionCode": "SK021",
       "districtCode": "SK0216",
       "country": "SK"

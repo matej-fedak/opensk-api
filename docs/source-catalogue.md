@@ -1,5 +1,13 @@
 # Public Source Catalogue (`/v1/sources`)
 
+Since **0.23.10**, `/v1/sources/districts` and `/v1/sources/municipalities`
+identify **ciselniky2** county/town as current production sources, with
+`lastUpdated: 2026-10-16` meaning UTC OpenSK acquisition date (no trustworthy
+dataset publication date is provided). `/v1/sources/psc` intentionally retains
+historical **legacy classifier 42**, partial coverage and its old freshness.
+This mixed provenance is truthful, not a catalogue inconsistency. All three
+remain licence **pending**; technical migration does not resolve rights.
+
 Since 0.23.8, `banks` is aligned with NBS v226 / effective 2026-10-08 / downloaded
 2026-10-15T16:23:00Z. Rights remain NBS Terms of Use + the 2026-10-14 clarification,
 not MIT data licensing. Bank/IBAN success metadata now also carries dataset-derived

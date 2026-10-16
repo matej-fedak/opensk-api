@@ -1,5 +1,13 @@
 # PortalVS → IS Číselníky (ciselniky2) source resilience
 
+> **Current production, 0.23.10 (2026-10-16):** districts and municipalities
+> have migrated to fresh successor county/town captures; 79 / 2,927 records,
+> all IDs preserved, two reviewed municipality display corrections. Refresh no
+> longer needs legacy PortalVS. **PSC is unchanged and legacy-backed**, with
+> successor promotion still NO_GO. Rights remain `SENT_AWAITING_REPLY`, no
+> runtime upstream dependency. See [migration/refresh evidence](portalvs-successor-geography-migration.md).
+> The remainder below retains historical 0.23.3/0.23.9 provenance and findings.
+
 > **0.23.9 full-source correction (2026-10-15):** this is historical 0.23.3
 > feasibility evidence, **not proof of PSC promotion readiness**. Excluding
 > `ulica` retains 1,293, not 1,415 PSCs; 84 non-street rows lack the original

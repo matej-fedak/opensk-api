@@ -8,6 +8,7 @@ deterministic status/coverage/licence mapping for all registered domains.
 from fastapi.testclient import TestClient
 
 from main import app
+from schemas.common import SOURCES_LAST_UPDATED
 
 
 client = TestClient(app)
@@ -149,7 +150,7 @@ def test_sources_list_exposes_all_registered_domains() -> None:
 def test_sources_list_uses_standard_envelope_and_static_cache() -> None:
     response = client.get("/v1/sources")
     assert response.json()["metadata"]["source"] == "OpenSK API curated source catalogue"
-    assert response.json()["metadata"]["lastUpdated"] == "2026-10-15"
+    assert response.json()["metadata"]["lastUpdated"] == SOURCES_LAST_UPDATED
     assert response.headers["cache-control"] == "public, max-age=86400"
 
 
