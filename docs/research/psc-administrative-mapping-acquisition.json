@@ -1,0 +1,77 @@
+{
+  "profile": "psc-administrative-evidence-v1",
+  "checkedOn": "2026-10-16",
+  "portalvsManifestSha256": "d53a24b79800193b817d6fb31359f9d59bd2f8881d6e0a7b3a220077836b1e61",
+  "portalvsAcquiredAt": "2026-10-16T09:05:47Z",
+  "portalvsClassifierPage": "https://ciselniky2.portalvs.sk/ciselniky/psc-sk",
+  "portalvsStatedContentChangeLocal": "2026-10-04T03:15:09",
+  "portalvsStatedContentChangeTimezone": null,
+  "referencePagesChecked": [
+    "https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/",
+    "https://www.posta.sk/podpora/postove-obchodne-a-financne-podmienky",
+    "https://www.portalvs.sk/sk/autorske-prava",
+    "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%20adries/uvod-register%20adries",
+    "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%2Badries/poskytovanie_referencnych_udajov/"
+  ],
+  "portalvsSources": {
+    "districts": {
+      "url": "https://ciselniky2.portalvs.sk/api/county.json?validity=valid",
+      "status": 200, "contentType": "application/json; charset=utf-8",
+      "filename": "districts.json", "bytes": 30459, "rows": 80,
+      "sha256": "308d1b35a2bbd7a82fa99966a8cac4d044fd62aa19ae249db36d864179d36194",
+      "etag": "\"10ce57242fccfa16\"", "lastModified": null
+    },
+    "municipalities": {
+      "url": "https://ciselniky2.portalvs.sk/api/town.json?validity=valid",
+      "status": 200, "contentType": "application/json; charset=utf-8",
+      "filename": "municipalities.json", "bytes": 1105510, "rows": 2928,
+      "sha256": "5e13f5162f560d9d4409d91aad26569e7fe21f8342b78fc25179a0574630ad94",
+      "etag": "\"a4aeef064766d663\"", "lastModified": null
+    },
+    "psc": {
+      "url": "https://ciselniky2.portalvs.sk/api/postal_code_sk.json",
+      "status": 200, "contentType": "application/json; charset=utf-8",
+      "filename": "psc.json", "bytes": 2525777, "rows": 13700,
+      "sha256": "e4c83b436c058b5b8bc8c34ef5432a9f17c1a0ce2a46a8e4039a5a42b77ff96f",
+      "etag": "\"caaf11e7581eb87f\"", "lastModified": null
+    }
+  },
+  "resources": {
+    "regpj": {
+      "publisher": "Statistical Office of the Slovak Republic",
+      "sourcePage": "https://slovak.statistics.sk/wps/portal/ext/Databases/REGPJ/",
+      "url": "https://slovak.statistics.sk/wps/wcm/connect/2fd6b6d9-9be8-4af4-b0e5-bb68357074e1/REGPJ2020.zip?MOD=AJPERES&CVID=oYTDUNS&CVID=oYTDUNS&CVID=n2ARbRp",
+      "filename": "REGPJ2020.zip", "bytes": 722009,
+      "sha256": "445cd5698c8173b0afbc0004c16045bdf4596a678e0a50bba0fff3297b44cab5",
+      "acquisitionMethod": "Maintainer manual browser download; archive supplied after local HTTP 403 Cloudflare challenge. No challenge bypass.",
+      "acquiredAt": null, "verifiedAt": "2026-10-16T09:11:00Z",
+      "status": null, "contentType": null, "etag": null, "lastModified": null,
+      "responseEvidenceNote": "Manual response headers and exact download time were not supplied; do not infer HTTP 200 or application/zip from a valid ZIP. Agent's direct attempt returned HTTP 403 at 2026-10-16T08:45:57Z.",
+      "sourcePageUpdated": "2025-08-18", "dataAsOf": null,
+      "archive": [
+        {"filename": "REGPJ2020.ods", "bytes": 312755, "archiveTimestamp": "2024-04-30T21:01:28", "timezone": null},
+        {"filename": "REGPJ2020.xlsx", "bytes": 556547, "archiveTimestamp": "2024-04-30T21:00:42", "timezone": null}
+      ],
+      "sheets": [{"name": "REGPJ", "dataRows": 7216, "headerRows": 1}],
+      "dataDateNote": "Filename year, archive timestamps, ODS modified metadata and page update are not certified data-validity dates. No validity columns/readme in this download."
+    },
+    "post": {
+      "publisher": "Slovenska posta, a.s.", "sourcePage": "https://www.posta.sk/psc",
+      "url": "https://www.posta.sk/files/6811e10125b182cd7cd9e3a9/postove-smerovacie-cisla-na-stiahnutie.zip",
+      "filename": "post-psc.zip", "acquiredAt": "2026-10-16T08:46:00Z",
+      "status": 200, "contentType": "application/x-zip-compressed", "bytes": 731276,
+      "sha256": "7f9e3686df8c3f67ca121f8581f334e9c5dd5b28cec7b97e106e3b73a356d54c",
+      "etag": null, "lastModified": null, "dataAsOf": null,
+      "archive": [
+        {"filename": "OBCE.xlsx", "bytes": 247197, "archiveTimestamp": "2026-09-25T11:26:44", "timezone": null},
+        {"filename": "POBoxy.xlsx", "bytes": 162264, "archiveTimestamp": "2026-09-25T11:26:50", "timezone": null},
+        {"filename": "ULICE.xlsx", "bytes": 398774, "archiveTimestamp": "2026-09-25T11:26:46", "timezone": null}
+      ],
+      "sheets": {
+        "OBCE.xlsx": ["obce", "detail SČ", "popis", "miestne časti"],
+        "ULICE.xlsx": ["ulice"], "POBoxy.xlsx": ["PSČ_POBOXov", "zmeny", "rušenie pôšt"]
+      },
+      "dataDateNote": "Publisher says generally at least monthly refresh; embedded save/archive dates are not certified postal assignment effective dates. P.O.BOX rows are not used as territorial assignments."
+    }
+  }
+}

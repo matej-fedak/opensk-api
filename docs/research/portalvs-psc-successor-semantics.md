@@ -1,5 +1,13 @@
 # 0.23.9 — PortalVS PSC Semantics & Successor Mapping Spike
 
+> **Follow-up, 0.23.11:** [administrative mapping evidence](psc-administrative-mapping.md)
+> reproduces these historical counts, then tests explicit REGPJ paths. One of
+> the remaining 42 rows gains a snapshot-qualified parent; Kolónia stays ambiguous,
+> 40 stay unmatched, and the previously unique Orechová Potôň-Lúky postal-part
+> candidate has conflicting REGPJ parent evidence. No candidate here was approved
+> automatically. PSC remains unchanged / `NO_GO_SUCCESSOR_PSC`; geography alone
+> migrated in 0.23.10. The historical analysis below is retained, not overwritten.
+
 **RESEARCH ONLY — NO PRODUCTION DATA MIGRATION — NO CURRENT SOURCE REGISTRY
 PROMOTION — NO ROUTE CHANGES — NO LICENCE INFERENCE.** Evidence checked 2026-10-15.
 
