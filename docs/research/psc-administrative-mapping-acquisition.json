@@ -3,6 +3,16 @@
   "checkedOn": "2026-10-16",
   "portalvsManifestSha256": "d53a24b79800193b817d6fb31359f9d59bd2f8881d6e0a7b3a220077836b1e61",
   "portalvsAcquiredAt": "2026-10-16T09:05:47Z",
+  "portalvsClassifierPage": "https://ciselniky2.portalvs.sk/ciselniky/psc-sk",
+  "portalvsStatedContentChangeLocal": "2026-10-04T03:15:09",
+  "portalvsStatedContentChangeTimezone": null,
+  "referencePagesChecked": [
+    "https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/",
+    "https://www.posta.sk/podpora/postove-obchodne-a-financne-podmienky",
+    "https://www.portalvs.sk/sk/autorske-prava",
+    "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%20adries/uvod-register%20adries",
+    "https://pes.minv.sk/wps/wcm/connect/sk/site/main/zivotne-situacie/Register%2Badries/poskytovanie_referencnych_udajov/"
+  ],
   "portalvsSources": {
     "districts": {
       "url": "https://ciselniky2.portalvs.sk/api/county.json?validity=valid",
