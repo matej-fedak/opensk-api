@@ -1,8 +1,12 @@
 {
   "metadata": {
-    "source": "PortalVS classifier 10 (Okres), local REST export filtered to Slovak districts",
+    "source": "PortalVS / IS Číselníky — Slovenské okresy",
     "license": "Source/licence verification pending; PortalVS terms may restrict reuse.",
-    "lastUpdated": "2026-07-20",
+    "sourceUrl": "https://ciselniky2.portalvs.sk/api/county.json?validity=valid",
+    "downloadedAt": "2026-10-16T08:04:45Z",
+    "sourceBytes": 30459,
+    "sourceSha256": "308d1b35a2bbd7a82fa99966a8cac4d044fd62aa19ae249db36d864179d36194",
+    "lastUpdated": "2026-10-16",
     "complete": true
   },
   "districts": [
