@@ -229,23 +229,29 @@ def recover_production():
     require(state_path.is_file(), "no prepared transaction; inspect any incomplete staging directory manually")
     state = json.loads(state_path.read_bytes())
     require(state["state"] in {"prepared", "committed"}, "unknown transaction state")
-    originals = {k: (journal / (k + ".old")).read_bytes() for k in KINDS}
-    require(all(hashlib.sha256(originals[k]).hexdigest() == state["before"][k] for k in KINDS), "recovery backup checksum mismatch")
     if state["state"] == "prepared":
+        originals = {k: (journal / (k + ".old")).read_bytes() for k in KINDS}
+        require(all(hashlib.sha256(originals[k]).hexdigest() == state["before"][k] for k in KINDS), "recovery backup checksum mismatch")
         for kind in KINDS:
             destination = journal / (kind + ".restore")
             durable_write(destination, originals[kind])
             os.replace(destination, PRODUCTION_DIR / (kind + ".json"))
+    else:
+        require(all(hashlib.sha256((PRODUCTION_DIR / (k + ".json")).read_bytes()).hexdigest() == state["after"][k]
+                    for k in KINDS), "committed transaction differs from production; manual review required")
     # Exact, tool-owned directory only, never a broad data-directory removal.
     for child in journal.iterdir():
-        child.unlink()
+        if child != state_path:
+            child.unlink()
+    state_path.unlink()
     journal.rmdir()
 
 
 def replace_pair(payloads, baseline):
     journal = PRODUCTION_DIR / TRANSACTION
     journal.mkdir()  # exclusive lock; never overwrite another import/recovery
-    state = {"state": "prepared", "before": {k: hashlib.sha256(baseline[k + ".json"]).hexdigest() for k in KINDS}}
+    state = {"state": "prepared", "before": {k: hashlib.sha256(baseline[k + ".json"]).hexdigest() for k in KINDS},
+             "after": {k: hashlib.sha256(serialize(payloads[k])).hexdigest() for k in KINDS}}
     try:
         for kind in KINDS:
             durable_write(journal / (kind + ".old"), baseline[kind + ".json"])
