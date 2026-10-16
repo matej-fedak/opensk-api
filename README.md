@@ -2,7 +2,7 @@
 
 OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
 
-Status: `0.23.8` pre-1.0 — NBS bank refresh with direct bank/IBAN attribution and provenance metadata; still 39 GET operations. Public promotion remains gated by unresolved PortalVS compliance.
+Status: `0.23.10` pre-1.0 — districts and municipalities are successor-backed (fresh 2026-10-16 snapshot); all IDs preserved, two reviewed municipality display corrections. PSC stays byte-identical and legacy-backed. Still 39 GET operations; public promotion remains gated by unresolved PortalVS compliance.
 
 Public deployment: `https://opensk-api.onrender.com/`
 
@@ -282,10 +282,11 @@ The free Render instance may sleep when idle and can cold-start on the first req
 - `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
 - IČO/company work uses a local seed dataset; do not treat it as exhaustive or a full register.
 - Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
-- Municipalities are sourced from PortalVS classifier 9 (`Obce`) and the checked-in dataset currently covers the 2,927 regular Slovak municipality rows used by the runtime API.
-- Municipality district mappings come from PortalVS classifier 9 `code_su` and are validated against the local districts dataset.
+- Municipalities use successor PortalVS / IS Číselníky `town.json?validity=valid`: 2,927 regular rows; six-digit IDs come from the reviewed statistical `note` field, with composite suffix/district-prefix validation. Classifier 9 is historical provenance only.
+- Municipality district mappings use successor county evidence, not name inference; all public IDs remain unchanged. Names at `504173` and `504742` now consistently use `(okres Galanta)` / `(okres Skalica)`. Embedded historical PSC labels are deliberately not rewritten.
 - PortalVS source/licence verification is still pending; do not treat the municipality dataset as open redistribution material.
-- Districts are imported from PortalVS classifier 10 and cover all Slovak districts; PortalVS terms may restrict reuse.
+- Districts use successor `county.json?validity=valid`, covering all 79 Slovak districts; the 12 letter-form successor suffixes are verified and projected to unchanged decimal public IDs. Classifier 10 is historical provenance only; PortalVS terms may restrict reuse.
+- Geography freshness is the OpenSK UTC acquisition date, not an upstream publication date. Offline refresh: `docs/research/portalvs-successor-geography-migration.md`. Legacy shutdown cannot break runtime: requests never call upstream. Geography refresh no longer needs legacy PortalVS; PSC stays frozen on the historical snapshot pending mapping evidence (`NO_GO_SUCCESSOR_PSC`).
 - ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
 - Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
 - Research notes for company/IČO work live in `docs/research/ico-sources.md`.

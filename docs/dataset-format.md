@@ -163,7 +163,7 @@ Each `companies[]` item uses this shape:
 - Use `null` only for optional links that are known to be unavailable yet still part of the record shape.
 - Omit fields only when the dataset schema does not define them.
 - For PSC records, `districtCode` and `municipalityCode` may be `null` when the local link is not available.
-- For imported municipality records, `districtCode` is required and is derived from PortalVS classifier 9 `code_su`.
+- For current municipality records, `districtCode` is required and is verified from successor town composite-code prefixes via county evidence (since 0.23.10); classifier 9 `code_su` describes the historical import only.
 - PSC source data does not provide a reliable district mapping; checked-in PSC `districtCode` values are backfilled locally from `municipalityCode`.
 - Vehicle registration code `districtCode` is nullable when a legacy legal-table row does not map to one current local district.
 - School facility counts do not include `municipalityCode`, school identifiers, school names, or addresses because the confirmed source CSV contains aggregate rows only.
@@ -407,7 +407,7 @@ This file is intentionally absent in 0.20.0. Institution-level school-directory 
 ```
 
 - `municipalityCode` and `districtCode` can be `null` when the local link is not available.
-- Imported municipality rows should include `districtCode` when sourced from PortalVS classifier 9.
+- Municipality rows include `districtCode`; current 0.23.10 import derives it from successor town/county evidence. Historical classifier 9 imports used `code_su`.
 - Imported PSC source rows do not provide reliable district links; checked-in PSC `districtCode` values are backfilled from `municipalityCode` using local municipality mappings.
 - PSC `districtCode` coverage is 100% for current local PSC records, with no values inferred from names or PSC patterns.
 - PSC geography links are local data, not a live lookup.
