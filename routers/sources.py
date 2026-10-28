@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Query, Response
 
 from schemas.common import API_SOURCE, SOURCES_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail
 from schemas.sources import ResponseMetadata, SourceDetailResponse, SourceListResponse
+from schemas.openapi import contract
 from services.sources_service import (
     SourceCatalogueInvalidFormatError,
     SourceCatalogueNotFoundError,
@@ -30,7 +31,7 @@ def _invalid_format(message: str, message_sk: str) -> HTTPException:
     "",
     summary="List public source catalogue",
     description="Returns the curated public provenance catalogue for served and researched datasets.",
-    response_model=SourceListResponse,
+    **contract("list_sources", SourceListResponse, 400, 429, exclude_unset=False),
 )
 def list_sources_endpoint(
     response: Response,
@@ -65,7 +66,7 @@ def list_sources_endpoint(
     "/{source_id}",
     summary="Source catalogue entry",
     description="Returns one curated public source provenance entry by its stable registry id.",
-    response_model=SourceDetailResponse,
+    **contract("get_source", SourceDetailResponse, 400, 404, 429, exclude_unset=False),
 )
 def get_source_endpoint(source_id: str, response: Response) -> SourceDetailResponse:
     try:

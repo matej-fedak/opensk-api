@@ -43,4 +43,4 @@ class ExchangeRatesResponseMetadata(BaseModel):
 class ExchangeRateDayResponse(BaseModel):
     data: ExchangeRatesData
     metadata: ExchangeRatesResponseMetadata
-    error: None = None
+    error: None

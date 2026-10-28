@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Response
+from schemas.common import Page, SuccessResponse
+from schemas.openapi import contract
+from schemas.phone_areas import PhoneArea, PhoneAreaLookup
 
 from schemas.common import API_SOURCE, PHONE_AREAS_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_municipality_code_format, validate_region_code_format
@@ -84,6 +87,7 @@ def _parse_optional_district_code(value: str | None) -> str | None:
     "",
     summary="List phone area records",
     description="Returns the static Slovak primary telephone area dataset with pagination and filters.",
+    **contract("list_phone_areas", SuccessResponse[Page[PhoneArea]], 400, 429),
 )
 def list_phone_areas_endpoint(
     response: Response,
@@ -128,6 +132,7 @@ def list_phone_areas_endpoint(
     "/search",
     summary="Search phone area records",
     description="Searches the static Slovak primary telephone area dataset by query string.",
+    **contract("search_phone_areas", SuccessResponse[Page[PhoneArea]], 400, 429),
 )
 def search_phone_areas_endpoint(
     response: Response,
@@ -156,6 +161,7 @@ def search_phone_areas_endpoint(
     "/{code}",
     summary="Phone area lookup by code",
     description="Returns all static phone area records for one Slovak primary telephone area code.",
+    **contract("get_phone_area", SuccessResponse[PhoneAreaLookup], 400, 404, 429),
 )
 def get_phone_area(code: str, response: Response) -> dict[str, object]:
     try:

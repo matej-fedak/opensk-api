@@ -2,6 +2,9 @@ from fastapi import APIRouter, HTTPException, Query, Response
 
 from schemas.common import GEOGRAPHY_SEED_SOURCE, MUNICIPALITIES_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, GeographyNotFoundError, get_municipality, list_municipalities
+from schemas.common import SuccessResponse
+from schemas.geography import Municipality
+from schemas.openapi import contract
 
 
 router = APIRouter(prefix="/municipalities", tags=["municipalities"])
@@ -10,7 +13,8 @@ router = APIRouter(prefix="/municipalities", tags=["municipalities"])
 @router.get(
     "",
     summary="List municipalities",
-    description="Returns the static municipalities seed dataset, optionally filtered by region or district code.",
+    description="Returns the complete 2,927-record administrative municipality snapshot, optionally filtered by region and/or district (AND). Local successor-backed geography, not an address directory; Bratislava/Košice use borough records. Historical metadata source wording is retained for v1 compatibility.",
+    **contract("list_municipalities", SuccessResponse[list[Municipality]], 400, 404, 429),
 )
 def list_municipalities_endpoint(
     response: Response,
@@ -60,7 +64,8 @@ def list_municipalities_endpoint(
 @router.get(
     "/{code}",
     summary="Municipality lookup by code",
-    description="Returns one Slovak municipality from the static geography seed dataset.",
+    description="Returns one administrative municipality by its six-digit code from the local successor-backed geography snapshot. Not an address lookup; historical metadata source wording is retained for v1 compatibility.",
+    **contract("get_municipality", SuccessResponse[Municipality], 400, 404, 429),
 )
 def get_municipality_by_code(code: str, response: Response) -> dict[str, object]:
     try:

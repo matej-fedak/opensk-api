@@ -1,4 +1,6 @@
-from typing import Any, TypedDict
+from typing import Any, Generic, Literal, TypeVar, TypedDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 
 API_SOURCE = "OpenSK API"
@@ -38,6 +40,47 @@ class Envelope(TypedDict, total=False):
     data: Any
     metadata: Metadata
     error: Any | None
+
+
+class PublicModel(BaseModel):
+    """Closed public shapes: fail on unmodelled fields rather than filter them."""
+
+    model_config = ConfigDict(extra="forbid")
+
+
+class ResponseMetadata(PublicModel):
+    source: str
+    lastUpdated: str | None = Field(description="Local snapshot freshness; not a live-source guarantee.")
+    version: Literal["v1"]
+
+
+DataT = TypeVar("DataT")
+
+
+class SuccessResponse(PublicModel, Generic[DataT]):
+    data: DataT
+    metadata: ResponseMetadata
+    error: None
+
+
+class Page(PublicModel, Generic[DataT]):
+    items: list[DataT]
+    count: int = Field(description="Items in this page, not the total matching count.")
+    total: int
+    limit: int
+    offset: int
+
+
+class ApplicationError(PublicModel):
+    code: str
+    message: str
+    messageSk: str
+
+
+class ErrorResponse(PublicModel):
+    data: None
+    metadata: ResponseMetadata
+    error: ApplicationError
 
 
 def success_response(

@@ -2,6 +2,9 @@ from fastapi import APIRouter, HTTPException, Response
 
 from schemas.common import GEOGRAPHY_SOURCE, REGIONS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, GeographyNotFoundError, get_region, load_regions
+from schemas.common import SuccessResponse
+from schemas.geography import Region
+from schemas.openapi import contract
 
 
 router = APIRouter(prefix="/regions", tags=["regions"])
@@ -11,6 +14,7 @@ router = APIRouter(prefix="/regions", tags=["regions"])
     "",
     summary="List regions",
     description="Returns the complete static regions dataset.",
+    **contract("list_regions", SuccessResponse[list[Region]], 429),
 )
 def list_regions(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
@@ -25,6 +29,7 @@ def list_regions(response: Response) -> dict[str, object]:
     "/{code}",
     summary="Region lookup by code",
     description="Returns one Slovak region from the static geography dataset.",
+    **contract("get_region", SuccessResponse[Region], 400, 404, 429),
 )
 def get_region_by_code(code: str, response: Response) -> dict[str, object]:
     try:

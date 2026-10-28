@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
+from fastapi.openapi.utils import get_openapi
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from routers.banks import router as banks_router
@@ -22,6 +23,9 @@ from routers.school_facility_counts import router as school_facility_counts_rout
 from routers.sources import router as sources_router
 from routers.vehicle_registration_codes import router as vehicle_registration_codes_router
 from schemas.common import API_SOURCE, META_CACHE_CONTROL, error_detail, error_response, success_response
+from schemas.common import SuccessResponse
+from schemas.meta import ProjectInfo
+from schemas.openapi import contract, document_parameters
 from services.http_cache import ConditionalCachingMiddleware
 from services.rate_limit import RateLimitMiddleware
 from version import PROJECT_VERSION
@@ -29,7 +33,7 @@ from version import PROJECT_VERSION
 
 app = FastAPI(
     title="OpenSK API",
-    description="OpenSK API is a small FastAPI service that exposes Slovak public data through a consistent JSON envelope.",
+    description="One consistent developer interface to Slovakia's fragmented public data. Local materialized snapshots only; coverage and reuse conditions vary by source. Pre-1.0: review /v1/sources and dataset limitations. Project SemVer is independent of /v1 and metadata.version=v1. Quickstart: https://github.com/matej-fedak/opensk-api/blob/main/docs/quickstart.md",
     version=PROJECT_VERSION,
     contact={"name": "OpenSK API", "url": "https://github.com/matej-fedak/opensk-api"},
     license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
@@ -44,7 +48,7 @@ app = FastAPI(
         {"name": "regions", "description": "Static Slovak regions dataset."},
         {"name": "districts", "description": "Complete Slovak districts dataset imported from PortalVS classifier 10."},
         {"name": "municipalities", "description": "Static Slovak municipalities dataset."},
-        {"name": "psc", "description": "Static Slovak postal code lookups."},
+        {"name": "psc", "description": "Partial historical local PSC lookup; not an address validator or municipality-wide validity guarantee."},
         {"name": "companies", "description": "Local company lookup endpoints backed by the checked-in dataset."},
         {"name": "phone-areas", "description": "Static Slovak primary telephone area lookups."},
         {"name": "vehicle-registration-codes", "description": "Static legacy Slovak vehicle registration district abbreviations; not a current plate lookup."},
@@ -117,7 +121,7 @@ app.add_middleware(
 )
 
 
-@app.get("/", tags=["meta"], summary="Project info", description="Returns project SemVer, API namespace version, and the documentation URL.")
+@app.get("/", tags=["meta"], summary="Project info", description="Returns project SemVer, API namespace version, and the documentation URL. Project version is not the v1 contract version.", **contract("get_root", SuccessResponse[ProjectInfo], 429))
 def root(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = META_CACHE_CONTROL
     return success_response(
@@ -150,3 +154,16 @@ app.include_router(sources_router, prefix="/v1")
 app.include_router(business_days_router, prefix="/v1")
 app.include_router(exchange_rates_router, prefix="/v1")
 app.include_router(eu_funds_router, prefix="/v1")
+
+
+def public_openapi():
+    if app.openapi_schema is None:
+        schema = get_openapi(title=app.title, version=app.version, description=app.description,
+                             routes=app.routes, tags=app.openapi_tags, contact=app.contact,
+                             license_info=app.license_info)
+        document_parameters(schema)
+        app.openapi_schema = schema
+    return app.openapi_schema
+
+
+app.openapi = public_openapi

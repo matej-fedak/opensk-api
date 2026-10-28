@@ -1,0 +1,1958 @@
+{
+  "get_root": {
+    "data": {
+      "name": "OpenSK API",
+      "version": "0.23.12",
+      "apiVersion": "v1",
+      "apiNamespace": "/v1",
+      "docs_url": "/docs"
+    },
+    "metadata": {
+      "source": "OpenSK API",
+      "lastUpdated": null,
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_health": {
+    "data": {
+      "status": "ok",
+      "timestamp": "2026-10-28T20:09:04.371198+00:00"
+    },
+    "metadata": {
+      "source": "OpenSK API",
+      "lastUpdated": "2026-10-28",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_banks": {
+    "data": [
+      {
+        "code": "0200",
+        "name": "Všeobecná úverová banka, a.s.",
+        "bic": "SUBASKBX",
+        "swift": "SUBASKBX",
+        "alphabeticCode": null,
+        "activeParty": true,
+        "activePartyMarker": "C",
+        "country": "SK"
+      }
+    ],
+    "metadata": {
+      "source": "Národná banka Slovenska — Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku; transformed by OpenSK API",
+      "lastUpdated": "2026-10-08",
+      "version": "v1",
+      "sourceVersion": "226",
+      "sourceEffectiveDate": "2026-10-08",
+      "sourceDownloadedAt": "2026-10-15T16:23:00Z",
+      "sourceUrl": "https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/",
+      "sourceFileUrl": "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true",
+      "sourceSha256": "b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64",
+      "sourceBytes": 1953,
+      "termsUrl": "https://nbs.sk/disclaimer-sk/",
+      "attribution": "Zdroj: Národná banka Slovenska, Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku, verzia 226, platnosť od 2026-10-08, https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/. Údaje previedol do formátu JSON projekt OpenSK; odvodené polia nie sú údajmi NBS.",
+      "transformation": "NBS CSV converted to OpenSK JSON with field renaming, whitespace normalization, four-digit code padding and BIC normalization; not the original NBS file. activePartyMarker and activeParty are OpenSK-derived from Payment system SIPS (CSV: Systém SIPS), not a direct copy of Akt. úč. or a guarantee of bank operating status. country is an OpenSK-derived domestic scope label; alphabeticCode is a null schema placeholder when the source supplies no corresponding field. Derived fields are not NBS data."
+    },
+    "error": null
+  },
+  "get_bank": {
+    "data": {
+      "code": "1100",
+      "name": "Tatra banka, a.s.",
+      "bic": "TATRSKBX",
+      "swift": "TATRSKBX",
+      "alphabeticCode": null,
+      "activeParty": true,
+      "activePartyMarker": "C",
+      "country": "SK"
+    },
+    "metadata": {
+      "source": "Národná banka Slovenska — Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku; transformed by OpenSK API",
+      "lastUpdated": "2026-10-08",
+      "version": "v1",
+      "sourceVersion": "226",
+      "sourceEffectiveDate": "2026-10-08",
+      "sourceDownloadedAt": "2026-10-15T16:23:00Z",
+      "sourceUrl": "https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/",
+      "sourceFileUrl": "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true",
+      "sourceSha256": "b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64",
+      "sourceBytes": 1953,
+      "termsUrl": "https://nbs.sk/disclaimer-sk/",
+      "attribution": "Zdroj: Národná banka Slovenska, Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku, verzia 226, platnosť od 2026-10-08, https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/. Údaje previedol do formátu JSON projekt OpenSK; odvodené polia nie sú údajmi NBS.",
+      "transformation": "NBS CSV converted to OpenSK JSON with field renaming, whitespace normalization, four-digit code padding and BIC normalization; not the original NBS file. activePartyMarker and activeParty are OpenSK-derived from Payment system SIPS (CSV: Systém SIPS), not a direct copy of Akt. úč. or a guarantee of bank operating status. country is an OpenSK-derived domestic scope label; alphabeticCode is a null schema placeholder when the source supplies no corresponding field. Derived fields are not NBS data."
+    },
+    "error": null
+  },
+  "validate_iban": {
+    "data": {
+      "inputIban": "SK3109000000000000000001",
+      "normalizedIban": "SK3109000000000000000001",
+      "countryCode": "SK",
+      "supportedCountry": true,
+      "checksumValid": false,
+      "bankCode": "0900",
+      "bankName": "Slovenská sporiteľňa, a.s.",
+      "valid": false
+    },
+    "metadata": {
+      "source": "OpenSK API / ISO 13616 IBAN checksum validation; Slovak bank-code resolution from Národná banka Slovenska converter",
+      "lastUpdated": "2026-10-08",
+      "version": "v1",
+      "sourceVersion": "226",
+      "sourceEffectiveDate": "2026-10-08",
+      "sourceDownloadedAt": "2026-10-15T16:23:00Z",
+      "sourceUrl": "https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/",
+      "sourceFileUrl": "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true",
+      "sourceSha256": "b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64",
+      "sourceBytes": 1953,
+      "termsUrl": "https://nbs.sk/disclaimer-sk/",
+      "attribution": "Zdroj: Národná banka Slovenska, Prevodník identifikačných kódov pre tuzemský platobný styk pre Slovenskú republiku, verzia 226, platnosť od 2026-10-08, https://nbs.sk/platby/vseobecne-informacie/ciselniky-a-registre/prevodnik-sk/. Údaje previedol do formátu JSON projekt OpenSK; odvodené polia nie sú údajmi NBS.",
+      "transformation": "NBS CSV converted to OpenSK JSON with field renaming, whitespace normalization, four-digit code padding and BIC normalization; not the original NBS file. activePartyMarker and activeParty are OpenSK-derived from Payment system SIPS (CSV: Systém SIPS), not a direct copy of Akt. úč. or a guarantee of bank operating status. country is an OpenSK-derived domestic scope label; alphabeticCode is a null schema placeholder when the source supplies no corresponding field. Derived fields are not NBS data."
+    },
+    "error": null
+  },
+  "get_holidays": {
+    "data": [
+      {
+        "date": "2026-01-01",
+        "name": "Deň vzniku Slovenskej republiky",
+        "name_en": "Day of the Establishment of the Slovak Republic"
+      }
+    ],
+    "metadata": {
+      "source": "OpenSK API static holidays dataset",
+      "lastUpdated": "2026-05-25",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_psc": {
+    "data": {
+      "items": [
+        {
+          "psc": "01001",
+          "city": "Žilina 1",
+          "deliveryPost": "Žilina 1",
+          "municipality": "Mojš",
+          "municipalityCode": "517801",
+          "district": null,
+          "districtCode": "SK03111",
+          "region": "Žilinský kraj",
+          "regionCode": "SK031",
+          "country": "Slovakia",
+          "validFrom": "2010-01-01",
+          "validTo": null
+        }
+      ],
+      "count": 1,
+      "total": 2,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static PSC dataset",
+      "lastUpdated": "2026-06-02",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "search_psc": {
+    "data": {
+      "items": [
+        {
+          "psc": "01001",
+          "city": "Žilina 1",
+          "deliveryPost": "Žilina 1",
+          "municipality": "Mojš",
+          "municipalityCode": "517801",
+          "district": null,
+          "districtCode": "SK03111",
+          "region": "Žilinský kraj",
+          "regionCode": "SK031",
+          "country": "Slovakia",
+          "validFrom": "2010-01-01",
+          "validTo": null
+        }
+      ],
+      "count": 1,
+      "total": 2,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static PSC dataset",
+      "lastUpdated": "2026-06-02",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_psc_stats": {
+    "data": {
+      "recordCount": 3101,
+      "uniquePscCount": 1420,
+      "multiMatchPscCount": 759,
+      "geographyCoverage": {
+        "municipalityCode": {
+          "count": 3101,
+          "percentage": 100.0
+        },
+        "regionCode": {
+          "count": 3101,
+          "percentage": 100.0
+        },
+        "districtCode": {
+          "count": 3101,
+          "percentage": 100.0
+        }
+      },
+      "source": {
+        "name": "PortalVS Číselníky classifier 42",
+        "licenceStatus": "Source/licence verification pending."
+      }
+    },
+    "metadata": {
+      "source": "OpenSK API static PSC dataset",
+      "lastUpdated": "2026-06-02",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_psc": {
+    "data": {
+      "psc": "01001",
+      "city": "Žilina 1",
+      "deliveryPost": "Žilina 1",
+      "municipality": "Mojš",
+      "municipalityCode": "517801",
+      "district": null,
+      "districtCode": "SK03111",
+      "region": "Žilinský kraj",
+      "regionCode": "SK031",
+      "country": "Slovakia",
+      "validFrom": "2010-01-01",
+      "validTo": null,
+      "matchCount": 2,
+      "matches": [
+        {
+          "psc": "01001",
+          "city": "Žilina 1",
+          "deliveryPost": "Žilina 1",
+          "municipality": "Mojš",
+          "municipalityCode": "517801",
+          "district": null,
+          "districtCode": "SK03111",
+          "region": "Žilinský kraj",
+          "regionCode": "SK031",
+          "country": "Slovakia",
+          "validFrom": "2010-01-01",
+          "validTo": null
+        },
+        {
+          "psc": "01001",
+          "city": "Žilina 1",
+          "deliveryPost": "Žilina 1",
+          "municipality": "Žilina",
+          "municipalityCode": "517402",
+          "district": null,
+          "districtCode": "SK03111",
+          "region": "Žilinský kraj",
+          "regionCode": "SK031",
+          "country": "Slovakia",
+          "validFrom": "2010-01-01",
+          "validTo": null
+        }
+      ]
+    },
+    "metadata": {
+      "source": "OpenSK API static PSC dataset",
+      "lastUpdated": "2026-06-02",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_company": {
+    "data": {
+      "ico": "50158635",
+      "name": "Slovensko.Digital",
+      "legalForm": "o.z.",
+      "legalStatus": "active",
+      "sourceRegister": "Register občianskych združení",
+      "address": {
+        "street": "Staré grunty",
+        "registrationNumber": null,
+        "buildingNumber": "18",
+        "municipality": "Bratislava",
+        "postalCode": "84104",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": null,
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://slovensko.digital/kontakt/",
+        "recordId": "kontakt"
+      }
+    },
+    "metadata": {
+      "source": "OpenSK API local company dataset",
+      "lastUpdated": "2026-06-03",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_company_by_ico": {
+    "data": {
+      "ico": "50158635",
+      "name": "Slovensko.Digital",
+      "legalForm": "o.z.",
+      "legalStatus": "active",
+      "sourceRegister": "Register občianskych združení",
+      "address": {
+        "street": "Staré grunty",
+        "registrationNumber": null,
+        "buildingNumber": "18",
+        "municipality": "Bratislava",
+        "postalCode": "84104",
+        "country": "SK",
+        "municipalityCode": null,
+        "regionCode": null,
+        "districtCode": null
+      },
+      "establishedOn": null,
+      "terminatedOn": null,
+      "updatedAt": "2026-06-03",
+      "source": {
+        "name": "https://slovensko.digital/kontakt/",
+        "recordId": "kontakt"
+      }
+    },
+    "metadata": {
+      "source": "OpenSK API local company dataset",
+      "lastUpdated": "2026-06-03",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_regions": {
+    "data": [
+      {
+        "code": "SK010",
+        "name": "Bratislavský kraj",
+        "nameEn": "Bratislava Region",
+        "country": "SK"
+      }
+    ],
+    "metadata": {
+      "source": "OpenSK API static geography dataset",
+      "lastUpdated": "2026-05-27",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_region": {
+    "data": {
+      "code": "SK010",
+      "name": "Bratislavský kraj",
+      "nameEn": "Bratislava Region",
+      "country": "SK"
+    },
+    "metadata": {
+      "source": "OpenSK API static geography dataset",
+      "lastUpdated": "2026-05-27",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_districts": {
+    "data": [
+      {
+        "code": "SK0101",
+        "name": "Bratislava I",
+        "regionCode": "SK010",
+        "country": "SK"
+      }
+    ],
+    "metadata": {
+      "source": "OpenSK API static geography dataset",
+      "lastUpdated": "2026-10-16",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_district": {
+    "data": {
+      "code": "SK0101",
+      "name": "Bratislava I",
+      "regionCode": "SK010",
+      "country": "SK"
+    },
+    "metadata": {
+      "source": "OpenSK API static geography dataset",
+      "lastUpdated": "2026-10-16",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_municipalities": {
+    "data": [
+      {
+        "code": "528595",
+        "name": "Bratislava - mestská časť Staré Mesto",
+        "regionCode": "SK010",
+        "districtCode": "SK0101",
+        "country": "SK"
+      }
+    ],
+    "metadata": {
+      "source": "OpenSK API static geography seed dataset",
+      "lastUpdated": "2026-10-16",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_municipality": {
+    "data": {
+      "code": "528595",
+      "name": "Bratislava - mestská časť Staré Mesto",
+      "regionCode": "SK010",
+      "districtCode": "SK0101",
+      "country": "SK"
+    },
+    "metadata": {
+      "source": "OpenSK API static geography seed dataset",
+      "lastUpdated": "2026-10-16",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_phone_areas": {
+    "data": {
+      "items": [
+        {
+          "code": "02",
+          "name": "BA",
+          "municipalityCode": "507814",
+          "municipalityName": "Bernolákovo",
+          "districtCode": "SK0108",
+          "regionCode": "SK010",
+          "country": "SK"
+        }
+      ],
+      "count": 1,
+      "total": 2922,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static phone area dataset",
+      "lastUpdated": "2026-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "search_phone_areas": {
+    "data": {
+      "items": [
+        {
+          "code": "02",
+          "name": "BA",
+          "municipalityCode": null,
+          "municipalityName": "Bratislava",
+          "districtCode": null,
+          "regionCode": null,
+          "country": "SK"
+        }
+      ],
+      "count": 1,
+      "total": 18,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static phone area dataset",
+      "lastUpdated": "2026-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_phone_area": {
+    "data": {
+      "code": "02",
+      "items": [
+        {
+          "code": "02",
+          "name": "BA",
+          "municipalityCode": "507814",
+          "municipalityName": "Bernolákovo",
+          "districtCode": "SK0108",
+          "regionCode": "SK010",
+          "country": "SK"
+        }
+      ],
+      "count": 49
+    },
+    "metadata": {
+      "source": "OpenSK API static phone area dataset",
+      "lastUpdated": "2026-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_vehicle_registration_codes": {
+    "data": {
+      "items": [
+        {
+          "code": "BA",
+          "districtName": "Bratislava",
+          "districtCode": null,
+          "regionCode": "SK010",
+          "validFrom": null,
+          "validTo": "2023-01-01",
+          "status": "legacy",
+          "notes": "Legacy district abbreviation; not reliable for current plate lookup."
+        }
+      ],
+      "count": 1,
+      "total": 93,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static legacy vehicle registration code dataset",
+      "lastUpdated": "2026-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "search_vehicle_registration_codes": {
+    "data": {
+      "items": [
+        {
+          "code": "TC",
+          "districtName": "Trenčín",
+          "districtCode": "SK0229",
+          "regionCode": "SK022",
+          "validFrom": null,
+          "validTo": "2023-01-01",
+          "status": "legacy",
+          "notes": "Legacy district abbreviation; not reliable for current plate lookup."
+        }
+      ],
+      "count": 1,
+      "total": 3,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static legacy vehicle registration code dataset",
+      "lastUpdated": "2026-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_vehicle_registration_code": {
+    "data": {
+      "code": "BA",
+      "districtName": "Bratislava",
+      "districtCode": null,
+      "regionCode": "SK010",
+      "validFrom": null,
+      "validTo": "2023-01-01",
+      "status": "legacy",
+      "notes": "Legacy district abbreviation; not reliable for current plate lookup."
+    },
+    "metadata": {
+      "source": "OpenSK API static legacy vehicle registration code dataset",
+      "lastUpdated": "2026-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_school_facility_counts": {
+    "data": {
+      "items": [
+        {
+          "schoolKindShort": "GYM",
+          "schoolTypeShort": "GYM",
+          "kindLevel1": "SŠ",
+          "kindLevel2": "GYM",
+          "regionName": "Bratislavský",
+          "regionCode": "SK010",
+          "districtName": "Bratislava I",
+          "districtCode": "SK0101",
+          "organizationalUnitCount": 2,
+          "founderOwnershipType": "cirkevná",
+          "founderType": "cirkev, náboženská spoločnosť",
+          "country": "SK"
+        }
+      ],
+      "count": 1,
+      "total": 1227,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static school facility aggregate count dataset",
+      "lastUpdated": "2025-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_school_facility_count_stats": {
+    "data": {
+      "recordCount": 1227,
+      "totalOrganizationalUnitCount": 7026,
+      "regionLinkedCount": 1227,
+      "districtLinkedCount": 1227,
+      "totalsByRegion": {
+        "SK010": 774,
+        "SK021": 697,
+        "SK022": 656,
+        "SK023": 867,
+        "SK031": 863,
+        "SK032": 877,
+        "SK041": 1234,
+        "SK042": 1058
+      },
+      "totalsByDistrict": {
+        "SK0101": 82,
+        "SK0102": 108,
+        "SK0103": 85,
+        "SK0104": 99,
+        "SK0105": 122,
+        "SK0106": 75,
+        "SK0107": 83,
+        "SK0108": 120,
+        "SK0211": 175,
+        "SK0212": 106,
+        "SK0213": 57,
+        "SK0214": 73,
+        "SK0215": 69,
+        "SK0216": 52,
+        "SK0217": 165,
+        "SK0221": 47,
+        "SK0222": 59,
+        "SK0223": 35,
+        "SK0224": 65,
+        "SK0225": 50,
+        "SK0226": 80,
+        "SK0227": 130,
+        "SK0228": 51,
+        "SK0229": 139,
+        "SK0231": 128,
+        "SK0232": 160,
+        "SK0233": 209,
+        "SK0234": 153,
+        "SK0235": 60,
+        "SK0236": 84,
+        "SK0237": 73,
+        "SK0311": 39,
+        "SK03110": 48,
+        "SK03111": 189,
+        "SK0312": 91,
+        "SK0313": 57,
+        "SK0314": 38,
+        "SK0315": 96,
+        "SK0316": 116,
+        "SK0317": 77,
+        "SK0318": 85,
+        "SK0319": 27,
+        "SK0321": 132,
+        "SK03210": 69,
+        "SK03211": 77,
+        "SK03212": 37,
+        "SK03213": 70,
+        "SK0322": 29,
+        "SK0323": 72,
+        "SK0324": 42,
+        "SK0325": 32,
+        "SK0326": 101,
+        "SK0327": 25,
+        "SK0328": 55,
+        "SK0329": 136,
+        "SK0411": 147,
+        "SK04110": 78,
+        "SK04111": 32,
+        "SK04112": 56,
+        "SK04113": 126,
+        "SK0412": 92,
+        "SK0413": 93,
+        "SK0414": 69,
+        "SK0415": 17,
+        "SK0416": 123,
+        "SK0417": 263,
+        "SK0418": 93,
+        "SK0419": 45,
+        "SK0421": 44,
+        "SK04210": 137,
+        "SK04211": 152,
+        "SK0422": 95,
+        "SK0423": 65,
+        "SK0424": 29,
+        "SK0425": 75,
+        "SK0426": 170,
+        "SK0427": 154,
+        "SK0428": 103,
+        "SK0429": 34
+      },
+      "totalsBySchoolKind": {
+        "GYM": 227,
+        "JŠ": 48,
+        "KON": 18,
+        "MŠ": 3221,
+        "SOŠ": 426,
+        "SŠŠ": 17,
+        "ZUŠ": 411,
+        "ZŠ": 2056,
+        "ŠUP": 28,
+        "ŠVVP": 574
+      },
+      "totalsBySchoolType": {
+        "GYM": 227,
+        "JŠ": 48,
+        "KON": 18,
+        "MŠ": 3221,
+        "OU": 60,
+        "PŠ": 88,
+        "SOŠ": 426,
+        "SŠŠ": 17,
+        "ZUŠ": 411,
+        "ZŠ": 2056,
+        "ŠGYM": 4,
+        "ŠMŠ": 123,
+        "ŠSOŠ": 16,
+        "ŠUP": 28,
+        "ŠZŠ": 283
+      },
+      "totalsByFounderType": {
+        "cirkev, náboženská spoločnosť": 349,
+        "iný orgán štátnej správy": 2,
+        "obec, mesto": 4871,
+        "regionálny úrad školskej správy": 518,
+        "samosprávny kraj": 497,
+        "súkromník": 786,
+        "zahraničný subjekt": 3
+      }
+    },
+    "metadata": {
+      "source": "OpenSK API static school facility aggregate count dataset",
+      "lastUpdated": "2025-09-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_procurement_notices": {
+    "data": {
+      "items": [
+        {
+          "id": "670654-2026",
+          "title": "Slovensko – Liečivá pre srdcovocievny systém – Liečivá pre srdcovocievny systém , Liečivá pre močovopohlavný systém a pohlavné hormóny",
+          "noticeType": "can-standard",
+          "publicationDate": "2026-09-29",
+          "dispatchDate": "2026-09-28",
+          "buyerNames": [
+            "Fakultná nemocnica s poliklinikou Žilina"
+          ],
+          "buyerCountry": "SK",
+          "placeOfPerformance": {
+            "city": "Žilina",
+            "postalCode": "01207",
+            "country": "SK"
+          },
+          "tenderDeadline": null,
+          "regionCode": null,
+          "districtCode": null,
+          "municipalityCode": null,
+          "sourceUrl": "https://ted.europa.eu/en/notice/670654-2026/xml"
+        }
+      ],
+      "count": 1,
+      "total": 100,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static TED_PARTIAL procurement notice snapshot",
+      "lastUpdated": "2026-09-29",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "search_procurement_notices": {
+    "data": {
+      "items": [
+        {
+          "id": "670248-2026",
+          "title": "Slovensko – Stavebné práce na kancelárskych budovách – Významná obnova a riešenie vodozádržných opatrení budovy MsÚ Bratislava-Ružinov",
+          "noticeType": "can-modif",
+          "publicationDate": "2026-09-29",
+          "dispatchDate": "2026-09-28",
+          "buyerNames": [
+            "Mestská časť Bratislava - Ružinov"
+          ],
+          "buyerCountry": "SK",
+          "placeOfPerformance": {
+            "city": "Bratislava - mestská časť Ružinov",
+            "postalCode": "82705",
+            "country": "SK"
+          },
+          "tenderDeadline": null,
+          "regionCode": null,
+          "districtCode": null,
+          "municipalityCode": null,
+          "sourceUrl": "https://ted.europa.eu/en/notice/670248-2026/xml"
+        }
+      ],
+      "count": 1,
+      "total": 11,
+      "limit": 1,
+      "offset": 0,
+      "query": "Bratislava"
+    },
+    "metadata": {
+      "source": "OpenSK API static TED_PARTIAL procurement notice snapshot",
+      "lastUpdated": "2026-09-29",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_procurement_notice_stats": {
+    "data": {
+      "recordCount": 100,
+      "coverage": "partial",
+      "coverageDecision": "TED_PARTIAL",
+      "acquisitionDecision": "PRODUCTION_IMPORT_APPROVED",
+      "totalNoticesAtSource": 74693,
+      "noticeTypes": {
+        "can-modif": 11,
+        "can-standard": 44,
+        "cn-desg": 1,
+        "cn-standard": 43,
+        "pin-rtl": 1
+      },
+      "publicationYears": {
+        "2026": 100
+      },
+      "deadlineCount": 0,
+      "regionLinkedCount": 0,
+      "districtLinkedCount": 0,
+      "municipalityLinkedCount": 0
+    },
+    "metadata": {
+      "source": "OpenSK API static TED_PARTIAL procurement notice snapshot",
+      "lastUpdated": "2026-09-29",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_procurement_notice": {
+    "data": {
+      "id": "670654-2026",
+      "title": "Slovensko – Liečivá pre srdcovocievny systém – Liečivá pre srdcovocievny systém , Liečivá pre močovopohlavný systém a pohlavné hormóny",
+      "noticeType": "can-standard",
+      "publicationDate": "2026-09-29",
+      "dispatchDate": "2026-09-28",
+      "buyerNames": [
+        "Fakultná nemocnica s poliklinikou Žilina"
+      ],
+      "buyerCountry": "SK",
+      "placeOfPerformance": {
+        "city": "Žilina",
+        "postalCode": "01207",
+        "country": "SK"
+      },
+      "tenderDeadline": null,
+      "regionCode": null,
+      "districtCode": null,
+      "municipalityCode": null,
+      "sourceUrl": "https://ted.europa.eu/en/notice/670654-2026/xml"
+    },
+    "metadata": {
+      "source": "OpenSK API static TED_PARTIAL procurement notice snapshot",
+      "lastUpdated": "2026-09-29",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_sources": {
+    "data": [
+      {
+        "id": "vehicleRegistrationCodes",
+        "name": "Vehicle registration district codes",
+        "status": "historical",
+        "coverage": "complete",
+        "source": {
+          "name": "Slov-Lex static text of Vyhláška Ministerstva vnútra SR č. 9/2009 Z. z., § 36 ods. 2",
+          "url": "https://static.slov-lex.sk/static/SK/ZZ/2009/9/20191201.html"
+        },
+        "licence": {
+          "status": "pending",
+          "name": null,
+          "termsUrl": null
+        },
+        "attribution": "Attribute Slov-Lex and Vyhláška Ministerstva vnútra SR č. 9/2009 Z. z. if reuse is approved; exact required wording is pending.",
+        "lastUpdated": "2026-09-15",
+        "lastChecked": "2026-09-15",
+        "updateCadence": "static (historical)",
+        "limitations": [
+          "Historical legacy district codes only; not a current plate lookup.",
+          "Does not decode full plates or identify vehicles or owners."
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "OpenSK API curated source catalogue",
+      "lastUpdated": "2026-10-16",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_source": {
+    "data": {
+      "id": "psc",
+      "name": "Postal codes (PSC)",
+      "status": "production",
+      "coverage": "partial",
+      "source": {
+        "name": "PortalVS classifier 42 (PSČ obcí SR a ČR)",
+        "url": "https://ciselniky.portalvs.sk/classifier/show/42/"
+      },
+      "licence": {
+        "status": "pending",
+        "name": null,
+        "termsUrl": null
+      },
+      "attribution": "Attribute PortalVS classifier 42 (PSČ obcí SR a ČR) if reuse is approved; exact required wording is pending.",
+      "lastUpdated": "2026-06-02",
+      "lastChecked": "2026-09-07",
+      "updateCadence": "unknown",
+      "limitations": [
+        "Not national coverage.",
+        "PortalVS redistribution terms are unresolved."
+      ]
+    },
+    "metadata": {
+      "source": "OpenSK API curated source catalogue",
+      "lastUpdated": "2026-10-16",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "check_business_day": {
+    "data": {
+      "date": "2026-10-08",
+      "weekday": 3,
+      "isWeekend": false,
+      "isHoliday": false,
+      "holidayName": null,
+      "isBusinessDay": true,
+      "supportedYears": [
+        2024,
+        2025,
+        2026
+      ]
+    },
+    "metadata": {
+      "source": "OpenSK API static holidays dataset",
+      "lastUpdated": "2026-05-25",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "add_business_days": {
+    "data": {
+      "date": "2026-10-08",
+      "days": 1,
+      "result": "2026-10-09",
+      "resultIsBusinessDay": true,
+      "supportedYears": [
+        2024,
+        2025,
+        2026
+      ]
+    },
+    "metadata": {
+      "source": "OpenSK API static holidays dataset",
+      "lastUpdated": "2026-05-25",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "count_business_days": {
+    "data": {
+      "from": "2026-10-08",
+      "to": "2026-10-09",
+      "totalDays": 2,
+      "weekendDays": 0,
+      "holidayDays": 0,
+      "holidays": [],
+      "businessDays": 2,
+      "supportedYears": [
+        2024,
+        2025,
+        2026
+      ]
+    },
+    "metadata": {
+      "source": "OpenSK API static holidays dataset",
+      "lastUpdated": "2026-05-25",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_exchange_rates_latest": {
+    "data": {
+      "date": "2026-10-12",
+      "base": "EUR",
+      "directionSemantics": "1 EUR = rate units of the foreign currency",
+      "rates": {
+        "USD": "1.1181"
+      },
+      "notice": "ECB reference rates are published for information purposes only; using them for transaction purposes is strongly discouraged by the ECB."
+    },
+    "metadata": {
+      "source": "European Central Bank — euro foreign exchange reference rates (materialized by OpenSK API)",
+      "lastUpdated": "2026-10-12",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_exchange_rates_by_date": {
+    "data": {
+      "date": "1999-01-04",
+      "base": "EUR",
+      "directionSemantics": "1 EUR = rate units of the foreign currency",
+      "rates": {
+        "USD": "1.1789"
+      },
+      "notice": "ECB reference rates are published for information purposes only; using them for transaction purposes is strongly discouraged by the ECB."
+    },
+    "metadata": {
+      "source": "European Central Bank — euro foreign exchange reference rates (materialized by OpenSK API)",
+      "lastUpdated": "2026-10-12",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_eu_funds_projects": {
+    "data": {
+      "items": [
+        {
+          "projectCode": "401000B287",
+          "sourceId": 22483,
+          "status": {
+            "label": "Zmluva uzavretá",
+            "inImplementation": true,
+            "completed": false
+          },
+          "programme": {
+            "code": "401000",
+            "nameSk": "Program Slovensko - SK - EFRR/KF/FST/ESF+",
+            "shortName": "PSK",
+            "cci": "2021SK16FFPR001"
+          },
+          "call": {
+            "code": "PSK-MIRRI-619-2024-ITI-EFRR",
+            "nameSk": "Podpora rozvoja tvorby, spracovania, využívania a prepájania dát v rámci verejnej správy pre inteligentné rozhodovanie, plánovanie a správu"
+          },
+          "beneficiary": {
+            "name": "Mesto Šaľa",
+            "ico": "00306185",
+            "legalForm": {
+              "code": "1009801",
+              "nameSk": "Obec (obecný úrad), mesto (mestský úrad)"
+            }
+          },
+          "implementationRegions": [
+            {
+              "nuts": "SK023",
+              "nameSk": "Nitriansky kraj"
+            }
+          ],
+          "financials": {
+            "contractedTotal": "254832.49"
+          },
+          "sourceUpdatedAt": "2026-07-22T12:12:53.327Z",
+          "sourceUrl": "https://api.itms21.sk/public/v1/projekt/id/22483"
+        }
+      ],
+      "count": 1,
+      "total": 4561,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "MIRRI SR / ITMS21+ OpenData API — transformed and privacy-minimized by OpenSK API",
+      "lastUpdated": "2026-10-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "get_eu_funds_project": {
+    "data": {
+      "projectCode": "401000B287",
+      "sourceId": 22483,
+      "status": {
+        "label": "Zmluva uzavretá",
+        "inImplementation": true,
+        "completed": false
+      },
+      "programme": {
+        "code": "401000",
+        "nameSk": "Program Slovensko - SK - EFRR/KF/FST/ESF+",
+        "shortName": "PSK",
+        "cci": "2021SK16FFPR001"
+      },
+      "call": {
+        "code": "PSK-MIRRI-619-2024-ITI-EFRR",
+        "nameSk": "Podpora rozvoja tvorby, spracovania, využívania a prepájania dát v rámci verejnej správy pre inteligentné rozhodovanie, plánovanie a správu"
+      },
+      "beneficiary": {
+        "name": "Mesto Šaľa",
+        "ico": "00306185",
+        "legalForm": {
+          "code": "1009801",
+          "nameSk": "Obec (obecný úrad), mesto (mestský úrad)"
+        }
+      },
+      "implementationRegions": [
+        {
+          "nuts": "SK023",
+          "nameSk": "Nitriansky kraj"
+        }
+      ],
+      "financials": {
+        "contractedTotal": "254832.49"
+      },
+      "sourceUpdatedAt": "2026-07-22T12:12:53.327Z",
+      "sourceUrl": "https://api.itms21.sk/public/v1/projekt/id/22483"
+    },
+    "metadata": {
+      "source": "MIRRI SR / ITMS21+ OpenData API — transformed and privacy-minimized by OpenSK API",
+      "lastUpdated": "2026-10-15",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "__errors__": {
+    "get_bank": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Bank code must be 4 digits",
+          "messageSk": "Bankový kód musí byť 4-ciferný"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No bank data available for 0000",
+          "messageSk": "Pre bankový kód 0000 nie sú dostupné údaje"
+        }
+      }
+    },
+    "get_holidays": {
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No holiday data available for year 1900",
+          "messageSk": "Nie sú dostupné sviatky pre rok 1900"
+        }
+      },
+      "422": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Request validation failed",
+          "messageSk": "Validácia požiadavky zlyhala"
+        }
+      }
+    },
+    "list_psc": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "limit must be a non-negative integer up to 500",
+          "messageSk": "Parameter limit musí byť nezáporné celé číslo do 500"
+        }
+      }
+    },
+    "search_psc": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "q is required",
+          "messageSk": "Parameter q je povinný"
+        }
+      }
+    },
+    "get_psc": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "PSC must be a 5-digit Slovak postal code",
+          "messageSk": "PSČ musí byť 5-ciferné slovenské poštové číslo"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No PSC data available for 99999",
+          "messageSk": "Pre PSČ 99999 nie sú dostupné údaje"
+        }
+      }
+    },
+    "get_company": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "IČO must be 8 digits",
+          "messageSk": "IČO musí byť 8-ciferné"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No company data available for 00000000",
+          "messageSk": "Pre IČO 00000000 nie sú dostupné údaje"
+        }
+      }
+    },
+    "get_company_by_ico": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "IČO must be 8 digits",
+          "messageSk": "IČO musí byť 8-ciferné"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No company data available for 00000000",
+          "messageSk": "Pre IČO 00000000 nie sú dostupné údaje"
+        }
+      }
+    },
+    "get_region": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Region code must match the SK### format",
+          "messageSk": "Kód kraja musí mať formát SK###"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No region data available for SK999",
+          "messageSk": "Pre kód kraja SK999 nie sú dostupné údaje"
+        }
+      }
+    },
+    "list_districts": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Region filter must match the SK### format",
+          "messageSk": "Filter regionCode musí mať formát SK###"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No district data available for region SK999",
+          "messageSk": "Pre kraj SK999 nie sú dostupné údaje o okresoch"
+        }
+      }
+    },
+    "get_district": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "District code must match the SK#### format",
+          "messageSk": "Kód okresu musí mať formát SK####"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No district data available for SK9999",
+          "messageSk": "Pre kód okresu SK9999 nie sú dostupné údaje"
+        }
+      }
+    },
+    "list_municipalities": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Region and district filters must use valid Slovak geography codes",
+          "messageSk": "Filtre regionCode a districtCode musia byť platné slovenské geografické kódy"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No municipality data available for district SK9999",
+          "messageSk": "Pre okres SK9999 nie sú dostupné údaje o obciach"
+        }
+      }
+    },
+    "get_municipality": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Municipality code must be 6 digits",
+          "messageSk": "Kód obce musí byť 6-ciferný"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No municipality data available for 999999",
+          "messageSk": "Pre obec 999999 nie sú dostupné údaje"
+        }
+      }
+    },
+    "list_phone_areas": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "limit must be a non-negative integer up to 500",
+          "messageSk": "Parameter limit musí byť nezáporné celé číslo do 500"
+        }
+      }
+    },
+    "search_phone_areas": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "q is required",
+          "messageSk": "Parameter q je povinný"
+        }
+      }
+    },
+    "get_phone_area": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "code must match 0# or 0## format",
+          "messageSk": "Kód primárnej oblasti musí mať formát 0# alebo 0##"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No phone area data available for 099",
+          "messageSk": "Pre telefónnu primárnu oblasť 099 nie sú dostupné údaje"
+        }
+      }
+    },
+    "list_vehicle_registration_codes": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "limit must be a non-negative integer up to 500",
+          "messageSk": "Parameter limit musí byť nezáporné celé číslo do 500"
+        }
+      }
+    },
+    "search_vehicle_registration_codes": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "q is required",
+          "messageSk": "Parameter q je povinný"
+        }
+      }
+    },
+    "get_vehicle_registration_code": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "code must be two letters",
+          "messageSk": "Kód musí obsahovať dve písmená"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No legacy vehicle registration code data available for ZZ",
+          "messageSk": "Pre historický evidenčný kód ZZ nie sú dostupné údaje"
+        }
+      }
+    },
+    "list_school_facility_counts": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "limit must be a non-negative integer up to 500",
+          "messageSk": "Parameter limit musí byť nezáporné celé číslo do 500"
+        }
+      }
+    },
+    "list_procurement_notices": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "limit must be a non-negative integer up to 500",
+          "messageSk": "Parameter limit musí byť nezáporné celé číslo do 500"
+        }
+      },
+      "422": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Request validation failed",
+          "messageSk": "Validácia požiadavky zlyhala"
+        }
+      }
+    },
+    "search_procurement_notices": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "q must be a non-empty search string",
+          "messageSk": "Parameter q nesmie byť prázdny"
+        }
+      },
+      "422": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Request validation failed",
+          "messageSk": "Validácia požiadavky zlyhala"
+        }
+      }
+    },
+    "get_procurement_notice": {
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Procurement notice not found in the local TED_PARTIAL snapshot",
+          "messageSk": "Oznámenie verejného obstarávania sa nenašlo v lokálnej TED_PARTIAL databáze"
+        }
+      }
+    },
+    "list_sources": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "status must be one of ['blocked', 'historical', 'production', 'research', 'seed']",
+          "messageSk": "Parameter status musí byť jeden z ['blocked', 'historical', 'production', 'research', 'seed']"
+        }
+      }
+    },
+    "get_source": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "source id must start with a letter and contain only letters and digits",
+          "messageSk": "Identifikátor zdroja musí začínať písmenom a obsahovať len písmená a číslice"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "No source catalogue entry available for absent",
+          "messageSk": "Pre zdroj absent nie sú dostupné údaje"
+        }
+      }
+    },
+    "check_business_day": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "date is required",
+          "messageSk": "Parameter date je povinný"
+        }
+      }
+    },
+    "add_business_days": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "days must be an integer",
+          "messageSk": "Parameter days musí byť celé číslo"
+        }
+      }
+    },
+    "count_business_days": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "from must be an ISO date (YYYY-MM-DD)",
+          "messageSk": "Parametre from a to musia byť platné ISO dátumy a from nesmie byť po to"
+        }
+      }
+    },
+    "get_exchange_rates_latest": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "UNSUPPORTED_CURRENCY",
+          "message": "EUR is the fixed base currency and is never quoted against itself (every rate already means 1 EUR = rate units of the foreign currency)",
+          "messageSk": "EUR je pevná základná mena a nikdy nie je kotované samo proti sebe"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "RATE_NOT_AVAILABLE",
+          "message": "Currency SKK exists in the snapshot's history but has no ECB reference rate on 2026-10-12.",
+          "messageSk": "Mena SKK nemá pre dátum 2026-10-12 referenčný kurz ECB"
+        }
+      }
+    },
+    "get_exchange_rates_by_date": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "date must be an ISO YYYY-MM-DD calendar date, got: 'bad'",
+          "messageSk": "Dátum musí byť kalendárny dátum vo formáte RRRR-MM-DD, zadané: 'bad'"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "RATE_DATE_NOT_FOUND",
+          "message": "No ECB reference-rate publication exists for the exact date 2026-10-10. ECB publishes on TARGET working days only; OpenSK returns no fallback or nearest date.",
+          "messageSk": "Pre presný dátum 2026-10-10 neexistuje publikácia referenčných kurzov ECB"
+        }
+      }
+    },
+    "list_eu_funds_projects": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Invalid limit",
+          "messageSk": "Neplatný parameter limit"
+        }
+      }
+    },
+    "get_eu_funds_project": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Invalid projectCode",
+          "messageSk": "Neplatný parameter projectCode"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Project not found",
+          "messageSk": "Projekt sa nenašiel"
+        }
+      }
+    }
+  },
+  "__psc_geography__": {
+    "data": {
+      "psc": "01001",
+      "city": "Žilina 1",
+      "deliveryPost": "Žilina 1",
+      "municipality": "Mojš",
+      "municipalityCode": "517801",
+      "district": null,
+      "districtCode": "SK03111",
+      "region": "Žilinský kraj",
+      "regionCode": "SK031",
+      "country": "Slovakia",
+      "validFrom": "2010-01-01",
+      "validTo": null,
+      "geography": {
+        "region": {
+          "code": "SK031",
+          "name": "Žilinský kraj",
+          "nameEn": "Žilina Region",
+          "country": "SK"
+        },
+        "district": {
+          "code": "SK03111",
+          "name": "Žilina",
+          "regionCode": "SK031",
+          "country": "SK"
+        },
+        "municipality": {
+          "code": "517801",
+          "name": "Mojš",
+          "regionCode": "SK031",
+          "districtCode": "SK03111",
+          "country": "SK"
+        }
+      },
+      "matchCount": 2,
+      "matches": [
+        {
+          "psc": "01001",
+          "city": "Žilina 1",
+          "deliveryPost": "Žilina 1",
+          "municipality": "Mojš",
+          "municipalityCode": "517801",
+          "district": null,
+          "districtCode": "SK03111",
+          "region": "Žilinský kraj",
+          "regionCode": "SK031",
+          "country": "Slovakia",
+          "validFrom": "2010-01-01",
+          "validTo": null,
+          "geography": {
+            "region": {
+              "code": "SK031",
+              "name": "Žilinský kraj",
+              "nameEn": "Žilina Region",
+              "country": "SK"
+            },
+            "district": {
+              "code": "SK03111",
+              "name": "Žilina",
+              "regionCode": "SK031",
+              "country": "SK"
+            },
+            "municipality": {
+              "code": "517801",
+              "name": "Mojš",
+              "regionCode": "SK031",
+              "districtCode": "SK03111",
+              "country": "SK"
+            }
+          }
+        },
+        {
+          "psc": "01001",
+          "city": "Žilina 1",
+          "deliveryPost": "Žilina 1",
+          "municipality": "Žilina",
+          "municipalityCode": "517402",
+          "district": null,
+          "districtCode": "SK03111",
+          "region": "Žilinský kraj",
+          "regionCode": "SK031",
+          "country": "Slovakia",
+          "validFrom": "2010-01-01",
+          "validTo": null,
+          "geography": {
+            "region": {
+              "code": "SK031",
+              "name": "Žilinský kraj",
+              "nameEn": "Žilina Region",
+              "country": "SK"
+            },
+            "district": {
+              "code": "SK03111",
+              "name": "Žilina",
+              "regionCode": "SK031",
+              "country": "SK"
+            },
+            "municipality": {
+              "code": "517402",
+              "name": "Žilina",
+              "regionCode": "SK031",
+              "districtCode": "SK03111",
+              "country": "SK"
+            }
+          }
+        }
+      ]
+    },
+    "metadata": {
+      "source": "OpenSK API static PSC dataset + static geography seed datasets",
+      "lastUpdated": "2026-06-02",
+      "version": "v1"
+    },
+    "error": null
+  }
+}
