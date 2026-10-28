@@ -156,10 +156,10 @@ def document_parameters(schema):
                     info = ("Exact calendar/publication date YYYY-MM-DD; no nearest-date fallback. Malformed date returns 400.", "1999-01-04")
                     extra = {"format": "date"}
                 else:
-                    info = ("Required ISO calendar date (prefer YYYY-MM-DD; Python ISO basic/week-date forms also accepted). Verified years 2024–2026 only. Interval endpoints inclusive, from <= to, at most 366 days apart.", "2026-10-08" if name != "to" else "2026-10-09")
+                    info = ("Required ISO calendar date (prefer YYYY-MM-DD; Python ISO basic/week-date forms also accepted). Verified years 2024–2030 only. Interval endpoints inclusive, from <= to, at most 366 days apart.", "2026-10-08" if name != "to" else "2026-10-09")
                     parameter["required"] = True
             elif name == "year" and "/holidays" in path:
-                info = ("Calendar year; verified local coverage 2024–2026 only. Other integers return 404; malformed values retain 422.", 2026)
+                info = ("Calendar year; verified statutory holiday coverage 2024–2030 only. Other integers return 404; malformed values retain 422.", 2026)
             elif name == "q":
                 if "/sources" in path:
                     info = ("Optional nonempty name/source/ID substring; case-insensitive, accents are not stripped.", "psc")

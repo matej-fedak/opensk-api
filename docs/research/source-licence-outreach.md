@@ -2,16 +2,16 @@
 
 These are prepared outreach packages for the human maintainer to send. Do not send emails automatically. This document pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and a ready-to-send Slovak message where a message is still required.
 
-**Dispatch/reply status, updated 2026-10-14:** the human maintainer sent all four packages manually on **2026-10-11**. NBS's bank-directory reply was received **2026-10-14** and resolves bank reuse under its Terms of Use. Current states:
+**Dispatch/reply status, updated 2026-10-28:** the human maintainer sent all four packages manually on **2026-10-11**. NBS's bank-directory reply was received **2026-10-14** and resolves bank reuse under its Terms of Use. The maintainer sent manual follow-ups on the three unanswered packages on **2026-10-28**; no reply has been received since. Current states:
 
 | Package | State |
 | --- | --- |
-| PortalVS (§1) | `SENT_AWAITING_REPLY` |
+| PortalVS (§1) | `FOLLOW_UP_SENT_AWAITING_REPLY` (2026-10-28) |
 | NBS banks (§2) | `REPLY_RECEIVED_RESOLVED` |
-| Telecom regulator (§4) | `SENT_AWAITING_REPLY` |
-| ŠÚ SR elections (§7) | `SENT_AWAITING_REPLY` |
+| Telecom regulator (§4) | `FOLLOW_UP_SENT_AWAITING_REPLY` (2026-10-28) |
+| ŠÚ SR elections (§7) | `FOLLOW_UP_SENT_AWAITING_REPLY` (2026-10-28) |
 
-No permission is inferred for the three unanswered items. No Message-ID, mail headers, delivery confirmation or exact sent/received body is independently archived in this repository. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. The NBS substantive clarification is recorded below and in `nbs-bank-reuse-clarification.md`, without unnecessary email metadata.
+No permission is inferred for the three unanswered items; a sent follow-up is not an approval either. No Message-ID, mail headers, delivery confirmation or exact sent/received body is independently archived in this repository. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. The NBS substantive clarification is recorded below and in `nbs-bank-reuse-clarification.md`, without unnecessary email metadata.
 
 Related documents:
 
@@ -19,9 +19,9 @@ Related documents:
 - `docs/research/source-verification-evidence.md` holds retained source evidence.
 - `docs/source-compliance.md` holds the per-dataset compliance matrix.
 
-## 1. PortalVS Classifiers 9, 10, and 42 — SENT_AWAITING_REPLY (highest priority)
+## 1. PortalVS Classifiers 9, 10, and 42 — FOLLOW_UP_SENT_AWAITING_REPLY (highest priority)
 
-State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`). No reply received as of 2026-10-11; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
+State: `FOLLOW_UP_SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `helpdesk@portalvs.sk`, CC `portalvs@portalvs.sk`) and a follow-up was sent manually on 2026-10-28. No reply received as of 2026-10-28; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
 
 Datasets affected: districts, municipalities, PSC. These three datasets are `INCLUDE_AFTER_COMPLIANCE_FIX` for the candidate 1.0 scope, so this outreach is the single highest-value compliance action in the project.
 
@@ -178,9 +178,9 @@ Required action even without an email:
 
 The 2026-10-14 bank-directory reply (section 2) does not expressly cover curated holidays. Keep the holidays evidence/interpretation work separate.
 
-## 4. Telecom Regulator Phone-Area Workbook — SENT_AWAITING_REPLY
+## 4. Telecom Regulator Phone-Area Workbook — FOLLOW_UP_SENT_AWAITING_REPLY
 
-State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`). No reply received as of 2026-10-11; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
+State: `FOLLOW_UP_SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `marian.jurkovic@teleoff.gov.sk`, CC `legal@teleoff.gov.sk`) and a follow-up was sent manually on 2026-10-28. No reply received as of 2026-10-28; no permission is inferred from sending. The draft below is the prepared text, not a retained copy of the sent message.
 
 Dataset affected: phone areas (complete imported; candidate 1.0 Yellow; 3 unmatched source municipality rows remain).
 
@@ -261,7 +261,7 @@ These are recorded so the compliance matrix can move from "terms page identified
 ## Dispatch Checklist
 
 1. ~~Send section 1 (PortalVS) first~~ — done 2026-10-11 (`SENT_AWAITING_REPLY`); the reply still blocks the Red compliance rows and the candidate 1.0 inclusion of districts, municipalities, and PSC.
-2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11. NBS banks are `REPLY_RECEIVED_RESOLVED` on 2026-10-14; telecom and ŠÚ SR elections remain `SENT_AWAITING_REPLY`.
+2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11. NBS banks are `REPLY_RECEIVED_RESOLVED` on 2026-10-14; telecom and ŠÚ SR elections received manual follow-ups on 2026-10-28 and remain `FOLLOW_UP_SENT_AWAITING_REPLY`.
 3. After each reply, update `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` in the same commit so they stay aligned.
 4. Retain the exact sent message text and received replies under `docs/research/` (redact personal email addresses before committing, if desired). The exact sent bodies are currently retained privately by the maintainer, not in this repository.
 5. If no reply arrives within a reasonable interval, record a follow-up date in `docs/verification-backlog.md` rather than letting the item go stale.
@@ -275,7 +275,7 @@ These are recorded so the compliance matrix can move from "terms page identified
 
 ## 7. NRSR2023 Elections — COVERAGE AND ACQUISITION CLARIFICATION REQUIRED
 
-State: `SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `info@statistics.sk`, CC `volby@statistics.sk`). No reply received as of 2026-10-11; no permission is inferred from sending, and a sent request is not an approval. The draft below is the prepared text, not a retained copy of the sent message.
+State: `FOLLOW_UP_SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `info@statistics.sk`, CC `volby@statistics.sk`) and a follow-up was sent manually on 2026-10-28. No reply received as of 2026-10-28; no permission is inferred from sending, and a sent request is not an approval. The draft below is the prepared text, not a retained copy of the sent message.
 
 Verified **2026-10-11**: `https://volby.statistics.sk/nrsr/nrsr2023/sk/kontakty.html` lists `info@statistics.sk` as Informačný servis and `volby@statistics.sk` as Obsahový správca a technický prevádzkovateľ. These are verified public contacts, not an inferred licensing-officer address.
 

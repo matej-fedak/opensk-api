@@ -5,7 +5,8 @@ from pydantic import BaseModel, ConfigDict, Field
 
 API_SOURCE = "OpenSK API"
 BANKS_LAST_UPDATED = "2026-10-08"
-HOLIDAYS_LAST_UPDATED = "2026-05-25"
+# Authoritative calendar-law/source verification date, not future occurrence or NBS publication date.
+HOLIDAYS_LAST_UPDATED = "2026-10-28"
 PSC_LAST_UPDATED = "2026-06-02"
 PHONE_AREAS_LAST_UPDATED = "2026-09-15"
 VEHICLE_REGISTRATION_CODES_LAST_UPDATED = "2026-09-15"

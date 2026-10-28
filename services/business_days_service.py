@@ -1,7 +1,7 @@
 """Slovak business-day checks and arithmetic over the local holiday dataset.
 
-Business day definition for this milestone: a day that is Monday-Friday and is
-not a holiday present in the checked-in `data/holidays.json` dataset. This is
+Business day: Monday-Friday and NOT isDayOfRest in the checked-in
+`data/holidays.json`. Working statutory holidays remain business days. This is
 not a bank settlement calendar, a company-specific working calendar, or any
 authority-specific schedule. Supported years are derived from the dataset keys
 so new holiday years become supported without code changes.
@@ -11,6 +11,7 @@ import json
 from datetime import date, timedelta
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -31,7 +32,7 @@ class BusinessDayUnsupportedYearError(ValueError):
 
 
 @lru_cache(maxsize=1)
-def load_holidays_data() -> dict[str, list[dict[str, str]]]:
+def load_holidays_data() -> dict[str, list[dict[str, Any]]]:
     with HOLIDAYS_FILE.open("r", encoding="utf-8") as file:
         return json.load(file)
 
@@ -58,6 +59,13 @@ def holiday_names() -> dict[date, str]:
     return names
 
 
+@lru_cache(maxsize=1)
+def day_of_rest_dates() -> frozenset[date]:
+    return frozenset(date.fromisoformat(entry["date"])
+                     for entries in load_holidays_data().values() for entry in entries
+                     if entry["isDayOfRest"] is True)
+
+
 def parse_iso_date(value: str, field_name: str) -> date:
     try:
         return date.fromisoformat(value)
@@ -75,7 +83,7 @@ def is_business_day(day: date) -> bool:
     require_supported(day)
     if day.weekday() >= 5:
         return False
-    return day not in holiday_dates()
+    return day not in day_of_rest_dates()
 
 
 def add_business_days(day: date, days: int) -> date:
@@ -114,7 +122,7 @@ def business_days_between(start: date, end: date) -> dict[str, object]:
     while current <= end:
         if current.weekday() >= 5:
             weekends += 1
-        elif current in holiday_dates():
+        elif current in day_of_rest_dates():
             holiday_hits.append({"date": current.isoformat(), "name": names.get(current, "")})
         else:
             business += 1

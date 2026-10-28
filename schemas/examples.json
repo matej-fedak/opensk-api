@@ -2,7 +2,7 @@
   "get_root": {
     "data": {
       "name": "OpenSK API",
-      "version": "0.23.12",
+      "version": "0.23.13",
       "apiVersion": "v1",
       "apiNamespace": "/v1",
       "docs_url": "/docs"
@@ -17,7 +17,7 @@
   "get_health": {
     "data": {
       "status": "ok",
-      "timestamp": "2026-10-28T20:13:16.322454+00:00"
+      "timestamp": "2026-10-28T22:34:23.279881+00:00"
     },
     "metadata": {
       "source": "OpenSK API",
@@ -117,12 +117,14 @@
       {
         "date": "2026-01-01",
         "name": "Deň vzniku Slovenskej republiky",
-        "name_en": "Day of the Establishment of the Slovak Republic"
+        "name_en": "Day of the Establishment of the Slovak Republic",
+        "isStateHoliday": true,
+        "isDayOfRest": true
       }
     ],
     "metadata": {
       "source": "OpenSK API static holidays dataset",
-      "lastUpdated": "2026-05-25",
+      "lastUpdated": "2026-10-28",
       "version": "v1"
     },
     "error": null
@@ -948,17 +950,22 @@
       "weekday": 3,
       "isWeekend": false,
       "isHoliday": false,
+      "isDayOfRest": false,
       "holidayName": null,
       "isBusinessDay": true,
       "supportedYears": [
         2024,
         2025,
-        2026
+        2026,
+        2027,
+        2028,
+        2029,
+        2030
       ]
     },
     "metadata": {
       "source": "OpenSK API static holidays dataset",
-      "lastUpdated": "2026-05-25",
+      "lastUpdated": "2026-10-28",
       "version": "v1"
     },
     "error": null
@@ -972,12 +979,16 @@
       "supportedYears": [
         2024,
         2025,
-        2026
+        2026,
+        2027,
+        2028,
+        2029,
+        2030
       ]
     },
     "metadata": {
       "source": "OpenSK API static holidays dataset",
-      "lastUpdated": "2026-05-25",
+      "lastUpdated": "2026-10-28",
       "version": "v1"
     },
     "error": null
@@ -994,12 +1005,16 @@
       "supportedYears": [
         2024,
         2025,
-        2026
+        2026,
+        2027,
+        2028,
+        2029,
+        2030
       ]
     },
     "metadata": {
       "source": "OpenSK API static holidays dataset",
-      "lastUpdated": "2026-05-25",
+      "lastUpdated": "2026-10-28",
       "version": "v1"
     },
     "error": null
