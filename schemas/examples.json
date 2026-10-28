@@ -17,7 +17,7 @@
   "get_health": {
     "data": {
       "status": "ok",
-      "timestamp": "2026-10-28T20:09:04.371198+00:00"
+      "timestamp": "2026-10-28T20:13:16.322454+00:00"
     },
     "metadata": {
       "source": "OpenSK API",
@@ -86,14 +86,14 @@
   },
   "validate_iban": {
     "data": {
-      "inputIban": "SK3109000000000000000001",
-      "normalizedIban": "SK3109000000000000000001",
+      "inputIban": "SK5409000000000000000001",
+      "normalizedIban": "SK5409000000000000000001",
       "countryCode": "SK",
       "supportedCountry": true,
-      "checksumValid": false,
+      "checksumValid": true,
       "bankCode": "0900",
       "bankName": "Slovenská sporiteľňa, a.s.",
-      "valid": false
+      "valid": true
     },
     "metadata": {
       "source": "OpenSK API / ISO 13616 IBAN checksum validation; Slovak bank-code resolution from Národná banka Slovenska converter",

@@ -57,7 +57,7 @@ Application-level errors should use this envelope:
 }
 ```
 
-Malformed route or query values return 400. Unknown but valid resource identifiers return 404. Dataset-unavailable responses should use 503 only when a required local dataset cannot be loaded. Dates outside verified holiday coverage on business-day routes return 400 with code `UNSUPPORTED_YEAR`.
+Manually validated malformed route/query values return 400. Existing framework integer validation (holiday year path and procurement year query) retains 422, wrapped in this same envelope rather than FastAPI's default `detail` object. Unknown but valid resource identifiers return 404 (absence from the local snapshot, not legal invalidity). Dataset-unavailable 503 is implemented only by company/IČO routes. Dates outside verified holiday coverage on business-day routes return 400 with code `UNSUPPORTED_YEAR`.
 
 ## HTTP Caching Semantics
 
@@ -67,9 +67,9 @@ GET routes are conditionally cacheable: strong body-hash `ETag`, semantic per-da
 
 Filterable collection endpoints use `limit` and `offset` where pagination is implemented.
 
-- List defaults are currently `limit=100`, `offset=0`.
+- List defaults are `limit=100`, `offset=0` for PSC, phone areas, vehicle codes, school counts and procurement; ITMS21+ projects use `limit=50`, `offset=0`.
 - Search defaults are currently `limit=50`, `offset=0`.
-- Current maximums are `500` for list-style endpoints and `200` for search-style endpoints.
+- Maximums are `500` for those list-style endpoints and `200` for searches; ITMS21+ lists allow `1–200`. Other paginated endpoints allow zero. Non-ITMS offsets are `0–1000000000`; ITMS offsets are `0–2147483647`.
 - Paginated responses use `{ "items": [], "count": 0, "total": 0, "limit": 100, "offset": 0 }`.
 
 Older small geography/bank/holiday endpoints return arrays directly and are candidates to preserve for compatibility unless changed before `1.0.0`.
@@ -101,5 +101,7 @@ Routes whose source-compliance inclusion is unresolved before final `1.0.0` must
 Partial, seed-backed, historical/reference, and aggregate-only datasets may be stable API contracts if coverage and limitations are explicit. A stable endpoint does not imply exhaustive official coverage.
 
 ## Backwards Compatibility Expectations
+
+0.23.12 corrects `/v1/psc/{psc}` for grouped PSC records: `matchCount` now counts logical flat matches and `matches` contains those flat records, consistent with list/search behavior. Primary fields come from the existing deterministic match ordering over normalized records. Optional geography resolves each match and the same primary. The underlying dataset, source provenance and coverage are unchanged. This is a pre-1.0 correctness fix, **not a data/source migration**; no successor PSC semantics are introduced. PSC remains a partial historical local lookup, not address validation or municipality-wide validity. Full [OpenAPI/compatibility audit](research/openapi-contract-audit.md).
 
 After `1.0.0`, compatible changes include additive response fields, new optional query parameters, and new endpoints. Breaking response-shape changes, route removals, renamed fields, or changed error semantics should require a future `/v2` or a documented deprecation process.

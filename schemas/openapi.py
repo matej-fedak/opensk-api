@@ -33,14 +33,21 @@ def contract(operation_id, model, *statuses, exclude_unset=True):
         "snapshot": {"summary": "Local snapshot example (long arrays shortened)", "value": EXAMPLES[operation_id]}
     }}}}}
     error_info = {
-        400: ("Invalid input or unsupported value; application validation (not FastAPI 422).", "INVALID_FORMAT"),
-        404: ("Record/date absent from the local snapshot; not a universal validity decision.", "NOT_FOUND"),
-        422: ("Framework integer/path validation, wrapped in the standard OpenSK envelope.", "VALIDATION_ERROR"),
-        429: ("RATE_LIMITED: 100 requests / 60 seconds / client IP when enabled; per-process limit. Health is exempt.", "RATE_LIMITED"),
-        503: ("Local company dataset unavailable (DATASET_UNAVAILABLE).", "DATASET_UNAVAILABLE"),
+        400: "INVALID_FORMAT: invalid input; application validation (not FastAPI 422).",
+        404: "NOT_FOUND: absent from the local snapshot, not a universal validity decision.",
+        422: "VALIDATION_ERROR: framework integer/path validation, wrapped in the standard OpenSK envelope.",
+        429: "RATE_LIMITED: 100 requests / 60 seconds / client IP when enabled; per-process limit. Health is exempt.",
+        503: "DATASET_UNAVAILABLE: local company dataset unavailable.",
     }
+    if operation_id in {"check_business_day", "add_business_days", "count_business_days"}:
+        error_info[400] = "INVALID_FORMAT for missing/malformed/out-of-bounds input; UNSUPPORTED_YEAR outside verified holiday years."
+    if operation_id in {"get_exchange_rates_latest", "get_exchange_rates_by_date"}:
+        error_info[400] = "INVALID_FORMAT for malformed date/currency; UNSUPPORTED_CURRENCY for EUR or codes absent from snapshot history."
+        error_info[404] = "RATE_NOT_AVAILABLE: currency exists historically but not on this publication date."
+        if operation_id == "get_exchange_rates_by_date":
+            error_info[404] += " RATE_DATE_NOT_FOUND: no exact publication date; no nearest-date fallback."
     for status in statuses:
-        description, _ = error_info[status]
+        description = error_info[status]
         responses[status] = {
             "model": ErrorResponse,
             "description": description,
@@ -62,6 +69,10 @@ def contract(operation_id, model, *statuses, exclude_unset=True):
 
 def document_parameters(schema):
     """Refine wire formats without feeding constraints into FastAPI validators."""
+    # These FastAPI defaults describe a detail-list body that our exception
+    # handler never emits. All actual 422 routes use ErrorResponse instead.
+    for name in ("HTTPValidationError", "ValidationError"):
+        schema["components"]["schemas"].pop(name, None)
     shared = {
         "regionCode": ("Exact region code SK plus three digits; spaces removed, case-sensitive.", "SK010"),
         "districtCode": ("Exact district code SK plus four OR five digits (e.g. SK03111); spaces removed, case-sensitive.", "SK0101"),
@@ -76,7 +87,7 @@ def document_parameters(schema):
         "noticeType": ("Exact TED notice type after trimming, case-insensitive; unknown values return an empty collection.", "can-standard"),
         "year": ("Publication year 2000–2100; malformed/out-of-range input retains framework 422.", 2026),
         "ico": ("Eight-digit IČO; spaces removed. Seed lookup only, not a live register.", "50158635"),
-        "iban": ("IBAN text, normalized to uppercase without spaces; invalid checksums return 200 with valid=false, not an application error. Synthetic checksum-valid example, not a payment instruction.", "SK3109000000000000000001"),
+        "iban": ("IBAN text, normalized to uppercase without spaces; invalid checksums return 200 with valid=false, not an application error. Synthetic checksum-valid example, not a payment instruction.", "SK5409000000000000000001"),
         "id": ("Exact TED publication number from the partial local snapshot.", "670654-2026"),
         "source_id": ("Case-sensitive registry ID, starting with a letter and containing only ASCII letters/digits.", "psc"),
         "status": ("Exact case-sensitive source status: production, seed, historical, research or blocked.", "historical"),
@@ -159,7 +170,7 @@ def document_parameters(schema):
                     info = ("Required query, at least two characters; numeric input is a 2–5 digit PSC prefix (spaces removed); text is a case- and diacritic-insensitive municipality/delivery-post substring.", "01001")
                     parameter["required"] = True
                 else:
-                    info = ("Required query, at least two characters; case- and diacritic-insensitive substring of code/name/local geography references.", "Bratislava" if "/phone" in path else "Trencin")
+                    info = ("Required query, at least two characters; case- and diacritic-insensitive substring of " + ("area code, name, municipality name or municipality code." if "/phone" in path else "abbreviation, district name, district code or region code."), "Bratislava" if "/phone" in path else "Trencin")
                     parameter["required"] = True
             elif name in {"limit", "offset"}:
                 eu = "/eu-funds" in path
@@ -168,7 +179,7 @@ def document_parameters(schema):
                 if name == "offset":
                     default, maximum, minimum = 0, (2**31 - 1 if eu else 10**9), 0
                 info = (f"Decimal integer string; default {default}, range {minimum}–{maximum}. " + ("Whitespace trimmed." if eu else "Digits only; zero allowed."), str(default))
-                extra = {"default": str(default), "pattern": "^[0-9]+$"}
+                extra = {"default": str(default), "pattern": r"^\s*[0-9]{1,10}\s*$" if eu else "^[0-9]+$"}
             if info is None:
                 raise ValueError(f"Undocumented parameter: {path} {name}")
             description, example = info

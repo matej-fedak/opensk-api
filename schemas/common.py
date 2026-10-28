@@ -32,7 +32,7 @@ GEOGRAPHY_SEED_SOURCE = "OpenSK API static geography seed dataset"
 
 class Metadata(TypedDict):
     source: str
-    lastUpdated: str
+    lastUpdated: str | None
     version: str
 
 

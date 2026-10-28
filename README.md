@@ -1,10 +1,18 @@
 # OpenSK API
 
-OpenSK API is a FastAPI service that exposes a small set of Slovak public data through a consistent JSON envelope.
+**One consistent developer interface to Slovakia's fragmented public data.**
 
-Status: `0.23.11` pre-1.0 — PSC administrative mapping research remains NO_GO; PSC is parked and developer adoption/OpenAPI correctness is next. All production data is unchanged: districts/municipalities stay successor-backed, PSC stays legacy-backed. Still 39 GET operations; public promotion remains gated by unresolved PortalVS compliance. Evidence: `docs/research/psc-administrative-mapping.md`.
+Look up administrative geography, postal codes and bank codes; validate an IBAN, check a business day, or use a local ECB reference rate. No API key; runtime reads local materialized snapshots, not upstream services.
 
-Public deployment: `https://opensk-api.onrender.com/`
+**Base URL:** https://opensk-api.onrender.com · **[Interactive API docs](https://opensk-api.onrender.com/docs)** · **[Five-minute quickstart](docs/quickstart.md)** · **[OpenAPI JSON](https://opensk-api.onrender.com/openapi.json)**
+
+```bash
+curl "https://opensk-api.onrender.com/v1/municipalities/528595"
+```
+
+**Pre-1.0, not a complete/live official register.** Coverage and reuse conditions differ by dataset; inspect [`/v1/sources`](https://opensk-api.onrender.com/v1/sources) before integrating. Public promotion remains gated by unresolved PortalVS compliance. MIT covers the code, not all source data.
+
+Status: `0.23.12` — all **39 GET operations** audited against runtime, with stable operation IDs, typed success/error contracts and examples. `/v1` is unchanged. PSC grouped lookup/count consistency is corrected; all production JSON, sources and freshness dates are unchanged. PSC successor migration remains **PARKED / NO_GO_SUCCESSOR_PSC**. [Contract audit](docs/research/openapi-contract-audit.md); [manual developer pilot](docs/developer-adoption.md).
 
 OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
 
@@ -58,6 +66,10 @@ EU-funds snapshot **2026-10-15**: 4,574 source projects acquired in full, **4,56
 ## PSC Collection Surface
 
 The PSC collection routes, pagination model, and current dataset limitations remain aligned with the shipped local-data contract.
+
+PSC is a **partial historical local lookup**, not an address validator or proof that a code applies to every address in a municipality. One code can have multiple administrative matches. A 404 means absent from this snapshot, not legally invalid.
+
+**0.23.12 correction:** `/v1/psc/{psc}` now counts logical flat matches and returns them directly in `matches`, consistent with list/search. For `01001`, `matchCount` is **2**, not one outer container holding two nested matches. The underlying dataset, provenance and coverage are unchanged; this is not a data migration.
 
 ## Dataset Tooling
 
