@@ -7,7 +7,8 @@ class BusinessDayCheck(PublicModel):
     date: str
     weekday: int = Field(description="Monday=0 through Sunday=6.")
     isWeekend: bool
-    isHoliday: bool
+    isHoliday: bool = Field(description="Date exists in the statutory holiday calendar, including working holidays.")
+    isDayOfRest: bool = Field(description="Holiday-related statutory day-of-rest status; may be false when isHoliday is true.")
     holidayName: str | None
     isBusinessDay: bool
     supportedYears: list[int]
@@ -31,7 +32,7 @@ class BusinessDayInterval(PublicModel):
     to: str
     totalDays: int
     weekendDays: int
-    holidayDays: int
-    holidays: list[HolidayHit]
+    holidayDays: int = Field(description="Weekday days excluded because isDayOfRest=true; weekend holidays count only as weekendDays.")
+    holidays: list[HolidayHit] = Field(description="Only non-weekend statutory days of rest relevant to business-day counting, not all holiday dates.")
     businessDays: int
     supportedYears: list[int]

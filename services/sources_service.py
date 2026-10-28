@@ -116,7 +116,11 @@ _LIMITATIONS: dict[str, list[str]] = {
         "MIT covers OpenSK code, not NBS data; downstream users must retain NBS attribution and source conditions.",
         "NBS does not guarantee completeness/content integrity or accept damages liability; commercial users should verify correctness.",
     ],
-    "holidays": ["Covers only the years present in the local dataset."],
+    "holidays": [
+        "Verified statutory holiday calendar 2024-2030, generated offline from Act 241/1993; NBS corroborates 2026/2027, not all future years.",
+        "Working holidays remain present; use isDayOfRest for holiday-related non-working status. Future years are subject to legislative change.",
+        "Not a TARGET/NBS/bank settlement, employer, shop-opening or authority-hours calendar.",
+    ],
     "companies": [
         "Seed-backed sample only, not full RPO coverage.",
         "Personal, stakeholder, and statutory-body fields are excluded.",
@@ -128,6 +132,7 @@ _LIMITATIONS: dict[str, list[str]] = {
     "procurementNotices": [
         "Includes only Slovak-buyer notices in the current 100-record TED snapshot.",
         "Not the national UVO procurement register.",
+        "0.23.13 expansion rejected: the privately acquired 68,926-notice corpus lacks a deterministic buyer privacy discriminator and is not served.",
     ],
     "schoolsDirectory": ["No approved institution-level source; only aggregate counts are served elsewhere."],
     "phoneAreas": ["Redistribution terms of the regulator workbook are unresolved."],
@@ -166,7 +171,7 @@ _LICENCE_NAMES: dict[str, str] = {
     "procurementNotices": "TED / Publications Office reuse terms",
     "schoolFacilityCounts": "Creative Commons BY (version not specified)",
     "vatRegistrations": "CC0 per export page; CC 4.0 international per catalogue (discrepancy on file)",
-    "holidays": "NBS website disclaimer (attribution, no modification)",
+    "holidays": "Act 241/1993 statutory rules; NBS corroboration is not a generated-dataset licence",
     "euFunds": "CC BY per Slovak national catalogue (version not separately identified)",
 }
 

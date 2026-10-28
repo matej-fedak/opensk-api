@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline statutory non-working-holiday calendar, law checked 2026-10-28.
+"""Offline statutory holiday calendar with separate day-of-rest status.
 
 Law 241/1993, versions 2024-01-01 and 2025-11-01 (§2, §4b). No network,
 no NBS-table copy, no payroll/settlement calendar. Future years describe currently
@@ -16,8 +16,9 @@ RULES_VERIFIED_ON = "2026-10-28"
 VERIFIED_FIRST_YEAR = 2024
 VERIFIED_LAST_YEAR = 2030
 
-# Existing OpenSK display labels retained exactly; September 1 is deliberately
-# absent because it is not a non-working holiday in any supported year.
+# §1 state holidays; §2(2) adds ten other holiday dates (including Easter).
+# Existing display labels stay unchanged. Working holidays remain in the data.
+STATE_HOLIDAYS = frozenset({"01-01", "07-05", "08-29", "09-01", "10-28", "11-17"})
 FIXED = {
     "01-01": ("Deň vzniku Slovenskej republiky", "Day of the Establishment of the Slovak Republic"),
     "01-06": ("Zjavenie Pána (Traja králi)", "Epiphany (Three Kings)"),
@@ -25,12 +26,32 @@ FIXED = {
     "05-08": ("Deň víťazstva nad fašizmom", "Victory over Fascism Day"),
     "07-05": ("Sviatok svätého Cyrila a Metoda", "Saints Cyril and Methodius Day"),
     "08-29": ("Výročie SNP", "Slovak National Uprising Anniversary"),
+    "09-01": ("Deň Ústavy Slovenskej republiky", "Constitution Day of the Slovak Republic"),
     "09-15": ("Sedembolestná Panna Mária", "Our Lady of Sorrows"),
+    "10-28": ("Deň vzniku samostatného česko-slovenského štátu", "Day of the Establishment of the Independent Czechoslovak State"),
     "11-01": ("Sviatok všetkých svätých", "All Saints' Day"),
+    "11-17": ("Deň boja za slobodu a demokraciu", "Struggle for Freedom and Democracy Day"),
     "12-24": ("Štedrý deň", "Christmas Eve"),
     "12-25": ("Prvý sviatok vianočný", "Christmas Day"),
     "12-26": ("Druhý sviatok vianočný", "St. Stephen's Day"),
 }
+NOVEMBER_TRANSITION = date(2025, 11, 1)  # Act 261/2025, Art. IV / Art. XXII
+
+
+def is_day_of_rest(day):
+    """Holiday-specific §2/§4b status, independent of weekday/weekend.
+
+    Called only for §1/§2 holiday dates, not arbitrary calendar dates. This
+    intentionally does not label all Sundays as holiday records.
+    """
+    month_day = day.strftime("%m-%d")
+    if month_day in {"09-01", "10-28"}:  # §2(3), from 2024-01-01 throughout horizon
+        return False
+    if month_day == "11-17" and day >= NOVEMBER_TRANSITION:
+        return False
+    if date(2026, 1, 1) <= day < date(2027, 1, 1) and month_day in {"05-08", "09-15"}:
+        return False  # §4b; neither date ceases being a statutory holiday
+    return True
 
 
 def easter_sunday(year):
@@ -54,20 +75,17 @@ def generate_year(year):
     if not VERIFIED_FIRST_YEAR <= year <= VERIFIED_LAST_YEAR:
         raise ValueError("outside reviewed statutory calendar horizon 2024..2030")
     days = dict(FIXED)
-    if year == 2024:
-        # November 17 was still a non-working holiday before 2025-11-01.
-        days["11-17"] = ("Deň boja za slobodu a demokraciu", "Struggle for Freedom and Democracy Day")
-    if year == 2026:
-        # §4b is explicitly limited to 2026; both resume from 2027.
-        del days["05-08"], days["09-15"]
     easter = easter_sunday(year)
     movable = {
         (easter - timedelta(days=2)).strftime("%m-%d"): ("Veľký piatok", "Good Friday"),
         (easter + timedelta(days=1)).strftime("%m-%d"): ("Veľkonočný pondelok", "Easter Monday"),
     }
-    assert not set(days) & set(movable)
+    if set(days) & set(movable):
+        raise ValueError("duplicate fixed/movable holiday date")
     days.update(movable)
-    return [{"date": date.fromisoformat(f"{year}-{day}").isoformat(), "name": names[0], "name_en": names[1]}
+    return [{"date": date.fromisoformat(f"{year}-{day}").isoformat(), "name": names[0], "name_en": names[1],
+             "isStateHoliday": day in STATE_HOLIDAYS,
+             "isDayOfRest": is_day_of_rest(date.fromisoformat(f"{year}-{day}"))}
             for day, names in sorted(days.items())]
 
 
@@ -81,7 +99,7 @@ def serialize(payload):
     return (json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
 
 
-def write_candidate(start, end, output, *, write_production=False):
+def write_candidate(start, end, output, *, write=False, write_production=False):
     output = Path(output).resolve()
     production = ROOT / "data/holidays.json"
     if write_production:
@@ -90,6 +108,8 @@ def write_candidate(start, end, output, *, write_production=False):
     elif output.is_relative_to(ROOT / "data") and not output.is_relative_to(ROOT / "data/generated"):
         raise ValueError("production write requires --write-production")
     payload = generate(start, end)
+    if not (write or write_production):
+        return payload  # Dry-run by default, including candidate targets.
     output.parent.mkdir(parents=True, exist_ok=True)
     # One atomic replacement, never partial production JSON.
     staging = output.with_suffix(".candidate")
@@ -103,7 +123,11 @@ if __name__ == "__main__":
     parser.add_argument("--start-year", type=int, required=True)
     parser.add_argument("--end-year", type=int, required=True)
     parser.add_argument("--output", type=Path, default=ROOT / "data/generated/holidays.json")
-    parser.add_argument("--write-production", action="store_true")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--dry-run", action="store_true", help="Validate and summarize without writing (default)")
+    mode.add_argument("--write", action="store_true", help="Write an unpromoted candidate")
+    mode.add_argument("--write-production", action="store_true")
     args = parser.parse_args()
-    payload = write_candidate(args.start_year, args.end_year, args.output, write_production=args.write_production)
-    print(f"Generated {sum(map(len, payload.values()))} non-working holidays, {args.start_year}..{args.end_year}; rules checked {RULES_VERIFIED_ON}; output {args.output}")
+    payload = write_candidate(args.start_year, args.end_year, args.output, write=args.write, write_production=args.write_production)
+    mode = "written" if args.write or args.write_production else "dry-run, not written"
+    print(f"Generated {sum(map(len, payload.values()))} statutory holidays, {args.start_year}..{args.end_year}; rules checked {RULES_VERIFIED_ON}; {mode}: {args.output}")

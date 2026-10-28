@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Response
 from schemas.common import SuccessResponse
@@ -20,7 +21,7 @@ router = APIRouter(prefix="/holidays", tags=["holidays"])
 DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "holidays.json"
 
 
-def load_holidays() -> dict[str, list[dict[str, str]]]:
+def load_holidays() -> dict[str, list[dict[str, Any]]]:
     with DATA_FILE.open("r", encoding="utf-8") as file:
         return json.load(file)
 
@@ -28,7 +29,7 @@ def load_holidays() -> dict[str, list[dict[str, str]]]:
 @router.get(
     "/{year}",
     summary="Holiday calendar by year",
-    description="Returns the local Slovak public-holiday array for a verified year (2024–2026 only). Other years return 404, not an assertion that there are no holidays. Not a bank settlement or employer-specific calendar.",
+    description="Returns the statutory Slovak holiday calendar for a verified year (2024–2030). Includes state holidays and other statutory holiday dates, even legally working holidays; use isDayOfRest, not membership, to identify holiday-related non-working status. Rules verified 2026-10-28; future years subject to legislative change. Other years return 404, not an assertion that there are no holidays. Not a settlement, employer, shop-opening or authority-opening calendar.",
     **contract("get_holidays", SuccessResponse[list[Holiday]], 404, 422, 429),
 )
 def get_holidays(year: int, response: Response) -> dict[str, object]:

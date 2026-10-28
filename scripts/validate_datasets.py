@@ -753,9 +753,7 @@ def validate_holidays_dataset(path: Path = DEFAULT_HOLIDAYS_PATH) -> ValidationR
         return report
 
     for year_key, holidays in payload.items():
-        if year_key == "metadata":
-            continue
-        if not re.fullmatch(r"\d{4}", str(year_key)):
+        if not re.fullmatch(r"[0-9]{4}", str(year_key)) or int(year_key) == 0:
             report.add_error(f"{year_key}", f"year key must be 4 digits, got {year_key!r}")
             continue
 
@@ -784,11 +782,28 @@ def validate_holidays_dataset(path: Path = DEFAULT_HOLIDAYS_PATH) -> ValidationR
                     report.add_error(f"{item_path}.date", f"duplicate holiday date {date_text!r}")
                 seen_dates.add(date_text)
                 if previous_date is not None and holiday_date < previous_date:
-                    report.add_warning(item_path, "holiday dates are not sorted ascending")
+                    report.add_error(item_path, "holiday dates must be sorted ascending")
                 previous_date = holiday_date
+
+                # Structural §1 invariants within the reviewed horizon only.
+                # Not a second copy of every year's entire calendar.
+                if 2024 <= year <= 2030:
+                    state = date_text[5:] in {"01-01", "07-05", "08-29", "09-01", "10-28", "11-17"}
+                    if item.get("isStateHoliday") is not state:
+                        report.add_error(item_path, "isStateHoliday must match Act 241/1993 §1")
+                    if date_text[5:] in {"09-01", "10-28"} and item.get("isDayOfRest") is not False:
+                        report.add_error(item_path, "§2(3) working state holiday must not be a day of rest")
 
             _require_string(report, item.get("name"), f"{item_path}.name", "holiday name must be a non-empty string")
             _require_string(report, item.get("name_en"), f"{item_path}.name_en", "holiday English name must be a non-empty string")
+            for key in ("isStateHoliday", "isDayOfRest"):
+                if type(item.get(key)) is not bool:
+                    report.add_error(f"{item_path}.{key}", f"holiday {key} must be a boolean")
+
+        if 2024 <= year <= 2030:
+            for month_day in ("09-01", "10-28", "11-17"):
+                if f"{year}-{month_day}" not in seen_dates:
+                    report.add_error(str(year_key), f"missing statutory state holiday {month_day}")
 
         report.record_count += len(entries)
 
