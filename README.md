@@ -35,7 +35,7 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | PortalVS terms may restrict reuse |
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and dataset stats | partial imported | PortalVS terms may restrict reuse |
 | `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete domestic v226 snapshot, effective 2026-10-08 | NBS attribution/version/effective/download provenance directly in response metadata |
-| `GET /v1/holidays/{year}` | Slovak holiday calendar by year | partial curated seed | NBS/legal-act provenance tracked |
+| `GET /v1/holidays/{year}` | Statutory Slovak holiday calendar by year | generated 2024-2030 verified window; working state holidays included | Act 241/1993 (Slov-Lex) provenance tracked; `isStateHoliday` vs `isDayOfRest` explicit |
 | `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Seed-backed company lookup and IČO alias | seed-backed | RPO expansion/licence/privacy verification pending |
 | `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}` | Phone-area list and lookup | complete imported; 3 unmatched local geography links | telecom regulator licence verification pending |
 | `GET /v1/phone-areas/search` | Phone-area search | complete imported; 3 unmatched local geography links | telecom regulator licence verification pending |
@@ -49,9 +49,9 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/sources` | Curated public source/licence provenance catalogue | 20 registered domains | unresolved licence status stays unresolved |
 | `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 20 registered domains | internal maintainer fields are excluded |
-| `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
-| `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2026 holiday coverage | strict error outside supported years |
-| `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2026 holiday coverage | strict error outside supported years |
+| `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2030 holiday coverage | Monday–Friday minus days of rest; strict error outside supported years |
+| `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2030 holiday coverage | skips weekends and days of rest, not working holidays |
+| `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2030 holiday coverage | `holidayDays` counts weekday days of rest only |
 | `GET /v1/exchange-rates/latest` | Latest ECB EUR reference rates in the local snapshot (not live rates) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
 | `GET /v1/exchange-rates/{date}` | ECB EUR reference rates for an exact publication date (404 otherwise; optional `?currency=` filter) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
 | `GET /v1/eu-funds/projects` | Paginated ITMS21+ project references; exact programme/call/IČO/status/NUTS filters | partial, 2021–2027 reviewed legal-entity beneficiaries only | MIRRI / catalogue CC BY (version not separately identified); OpenSK transformed/minimized |

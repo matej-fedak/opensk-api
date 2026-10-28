@@ -44,7 +44,7 @@ curl "https://opensk-api.onrender.com/v1/exchange-rates/latest?currency=USD"
 curl "https://opensk-api.onrender.com/v1/business-days/check?date=2026-10-08"
 ```
 
-ECB rates are exact decimal **strings**: `1 EUR = rate units of USD`. `latest` means latest in the local snapshot, **not live**; informational use only, not transaction/settlement prices. Exact-date requests do not fall back to a nearby publication date. Business days use Monday–Friday minus local holidays, with verified **2024–2026** coverage only; they are not a bank settlement calendar.
+ECB rates are exact decimal **strings**: `1 EUR = rate units of USD`. `latest` means latest in the local snapshot, **not live**; informational use only, not transaction/settlement prices. Exact-date requests do not fall back to a nearby publication date. Business days use Monday–Friday minus statutory days of rest, with verified **2024–2030** coverage only; working statutory holidays stay business days (`isHoliday` can be true while `isBusinessDay` is true), and it is not a bank settlement calendar.
 
 ## Read the envelope
 

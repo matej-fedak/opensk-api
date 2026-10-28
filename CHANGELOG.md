@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.13
+
+- **Procurement: NO_GO_PROCUREMENT_EXPANSION (locked).** The privately acquired 68,926-notice TED Slovak-buyer corpus (277 pages, reconciled by an independent metadata-only capture) has no deterministic source-based natural-person discriminator: `buyer-person` is absent in every row including 22,730 eForms-explicit notices; hypothetical safe eligible corpus is 0. Production stays the byte-identical 100-record `TED_PARTIAL` snapshot with unchanged freshness; none of the 68,926 records is served. Evidence: `docs/research/procurement-buyer-privacy.md`.
+- **Calendar: HOLIDAYS_EXPANDED_VERIFIED (2024–2030).** `data/holidays.json` is now generated offline from reviewed Act 241/1993 Coll. rules (Slov-Lex versions 2024-01-01 and 2025-11-01, §2/§4b; NBS 2026/2027 corroboration; no published future-effective amendment through 2030 as of verification 2026-10-28). 112 statutory dates (16/year), stable-sorted, duplicate-free, including the previously missing 28 October in every year.
+- Holiday records gain additive `isStateHoliday` / `isDayOfRest`; the check response gains additive `isDayOfRest` (routes, operation IDs, `/v1`, envelope and `metadata.version` unchanged). Business days are now Monday–Friday minus statutory days of rest: 2025-09-01/10-28/11-17 and 2026-05-08/09-01/09-15/10-28/11-17 are correctly business days; `holidayDays` counts weekday days of rest only. `HOLIDAYS_LAST_UPDATED = 2026-10-28` (law/source verification date). Only `data/holidays.json` and `data/sources.json` changed. Evidence: `docs/research/holiday-calendar-correctness.md`.
+
 ## 0.23.8
 
 - Refreshed NBS **v225 → v226**, effective **2026-10-08**, downloaded **2026-10-15T16:23:00Z**, 1,953 source bytes / SHA-256 `b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64`. Current official page verified before acquisition; 38 source rows → 30 domestic rows, eight Czech BIC rows excluded. No codes added/removed; names changed at 3100/7930 and Payout BIC/alias at 9956 became `PYYUSK22`. All domestic rows reconciled; 21 true / nine false SIPS projections unchanged.

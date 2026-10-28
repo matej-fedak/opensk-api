@@ -11,7 +11,7 @@ evidence are retained privately; final before/after hashes are recorded below.
 | Domain | Baseline records / time coverage | Source; public status / coverage | Limitation and source headroom | Technical / rights / privacy / semantics gates | Classification / recommendation |
 | --- | --- | --- | --- | --- | --- |
 | Banks | 30; v226 effective 2026-10-08 | NBS converter; production / complete | Complete within domestic converter; later releases are refreshes, not coverage expansion | All existing gates satisfied within approved scope; no refresh needed | **ALREADY_MEANINGFUL** |
-| Holidays / business days | 45 dates; 2024–2026 | NBS/legal-act reference; production / partial | IMPLEMENTATION_LIMIT; statutory rules extend further, but existing non-working-day errors need correction | Technically deterministic; current Slov-Lex law plus NBS corroboration; no personal data; retain non-working-holiday concept, not all commemorations | **EXPAND_NOW**, subject to verified rules, including explicit historical corrections |
+| Holidays / business days | ~~45 dates; 2024–2026~~ → **112 dates; 2024–2030, with explicit state-holiday/day-of-rest flags** | Act 241/1993 via official Slov-Lex (primary); NBS 2026/2027 corroboration; production / partial (bounded verified window) | CORRECT_NOW: seed conflated state holiday with day of rest; 28 October missing | Deterministic; law verified 2026-10-28 with future-effective check; no personal data; bounded to reviewed horizon, subject to legislative change | **EXPANDED_VERIFIED** — see finalization section |
 | PSC | 1,420 keys / 3,101 flat matches; historical classifier snapshot, freshness 2026-06-02 | PortalVS legacy classifier 42; production / partial | SOURCE_BLOCKED + RIGHTS_BLOCKED; successor has more rows but lacks approved identity/temporal/address semantics | Technical/admin mapping and reuse gates unresolved; no successor occurrence projection approved | **BLOCKED**, preserve bytes; NO_GO_SUCCESSOR_PSC |
 | Companies | 4 seed records; mixed local records, not temporal registry coverage | Local company seed / RPO research; seed / seed | SOURCE_BLOCKED + PRIVACY_BLOCKED; RPO is materially larger | Acquisition/privacy gate not cleared; no new records, joins or rights inference | **BLOCKED** |
 | Regions | 8; freshness 2026-05-27 | Eurostat reference; production / complete | Complete existing national reference scope | Already meaningful; no personal data; no expansion/refresh needed | **ALREADY_MEANINGFUL** |
@@ -20,7 +20,7 @@ evidence are retained privately; final before/after hashes are recorded below.
 | Phone areas | 2,922; 2026-09-15 import, 2,919 geography-linked | Telecom regulator workbook; production / complete | Complete imported scope; RIGHTS_BLOCKED, not too few rows | Pending reuse reply; unresolved links do not justify name inference or field expansion | **ALREADY_MEANINGFUL**, preserve bytes |
 | Vehicle codes | 93; legacy reference ending 2023-01-01 | Slov-Lex historic §36 table; historical / complete | HISTORICAL_REFERENCE / INTENTIONAL_PRODUCT_SCOPE | No approved current plate decoding/owner semantics; rights remain pending | **INTENTIONAL_LIMIT** |
 | School facility counts | 1,227 aggregate rows; as of 2025-09-15 | MŠVVaM aggregate CSV; production / complete | INTENTIONAL_PRODUCT_SCOPE; source already imported within aggregate scope | Institution-level source/reuse/privacy gates separate and blocked; no need to expand aggregate schema | **ALREADY_MEANINGFUL**, no institution-level expansion |
-| Procurement | 100 notices; latest 2026-09-29 demonstration snapshot | TED Search API; production / partial | IMPLEMENTATION_LIMIT; source holds a much larger historical corpus | Existing acquisition approval; current API/reuse must be reverified; same institutional reference/privacy projection, not ÚVO national completeness | **EXPAND_NOW**, attempt all available latest-version TED Slovak-buyer history through fixed cutoff first |
+| Procurement | 100 notices; latest 2026-09-29 demonstration snapshot (**unchanged**) | TED Search API; production / partial | Source holds a much larger corpus (68,926 notices acquired privately) | PRIVACY_BLOCKED: no deterministic source-based natural-person exclusion (`buyer-person` absent in all 68,926 rows incl. 22,730 eForms-explicit); hypothetical safe eligible corpus 0 | **BLOCKED — PRIVACY**; **NO_GO_PROCUREMENT_EXPANSION**, preserve 100-record TED_PARTIAL bytes |
 | Exchange rates | 7,112 publication dates / 221,296 rates / 41 currencies; 1999-01-04–2026-10-12 | ECB full-history feed; production / complete | Complete relative to imported feed; INTENTIONAL_PRODUCT_SCOPE (EUR reference values) | Reuse verified; exact decimal strings; not every day/world currency/live prices | **ALREADY_MEANINGFUL**, no refresh |
 | EU funds | 4,561 of 4,574 acquired projects; ITMS21+ 2021–2027, snapshot 2026-10-15 | MIRRI; production / partial | INTENTIONAL_PRODUCT_SCOPE + PRIVACY_BLOCKED for excluded records; 13 wholly excluded | Positive legal-form review; no natural-person/unreviewed restoration or ITMS2014+ fusion | **ALREADY_MEANINGFUL**, preserve bytes |
 
@@ -158,5 +158,33 @@ identities; `buyer-person` is absent in every row, including 22,730 positively
 identified eForms notices. Hypothetical eligible corpus: **0**; all 68,926 excluded
 as unknown. BT-11/BT-501 do not establish a deterministic buyer-specific legal-
 person guarantee, and independent arrays have no demonstrated complete buyer
-join. This adds evidence to, rather than rewrites, the original pause. Procurement
-and holidays remain unpromoted; the milestone is still `0.23.13-dev`.
+join. This adds evidence to, rather than rewrites, the original pause.
+
+## Finalization — 2026-10-28
+
+The maintainer settled both pending decisions; the milestone leaves
+`0.23.13-dev` as **`0.23.13`**:
+
+- **Procurement: BLOCKED — PRIVACY / NO_GO_PROCUREMENT_EXPANSION**
+  (locked, not reopened). Production stays the byte-identical 100-record
+  `TED_PARTIAL` snapshot; procurement freshness is unchanged; none of the
+  68,926 privately acquired records is served. Reopen only with a genuinely
+  new authoritative buyer-privacy discriminator with complete buyer
+  association — do not repeat the acquisition or infer status from
+  names/suffixes/IČO-like values/BT-11/identifiers/regexes. Evidence:
+  `procurement-buyer-privacy.md`; state: `data/sources.json`
+  (`procurementNotices`).
+- **Holidays/business days: EXPAND_NOW / CORRECT_NOW →
+  EXPANDED_VERIFIED (2024–2030).** The statutory-holiday vs day-of-rest
+  conflation is corrected additively (`isStateHoliday` / `isDayOfRest`), the
+  missing 28 October rows are added for all seven years, the 2025-11-01
+  transition and the 2026 §4b exception are date-exact, and business-day
+  semantics now consume `isDayOfRest` instead of dataset membership. No new
+  routes; 39 GET operations, `/v1` and `metadata.version` `v1` unchanged.
+  Evidence: `holiday-calendar-correctness.md`; generator `scripts/generate_holidays.py`
+  output is test-locked byte-identical to `data/holidays.json`.
+
+All other domains keep their classifications and byte-frozen production data.
+Full milestone validation (dataset validation, referential integrity, pytest,
+compileall, OpenAPI inventory, before/after hashes, smoke) is recorded in the
+final report for this milestone.
