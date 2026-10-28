@@ -1,0 +1,236 @@
+{
+  "/": {
+    "url": "/",
+    "bodySha256": "7775aff2dd27578972584ff6db0d3bff6b978aef8564d7ed65c13c7f9166d385",
+    "cacheControl": "public, max-age=3600",
+    "lastModified": null
+  },
+  "/v1/health": {
+    "url": "/v1/health",
+    "bodySha256": "5e4f9ad81936a53a92fcd9e208858c092515b501aaa308bd3483292f737d4cad",
+    "cacheControl": "no-store",
+    "lastModified": null
+  },
+  "/v1/banks": {
+    "url": "/v1/banks",
+    "bodySha256": "64b366b5c467da33c6d7f4b621fe6a5b2b9710aae8237f267666b981d265ef8c",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Thu, 08 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/banks/{code}": {
+    "url": "/v1/banks/1100",
+    "bodySha256": "8b095d9f21282c75e5643fabc6dc468be38c314e9c03c033b3e8dffc68e90207",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Thu, 08 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/iban/validate/{iban}": {
+    "url": "/v1/iban/validate/SK3109000000000000000001",
+    "bodySha256": "7bab91fab0cfe35f713afa0fe778a3008e85b13530b9039f301c01dfe823b87c",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Thu, 08 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/holidays/{year}": {
+    "url": "/v1/holidays/2026",
+    "bodySha256": "cb47df9a02f8e9adf9076f3f9f59336b096559fff1830a27eabe08ef7f335163",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+  },
+  "/v1/psc": {
+    "url": "/v1/psc?psc=01001&limit=1",
+    "bodySha256": "7dbef775ce00e6b2dff96c8c64dcb283ae1a929d4beaf02e0934c7d449216d4f",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 02 Jun 2026 00:00:00 GMT"
+  },
+  "/v1/psc/search": {
+    "url": "/v1/psc/search?q=01001&limit=1",
+    "bodySha256": "7dbef775ce00e6b2dff96c8c64dcb283ae1a929d4beaf02e0934c7d449216d4f",
+    "cacheControl": "public, max-age=900",
+    "lastModified": "Tue, 02 Jun 2026 00:00:00 GMT"
+  },
+  "/v1/psc/stats": {
+    "url": "/v1/psc/stats",
+    "bodySha256": "428970744a043a7d3ae7d464b1041a800616c5cdda03032865562c8ec36bbe67",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 02 Jun 2026 00:00:00 GMT"
+  },
+  "/v1/psc/{psc}": {
+    "url": "/v1/psc/01001",
+    "bodySha256": "c9be37107b78524eceb650187f38cf2816bdeeedcaad50e4cf62a34a2f332f42",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 02 Jun 2026 00:00:00 GMT"
+  },
+  "/v1/companies/{ico}": {
+    "url": "/v1/companies/50158635",
+    "bodySha256": "3dbc0ddb064064f85aabd377ff618a5fbc07bdbe3988e2ec4c722737389a5a65",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": null
+  },
+  "/v1/ico/{ico}": {
+    "url": "/v1/ico/50158635",
+    "bodySha256": "3dbc0ddb064064f85aabd377ff618a5fbc07bdbe3988e2ec4c722737389a5a65",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": null
+  },
+  "/v1/regions": {
+    "url": "/v1/regions",
+    "bodySha256": "4a21afc1988e7ddb2ce02eee056feda3ce8bcda4d06eb36312e651523ba9cf04",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Wed, 27 May 2026 00:00:00 GMT"
+  },
+  "/v1/regions/{code}": {
+    "url": "/v1/regions/SK010",
+    "bodySha256": "3a26f3d3097bc392d34f857bdbc7857d44a10e445889796030ea6d97c8bfb834",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Wed, 27 May 2026 00:00:00 GMT"
+  },
+  "/v1/districts": {
+    "url": "/v1/districts?regionCode=SK010",
+    "bodySha256": "049da0be3b170b5556dc8c7a89b56b6f5949fe4531358e4c5bace7e4c0c2a54b",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Fri, 16 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/districts/{code}": {
+    "url": "/v1/districts/SK0101",
+    "bodySha256": "25874c55ea5082ffc8d294608e031dde0f45febae13cb36239435cbdcaeffc6d",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Fri, 16 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/municipalities": {
+    "url": "/v1/municipalities?districtCode=SK0101",
+    "bodySha256": "a16da696d476d2f738abe715c3391a82db5f886211f4364e1f6dc5b0ddcfc749",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Fri, 16 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/municipalities/{code}": {
+    "url": "/v1/municipalities/528595",
+    "bodySha256": "4e015b883f778e44ee17c3ee714831a1a82a794195a618d88acaf0534fdca450",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Fri, 16 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/phone-areas": {
+    "url": "/v1/phone-areas?limit=1",
+    "bodySha256": "ebbbb3f030ce09df5cd6095c9ebc70c016e890d202ed775364f30a986efccca6",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 15 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/phone-areas/search": {
+    "url": "/v1/phone-areas/search?q=Bratislava&limit=1",
+    "bodySha256": "a88d7498e6720d223200ec9c7ace9ffe99939a8fa12debef20c2b24f98ae5b58",
+    "cacheControl": "public, max-age=900",
+    "lastModified": "Tue, 15 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/phone-areas/{code}": {
+    "url": "/v1/phone-areas/02",
+    "bodySha256": "715d612f7d74530a6b0902aeea6899940df9ae8156d37d9d45089e399b673276",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 15 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/vehicle-registration-codes": {
+    "url": "/v1/vehicle-registration-codes?limit=1",
+    "bodySha256": "be151ad6eb025c8b7708c700dc77e955236b97e3de6507560a53bd2c2ad6d675",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 15 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/vehicle-registration-codes/search": {
+    "url": "/v1/vehicle-registration-codes/search?q=Trencin&limit=1",
+    "bodySha256": "f75e32a6f11637a132cb84b67948281c55ec9bc0514cb5bdde1e1677e64239a2",
+    "cacheControl": "public, max-age=900",
+    "lastModified": "Tue, 15 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/vehicle-registration-codes/{code}": {
+    "url": "/v1/vehicle-registration-codes/BA",
+    "bodySha256": "6fdcfbd0906525c3d5f5893ab9406dd6a22305062abe4881a6e2c54f26394b09",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 15 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/school-facility-counts": {
+    "url": "/v1/school-facility-counts?limit=1",
+    "bodySha256": "858128c591d1cab577750a446a75abdb1d6a6bc1e6b983b16645e1e1b16c1959",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 15 Sep 2025 00:00:00 GMT"
+  },
+  "/v1/school-facility-counts/stats": {
+    "url": "/v1/school-facility-counts/stats",
+    "bodySha256": "bb908137d713cc8df9b6002b7a52c558f8975ba19b04c4cd5eb5735384b0a77c",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 15 Sep 2025 00:00:00 GMT"
+  },
+  "/v1/procurement-notices": {
+    "url": "/v1/procurement-notices?limit=1",
+    "bodySha256": "bba41eca2cb9504750f992b7e9d4c9a6f2b520b2f518287dd2742b639202aec9",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 29 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/procurement-notices/search": {
+    "url": "/v1/procurement-notices/search?q=Bratislava&limit=1",
+    "bodySha256": "c259c296514ae02a9b1ebe7437c24c02188b883e9ffbde407d44ea14d41f9576",
+    "cacheControl": "public, max-age=900",
+    "lastModified": "Tue, 29 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/procurement-notices/stats": {
+    "url": "/v1/procurement-notices/stats",
+    "bodySha256": "70da4054fe0d1ed057f8f0f893460f4332b9bb973814293bca9905bfd63d5dc5",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 29 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/procurement-notices/{id}": {
+    "url": "/v1/procurement-notices/670654-2026",
+    "bodySha256": "1f2fabe3d3a9388f308cd5a17a269761bf5cfc691bd85b40cf1f8b835c618585",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Tue, 29 Sep 2026 00:00:00 GMT"
+  },
+  "/v1/sources": {
+    "url": "/v1/sources?status=historical",
+    "bodySha256": "e67f00d2d23a25761e2656ac24e8ec3882a5881a2bb6a897816848594be99916",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Fri, 16 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/sources/{source_id}": {
+    "url": "/v1/sources/psc",
+    "bodySha256": "2defb88b0c1674a33873db331ba7ab8834e580595ef93462a158bb2e57b6e53b",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Fri, 16 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/business-days/check": {
+    "url": "/v1/business-days/check?date=2026-10-08",
+    "bodySha256": "f3550b6759d41e8f6353b2fd4086d060ae1571eca924347f09b29362b623d7ea",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+  },
+  "/v1/business-days/add": {
+    "url": "/v1/business-days/add?date=2026-10-08&days=1",
+    "bodySha256": "1b0a9f3ee79d1fedc12b62cfef9f00e6f0c00f8d09deb14294bfd2e39fca737b",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+  },
+  "/v1/business-days/between": {
+    "url": "/v1/business-days/between?from=2026-10-08&to=2026-10-09",
+    "bodySha256": "46d3b3efcefe6f5f4b0e894c3276c18a7f87557d275e9dbd300d4bd533305814",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+  },
+  "/v1/exchange-rates/latest": {
+    "url": "/v1/exchange-rates/latest?currency=USD",
+    "bodySha256": "464cdef263ef7359db704880969223e0cfa79898ab3b226286e3711d731833dd",
+    "cacheControl": "public, max-age=3600",
+    "lastModified": "Mon, 12 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/exchange-rates/{date}": {
+    "url": "/v1/exchange-rates/1999-01-04?currency=USD",
+    "bodySha256": "3065bbe67e16c5f565a81ce5de4ee1c70b531a9b98a59946e99706db501262a7",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Mon, 12 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/eu-funds/projects": {
+    "url": "/v1/eu-funds/projects?limit=1",
+    "bodySha256": "8be9007ce5a238980dc7fa20a4a1c5890cde949805a85266f27ccd448aac4b8c",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Thu, 15 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/eu-funds/projects/{projectCode}": {
+    "url": "/v1/eu-funds/projects/401000B287",
+    "bodySha256": "422fab46d79b33ea7805274b4ad2b495011c584292e478886ab59bacf83a037b",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Thu, 15 Oct 2026 00:00:00 GMT"
+  }
+}
