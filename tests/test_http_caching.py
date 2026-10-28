@@ -62,7 +62,7 @@ def test_if_modified_since_returns_200_when_dataset_is_newer() -> None:
 def test_business_days_use_holiday_dataset_freshness() -> None:
     response = client.get("/v1/business-days/check?date=2026-10-08")
     assert "etag" in response.headers
-    assert response.headers["last-modified"].startswith("Mon, 25 May 2026")
+    assert response.headers["last-modified"].startswith("Wed, 28 Oct 2026")
 
 
 def test_cache_control_categories() -> None:

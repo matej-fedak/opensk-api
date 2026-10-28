@@ -31,9 +31,9 @@
   },
   "/v1/holidays/{year}": {
     "url": "/v1/holidays/2026",
-    "bodySha256": "cb47df9a02f8e9adf9076f3f9f59336b096559fff1830a27eabe08ef7f335163",
+    "bodySha256": "da4b007e018b2daea1229b93a5750d62a85e952d01a8e8b9d6a77924dcc90805",
     "cacheControl": "public, max-age=86400",
-    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+    "lastModified": "Wed, 28 Oct 2026 00:00:00 GMT"
   },
   "/v1/psc": {
     "url": "/v1/psc?psc=01001&limit=1",
@@ -55,7 +55,7 @@
   },
   "/v1/psc/{psc}": {
     "url": "/v1/psc/01001",
-    "bodySha256": "c9be37107b78524eceb650187f38cf2816bdeeedcaad50e4cf62a34a2f332f42",
+    "bodySha256": "3ba1793893803593e917e64b54ebb66a8b4a2bc30fe31fd545da9e421da80912",
     "cacheControl": "public, max-age=86400",
     "lastModified": "Tue, 02 Jun 2026 00:00:00 GMT"
   },
@@ -193,21 +193,21 @@
   },
   "/v1/business-days/check": {
     "url": "/v1/business-days/check?date=2026-10-08",
-    "bodySha256": "f3550b6759d41e8f6353b2fd4086d060ae1571eca924347f09b29362b623d7ea",
+    "bodySha256": "77c45a7f7acd682207bc4385018d7053d24e9f6bb92c4690ec6561292c711be4",
     "cacheControl": "public, max-age=86400",
-    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+    "lastModified": "Wed, 28 Oct 2026 00:00:00 GMT"
   },
   "/v1/business-days/add": {
     "url": "/v1/business-days/add?date=2026-10-08&days=1",
-    "bodySha256": "1b0a9f3ee79d1fedc12b62cfef9f00e6f0c00f8d09deb14294bfd2e39fca737b",
+    "bodySha256": "d915a807951b48efe804af10e72ece265c2e4b0124cbadb05a6d1836f49db7b5",
     "cacheControl": "public, max-age=86400",
-    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+    "lastModified": "Wed, 28 Oct 2026 00:00:00 GMT"
   },
   "/v1/business-days/between": {
     "url": "/v1/business-days/between?from=2026-10-08&to=2026-10-09",
-    "bodySha256": "46d3b3efcefe6f5f4b0e894c3276c18a7f87557d275e9dbd300d4bd533305814",
+    "bodySha256": "9d6656e116db0d9a9d7443f013b2f6799e116ee04553a0835d4e42975f79900c",
     "cacheControl": "public, max-age=86400",
-    "lastModified": "Mon, 25 May 2026 00:00:00 GMT"
+    "lastModified": "Wed, 28 Oct 2026 00:00:00 GMT"
   },
   "/v1/exchange-rates/latest": {
     "url": "/v1/exchange-rates/latest?currency=USD",
