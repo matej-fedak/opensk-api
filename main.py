@@ -46,7 +46,7 @@ app = FastAPI(
         {"name": "iban", "description": "IBAN validation and bank resolution."},
         {"name": "holidays", "description": "Static Slovak public holiday data."},
         {"name": "regions", "description": "Static Slovak regions dataset."},
-        {"name": "districts", "description": "Complete Slovak districts dataset imported from PortalVS classifier 10."},
+        {"name": "districts", "description": "Complete Slovak districts dataset materialized from PortalVS / IS Číselníky successor geography data."},
         {"name": "municipalities", "description": "Static Slovak municipalities dataset."},
         {"name": "psc", "description": "Partial historical local PSC lookup; not an address validator or municipality-wide validity guarantee."},
         {"name": "companies", "description": "Local company lookup endpoints backed by the checked-in dataset."},

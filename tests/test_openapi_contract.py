@@ -51,6 +51,8 @@ def offline(monkeypatch):
 
 def test_complete_reviewed_inventory_and_refs():
     schema = app.openapi()
+    tags = {tag["name"]: tag["description"] for tag in schema["tags"]}
+    assert tags["districts"] == "Complete Slovak districts dataset materialized from PortalVS / IS Číselníky successor geography data."
     json.dumps(schema, allow_nan=False)
     actual = [[method.upper(), path, op["operationId"]]
               for path, item in schema["paths"].items() for method, op in item.items()]
