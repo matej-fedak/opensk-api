@@ -11,6 +11,13 @@ from pydantic import TypeAdapter
 import pytest
 
 from main import app
+from main import (
+    banks_router, business_days_router, companies_router, districts_router,
+    eu_funds_router, exchange_rates_router, health_router, holidays_router,
+    iban_router, municipalities_router, phone_areas_router,
+    procurement_notices_router, psc_router, regions_router,
+    school_facility_counts_router, sources_router, vehicle_registration_codes_router,
+)
 from schemas.common import ErrorResponse
 from scripts.audit_openapi_contract import APPLICATION_ERRORS, digest, normalized_body
 
@@ -20,6 +27,18 @@ INVENTORY = json.loads((FIXTURES / "public-operations.json").read_bytes())
 BASELINE = json.loads((FIXTURES / "public-contract-baseline.json").read_bytes())
 ERROR_CASES = json.loads((FIXTURES / "public-error-cases.json").read_bytes())
 ROUTES = {route.path: route for route in app.routes if isinstance(route, APIRoute)}
+# Newer FastAPI keeps include_router entries lazy; older releases flatten them
+# into app.routes. Inspect the actual declared routers in either case, without
+# depending on private _IncludedRouter internals. The exact inventory assertion
+# below ensures no mounted operation escapes runtime-model validation.
+for router in (
+    banks_router, business_days_router, companies_router, districts_router,
+    eu_funds_router, exchange_rates_router, health_router, holidays_router,
+    iban_router, municipalities_router, phone_areas_router,
+    procurement_notices_router, psc_router, regions_router,
+    school_facility_counts_router, sources_router, vehicle_registration_codes_router,
+):
+    ROUTES.update({"/v1" + route.path: route for route in router.routes if isinstance(route, APIRoute)})
 
 
 @pytest.fixture(autouse=True)
@@ -37,6 +56,7 @@ def test_complete_reviewed_inventory_and_refs():
               for path, item in schema["paths"].items() for method, op in item.items()]
     assert len(actual) == 39
     assert sorted(actual) == sorted(INVENTORY)
+    assert set(ROUTES) == {path for _, path, _ in INVENTORY}
     assert len({op[2] for op in actual}) == 39
     assert all(path == "/" or path.startswith("/v1/") for _, path, _ in actual)
     def resolve(value):

@@ -784,7 +784,17 @@ Final local gates (2026-10-28), project **0.23.12**:
   `data/`, cache/limiter implementations, dependency file and outreach package have
   zero diff from main. Source/freshness/reuse verdicts remain frozen.
 
-Hosted CI is reported separately by PR checks; no auto-merge/tag/release.
+Hosted CI initially exposed a **test-discovery compatibility issue** with its
+newer FastAPI's lazy included-router representation: scanning only `app.routes`
+missed router response models, although requests/schema checks still passed.
+Tests now inspect the actual declared routers as well and assert the model map
+equals the complete public path set; no framework-private internals or runtime
+changes are required. **1,016 tests also pass in a clean isolated environment**
+installed from unchanged `requirements.txt` (FastAPI 0.162.0 / Pydantic 2.14.1),
+in addition to the existing local environment. The new Starlette/httpx test-client
+deprecation warning is retained, not suppressed or addressed by dependency changes.
+Final hosted CI status is reported by PR checks separately
+from local results. No auto-merge/tag/release.
 
 Next: the maintainer-run [5–10 developer pilot](../developer-adoption.md), with
 concrete feedback before another implementation milestone or SDK. Source-owner
