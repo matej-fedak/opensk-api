@@ -148,3 +148,15 @@ the pre-work main baseline exactly; `data/` and the production dataset validator
 have no content diff. Actual OpenAPI still has **39 GET operations** with the same
 complete path/method/operationId inventory. Full milestone validation, smoke,
 hosted CI and PR-ready status are **not claimed** at this unfinished checkpoint.
+
+## Subsequent buyer-privacy evidence spike — 2026-10-28
+
+[Buyer privacy report](procurement-buyer-privacy.md):
+**NO_GO_PROCUREMENT_EXPANSION** with the reviewed source fields. A separately
+authorized metadata-only capture reconciles exactly with all 68,926 original
+identities; `buyer-person` is absent in every row, including 22,730 positively
+identified eForms notices. Hypothetical eligible corpus: **0**; all 68,926 excluded
+as unknown. BT-11/BT-501 do not establish a deterministic buyer-specific legal-
+person guarantee, and independent arrays have no demonstrated complete buyer
+join. This adds evidence to, rather than rewrites, the original pause. Procurement
+and holidays remain unpromoted; the milestone is still `0.23.13-dev`.

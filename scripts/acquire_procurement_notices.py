@@ -21,6 +21,14 @@ sys.path.insert(0, str(ROOT))
 from scripts.fetch_procurement_notices import TED_FIELDS, TED_SEARCH_URL
 
 PROFILE = "opensk-ted-reference-v1"
+PRIVACY_PROFILE = "opensk-ted-buyer-privacy-v1"
+# Explicit research-only projection. Reuse names/cardinality/title from the
+# already retained first capture; never reacquire names, titles or contacts.
+PRIVACY_FIELDS = [
+    "publication-number", "publication-date", "buyer-country", "buyer-person",
+    "buyer-legal-type", "buyer-identifier", "customization-id", "notice-subtype",
+]
+PROFILE_FIELDS = {PROFILE: TED_FIELDS, PRIVACY_PROFILE: PRIVACY_FIELDS}
 DOCS_URL = "https://docs.ted.europa.eu/api/latest/search.html"
 OPENAPI_URL = "https://api.ted.europa.eu/api-v3.yaml"
 LEGAL_URL = "https://ted.europa.eu/en/legal-notice"
@@ -48,10 +56,12 @@ def query_for(cutoff, start=None):
     return query
 
 
-def request_payload(cutoff, limit=250, token=None, start=None):
+def request_payload(cutoff, limit=250, token=None, start=None, *, profile=PROFILE):
     if not 1 <= limit <= 250:
         raise ValueError("TED limit must be 1..250")
-    payload = {"query": query_for(cutoff, start), "fields": TED_FIELDS,
+    if profile not in PROFILE_FIELDS:
+        raise ValueError("unknown acquisition profile")
+    payload = {"query": query_for(cutoff, start), "fields": list(PROFILE_FIELDS[profile]),
                "limit": limit, "paginationMode": "ITERATION", "onlyLatestVersions": True}
     if token:
         payload["iterationNextToken"] = token
@@ -119,7 +129,9 @@ def fetch(payload, *, attempts=3, timeout=60, sleep=time.sleep, http=None, statu
     raise AssertionError("unreachable retry exhaustion")
 
 
-def acquire(output, cutoff, *, start=None, limit=250, max_pages=1000, fetcher=fetch, delay=0.1):
+def acquire(output, cutoff, *, start=None, limit=250, max_pages=1000, fetcher=fetch, delay=0.1, profile=PROFILE):
+    if profile not in PROFILE_FIELDS:
+        raise ValueError("unknown acquisition profile")
     output = Path(output).resolve()
     if output.is_relative_to(ROOT):
         raise ValueError("Raw acquisition must be outside the repository")
@@ -130,10 +142,10 @@ def acquire(output, cutoff, *, start=None, limit=250, max_pages=1000, fetcher=fe
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()):
         raise ValueError("Use a new empty acquisition directory; never mix runs")
-    manifest = {"profile": PROFILE, "startedAt": instant(), "apiUrl": TED_SEARCH_URL,
+    manifest = {"profile": profile, "startedAt": instant(), "apiUrl": TED_SEARCH_URL,
                 "documentationUrl": DOCS_URL, "openapiUrl": OPENAPI_URL, "apiVersion": "3.0.0",
                 "legalUrl": LEGAL_URL, "query": query_for(cutoff, start), "cutoff": cutoff,
-                "startDate": start, "fields": TED_FIELDS, "paginationMode": "ITERATION",
+                "startDate": start, "fields": list(PROFILE_FIELDS[profile]), "paginationMode": "ITERATION",
                 "onlyLatestVersions": True, "limit": limit, "maxPages": max_pages,
                 "pages": [], "httpStatuses": {}, "duplicates": 0, "malformed": 0}
     token = None
@@ -141,7 +153,7 @@ def acquire(output, cutoff, *, start=None, limit=250, max_pages=1000, fetcher=fe
     ids = set()
     total = None
     for number in range(1, max_pages + 1):
-        payload = request_payload(cutoff, limit, token, start)
+        payload = request_payload(cutoff, limit, token, start, profile=profile)
         raw, body, content_type = fetcher(payload, statuses=manifest["httpStatuses"])
         count = body.get("totalNoticeCount")
         if type(count) is not int or count < 0 or (total is not None and count != total):
@@ -187,8 +199,9 @@ def main():
     parser.add_argument("--start-date")
     parser.add_argument("--limit", type=int, default=250)
     parser.add_argument("--max-pages", type=int, default=1000)
+    parser.add_argument("--profile", choices=PROFILE_FIELDS, default=PROFILE)
     args = parser.parse_args()
-    manifest = acquire(args.output, args.cutoff, start=args.start_date, limit=args.limit, max_pages=args.max_pages)
+    manifest = acquire(args.output, args.cutoff, start=args.start_date, limit=args.limit, max_pages=args.max_pages, profile=args.profile)
     print(json.dumps({k: v for k, v in manifest.items() if k != "pages"}, indent=2))
 
 

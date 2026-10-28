@@ -4,6 +4,7 @@ import json
 import pytest
 
 from scripts.acquire_procurement_notices import acquire, encoded, request_payload, validate_scope
+from scripts.acquire_procurement_notices import PRIVACY_PROFILE, PRIVACY_FIELDS
 
 
 def row(number=1):
@@ -75,3 +76,16 @@ def test_output_cannot_use_repository():
     from scripts.acquire_procurement_notices import ROOT
     with pytest.raises(ValueError, match="outside"):
         acquire(ROOT / "data/raw/test", "2026-10-28")
+
+
+def test_privacy_profile_is_minimal_and_separate(tmp_path):
+    requests = []
+    manifest = acquire(tmp_path / "privacy", "2026-10-28", limit=2,
+                       fetcher=source([page([row(), row(2)], "a"), page([], "a")], requests),
+                       delay=0, profile=PRIVACY_PROFILE)
+    assert manifest["profile"] == PRIVACY_PROFILE
+    assert manifest["fields"] == requests[0]["fields"] == PRIVACY_FIELDS
+    assert not set(PRIVACY_FIELDS) & {"buyer-name", "notice-title", "buyer-email", "buyer-street"}
+    assert requests[0]["onlyLatestVersions"] is True
+    with pytest.raises(ValueError, match="unknown"):
+        request_payload("2026-10-28", profile="unreviewed")
