@@ -72,6 +72,79 @@ as-of the evidence check, not a guarantee against future legislative changes.
 - https://nbs.sk/o-narodnej-banke/sviatky-v-sr/
 - https://www.ip.gov.sk/aktuality/sviatky-8-maj-15-september-2026-z-pohladu-pracovneho-prava.html
 
-Final acquisition/import/performance/calendar evidence and safety results follow
-after the bounded tooling and source review. No production dataset changed during
-this initial audit.
+## Pause decision — no production promotion
+
+The maintainer explicitly selected **Pause for privacy decision** after the full
+acquisition exposed natural-person/sole-trader buyers. **0.23.13 is unfinished**;
+no production data, source catalogue, freshness or public API change is approved
+or made. Version remains `0.23.13-dev`; no PR/tag/release or outreach.
+
+The acquisition completed 2026-10-28T21:23:21.101159Z–21:28:05.490605Z:
+**68,926 reported / 68,926 acquired**, 276 nonempty pages plus one empty terminal
+page, **466,528,049 raw bytes**; zero duplicate canonical publication identities,
+zero acquisition scope/date errors, stable reported total throughout. HTTP attempts:
+277 successful 200s, six retried 429s, one retried 502. Full raw pages/tokens and
+page hashes stay private under
+`C:\Users\matej\AppData\Local\Temp\opencode\ted-02313\full-v2\`.
+Committed non-content summary: `procurement-coverage-acquisition.json`.
+
+Important source/schema findings, **not permission to loosen production**:
+
+- Historic publication numbers are sometimes unpadded (`150-2017`); exact numeric
+  zero-padding preserves the current six-digit public ID format. Initial strict
+  acquisition failed closed; the complete second run handles this explicitly.
+- 54 records omit the selected optional `buyer-name`; the existing production
+  validator requires nonempty names. Do not invent missing buyers.
+- 39 notices among rows with named buyers have a non-Slovak procedure-level place
+  country. A Slovak buyer does not imply performance in Slovakia. The current
+  production validator permits only SK/null and remains unchanged pending review.
+- 15 rows among named-buyer records have a non-five-digit postcode (including
+  source city labels and invalid lengths). No postcode/geography inference is
+  justified. Draft candidate handling is not a promoted policy.
+- A screening pass found 4,155 distinct Slovak buyer display labels and 17
+  honorific/no-obvious-institution-marker candidates. Manual inspection distinguishes
+  named hospitals from individual/sole-trader buyers. **This screening is not a
+  complete privacy classifier or approval**, and no actual personal names/record
+  IDs from it are committed. A field allowlist does not prevent personal names
+  from occurring inside an otherwise approved buyer-name field (or free text).
+
+**Procurement production status: NO_EXPANSION / PAUSED_PRIVACY_DECISION.** The
+current 100-record production file is byte-identical, not replaced by the acquired
+corpus. No complete-TED production claim, no silent exclusions/redaction, no
+arbitrary recent-period fallback to evade privacy. Latest-only and PIT/query count
+agreement establish acquisition coverage, not institutional identity or privacy.
+The importer draft explicitly refuses `--write-production` while paused.
+
+### Required decision before resuming
+
+Approve a source-based institutional-buyer/privacy classification and exclusion
+strategy separately, including how joint buyers, missing buyer identity and free
+text are handled. The current eleven-field projection provides no authoritative
+legal-form marker. Do not classify legal entities by honorific/suffix/name guesses,
+add identifiers/fields or fetch details without separately approving that scope.
+If unsafe/unclassified notices must be excluded, define and disclose that narrower
+scope instead of calling it every matching TED notice. Source completeness and
+privacy-safe production coverage are separate axes.
+
+Holiday law verification supports an offline 2024–2030 candidate (90 non-working
+holidays after seven evidenced historical corrections). The generator and its
+independent Easter tests are retained as **unpromoted tooling**. No holiday
+production write, freshness bump, description/example update or business-day
+coverage change has happened. Future statutory dates remain as-of checked law,
+not a guarantee against later amendments.
+
+The 100-record baseline benchmark is private in `ted-02313/benchmark-before.json`:
+73,616 working-checkout bytes; median JSON parse 0.512 ms; cold service load 1.129 ms;
+retained traced load heap 209,111 bytes; RSS after load 28,766,208 bytes; last-ID
+lookup 0.009 ms; representative searches 2.53–3.246 ms. Environment: Python 3.14.5,
+Windows 11, AMD64 Family 25 Model 117. No safe expanded candidate has been promoted
+or benchmarked, so **no final storage verdict** or before/after performance claim
+is made. No database/index/Redis/dependency change is justified from this pause.
+
+Pause checkpoint validation: **37 targeted acquisition/generator/import tests
+passed**, including an explicit test that procurement production promotion is
+blocked. `git diff --check` passed. All **14 production JSON byte hashes** match
+the pre-work main baseline exactly; `data/` and the production dataset validator
+have no content diff. Actual OpenAPI still has **39 GET operations** with the same
+complete path/method/operationId inventory. Full milestone validation, smoke,
+hosted CI and PR-ready status are **not claimed** at this unfinished checkpoint.
