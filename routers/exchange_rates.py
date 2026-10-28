@@ -10,6 +10,7 @@ from schemas.common import (
     error_detail,
 )
 from schemas.exchange_rates import ExchangeRateDayResponse, ExchangeRatesData, ExchangeRatesResponseMetadata
+from schemas.openapi import contract
 from services.exchange_rates_service import (
     RateDateNotFoundError,
     RateNotAvailableError,
@@ -124,7 +125,7 @@ def _respond(day: str | None, currency: str | None, cache_control: str,
         "OpenSK snapshot — not a live or today's market rate; the snapshot may lag the "
         "latest ECB publication until refreshed offline. " + _COMMON_DESCRIPTION
     ),
-    response_model=ExchangeRateDayResponse,
+    **contract("get_exchange_rates_latest", ExchangeRateDayResponse, 400, 404, 429, exclude_unset=False),
 )
 def get_latest_rates(
     response: Response,
@@ -144,7 +145,7 @@ def get_latest_rates(
         "outside snapshot coverage), the response is 404 — never a neighbouring, "
         "previous or nearest date. " + _COMMON_DESCRIPTION
     ),
-    response_model=ExchangeRateDayResponse,
+    **contract("get_exchange_rates_by_date", ExchangeRateDayResponse, 400, 404, 429, exclude_unset=False),
 )
 def get_rates_for_date(
     date: str,

@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Response
+from schemas.common import Page, SuccessResponse
+from schemas.openapi import contract
+from schemas.school_facility_counts import SchoolFacilityCount, SchoolFacilityStats
 
 from schemas.common import API_SOURCE, SCHOOL_FACILITY_COUNTS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_region_code_format
@@ -59,6 +62,7 @@ def _parse_optional_district_code(value: str | None) -> str | None:
     "",
     summary="List school facility aggregate counts",
     description="Returns static aggregate school facility count rows from the MŠVVaM register dataset. This is not an institution-level school directory.",
+    **contract("list_school_facility_counts", SuccessResponse[Page[SchoolFacilityCount]], 400, 429),
 )
 def list_school_facility_counts_endpoint(
     response: Response,
@@ -108,6 +112,7 @@ def list_school_facility_counts_endpoint(
     "/stats",
     summary="School facility aggregate count stats",
     description="Returns local totals for the aggregate school facility count dataset. It does not expose per-school, staff, or pupil data.",
+    **contract("get_school_facility_count_stats", SuccessResponse[SchoolFacilityStats], 429),
 )
 def get_school_facility_count_stats_endpoint(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL

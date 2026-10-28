@@ -1,6 +1,9 @@
 from datetime import date
 
 from fastapi import APIRouter, HTTPException, Query, Response
+from schemas.business_days import BusinessDayAddition, BusinessDayCheck, BusinessDayInterval
+from schemas.common import SuccessResponse
+from schemas.openapi import contract
 
 from schemas.common import API_SOURCE, HOLIDAYS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.business_days_service import (
@@ -75,7 +78,8 @@ def _describe(day: date) -> dict[str, object]:
 @router.get(
     "/check",
     summary="Check a business day",
-    description="Returns whether an ISO date is a Slovak business day (Monday-Friday, not a known public holiday).",
+    description="Checks Monday–Friday excluding a known local public holiday. Verified years 2024–2026 only; unsupported years return 400 UNSUPPORTED_YEAR. Not a bank settlement, employer-specific or authority-specific calendar.",
+    **contract("check_business_day", SuccessResponse[BusinessDayCheck], 400, 429),
 )
 def check_business_day(
     response: Response,
@@ -98,7 +102,8 @@ def check_business_day(
 @router.get(
     "/add",
     summary="Add business days",
-    description="Adds (or subtracts) business days from an ISO date using local Slovak holiday data.",
+    description="Adds/subtracts business days, excluding the start date, using local holidays (2024–2026 only). Crossing unsupported coverage returns 400 UNSUPPORTED_YEAR. days=0 returns the start unchanged even on a weekend; the historical resultIsBusinessDay field remains true, so use /check to establish that date's status. Not a settlement calendar.",
+    **contract("add_business_days", SuccessResponse[BusinessDayAddition], 400, 429),
 )
 def add_business_days_endpoint(
     response: Response,
@@ -133,7 +138,8 @@ def add_business_days_endpoint(
 @router.get(
     "/between",
     summary="Count business days",
-    description="Counts business days in a bounded inclusive ISO date interval using local Slovak holiday data.",
+    description="Counts Monday–Friday excluding local holidays in an inclusive interval (from <= to, at most 366 days apart), verified years 2024–2026 only. Weekend holidays count as weekendDays, not holidayDays; holidays lists weekday holiday hits. Unsupported years return 400. Not a settlement calendar.",
+    **contract("count_business_days", SuccessResponse[BusinessDayInterval], 400, 429),
 )
 def business_days_between_endpoint(
     response: Response,

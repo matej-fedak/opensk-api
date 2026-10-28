@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Response
+from schemas.common import Page, SuccessResponse
+from schemas.openapi import contract
+from schemas.procurement import ProcurementNotice, ProcurementSearch, ProcurementStats
 
 from schemas.common import API_SOURCE, PROCUREMENT_NOTICES_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.procurement_notice_service import (
@@ -44,7 +47,8 @@ def _parse_offset(value: str | None) -> int:
 @router.get(
     "",
     summary="List public procurement notices",
-    description="Returns a checked-in partial TED Search API snapshot of Slovak-buyer public procurement notices. This is not the complete national ÚVO procurement register.",
+    description="Returns a checked-in TED_PARTIAL snapshot of Slovak-buyer public procurement notices. This is not the complete national ÚVO procurement register. Filters combine with AND; deadlines/geography may be unknown (null).",
+    **contract("list_procurement_notices", SuccessResponse[Page[ProcurementNotice]], 400, 422, 429),
 )
 def list_procurement_notices_endpoint(
     response: Response,
@@ -74,7 +78,8 @@ def list_procurement_notices_endpoint(
 @router.get(
     "/search",
     summary="Search public procurement notices",
-    description="Searches the checked-in partial TED snapshot by publication number, notice title, buyer name, or place city. The endpoint does not call upstream TED or ÚVO services.",
+    description="Searches the checked-in TED_PARTIAL snapshot by publication number, title, buyer name or city; filters combine with AND. Not a complete national ÚVO register; no upstream runtime calls. query echoes trimmed input; count is page size, total is all matches.",
+    **contract("search_procurement_notices", SuccessResponse[ProcurementSearch], 400, 422, 429),
 )
 def search_procurement_notices_endpoint(
     response: Response,
@@ -108,6 +113,7 @@ def search_procurement_notices_endpoint(
     "/stats",
     summary="Public procurement notice snapshot stats",
     description="Returns totals for the checked-in TED_PARTIAL public procurement notice snapshot, explicitly including partial-coverage flags.",
+    **contract("get_procurement_notice_stats", SuccessResponse[ProcurementStats], 429),
 )
 def get_procurement_notice_stats_endpoint(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
@@ -122,6 +128,7 @@ def get_procurement_notice_stats_endpoint(response: Response) -> dict[str, objec
     "/{id}",
     summary="Public procurement notice by TED publication number",
     description="Returns one record from the checked-in partial TED snapshot. The source URL links back to TED XML, but the API does not fetch or serve raw XML/PDF/HTML.",
+    **contract("get_procurement_notice", SuccessResponse[ProcurementNotice], 404, 429),
 )
 def get_procurement_notice_endpoint(id: str, response: Response) -> dict[str, object]:
     record = get_procurement_notice_by_id(id)

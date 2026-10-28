@@ -8,7 +8,7 @@ boundary.
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 PublicSourceStatus = Literal["production", "seed", "historical", "research", "blocked"]
@@ -23,37 +23,37 @@ class SourceIdentity(BaseModel):
 
 class SourceLicence(BaseModel):
     status: PublicLicenceStatus
-    name: str | None = None
-    termsUrl: str | None = None
+    name: str | None
+    termsUrl: str | None
 
 
 class PublicSourceEntry(BaseModel):
     id: str
     name: str
     status: PublicSourceStatus
-    coverage: PublicSourceCoverage | None = None
+    coverage: PublicSourceCoverage | None
     source: SourceIdentity
     licence: SourceLicence
-    attribution: str | None = None
-    lastUpdated: str | None = None
-    lastChecked: str | None = None
-    updateCadence: str | None = None
-    limitations: list[str] = Field(default_factory=list)
+    attribution: str | None
+    lastUpdated: str | None
+    lastChecked: str | None
+    updateCadence: str | None
+    limitations: list[str]
 
 
 class ResponseMetadata(BaseModel):
     source: str
-    lastUpdated: str | None = None
-    version: str
+    lastUpdated: str | None
+    version: Literal["v1"]
 
 
 class SourceListResponse(BaseModel):
     data: list[PublicSourceEntry]
     metadata: ResponseMetadata
-    error: None = None
+    error: None
 
 
 class SourceDetailResponse(BaseModel):
     data: PublicSourceEntry
     metadata: ResponseMetadata
-    error: None = None
+    error: None

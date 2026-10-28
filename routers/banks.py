@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Response
 
 from schemas.common import STATIC_CACHE_CONTROL, error_detail
 from schemas.banks import BankResponse, BanksResponse
+from schemas.openapi import contract
 from services.bank_service import BankInvalidCodeError, BankNotFoundError, bank_response_metadata, load_banks, lookup_bank
 
 
@@ -12,7 +13,7 @@ router = APIRouter(prefix="/banks", tags=["banks"])
     "",
     summary="List Slovak banks",
     description="Returns the local Národná banka Slovenska converter snapshot, transformed by OpenSK. Metadata carries NBS source/version/effective/download provenance and attribution. NBS Terms of Use apply to data, not MIT. Participation fields are OpenSK-derived from SIPS, not general bank operating status.",
-    response_model=BanksResponse,
+    **contract("list_banks", BanksResponse, 429, exclude_unset=False),
 )
 def list_banks(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
@@ -23,7 +24,7 @@ def list_banks(response: Response) -> dict[str, object]:
     "/{code}",
     summary="Bank lookup by code",
     description="Returns one bank from the local NBS converter snapshot. Additive metadata identifies NBS, source version/effective/download provenance, attribution and OpenSK transformation/derived fields. JSON is not the original NBS file; MIT covers code, not NBS data.",
-    response_model=BankResponse,
+    **contract("get_bank", BankResponse, 400, 404, 429, exclude_unset=False),
 )
 def get_bank(code: str, response: Response) -> dict[str, object]:
     try:

@@ -2,6 +2,9 @@ import json
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Response
+from schemas.common import SuccessResponse
+from schemas.holidays import Holiday
+from schemas.openapi import contract
 
 from schemas.common import (
     API_SOURCE,
@@ -25,7 +28,8 @@ def load_holidays() -> dict[str, list[dict[str, str]]]:
 @router.get(
     "/{year}",
     summary="Holiday calendar by year",
-    description="Returns Slovak public holidays for the requested year from the static seed dataset.",
+    description="Returns the local Slovak public-holiday array for a verified year (2024–2026 only). Other years return 404, not an assertion that there are no holidays. Not a bank settlement or employer-specific calendar.",
+    **contract("get_holidays", SuccessResponse[list[Holiday]], 404, 422, 429),
 )
 def get_holidays(year: int, response: Response) -> dict[str, object]:
     holidays_data = load_holidays()

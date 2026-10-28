@@ -121,7 +121,9 @@ def load_psc_metadata() -> dict[str, object]:
 def index_psc_data() -> dict[str, list[dict[str, object]]]:
     indexed: dict[str, list[dict[str, object]]] = {}
 
-    for record in load_psc_data():
+    # Index the same normalized logical matches used by collection/search, not
+    # grouped storage containers (which would count a whole group as one match).
+    for record in load_psc_records():
         raw_psc = record.get("psc") if record.get("psc") is not None else record.get("code")
         if raw_psc is None:
             continue

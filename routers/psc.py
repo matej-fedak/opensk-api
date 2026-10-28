@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Response
+from schemas.common import Page, SuccessResponse
+from schemas.openapi import contract
+from schemas.psc import PSCLookup, PSCMatch, PSCStats
 
 from schemas.common import API_SOURCE, PSC_GEOGRAPHY_SOURCE, PSC_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_municipality_code_format, validate_region_code_format
@@ -83,7 +86,8 @@ def _parse_bool(value: str | None, field_name: str) -> bool | None:
 @router.get(
     "",
     summary="List PSC records",
-    description="Returns the static PSC dataset with pagination and filters.",
+    description="Lists flat logical matches in the partial historical local PSC snapshot. Filters combine with AND; page count differs from total. Not an address validator or proof of municipality-wide validity. Source/coverage/reuse: /v1/sources/psc. No successor PSC migration.",
+    **contract("list_psc", SuccessResponse[Page[PSCMatch]], 400, 429),
 )
 def list_psc_endpoint(
     response: Response,
@@ -141,7 +145,8 @@ def list_psc_endpoint(
 @router.get(
     "/search",
     summary="Search PSC records",
-    description="Searches the static PSC dataset by query string.",
+    description="Searches flat matches in the partial historical local PSC snapshot: numeric PSC prefix or normalized municipality/delivery-post text substring. Not an address validator or proof that a code covers every address in a municipality. Source limitations: /v1/sources/psc.",
+    **contract("search_psc", SuccessResponse[Page[PSCMatch]], 400, 429),
 )
 def search_psc_endpoint(
     response: Response,
@@ -182,7 +187,8 @@ def search_psc_endpoint(
 @router.get(
     "/stats",
     summary="PSC dataset stats",
-    description="Returns lightweight local statistics for the PSC dataset.",
+    description="Reports local counts and geography-code coverage for the partial historical PSC snapshot, not national completeness, current postal validity or address-level coverage. See /v1/sources/psc; successor migration remains parked.",
+    **contract("get_psc_stats", SuccessResponse[PSCStats], 429),
 )
 def stats_psc_endpoint(response: Response) -> dict[str, object]:
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
@@ -196,7 +202,8 @@ def stats_psc_endpoint(response: Response) -> dict[str, object]:
 @router.get(
     "/{psc}",
     summary="Postal code lookup",
-    description="Looks up a Slovak postal code in the expanded static PSC dataset.",
+    description="Returns primary flat fields plus all flat administrative matches and matchCount=len(matches). Primary order prefers resolvable local municipality, then open-ended validity, then deliveryPost/name/code. Partial historical local snapshot: not an address validator or municipality-wide validity guarantee. 404 means absent from OpenSK's snapshot, not legally invalid PSC. Optional geography resolves each match locally. 0.23.12 fixes grouped lookup/count consistency with list/search; data/source/coverage unchanged. See /v1/sources/psc.",
+    **contract("get_psc", SuccessResponse[PSCLookup], 400, 404, 429),
 )
 def get_psc(
     psc: str,

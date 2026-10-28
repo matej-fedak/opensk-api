@@ -118,13 +118,13 @@ class BankResponseMetadata(BaseModel):
 class BanksResponse(BaseModel):
     data: list[BankRecord]
     metadata: BankResponseMetadata
-    error: None = None
+    error: None
 
 
 class BankResponse(BaseModel):
     data: BankRecord
     metadata: BankResponseMetadata
-    error: None = None
+    error: None
 
 
 class IbanValidationData(BaseModel):
@@ -141,4 +141,4 @@ class IbanValidationData(BaseModel):
 class IbanValidationResponse(BaseModel):
     data: IbanValidationData
     metadata: BankResponseMetadata
-    error: None = None
+    error: None

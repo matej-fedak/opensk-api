@@ -1,4 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, Response
+from schemas.common import Page, SuccessResponse
+from schemas.openapi import contract
+from schemas.vehicle_registration_codes import VehicleRegistrationCode
 
 from schemas.common import API_SOURCE, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, VEHICLE_REGISTRATION_CODES_LAST_UPDATED, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_region_code_format
@@ -75,6 +78,7 @@ def _parse_optional_district_code(value: str | None) -> str | None:
     "",
     summary="List legacy vehicle registration district codes",
     description="Returns static historical Slovak vehicle registration district abbreviations. This does not decode full plates and is not reliable for current plate lookup.",
+    **contract("list_vehicle_registration_codes", SuccessResponse[Page[VehicleRegistrationCode]], 400, 429),
 )
 def list_vehicle_registration_codes_endpoint(
     response: Response,
@@ -115,6 +119,7 @@ def list_vehicle_registration_codes_endpoint(
     "/search",
     summary="Search legacy vehicle registration district codes",
     description="Searches static historical district abbreviations by code, district name, or local geography code. It does not decode full vehicle plates.",
+    **contract("search_vehicle_registration_codes", SuccessResponse[Page[VehicleRegistrationCode]], 400, 429),
 )
 def search_vehicle_registration_codes_endpoint(
     response: Response,
@@ -143,6 +148,7 @@ def search_vehicle_registration_codes_endpoint(
     "/{code}",
     summary="Legacy vehicle registration district code lookup",
     description="Returns one static historical Slovak vehicle registration district abbreviation. This is not a current plate lookup.",
+    **contract("get_vehicle_registration_code", SuccessResponse[VehicleRegistrationCode], 400, 404, 429),
 )
 def get_vehicle_registration_code_endpoint(code: str, response: Response) -> dict[str, object]:
     try:

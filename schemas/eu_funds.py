@@ -192,12 +192,14 @@ class ListData(ExactModel):
 
 
 class ListResponse(ExactModel):
+    model_config = ConfigDict(extra="forbid", strict=True, json_schema_serialization_defaults_required=True)
     data: ListData
     metadata: ResponseMetadata
     error: None = None
 
 
 class DetailResponse(ExactModel):
+    model_config = ConfigDict(extra="forbid", strict=True, json_schema_serialization_defaults_required=True)
     data: Project
     metadata: ResponseMetadata
     error: None = None

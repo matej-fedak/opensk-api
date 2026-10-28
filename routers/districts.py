@@ -2,6 +2,9 @@ from fastapi import APIRouter, HTTPException, Query, Response
 
 from schemas.common import DISTRICTS_LAST_UPDATED, GEOGRAPHY_SOURCE, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, GeographyNotFoundError, get_district, list_districts
+from schemas.common import SuccessResponse
+from schemas.geography import District
+from schemas.openapi import contract
 
 
 router = APIRouter(prefix="/districts", tags=["districts"])
@@ -11,6 +14,7 @@ router = APIRouter(prefix="/districts", tags=["districts"])
     "",
     summary="List districts",
     description="Returns the static districts dataset, optionally filtered by region code.",
+    **contract("list_districts", SuccessResponse[list[District]], 400, 404, 429),
 )
 def list_districts_endpoint(
     response: Response,
@@ -52,6 +56,7 @@ def list_districts_endpoint(
     "/{code}",
     summary="District lookup by code",
     description="Returns one Slovak district from the static geography dataset.",
+    **contract("get_district", SuccessResponse[District], 400, 404, 429),
 )
 def get_district_by_code(code: str, response: Response) -> dict[str, object]:
     try:

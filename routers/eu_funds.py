@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, Query, Response
 
 from schemas.common import STATIC_CACHE_CONTROL, error_detail
 from schemas.eu_funds import DetailResponse, ListData, ListResponse, ResponseMetadata
+from schemas.openapi import contract
 from services import eu_funds_service as service
 from services.eu_funds_policy import LICENCE_NOTICE, NUTS_PATTERN, PROJECT_CODE_PATTERN, SOURCE_NOTICE
 
@@ -57,7 +58,7 @@ def metadata(response: Response):
 
 
 @router.get("", summary="List privacy-approved ITMS21+ project references", description=NOTICE,
-            response_model=ListResponse)
+            **contract("list_eu_funds_projects", ListResponse, 400, 429, exclude_unset=False))
 def list_projects(
     response: Response,
     limit: str = Query("50", description="Page size 1–200 (default 50)."),
@@ -85,7 +86,7 @@ def list_projects(
 
 
 @router.get("/{projectCode}", summary="Look up an ITMS21+ project by official project code", description=NOTICE,
-            response_model=DetailResponse)
+            **contract("get_eu_funds_project", DetailResponse, 400, 404, 429, exclude_unset=False))
 def get_project(projectCode: str, response: Response) -> DetailResponse:
     code = projectCode.strip()
     if not re.fullmatch(PROJECT_CODE_PATTERN, code):

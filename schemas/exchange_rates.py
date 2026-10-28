@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 class ExchangeRatesData(BaseModel):
     date: str = Field(
         description="ECB publication date of this rate set (exact date only, no fallback).",
-        examples=["2026-10-09"],
+        examples=["2026-10-12"],
     )
     base: Literal["EUR"] = Field(description="Base currency of every rate in this object.")
     directionSemantics: str = Field(
@@ -24,7 +24,7 @@ class ExchangeRatesData(BaseModel):
         description="Official ECB reference rates as exact decimal strings, keyed by ISO 4217 "
         "alpha-3 currency code. Strings preserve the official lexeme/precision; these are "
         "informational reference values, not tradable/settlement prices.",
-        examples=[{"CZK": "24.369", "GBP": "0.84763", "USD": "1.1206"}],
+        examples=[{"USD": "1.1181"}],
     )
     notice: str = Field(
         description="ECB use notice reproduced with the materialized snapshot.",
@@ -43,4 +43,4 @@ class ExchangeRatesResponseMetadata(BaseModel):
 class ExchangeRateDayResponse(BaseModel):
     data: ExchangeRatesData
     metadata: ExchangeRatesResponseMetadata
-    error: None = None
+    error: None
