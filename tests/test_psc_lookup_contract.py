@@ -49,6 +49,22 @@ def test_all_indexed_matches_flat_and_single_match_preserved():
             assert result["matches"] == records
 
 
+def test_reviewed_primary_preferences_preserved(monkeypatch):
+    import services.psc_service as service
+    local = {"psc": "01001", "municipalityCode": "517402", "validTo": None, "deliveryPost": "B"}
+    expired = dict(local, validTo="2020-01-01", deliveryPost="A")
+    unknown = dict(local, municipalityCode="000000", deliveryPost="A")
+    preferred = dict(local, deliveryPost="A")
+    monkeypatch.setattr(service, "index_psc_data", lambda: {"01001": [unknown, expired, local, preferred]})
+    result = service.lookup_psc("01001", include_geography=True)
+    assert [m["municipalityCode"] for m in result["matches"]] == ["517402", "517402", "517402", "000000"]
+    assert result["matches"][0]["deliveryPost"] == "A"
+    assert result["matches"][1]["deliveryPost"] == "B"
+    assert result["matches"][2]["validTo"] == "2020-01-01"
+    assert "geography" not in result["matches"][-1]
+    assert result["geography"]["municipality"]["code"] == "517402"
+
+
 @pytest.mark.parametrize("url,status,code", [
     ("/v1/psc/99A99", 400, "INVALID_FORMAT"),
     ("/v1/psc/01001?include=bad", 400, "INVALID_FORMAT"),

@@ -173,12 +173,50 @@ def capture(output):
     return schema, evidence, hashes
 
 
+def write_examples(schema, evidence, target):
+    """Curate small response examples from checked-in data; no upstream access.
+
+    Explicit invocation only. Never use this to overwrite the pre-change audit.
+    Non-paginated arrays are excerpts and are labelled as such in OpenAPI.
+    """
+    examples = {}
+    for path, record in evidence.items():
+        body = json.loads(json.dumps(record["body"]))
+        if path == "/v1/iban/validate/{iban}":
+            # Baseline also exercises an invalid checksum (HTTP
+            # 200); the copy-paste success example uses the smoke test's valid
+            # synthetic account instead, never a real person's account.
+            body = TestClient(app).get("/v1/iban/validate/SK5409000000000000000001").json()
+        if isinstance(body["data"], list):
+            body["data"] = body["data"][:1]
+        if path == "/v1/phone-areas/{code}":
+            body["data"]["items"] = body["data"]["items"][:1]
+        if path == "/":
+            body["data"]["version"] = app.version.removesuffix("-dev")
+        examples[schema["paths"][path]["get"]["operationId"]] = body
+    client = TestClient(app)
+    errors = {}
+    for path, url, status, code in json.loads(Path("tests/fixtures/public-error-cases.json").read_bytes()):
+        response = client.get(url)
+        assert response.status_code == status and response.json()["error"]["code"] == code
+        operation_id = schema["paths"][path]["get"]["operationId"]
+        errors.setdefault(operation_id, {})[str(status)] = response.json()
+    examples["__errors__"] = errors
+    examples["__psc_geography__"] = client.get("/v1/psc/01001?include=geography").json()
+    target.write_text(json.dumps(examples, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--baseline-report", type=Path, help="Generate the initial audit, before implementation only")
+    parser.add_argument("--examples", type=Path, help="Explicitly regenerate curated runtime examples after contract implementation")
     args = parser.parse_args()
+    if args.baseline_report and args.baseline_report.exists():
+        parser.error("Refusing to overwrite an existing pre-implementation audit")
     schema, evidence, hashes = capture(args.output)
+    if args.examples:
+        write_examples(schema, evidence, args.examples)
     if args.baseline_report:
         args.baseline_report.write_text(baseline_report(schema, evidence, hashes), encoding="utf-8")
         baseline = {path: {"url": r["url"], "bodySha256": digest(normalized_body(path, r["body"])),
