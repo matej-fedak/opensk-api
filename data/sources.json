@@ -80,20 +80,20 @@
     "notes": "REPLY_RECEIVED_RESOLVED: sent 2026-10-11, institutional reply received 2026-10-14. Refreshed in 0.23.8 from current official v226, effective 2026-10-08; downloaded 2026-10-15T16:23:00Z, 1953 bytes, SHA-256 b82cd0c34d89ff1a68d710fedd3e8f509065a53ae605282ad4fc29234b74fc64. 38 source rows: 30 domestic included, eight CZ BIC rows excluded; 21 true / nine false SIPS projections. No codes added/removed; changes at 3100 (source-language name), 7930 (provider name), 9956 (BIC PYYUSK22). Current CSV headings: Kód platobného styku; Poskytovateľ platobných služieb; SWIFT kód 8; Systém SIPS. The HTML Akt. úč. column is not a separate CSV input. activePartyMarker/activeParty derive only from SIPS; country is derived and alphabeticCode remains null. CSV provider spelling Aktiengesselschaft is preserved rather than silently corrected to the HTML spelling. Normal bank/IBAN metadata exposes NBS attribution and actual source provenance; checksum validation is OpenSK/ISO logic, not NBS. JSON is transformed, not the original NBS file; MIT covers code, not NBS data. NBS completeness/liability limitations and downstream attribution apply. No symbols used. Acquisition, mapping and diff: docs/research/nbs-bank-reuse-clarification.md."
   },
   "holidays": {
-    "status": "manual-seed",
+    "status": "generated",
     "coverage": "partial",
-    "sourceName": "NBS holidays page and Act 241/1993",
-    "sourceUrl": "https://www.nbs.sk/en/about-the-bank/holidays-in-slovakia/",
-    "licence": "NBS disclaimer allows reuse with attribution and no modification.",
+    "sourceName": "Act 241/1993 Coll. via official Slov-Lex; NBS holiday calendar corroboration",
+    "sourceUrl": "https://static.slov-lex.sk/static/SK/ZZ/1993/241/",
+    "licence": "OpenSK calculates statutory calendar facts from Act 241/1993, not a copy or modification of the NBS table. NBS website conditions are not a blanket licence for this generated JSON; no new licence grant is claimed.",
     "licenceStatus": "reuse statement identified; exact dataset redistribution terms should be retained on file",
-    "redistributionStatus": "allowed with attribution and no modification",
+    "redistributionStatus": "bounded rule-generated statutory calendar; NBS used only as corroboration; no new blanket licence or permission claimed",
     "termsUrl": "pending",
-    "attribution": "Attribute the National Bank of Slovakia holidays page and Act 241/1993 where applicable.",
+    "attribution": "Legal basis: Act 241/1993 Coll., official Slov-Lex versions effective 2024-01-01 and 2025-11-01 (Acts 530/2023 and 261/2025). NBS Sviatky v SR corroborates 2026/2027; OpenSK generates the calendar and English labels independently.",
     "riskLevel": "medium",
-    "lastChecked": "2026-05-25",
+    "lastChecked": "2026-10-28",
     "updateCadence": "Annual legislative updates",
-    "nextAction": "Retain the exact NBS disclaimer text and confirm whether curated holiday JSON redistribution counts as permitted reuse without modification.",
-    "notes": "Curated 2024-2026 holiday lists; source terms should be checked before redistribution."
+    "nextAction": "Manually recheck Slov-Lex amendment history and future-effective legislation before refresh/extension; monitor changes to the supported horizon. Do not infer an NBS dataset licence from corroboration or the separate bank reply.",
+    "notes": "0.23.13 HOLIDAYS_EXPANDED_VERIFIED: 112 statutory holiday dates, 2024-2030 (16/year), generated offline from reviewed Act 241/1993 rules. isStateHoliday distinguishes §1; isDayOfRest uses §2/§4b, not dataset membership. Includes working 28 October. November 17 ceases to be a day of rest from 2025-11-01; May 8 and September 15 are working only in 2026 and resume day-of-rest status in 2027. Slov-Lex history/current text/transitional and amendment effective dates checked 2026-10-28: no published future-effective calendar-rule change listed through 2030. Future years remain subject to later legislation. NBS https://nbs.sk/o-narodnej-banke/sviatky-v-sr/ corroborates 2026/2027 only; it is not the generation input. HOLIDAYS_LAST_UPDATED is the law/source verification date, not occurrence or NBS publication date. Bounded/partial coverage; not a settlement, employer, shop-opening or authority-hours calendar. See docs/research/holiday-calendar-correctness.md. Existing identified licence status is not upgraded."
   },
   "companies": {
     "status": "seed-backed",
@@ -191,8 +191,8 @@
     "riskLevel": "medium",
     "lastChecked": "2026-09-29",
     "updateCadence": "Manual bounded refresh from the public TED Search API; refresh requires offline review and validation before promotion",
-    "nextAction": "Verify a current anonymous machine-readable ÚVO national notice distribution with explicit reuse/redistribution terms before claiming NATIONAL coverage; retain exact TED attribution wording.",
-    "notes": "0.19.0 imports the latest 100 Slovak-buyer notices returned by the verified anonymous TED Search API query `buyer-country = SVK`. Coverage is explicitly TED_PARTIAL because below-threshold national-only ÚVO vestník notices are not included. No personal/contact/address, winner, tenderer, subcontractor, beneficial-owner, or raw XML/PDF/HTML body fields are imported."
+    "nextAction": "Procurement expansion is parked: reopen only with a genuinely new authoritative buyer privacy discriminator and deterministic complete buyer association. Do not repeat the 68,926-row acquisition or infer status from names, BT-11 or identifiers. National UVO source/reuse clearance is a separate unresolved gate.",
+    "notes": "0.19.0 production remains the unchanged 100-record TED_PARTIAL Slovak-buyer reference snapshot, not national UVO coverage. 0.23.13 privately acquired 68,926 latest-only TED publication identities across 277 pages, 2016-10-27 through 2026-10-28; no duplicates, stable total. A metadata-only capture reconciled every identity, but BT-633 buyer-person was missing on every row, including 22,730 positively identified eForms notices. BT-11 procurement category and BT-501 identifier presence do not establish juridical-person status, and a complete buyer-to-marker join is unproved. NO_GO_PROCUREMENT_EXPANSION; hypothetical safe eligible corpus 0. The 68,926 records are NOT served. No production procurement data/freshness change; no name/suffix/identifier/regex/NLP/whitelist gate. See docs/research/procurement-buyer-privacy.md and the non-content acquisition manifests. Existing excluded contact/address/winner/tenderer/raw-body fields remain excluded; field allowlisting alone does not certify buyer-name or title values."
   },
   "schoolsDirectory": {
     "status": "research-and-tooling-only",
