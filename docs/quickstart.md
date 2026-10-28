@@ -1,6 +1,7 @@
 # OpenSK in five minutes
 
-**Base URL:** `https://opensk-api.onrender.com` · API prefix: `/v1`  
+**Base URL:** `https://opensk-api.onrender.com` · API prefix: `/v1`
+
 [Try requests in Swagger](https://opensk-api.onrender.com/docs) · [OpenAPI JSON](https://opensk-api.onrender.com/openapi.json)
 
 No key or account required. All examples below are checked against the local application and current checked-in data. The hosted deployment may lag an unmerged PR; free-tier cold starts may take a little time.

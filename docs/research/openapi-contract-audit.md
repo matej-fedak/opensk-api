@@ -558,7 +558,7 @@ holiday integer path and procurement integer year filters; other listed 400s are
 Working-checkout SHA-256 (Windows bytes; final must match in this checkout).
 Git/LF comparison in tests normalizes checkout line endings, not dataset contents.
 
-| File | Before SHA-256 |
+| File | Before = after SHA-256 (same working checkout) |
 | --- | --- |
 | data/banks.json | `736c633074c521c7c4e1b48a7602a700ce7006897d36bbb047bcc9d6a65f2e60` |
 | data/companies.json | `b2ce76bb0d60676fb1581049e6ff3f7ef250d8068d9bea83da36d542b615a063` |
@@ -574,3 +574,218 @@ Git/LF comparison in tests normalizes checkout line endings, not dataset content
 | data/school_facility_counts.json | `088edc4e0ab13f8960d39ff1449dae5bfde0463aeed7fbdb4b327771b82fbeeb` |
 | data/sources.json | `6451f423077f2e13933dbaa5a2810c99d56bacba9205db9ec714f0d401055f9d` |
 | data/vehicle_registration_codes.json | `8e9ecc4a7cb6be5f36f609fdf26e54f8bf8989c669abe7bedd8b2061687540e2` |
+
+## After implementation (0.23.12)
+
+### Coverage and client-tool readiness
+
+| Measure (operations, not individual schemas) | Before | After |
+| --- | ---: | ---: |
+| Public GET operations | 39 | 39 |
+| Intentional typed success contract | 9 | 39 |
+| Generic/untyped success object | 30 | 0 |
+| Explicit stable unique operationId | 0 | 39 |
+| Operation-level success response examples | 0 | 39 |
+| Operations documenting applicable typed application errors | 0 | 38 |
+| Operations with parameter descriptions and examples for every parameter | 0 of 32 parameterized operations | 32 of 32 |
+
+The before example count is **operation response examples**; exchange-rate schema
+fields already had examples reachable by its two operations. All 39 now have
+validated whole-envelope examples; long non-paginated arrays are explicitly
+labelled excerpts. PSC also has a full `include=geography` example. Actual captured
+400/404/422 examples are operation-specific; 429/503 examples match existing handlers.
+Health has no applicable application error or 429; this is intentional, not a gap.
+
+All parameters are reviewed in `schemas/openapi.py` against parser behavior,
+including defaults/maxima, enum-like strings, exact versus substring matching,
+case/diacritic handling, date input and required query values. Document refinements
+are **OpenAPI-only**, never fed into FastAPI request validators. An important
+audit correction: district codes accept `SK` plus **four or five** digits, not only
+the often-described `SK####` (e.g. `SK03111`). Business dates also retain Python's
+existing ISO basic/week-date acceptance; exchange dates remain strict YYYY-MM-DD.
+Required manual query parameters are marked required in OpenAPI while omission
+continues to return the established **400**, not 422. Genuine framework integer
+422 paths remain holiday year and procurement year; all use `ErrorResponse`, not
+the framework's default detail-list schema. 503 is only on the two company routes.
+
+All schema references resolve, names are distinct, path parameters correspond to
+placeholders, IDs are unique and serialization is JSON-safe. Required nullable
+fields and aliases are checked against actual payloads. No undocumented success
+polymorphism: every operation preserves its historical array/object/page shape.
+No OpenAPI validator dependency existed; bounded structural/ref checks and
+Pydantic validation suffice here. **No SDK was generated or published.**
+
+Remaining intentional maps (not untyped objects): ECB `rates` is
+`dict[str, str]` for varying currency codes; school stats' five `totalsBy*` maps
+and procurement stats' `noticeTypes`/`publicationYears` are `dict[str, int]` for
+variable categories. Their typed `additionalProperties` is necessary. No
+unconstrained `additionalProperties: true` remains. Error codes/messages remain
+strings because codes vary by operation; descriptions list relevant families.
+Existing EU-fund defaulted serialization fields remain defaulted internally and
+are marked required in serialization schema, not removed from responses.
+
+FastAPI normally removes null values from literal OpenAPI examples. The small
+documentation helper restores the captured example payloads after generation so
+`error: null`, nullable `lastUpdated`, and nullable dataset fields are not silently
+lost. This affects **OpenAPI only**. New response models reject unknown fields
+rather than silently filter them; optional geography is not injected. Existing
+bank/source/exchange/EU serialization behavior is preserved.
+
+### Reviewed final inventory
+
+The complete method/path/ID set is locked by
+`tests/fixtures/public-operations.json`; tests compare it exactly, not just a
+subset or count. Models below refer to focused domain contracts; `SuccessResponse`
+and `Page` only describe envelopes/wrappers already present, not new wrappers.
+
+| Operation | Stable ID | Success model |
+| --- | --- | --- |
+| GET `/` | `get_root` | `SuccessResponse[ProjectInfo]` |
+| GET `/v1/health` | `get_health` | `SuccessResponse[Health]` |
+| GET `/v1/banks` | `list_banks` | `BanksResponse` |
+| GET `/v1/banks/{code}` | `get_bank` | `BankResponse` |
+| GET `/v1/iban/validate/{iban}` | `validate_iban` | `IbanValidationResponse` |
+| GET `/v1/holidays/{year}` | `get_holidays` | `SuccessResponse[list[Holiday]]` |
+| GET `/v1/psc` | `list_psc` | `SuccessResponse[Page[PSCMatch]]` |
+| GET `/v1/psc/search` | `search_psc` | `SuccessResponse[Page[PSCMatch]]` |
+| GET `/v1/psc/stats` | `get_psc_stats` | `SuccessResponse[PSCStats]` |
+| GET `/v1/psc/{psc}` | `get_psc` | `SuccessResponse[PSCLookup]` |
+| GET `/v1/companies/{ico}` | `get_company` | `SuccessResponse[Company]` |
+| GET `/v1/ico/{ico}` | `get_company_by_ico` | `SuccessResponse[Company]` |
+| GET `/v1/regions` | `list_regions` | `SuccessResponse[list[Region]]` |
+| GET `/v1/regions/{code}` | `get_region` | `SuccessResponse[Region]` |
+| GET `/v1/districts` | `list_districts` | `SuccessResponse[list[District]]` |
+| GET `/v1/districts/{code}` | `get_district` | `SuccessResponse[District]` |
+| GET `/v1/municipalities` | `list_municipalities` | `SuccessResponse[list[Municipality]]` |
+| GET `/v1/municipalities/{code}` | `get_municipality` | `SuccessResponse[Municipality]` |
+| GET `/v1/phone-areas` | `list_phone_areas` | `SuccessResponse[Page[PhoneArea]]` |
+| GET `/v1/phone-areas/search` | `search_phone_areas` | `SuccessResponse[Page[PhoneArea]]` |
+| GET `/v1/phone-areas/{code}` | `get_phone_area` | `SuccessResponse[PhoneAreaLookup]` |
+| GET `/v1/vehicle-registration-codes` | `list_vehicle_registration_codes` | `SuccessResponse[Page[VehicleRegistrationCode]]` |
+| GET `/v1/vehicle-registration-codes/search` | `search_vehicle_registration_codes` | `SuccessResponse[Page[VehicleRegistrationCode]]` |
+| GET `/v1/vehicle-registration-codes/{code}` | `get_vehicle_registration_code` | `SuccessResponse[VehicleRegistrationCode]` |
+| GET `/v1/school-facility-counts` | `list_school_facility_counts` | `SuccessResponse[Page[SchoolFacilityCount]]` |
+| GET `/v1/school-facility-counts/stats` | `get_school_facility_count_stats` | `SuccessResponse[SchoolFacilityStats]` |
+| GET `/v1/procurement-notices` | `list_procurement_notices` | `SuccessResponse[Page[ProcurementNotice]]` |
+| GET `/v1/procurement-notices/search` | `search_procurement_notices` | `SuccessResponse[ProcurementSearch]` |
+| GET `/v1/procurement-notices/stats` | `get_procurement_notice_stats` | `SuccessResponse[ProcurementStats]` |
+| GET `/v1/procurement-notices/{id}` | `get_procurement_notice` | `SuccessResponse[ProcurementNotice]` |
+| GET `/v1/sources` | `list_sources` | `SourceListResponse` |
+| GET `/v1/sources/{source_id}` | `get_source` | `SourceDetailResponse` |
+| GET `/v1/business-days/check` | `check_business_day` | `SuccessResponse[BusinessDayCheck]` |
+| GET `/v1/business-days/add` | `add_business_days` | `SuccessResponse[BusinessDayAddition]` |
+| GET `/v1/business-days/between` | `count_business_days` | `SuccessResponse[BusinessDayInterval]` |
+| GET `/v1/exchange-rates/latest` | `get_exchange_rates_latest` | `ExchangeRateDayResponse` |
+| GET `/v1/exchange-rates/{date}` | `get_exchange_rates_by_date` | `ExchangeRateDayResponse` |
+| GET `/v1/eu-funds/projects` | `list_eu_funds_projects` | `ListResponse` |
+| GET `/v1/eu-funds/projects/{projectCode}` | `get_eu_funds_project` | `DetailResponse` |
+
+### PSC correction and compatibility
+
+**0.23.12 corrects `/v1/psc/{psc}` for grouped PSC records: `matchCount` now
+counts logical flat matches and `matches` contains those flat records, consistent
+with list/search behavior. The underlying dataset, source provenance and coverage
+are unchanged.** This is a pre-1.0 correctness fix, not a data migration. There
+are currently no known external consumers, but clients depending on the erroneous
+extra nested container must adjust; this is not hidden as a purely additive change.
+
+Before: `01001` lookup returned `matchCount=1` and one outer match containing its
+own `matchCount=2`/`matches`. After: `matchCount=2`, two flat matches for **Mojš
+517801** and **Žilina 517402**, identical to collection/filter/search identities.
+Current production data identifies 517801 as **Mojš**, not Žilinská Lehota; no
+label/source correction is inferred from earlier research prose.
+
+Primary is **Mojš 517801** from normalized records under the unchanged reviewed
+sort key (resolvable municipality, open-ended validity, delivery post/name/code;
+ties retain deterministic flat collection order). Each match resolves its own
+region/district/municipality with `include=geography`; primary geography matches
+the first flat match. Optional unresolved geography stays absent. No double
+matches or repeated geography wrappers. Single-match groups also lose the
+erroneous outer storage container. Flat collection/search/stats bodies do not change.
+
+| Change | Runtime JSON change? | Intentional? | Breaking? | Notes |
+| --- | --- | --- | --- | --- |
+| Typed success/error models | No for established responses | Yes | No observed runtime break | All 39 representative bodies validate; no field filtering/renaming/null injection |
+| PSC grouped lookup/count | **Yes** | **Yes, correctness fix** | Clients relying on buggy nesting must adjust | Primary flat fields + flat matches, same dataset; includes geography variant and single-match groups |
+| Explicit operation IDs | OpenAPI only | Yes | Tooling names change | Reviewed stable IDs replace generated artifacts; URLs unchanged |
+| Parameter/error/examples/docs annotations | OpenAPI only | Yes | No runtime change | Manual 400 preserved; genuine 422 envelope documented |
+| Project SemVer | Root `data.version`, OpenAPI `info.version` | Yes | No namespace change | 0.23.11 → 0.23.12; metadata.version remains v1 |
+| README/quickstart/pilot | No | Yes | No | No messages sent, infrastructure added or source permission inferred |
+| Data/provenance/freshness/cache policy/limiter | **No** | Frozen | No | Affected PSC body-derived ETags may change; Last-Modified unchanged |
+
+Evidence: `public-contract-baseline.json` preserves normalized pre-change body
+digests and cache/Last-Modified for all 39 operations; 38 match exactly afterwards
+(health clock/root SemVer normalization only), with the explicit PSC lookup
+exception independently checked. It includes both company aliases, all historical
+shape variants, bank additive metadata and an invalid-checksum IBAN (200 false).
+Copy-paste docs use the separate smoke helper's valid **synthetic** IBAN
+`SK5409000000000000000001`, checked to return `valid=true`; neither example is a
+payment/account-existence claim. No giant response/OpenAPI snapshot is committed.
+
+### Red-team checklist
+
+| Question | Result |
+| --- | --- |
+| 1. Any production JSON changed? | **NO**, all 14 same-checkout hashes equal before/after; canonical Git-byte fixture also checked |
+| 2. Any source/licence state changed? | **NO**, sources/outreach package unchanged |
+| 3. Route count changed? | **NO — 39 GET operations** |
+| 4. `/v1` changed? | **NO** |
+| 5. metadata.version changed? | **NO — v1** |
+| 6. Normal payload shape changed? | **Only approved PSC grouped lookup correction**, plus expected root project-version bump |
+| 7. PSC matches flat? | **YES**, no grouped container in any indexed logical record |
+| 8. matchCount equals len(matches)? | **YES** |
+| 9. Lookup/list share logical records? | **YES**, index uses load_psc_records; search uses same loader |
+| 10. PSC JSON modified? | **NO** |
+| 11. Successor semantics introduced? | **NO**, PSC stays historical/partial and parked |
+| 12. Partial/seed/aggregate limits visible? | **YES**, operation descriptions, not README alone |
+| 13. Stable unique IDs for every GET? | **YES**, complete locked inventory |
+| 14. Intentional success schema for every GET? | **YES**, 39/39 |
+| 15. Response model filtering/renaming? | **NO** in checked payloads; model round trips and baseline digests checked |
+| 16. Manual malformed input changed to 422? | **NO**, manual 400 cases retained; existing integer 422 unchanged |
+| 17. Standard errors documented? | **YES**, only applicable statuses; health exempt, 503 companies only |
+| 18. README/quickstart examples verified? | **YES**, local actual-data request tests and synthetic checksum assertion |
+| 19. SDK generated? | **NO** |
+| 20. Dataset/source added? | **NO** |
+
+No runtime network, acquisitions, database, Redis, source-rights research or
+automatic outreach. Health remains operational/no-store/rate-limit exempt. Cache
+policy, limiter identity logic and 100/60/IP budget are unchanged. Strong ETag
+still uses exact response-body SHA-256 (existing first-32-hex representation),
+matching If-None-Match yields **304 / empty body**; Last-Modified retains dataset
+dates, including PSC **2026-06-02**. Public docs and schema remain `/docs` and
+`/openapi.json`; no frontend or route added. Data Git tree remains
+`29bb5725338bd7989b34097ce61cd9da11cf9e33`.
+
+### Validation record
+
+Final local gates (2026-10-28), project **0.23.12**:
+
+- `python scripts/validate_datasets.py`: **0 errors / 44 existing warnings**, all
+  14 datasets; no pending rights/coverage warning suppressed.
+- `python scripts/check_referential_integrity.py`: passed.
+- `python -m pytest -q`: **1,016 passed** (182 added contract/PSC/docs tests).
+- `python -m compileall scripts routers services tests schemas`: passed.
+- `git diff --check`: passed; staged/full-branch checks also required before push.
+- Local HTTP smoke: **41 passed / 0 failed**. Actual `curl.exe` against all **12
+  distinct README/quickstart targets** passed with expected 200/400/404 statuses;
+  URLs/query strings match the public-base examples. No deployed-version or source
+  acquisition call was needed.
+- Runtime success-model validation and baseline comparison across **all 39**
+  operations; only PSC lookup differs after root-SemVer/health-clock normalization.
+  Existing other response ETags are identical; root ETag changes with project
+  SemVer and affected PSC lookup ETag changes with its approved body correction.
+- Additional exhaustive local check of **all 1,420 PSC lookups**: flat matches,
+  count/list parity, deterministic primary and expanded-geography model validation.
+- OpenAPI JSON serialization, 39 GETs, exact paths/IDs, all refs/examples/models,
+  standard error envelopes, manual 400s, existing 422s, 429 headers/exemption and
+  company-only 503 verified offline. Every conditional response checked 304/empty.
+- **All 14 production JSON byte hashes equal before/after in the same checkout**
+  (table above); canonical LF hashes locked separately for cross-platform CI.
+  `data/`, cache/limiter implementations, dependency file and outreach package have
+  zero diff from main. Source/freshness/reuse verdicts remain frozen.
+
+Hosted CI is reported separately by PR checks; no auto-merge/tag/release.
+
+Next: the maintainer-run [5–10 developer pilot](../developer-adoption.md), with
+concrete feedback before another implementation milestone or SDK. Source-owner
+reply monitoring stays separate. **PSC remains PARKED / NO_GO_SUCCESSOR_PSC.**
