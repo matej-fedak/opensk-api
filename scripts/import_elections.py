@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Offline, dry-run-first NR SR 2023 aggregate import prototype.
+"""Offline, dry-run-first NR SR 2023 aggregate importer.
 
-No network access, person-level data, or production promotion. Only the
-verified 2023 territory/municipality table schemas are accepted.
+Production requires five manually acquired files plus their non-content
+manifest. The historical research preview remains separate; tab03e is NEVER
+part of the production adapter. No network or person-level acquisition.
 """
 
 from __future__ import annotations
@@ -21,8 +22,12 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 GENERATED_DIR = ROOT / "data" / "generated"
 DEFAULT_OUTPUT = GENERATED_DIR / "elections_nrsr2023_preview.json"
+PRODUCTION_OUTPUT = ROOT / "data/elections_nrsr_2023.json"
+PRODUCTION_PROFILE = "nrsr2023-aggregate-v1"
 MAX_INPUT_BYTES = 16 * 1024 * 1024
 
 
@@ -394,21 +399,187 @@ def import_elections(territory: Path, results: Path, *, party_results: Path | No
     return result
 
 
+def national_parties(summary_rows, list_rows, national_votes):
+    """Explicit tab03a + tab0a join; source blank mandates remain null.
+
+    Candidate-count and preferential-voter aggregate columns are validated but
+    are not emitted. No candidate/person or municipality-party file is opened.
+    """
+    metadata = {}
+    for number, name, abbreviation, candidates, note in list_rows:
+        if not re.fullmatch(r"(?:[1-9]|1[0-9]|2[0-5])", number) or number in metadata:
+            raise ValueError("invalid/duplicate national party list number")
+        if not name or name != name.strip() or not abbreviation or abbreviation != abbreviation.strip():
+            raise ValueError("blank/padded political-subject metadata")
+        source_count(candidates)
+        if note != "":
+            raise ValueError("unexpected nonblank party-list note requires review")
+        metadata[number] = (name, abbreviation)
+    parties = {}
+    for number, name, votes, percentage, preferential, preferential_percent, seats in summary_rows:
+        if number in parties or number not in metadata or metadata[number][0] != name:
+            raise ValueError("duplicate/orphan/name-mismatched national party result")
+        votes, preferential = source_count(votes), source_count(preferential)
+        if preferential > votes or votes > national_votes:
+            raise ValueError("invalid national party count relationships")
+        check_percentage(percentage, votes, national_votes, "votePercent")
+        check_percentage(preferential_percent, preferential, votes, "preferentialVoterPercent")
+        parties[number] = {"partyNumber": number, "name": name, "abbreviation": metadata[number][1],
+                           "validVotes": votes, "votePercent": percentage,
+                           "seats": None if seats == "" else source_count(seats)}
+    if metadata.keys() != parties.keys():
+        raise ValueError("missing national political-subject results")
+    if sum(p["validVotes"] for p in parties.values()) != national_votes:
+        raise ValueError("national party vote sum mismatch")
+    if sum(p["seats"] or 0 for p in parties.values()) != 150:
+        raise ValueError("national allocated mandates must sum to 150")
+    return [parties[n] for n in sorted(parties, key=int)]
+
+
+def import_production(territory: Path, results: Path, national_results: Path,
+                      party_summary: Path, party_list: Path, acquisition_manifest: Path, *,
+                      verified_on: str, profile: str = PRODUCTION_PROFILE,
+                      write_production: bool = False, output: Path = PRODUCTION_OUTPUT,
+                      acknowledge_source_revision: bool = False) -> ImportResult:
+    """Fail-closed five-file NRSR2023 production path; dry-run by default."""
+    from schemas.elections import (ATTRIBUTION, TRANSFORMATION, NON_ENDORSEMENT, LIMITATIONS,
+                                   ElectionDataset)
+    from scripts.prepare_elections_manifest import TABLES, MANIFEST_PROFILE, SOURCE_PAGE, FILE_BASE, HISTORICAL_HASHES
+
+    result = ImportResult(report={"profile": profile, "dryRun": not write_production})
+    try:
+        if profile != PRODUCTION_PROFILE:
+            raise ValueError("unsupported production election profile; NRSR2023 only")
+        if output.resolve() != PRODUCTION_OUTPUT.resolve():
+            raise ValueError("production output must be data/elections_nrsr_2023.json")
+        manifest = json.loads(read_source_bytes(acquisition_manifest).decode("utf-8"))
+        if not isinstance(manifest, dict):
+            raise ValueError("manual acquisition manifest must be an object")
+        if (manifest.get("profile") != MANIFEST_PROFILE or manifest.get("electionId") != "NRSR2023"
+                or manifest.get("importerProfile") != PRODUCTION_PROFILE
+                or manifest.get("manuallyAcquired") is not True or manifest.get("sourcePage") != SOURCE_PAGE
+                or manifest.get("licence") != "CC-BY-4.0" or manifest.get("publisherReplyReceivedOn") != "2026-10-30"
+                or manifest.get("status") != "MANIFEST_PREPARED_SEMANTIC_REVIEW_REQUIRED"):
+            raise ValueError("unverified/wrong-profile manual acquisition manifest")
+        base = import_elections(territory, results, national_results=national_results)
+        if not base.ok:
+            raise ValueError("; ".join(base.errors))
+        report = base.report
+        summary = read_table(party_summary, TABLES["tab03a"][0], "partySummary", report)
+        party_metadata = read_table(party_list, TABLES["tab0a"][0], "partyList", report)
+        sources = list(zip(TABLES, (territory, results, national_results, party_summary, party_list),
+                           ("territory", "results", "nationalResults", "partySummary", "partyList"), strict=True))
+        files = manifest.get("files", [])
+        if len(files) != 5 or len({f["filename"] for f in files}) != 5:
+            raise ValueError("manifest must describe exactly five unique files")
+        by_name = {f["filename"]: f for f in files}
+        public_files = []
+        for key, path, label in sources:
+            filename = f"NRSR2023_SK_{key}.csv"
+            evidence = report["inputs"][label]
+            recorded = by_name.get(filename, {})
+            if (path.name != filename or recorded.get("manuallyAcquired") is not True
+                    or recorded.get("manuallyAcquiredAt") != manifest.get("manuallyAcquiredAt")
+                    or recorded.get("sourceUrl") != FILE_BASE + filename
+                    or recorded.get("headers") != list(TABLES[key][0])
+                    or recorded.get("encoding") != "UTF-8" or recorded.get("bom") is not False
+                    or recorded.get("delimiter") != "," or recorded.get("newline") != "LF"
+                    or recorded.get("sha256") != evidence["sha256"] or recorded.get("bytes") != evidence["bytes"]
+                    or recorded.get("rowCount") != evidence["parsedRows"] or evidence["parsedRows"] != TABLES[key][1]):
+                raise ValueError(f"manual manifest/schema/cardinality/hash mismatch: {filename}")
+            if evidence["sha256"] != HISTORICAL_HASHES[key] and not acknowledge_source_revision:
+                raise ValueError("changed historical source bytes require documented review and --acknowledge-source-revision")
+            public_files.append({"filename": filename, "sha256": evidence["sha256"],
+                                 "bytes": evidence["bytes"], "rowCount": evidence["parsedRows"]})
+        units = [dict(row, unitType=row["scope"]) for row in
+                 base.payload["municipalities"] + base.payload["foreignResults"]]
+        for row in units:
+            del row["scope"]
+        units.sort(key=lambda r: tuple(r[f] for f in ("regionCode", "territorialCircuitCode", "districtCode", "municipalityCode")))
+        national = base.payload["nationalControls"]
+        payload = {
+            "election": {"id": "NRSR2023", "name": "Voľby do Národnej rady Slovenskej republiky 2023",
+                         "type": "parliamentary", "electionDate": "2023-09-30", "status": "definitive",
+                         "surfaces": ["unit-summary", "national-summary", "national-parties"],
+                         "sourceSnapshotDate": verified_on, "limitations": LIMITATIONS},
+            "national": national,
+            "units": units,
+            "parties": national_parties(summary, party_metadata, national["validVotes"]),
+            "provenance": {
+                "profile": PRODUCTION_PROFILE, "publisher": "Štatistický úrad Slovenskej republiky",
+                "sourcePage": SOURCE_PAGE, "sourcePublishedAt": "2023-10-01T14:30:00",
+                "sourcePublicationTimezone": None, "manuallyAcquired": True,
+                "manuallyAcquiredAt": manifest["manuallyAcquiredAt"],
+                "acquisitionTimePrecision": manifest["acquisitionTimePrecision"],
+                "acquisitionTimeBasis": manifest["acquisitionTimeBasis"], "verifiedOn": verified_on,
+                "acquisitionMode": "MANUAL_OFFICIAL_DOWNLOAD_ONLY", "licence": "CC-BY-4.0",
+                "licenceUrl": manifest["licenceUrl"], "publisherReplyReceivedOn": "2026-10-30",
+                "attribution": ATTRIBUTION, "transformation": TRANSFORMATION,
+                "nonEndorsement": NON_ENDORSEMENT, "files": public_files,
+            },
+        }
+        ElectionDataset.model_validate(payload)  # Full reconciliation before ANY production write.
+        encoded = serialize_payload(payload)
+        result.payload = payload
+        result.report.update(inputs=report["inputs"], units=len(units), parties=len(payload["parties"]),
+                             national=national, outputBytes=len(encoded), outputSha256=hashlib.sha256(encoded).hexdigest(),
+                             historicalSourceRevisionAcknowledged=acknowledge_source_revision)
+        if write_production:
+            import os
+            import tempfile
+            descriptor, name = tempfile.mkstemp(dir=output.parent, suffix=".election-candidate")
+            staging = Path(name)
+            try:
+                with os.fdopen(descriptor, "wb") as stream:
+                    stream.write(encoded)
+                staging.replace(output)
+            finally:
+                staging.unlink(missing_ok=True)
+            result.wrote_files.append(output)
+    except (ValueError, OSError, UnicodeError, csv.Error, KeyError, TypeError) as exc:
+        result.errors.append(str(exc))
+        result.report["errors"] = result.errors
+        result.payload = {}
+    return result
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--territory", type=Path, required=True)
     parser.add_argument("--results", type=Path, required=True)
     parser.add_argument("--party-results", type=Path)
     parser.add_argument("--national-results", type=Path)
+    parser.add_argument("--party-summary", type=Path, help="national tab03a only, NOT municipality-party tab03e")
+    parser.add_argument("--party-list", type=Path)
+    parser.add_argument("--acquisition-manifest", type=Path)
+    parser.add_argument("--verified-on", help="actual OpenSK snapshot verification date, YYYY-MM-DD")
+    parser.add_argument("--profile", default=PRODUCTION_PROFILE)
+    parser.add_argument("--acknowledge-source-revision", action="store_true")
     parser.add_argument("--municipalities", type=Path, help="optional current geography diagnostics only")
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true", help="default: validate/report without writing")
     mode.add_argument("--write-preview", action="store_true", help="explicit unapproved generated preview only")
-    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    mode.add_argument("--write-production", action="store_true", help="explicit five-file, manifest-verified production promotion")
+    parser.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
-    result = import_elections(args.territory, args.results, party_results=args.party_results,
-                              national_results=args.national_results, municipalities=args.municipalities,
-                              dry_run=not args.write_preview, write_preview=args.write_preview, output=args.output)
+    production_path = any((args.party_summary, args.party_list, args.acquisition_manifest, args.write_production))
+    if production_path:
+        if not all((args.party_summary, args.party_list, args.acquisition_manifest, args.national_results, args.verified_on)):
+            parser.error("production adapter requires party-summary, party-list, national-results, acquisition-manifest and verified-on")
+        if args.party_results or args.write_preview or args.municipalities:
+            parser.error("production excludes municipality-party results, research preview and current-geography enrichment")
+        result = import_production(args.territory, args.results, args.national_results, args.party_summary,
+                                   args.party_list, args.acquisition_manifest, verified_on=args.verified_on,
+                                   profile=args.profile, write_production=args.write_production,
+                                   output=args.output or PRODUCTION_OUTPUT,
+                                   acknowledge_source_revision=args.acknowledge_source_revision)
+    else:
+        if args.profile != PRODUCTION_PROFILE:
+            parser.error("unsupported election profile")
+        result = import_elections(args.territory, args.results, party_results=args.party_results,
+                                  national_results=args.national_results, municipalities=args.municipalities,
+                                  dry_run=not args.write_preview, write_preview=args.write_preview,
+                                  output=args.output or DEFAULT_OUTPUT)
     report = dict(result.report, ok=result.ok)
     # stdout is a machine-readable report, not the preview dataset.
     sys.stdout.buffer.write(serialize_payload(report))

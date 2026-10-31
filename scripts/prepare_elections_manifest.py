@@ -65,12 +65,15 @@ def acquisition_timestamp(value: str) -> str:
 
 def prepare_manifest(source_dir: Path, manually_acquired_at: str, *,
                      attest_manual_download: bool = False,
-                     profile: str = MANIFEST_PROFILE) -> dict:
+                     profile: str = MANIFEST_PROFILE,
+                     acquisition_time_precision: str = "exact") -> dict:
     if profile != MANIFEST_PROFILE:
         raise ValueError("unsupported election acquisition profile; NRSR2023 only")
     if attest_manual_download is not True:
         raise ValueError("manual official download attestation is required; research bytes are not substitutes")
     stamp = acquisition_timestamp(manually_acquired_at)
+    if acquisition_time_precision not in {"exact", "approximate-minute"}:
+        raise ValueError("unsupported acquisition time precision")
     directory = source_dir.resolve()
     if directory.is_relative_to(importer.ROOT):
         raise ValueError("raw source directory must be private and outside the repository")
@@ -112,13 +115,16 @@ def prepare_manifest(source_dir: Path, manually_acquired_at: str, *,
         })
     return {
         "profile": MANIFEST_PROFILE,
-        "importerProfile": importer.PROFILE,
+        "importerProfile": importer.PRODUCTION_PROFILE,
         "electionId": "NRSR2023",
         "sourcePage": SOURCE_PAGE,
         "publisher": "Štatistický úrad Slovenskej republiky",
         "status": "MANIFEST_PREPARED_SEMANTIC_REVIEW_REQUIRED",
         "manuallyAcquired": True,
         "manuallyAcquiredAt": stamp,
+        "acquisitionTimePrecision": acquisition_time_precision,
+        "acquisitionTimeBasis": ("Maintainer supplied timestamp" if acquisition_time_precision == "exact" else
+                                 "Maintainer confirmed manual download just now; session clock recorded to minute, not exact download time"),
         "sourcePublication": {
             "pageStatement": "2023-10-01 14:30",
             "timezone": None,
@@ -155,12 +161,14 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--manually-acquired-at", required=True)
     parser.add_argument("--attest-manual-download", action="store_true")
     parser.add_argument("--profile", default=MANIFEST_PROFILE)
+    parser.add_argument("--acquisition-time-precision", choices=("exact", "approximate-minute"), default="exact")
     parser.add_argument("--write-manifest", type=Path, help="explicit non-content manifest write; no overwrites")
     args = parser.parse_args(argv)
     try:
         manifest = prepare_manifest(args.source_dir, args.manually_acquired_at,
                                     attest_manual_download=args.attest_manual_download,
-                                    profile=args.profile)
+                                    profile=args.profile,
+                                    acquisition_time_precision=args.acquisition_time_precision)
         if args.write_manifest:
             write_manifest(args.write_manifest, manifest)
     except (ValueError, OSError, UnicodeError, csv.Error) as exc:
