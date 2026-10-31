@@ -1667,6 +1667,24 @@ def validate_eu_funds_projects_dataset(path: Path | None = None) -> ValidationRe
     return validate_eu_funds_projects_payload(payload, path)
 
 
+def validate_elections_dataset(path: Path | None = None) -> ValidationReport:
+    from pydantic import ValidationError
+    from schemas.elections import ElectionDataset
+
+    path = path or DEFAULT_DATA_DIR / "elections_nrsr_2023.json"
+    report = ValidationReport("elections", path)
+    payload = _load_json(report, path)
+    if payload is None:
+        return report
+    try:
+        dataset = ElectionDataset.model_validate(payload)
+        report.record_count = len(dataset.units)
+    except ValidationError as exc:
+        for error in exc.errors(include_input=False, include_url=False):
+            report.add_error(".".join(map(str, error["loc"])), error["msg"])
+    return report
+
+
 def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationReport]:
     reports = [
         validate_sources_registry(data_dir / "sources.json"),
@@ -1709,6 +1727,10 @@ def validate_all_datasets(data_dir: Path = DEFAULT_DATA_DIR) -> list[ValidationR
     eu_funds_path = data_dir / "eu_funds_projects.json"
     if eu_funds_path.is_file():
         reports.append(validate_eu_funds_projects_dataset(eu_funds_path))
+
+    elections_path = data_dir / "elections_nrsr_2023.json"
+    if elections_path.is_file():
+        reports.append(validate_elections_dataset(elections_path))
 
     return reports
 

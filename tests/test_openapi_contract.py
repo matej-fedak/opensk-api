@@ -14,6 +14,7 @@ from main import app
 from main import (
     banks_router, business_days_router, companies_router, districts_router,
     eu_funds_router, exchange_rates_router, health_router, holidays_router,
+    elections_router,
     iban_router, municipalities_router, phone_areas_router,
     procurement_notices_router, psc_router, regions_router,
     school_facility_counts_router, sources_router, vehicle_registration_codes_router,
@@ -34,6 +35,7 @@ ROUTES = {route.path: route for route in app.routes if isinstance(route, APIRout
 for router in (
     banks_router, business_days_router, companies_router, districts_router,
     eu_funds_router, exchange_rates_router, health_router, holidays_router,
+    elections_router,
     iban_router, municipalities_router, phone_areas_router,
     procurement_notices_router, psc_router, regions_router,
     school_facility_counts_router, sources_router, vehicle_registration_codes_router,
@@ -56,10 +58,10 @@ def test_complete_reviewed_inventory_and_refs():
     json.dumps(schema, allow_nan=False)
     actual = [[method.upper(), path, op["operationId"]]
               for path, item in schema["paths"].items() for method, op in item.items()]
-    assert len(actual) == 39
+    assert len(actual) == 42
     assert sorted(actual) == sorted(INVENTORY)
     assert set(ROUTES) == {path for _, path, _ in INVENTORY}
-    assert len({op[2] for op in actual}) == 39
+    assert len({op[2] for op in actual}) == 42
     assert all(path == "/" or path.startswith("/v1/") for _, path, _ in actual)
     def resolve(value):
         if isinstance(value, dict):

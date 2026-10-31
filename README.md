@@ -12,7 +12,7 @@ curl "https://opensk-api.onrender.com/v1/municipalities/528595"
 
 **Pre-1.0, not a complete/live official register.** Coverage and reuse conditions differ by dataset; inspect [`/v1/sources`](https://opensk-api.onrender.com/v1/sources) before integrating. Public promotion remains gated by unresolved PortalVS compliance. MIT covers the code, not all source data.
 
-Status: `0.23.12` — all **39 GET operations** audited against runtime, with stable operation IDs, typed success/error contracts and examples. `/v1` is unchanged. PSC grouped lookup/count consistency is corrected; all production JSON, sources and freshness dates are unchanged. PSC successor migration remains **PARKED / NO_GO_SUCCESSOR_PSC**. [Contract audit](docs/research/openapi-contract-audit.md); [manual developer pilot](docs/developer-adoption.md).
+Status: `0.23.14` — **42 GET operations**, including NR SR 2023 aggregate election unit summaries and national party results. ŠÚ SR directly confirmed CC BY 4.0 reuse; the five source files were manually downloaded, with no automated source acquisition. No candidates, precinct results or municipality-party cells; no PortalVS election dependency. `/v1`, metadata version `v1` and all previous 39 operation IDs are unchanged. Holidays retain verified 2024–2030 coverage; procurement and PSC expansion remain **NO_GO**. [Election scope/refresh](docs/elections.md); [manual developer pilot](docs/developer-adoption.md).
 
 OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
 
@@ -49,6 +49,9 @@ Use `/docs` or `/openapi.json` for parameter-level details. The table below is a
 | `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
 | `GET /v1/sources` | Curated public source/licence provenance catalogue | 20 registered domains | unresolved licence status stays unresolved |
 | `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 20 registered domains | internal maintainer fields are excluded |
+| `GET /v1/elections` | Materialized election catalogue and national totals | NRSR2023 only | definitive historical snapshot; ŠÚ SR / CC BY 4.0 |
+| `GET /v1/elections/{electionId}/results` | Paginated election-native unit summaries | 2,927 units; native region/district/unit filters | foreign 599999 retained; no precinct or municipality-party detail |
+| `GET /v1/elections/{electionId}/parties` | National political-subject votes and mandates | 25 election-local subjects | no candidates; blank source mandates remain null |
 | `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2030 holiday coverage | Monday–Friday minus days of rest; strict error outside supported years |
 | `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2030 holiday coverage | skips weekends and days of rest, not working holidays |
 | `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2030 holiday coverage | `holidayDays` counts weekday days of rest only |
@@ -99,6 +102,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
 - `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
 - `docs/research/elections-spike.md` records the NR SR 2023 spike decision, source/schema evidence, offline prototype and production gates.
+- `docs/elections.md` records the **0.23.14 NRSR2023 production scope**, manual-only acquisition, source hashes/time precision, CC BY 4.0 attribution/non-endorsement, reconciliation and refresh procedure. Small-area aggregates retain contextual-inference risk; no anonymity claim. Current reply: `docs/research/elections-reuse-clarification.md`.
 - `docs/research/exchange-rates-spike.md` records the ECB exchange-rates spike decision and the offline importer evidence.
 - `docs/research/portalvs-source-resilience.md` records the PortalVS legacy→successor compatibility verdict and retained transition evidence.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.

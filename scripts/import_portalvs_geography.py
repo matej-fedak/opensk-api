@@ -211,6 +211,17 @@ def all_reference_errors(stage):
             for key, child in value.items():
                 visit(child, f"{label}.{key}")
     for path in sorted(stage.glob("*.json")):
+        if path.name == "elections_nrsr_2023.json":
+            # Election-native historical codes are NOT PortalVS foreign keys.
+            # Validate that separate namespace internally instead of projecting
+            # current district/region codes onto it (including Cudzina).
+            from pydantic import ValidationError
+            from schemas.elections import ElectionDataset
+            try:
+                ElectionDataset.model_validate_json(path.read_bytes())
+            except ValidationError as exc:
+                errors.append(f"{path.name}: invalid internal election snapshot: {exc}")
+            continue
         visit(json.loads(path.read_bytes()), path.name)
     return errors
 

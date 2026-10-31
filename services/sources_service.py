@@ -17,6 +17,7 @@ from schemas.common import (
     DISTRICTS_LAST_UPDATED,
     EXCHANGE_RATES_LAST_UPDATED,
     EU_FUNDS_LAST_UPDATED,
+    ELECTIONS_NRSR2023_LAST_UPDATED,
     HOLIDAYS_LAST_UPDATED,
     MUNICIPALITIES_LAST_UPDATED,
     PHONE_AREAS_LAST_UPDATED,
@@ -51,6 +52,7 @@ _RUNTIME_DATASET_IDS = frozenset(
         "procurementNotices",
         "exchangeRates",
         "euFunds",
+        "elections",
     }
 )
 
@@ -96,7 +98,7 @@ _UPDATE_CADENCE: dict[str, str] = {
     "phoneAreas": "manual",
     "vehicleRegistrationCodes": "static (historical)",
     "courtDecisions": "unknown",
-    "elections": "historical snapshot; manual correction review",
+    "elections": "manual official download only; historical correction review; no automated source downloads",
     "exchangeRates": "upstream every TARGET working day; manual offline snapshot refresh",
     "schoolFacilityCounts": "semiannual",
     "euFunds": "manual offline complete-list snapshot; not live",
@@ -142,9 +144,12 @@ _LIMITATIONS: dict[str, list[str]] = {
     ],
     "courtDecisions": ["Reuse and privacy gates unresolved; no runtime dataset is served."],
     "elections": [
-        "Research spike only; no election results endpoint or production dataset.",
-        "Election-specific reuse and permitted acquisition require clarification.",
-        "Aggregate-only scope; candidate and preference-vote files are excluded.",
+        "Complete only for the selected NRSR2023 unit-summary and national political-subject tables; not complete Slovak elections or live reporting.",
+        "ŠÚ SR reply received 2026-10-30 confirms CC BY 4.0; MANUAL_OFFICIAL_DOWNLOAD_ONLY, automated website downloads remain prohibited.",
+        "2927 election-native units (2926 domestic + 599999 Cudzina foreign), 25 national party results; no municipality-party cells, precinct, candidate or voter records; no PortalVS dependency.",
+        "Small-area aggregates may permit contextual inference with external information; no anonymity or zero-risk claim.",
+        "OpenSK is not an official ŠÚ SR service; modifications must be disclosed and no endorsement implied. MIT covers code, not election data.",
+        "Prešov precinct 34 was excluded by State Commission decision; 6013/6014 configured precincts confirmed.",
     ],
     "exchangeRates": [
         "ECB EUR reference rates only; informational values, not live, tradable or settlement prices.",
@@ -165,7 +170,7 @@ _LIMITATIONS: dict[str, list[str]] = {
 
 _LICENCE_NAMES: dict[str, str] = {
     "banks": "NBS Terms of Use (attribution; transformation clarified by NBS)",
-    "elections": "CC BY 4.0 (general ŠÚ SR policy; election applicability pending)",
+    "elections": "CC BY 4.0 (direct ŠÚ SR publisher reply, 2026-10-30)",
     "exchangeRates": "ECB free-use permission (attribution required)",
     "regions": "Eurostat reuse policy",
     "procurementNotices": "TED / Publications Office reuse terms",
@@ -188,6 +193,7 @@ _RUNTIME_LAST_UPDATED: dict[str, str] = {
     "procurementNotices": PROCUREMENT_NOTICES_LAST_UPDATED,
     "exchangeRates": EXCHANGE_RATES_LAST_UPDATED,
     "euFunds": EU_FUNDS_LAST_UPDATED,
+    "elections": ELECTIONS_NRSR2023_LAST_UPDATED,
 }
 
 _COVERAGE_MAP = {"complete": "complete", "partial": "partial", "seed-backed": "seed", "unknown": None}

@@ -4,6 +4,21 @@ Verified 2026-10-11. Primary election: **Voľby do Národnej rady Slovenskej rep
 
 **NO PUBLIC ELECTIONS ENDPOINT IS ADDED. No production election dataset or official raw file is committed.**
 
+> **Subsequent evidence (0.23.14 preparation, logged 2026-10-31):** the
+> institutional ŠÚ SR reply received **2026-10-30** resolves the reuse gate
+> (**REPLY_RECEIVED_RESOLVED**, **CC_BY_4_0_VERIFIED_BY_PUBLISHER_REPLY**).
+> Local storage/transformation/API redistribution/commercial reuse are permitted;
+> automated downloading remains prohibited (**MANUAL_OFFICIAL_DOWNLOAD_ONLY**).
+> Subsequently the maintainer manually supplied all five files on 2026-10-31
+> (approximately 17:20 UTC, explicit approximate-minute acquisition precision).
+> The new scope excludes `tab03e` municipality-party cells entirely, as well as
+> all precinct/candidate/person records. No production election data or routes
+> from this spike were promoted; 0.23.14 separately delivers the narrower
+> **NRSR2023_PRODUCTION** unit-summary/national-party scope after fresh manual
+> acquisition and full reconciliation. Current evidence: [reply](elections-reuse-clarification.md);
+> [production scope](../elections.md). The 0.23.2 conclusions below are historical,
+> not rewritten as if those rights/acquisition facts were known then.
+
 ## 1. Executive decision
 
 **GO_AFTER_LICENCE_EVIDENCE** — this includes an approved acquisition workflow, not just an attribution sentence. Official aggregate data is technically tractable, internally consistent and independently usable without PortalVS. The general ŠÚ SR CC BY 4.0 policy is encouraging, but election-specific applicability and the explicit automated-download restriction must be resolved before promotion.

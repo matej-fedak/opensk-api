@@ -2,6 +2,34 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-10-30 ŠÚ SR elections reply — REPLY_RECEIVED_RESOLVED
+
+- Logged 2026-10-31. The maintainer supplied the institutional answers and
+  confirmed **2026-10-30** as the received date. Mailbox metadata/verbatim
+  correspondence was not independently inspected; no personal signatures,
+  phone numbers or email headers are published. Summary:
+  `elections-reuse-clarification.md`.
+- **CC_BY_4_0_VERIFIED_BY_PUBLISHER_REPLY** for the election-result CSV/ODS/XLSX
+  tables on volby.statistics.sk: local storage, CSV/XLSX → JSON, normalization,
+  derived snapshots, public open-source API redistribution and commercial
+  downstream reuse permitted. Retain publisher/source/licence links, disclose
+  changes and actual acquisition date, and do not imply endorsement.
+  **OpenSK nie je oficiálnou službou Štatistického úradu SR.** MIT covers code,
+  not ŠÚ SR data.
+- **MANUAL_OFFICIAL_DOWNLOAD_ONLY**: robots/crawlers/similar automated downloads
+  remain prohibited; use the official Údaje na stiahnutie files manually,
+  then process offline. No automated recheck/download is authorized here.
+- The initial **MANUAL_SOURCE_FILES_REQUIRED** checkpoint was subsequently
+  cleared by the maintainer's five manually downloaded files on 2026-10-31.
+  Acquisition time approximately 17:20 UTC, explicitly approximate-minute from
+  the user-confirmed “just now” handoff and session clock, not exact or mtime.
+  All five hashes/schemas/cardinalities match research; full native/national/
+  party reconciliation passed. Actual evidence: `elections-nrsr2023-acquisition.json`;
+  production scope/refresh/benchmarks: `../elections.md`. No raw CSVs committed
+  and no old research acquisition relabelled as manual production.
+- PortalVS/telecom remain **FOLLOW_UP_SENT_AWAITING_REPLY** after manual
+  follow-ups 2026-10-28. Historical entries below retain their as-of conclusions.
+
 ## 2026-10-14 NBS Bank Reply — REPLY_RECEIVED_RESOLVED
 
 Historical PR #33 scope below. **0.23.8 now serves v226 / effective 2026-10-08**,

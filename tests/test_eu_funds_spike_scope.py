@@ -14,7 +14,7 @@ def test_eu_funds_has_only_the_two_approved_routes() -> None:
         "/v1/eu-funds/projects", "/v1/eu-funds/projects/{projectCode}"}
     assert not any("itms" in path.lower() for path in paths)
     # 35 original operations plus two exchange-rate and two EU-funds routes.
-    assert sum("get" in methods for methods in paths.values()) == 39
+    assert sum("get" in methods for methods in paths.values()) == 42
     root = client.get("/").json()
     assert root["data"]["apiNamespace"] == "/v1"
     assert root["metadata"]["version"] == "v1"

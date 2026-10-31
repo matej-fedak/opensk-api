@@ -105,7 +105,7 @@ def test_typed_openapi_and_exactly_two_routes(client):
     schema = client.get("/openapi.json").json()
     paths = {p for p in schema["paths"] if p.startswith("/v1/eu-funds")}
     assert paths == {"/v1/eu-funds/projects", "/v1/eu-funds/projects/{projectCode}"}
-    assert sum("get" in value for value in schema["paths"].values()) == 39
+    assert sum("get" in value for value in schema["paths"].values()) == 42
     response = schema["paths"]["/v1/eu-funds/projects"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]
     assert response["$ref"].endswith("ListResponse")
     model = schema["components"]["schemas"]["Project"]

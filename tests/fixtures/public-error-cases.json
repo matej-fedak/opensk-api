@@ -47,5 +47,8 @@
   ["/v1/exchange-rates/{date}", "/v1/exchange-rates/2026-10-10", 404, "RATE_DATE_NOT_FOUND"],
   ["/v1/eu-funds/projects", "/v1/eu-funds/projects?limit=bad", 400, "INVALID_FORMAT"],
   ["/v1/eu-funds/projects/{projectCode}", "/v1/eu-funds/projects/bad", 400, "INVALID_FORMAT"],
-  ["/v1/eu-funds/projects/{projectCode}", "/v1/eu-funds/projects/0000000000", 404, "NOT_FOUND"]
+  ["/v1/eu-funds/projects/{projectCode}", "/v1/eu-funds/projects/0000000000", 404, "NOT_FOUND"],
+  ["/v1/elections/{electionId}/results", "/v1/elections/NRSR2023/results?regionCode=invalid", 400, "INVALID_FORMAT"],
+  ["/v1/elections/{electionId}/results", "/v1/elections/UNKNOWN/results", 404, "NOT_FOUND"],
+  ["/v1/elections/{electionId}/parties", "/v1/elections/UNKNOWN/parties", 404, "NOT_FOUND"]
 ]

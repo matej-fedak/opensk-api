@@ -271,21 +271,21 @@
     "notes": "0.22.0 verified that the Ministry OpenAPI exposes anonymous-looking /v1/rozhodnutie list/detail/autocomplete endpoints with ECLI and decision metadata, but production import remains blocked by reuse/redistribution and privacy gates. Text decision: NO_PRODUCTION_DATA. Acquisition decision: RESEARCH_AND_TOOLING_ONLY."
   },
   "elections": {
-    "status": "research-only",
-    "coverage": "unknown",
+    "status": "imported",
+    "coverage": "complete",
     "sourceName": "Štatistický úrad SR — NR SR 2023 aggregate election statistics",
     "sourceUrl": "https://volby.statistics.sk/nrsr/nrsr2023/sk/subory_na_stiahnutie.html",
     "sourceDocumentationUrl": "https://volby.statistics.sk/nrsr/nrsr2023/json/downloadSK.json",
-    "licence": "General ŠÚ SR statistical-information policy names CC BY 4.0 and permits distribution/commercial use; applicability to election downloads and permitted acquisition need confirmation.",
-    "licenceStatus": "pending election-specific applicability and acquisition clarification; general CC BY 4.0 policy retained",
-    "redistributionStatus": "research-only; no production election dataset or results endpoint; promotion pending rights and acquisition evidence",
-    "termsUrl": "https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/",
-    "attribution": "Proposed after confirmation: Štatistický úrad Slovenskej republiky, NR SR 2023 definitive results; retain source, CC BY 4.0 and modification notices; no endorsement.",
+    "licence": "Creative Commons Attribution 4.0 (CC BY 4.0); directly confirmed by ŠÚ SR reply received 2026-10-30: local storage, transformation, public API redistribution and commercial downstream reuse permitted with attribution, modification disclosure and no endorsement. MIT covers OpenSK code, not ŠÚ SR election data.",
+    "licenceStatus": "verified by publisher reply received 2026-10-30; CC_BY_4_0_VERIFIED_BY_PUBLISHER_REPLY",
+    "redistributionStatus": "production selected NRSR2023 aggregate tables under CC BY 4.0; storage/transformation/API redistribution/commercial downstream reuse confirmed by publisher reply",
+    "termsUrl": "https://creativecommons.org/licenses/by/4.0/",
+    "attribution": "Zdroj: Štatistický úrad SR – výsledky príslušných volieb. Licencia: Creative Commons Attribution 4.0 (CC BY 4.0). Údaje boli ďalej spracované projektom OpenSK. Source: https://volby.statistics.sk/nrsr/nrsr2023/sk/subory_na_stiahnutie.html ; licence: https://creativecommons.org/licenses/by/4.0/ . Transformation: selected aggregate CSV tables to JSON, normalized field names and election-native territory joins. Manually acquired approximately 2026-10-31T17:20:00Z (maintainer confirmed download just now; session clock to minute, not exact download time); verified 2026-10-31. OpenSK nie je oficiálnou službou Štatistického úradu SR. No endorsement of OpenSK or downstream applications is implied. MIT covers code, not underlying ŠÚ SR CC BY 4.0 election data.",
     "riskLevel": "medium",
-    "lastChecked": "2026-10-11",
-    "updateCadence": "Historical snapshot, manual correction review; no approved automated acquisition",
-    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Awaiting confirmation of election-specific CC BY coverage and approved acquisition before any production promotion.",
-    "notes": "0.23.2 research spike only. Aggregate statistics and election-native geography; no candidate-personal data, public results routes, production JSON or runtime upstream dependency. General terms explicitly prohibit robots/crawlers/similar download tools; no exception is inferred for offered CSV files. Clarification was sent manually by the maintainer on 2026-10-11 and the reply is still pending; no permission is inferred from sending."
+    "lastChecked": "2026-10-31",
+    "updateCadence": "MANUAL_OFFICIAL_DOWNLOAD_ONLY; historical correction review; no automated downloads, polling or runtime upstream calls",
+    "nextAction": "Manual correction-driven refresh only: maintainer downloads the five approved official CSVs, records provenance/hash manifest, runs offline import/reconciliation, reviews diff and explicitly promotes. No robots/crawlers/polling/scheduled downloads. No second election without explicit family-specific review. See docs/elections.md.",
+    "notes": "0.23.14 NRSR2023_PRODUCTION: complete for the selected NR SR 2023 unit-summary and national political-subject tables, not all Slovak elections. 2927 native units (2926 domestic plus 599999 Cudzina foreign), 25 parties, 2967896 valid votes, 150 allocated mandates, 18 source-blank mandate cells preserved as null. 6013 of 6014 configured precincts confirmed; Prešov precinct 34 excluded by State Commission decision. Five freshly manually downloaded CSVs rehashed: all match 0.23.2 historical hashes, including the full authoritative tab01 digest; raw files are not committed. Manifest: docs/research/elections-nrsr2023-acquisition.json. Source acquisition timestamp approximate to minute and explicitly user-attested. REPLY_RECEIVED_RESOLVED on 2026-10-30; CC BY 4.0 storage/transformation/API/commercial reuse verified. No tab03e municipality-party cells, precinct/candidate/preference/elected-person/voter records, contacts/addresses or PortalVS enrichment. Aggregate official election statistics; small-area aggregates may permit contextual inference with external information, no anonymity/zero-risk claim. Evidence: docs/research/elections-reuse-clarification.md. PortalVS and telecom remain FOLLOW_UP_SENT_AWAITING_REPLY."
   },
   "exchangeRates": {
     "status": "imported",

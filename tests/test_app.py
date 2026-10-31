@@ -120,8 +120,8 @@ def test_every_openapi_operation_uses_public_tags_and_summaries() -> None:
             assert operation.get("tags"), path
             assert operation.get("summary"), path
 
-    assert len(get_operations) == 39
-    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 38
+    assert len(get_operations) == 42
+    assert sum(1 for path in get_operations if path.startswith("/v1/")) == 41
 
 
 def test_static_search_and_stats_routes_are_not_shadowed() -> None:

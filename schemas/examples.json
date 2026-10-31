@@ -1,8 +1,105 @@
 {
+  "list_elections": {
+    "data": [
+      {
+        "id": "NRSR2023",
+        "name": "Voľby do Národnej rady Slovenskej republiky 2023",
+        "type": "parliamentary",
+        "electionDate": "2023-09-30",
+        "status": "definitive",
+        "surfaces": [
+          "unit-summary",
+          "national-summary",
+          "national-parties"
+        ],
+        "sourceSnapshotDate": "2026-10-31",
+        "limitations": [
+          "Final NR SR 2023 selected unit summaries and national party results only; not all Slovak elections or live reporting.",
+          "No municipality-party cells, precinct results, candidate/preference/elected-person or voter records.",
+          "Small-area aggregates may permit contextual inference with external information; no anonymity or zero-risk claim.",
+          "599999 / Cudzina is foreign voting, not a Slovak municipality; no PortalVS/current-geography mapping.",
+          "Prešov precinct 34 was excluded by State Commission decision; 6013 of 6014 configured precincts confirmed."
+        ],
+        "national": {
+          "precinctCount": 6014,
+          "confirmedPrecinctCount": 6013,
+          "confirmedPrecinctPercent": "99.98",
+          "registeredVoters": 4388872,
+          "participatingVoters": 3007123,
+          "turnoutPercent": "68.51",
+          "submittedEnvelopes": 3002948,
+          "submittedEnvelopePercent": "99.86",
+          "validVotes": 2967896,
+          "validVotePercent": "98.69"
+        }
+      }
+    ],
+    "metadata": {
+      "source": "Štatistický úrad SR — NR SR 2023; CC BY 4.0; OpenSK CSV→JSON aggregate snapshot; not an official ŠÚ SR service",
+      "lastUpdated": "2026-10-31",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_election_results": {
+    "data": {
+      "items": [
+        {
+          "precinctCount": 34,
+          "confirmedPrecinctCount": 34,
+          "confirmedPrecinctPercent": "100.00",
+          "registeredVoters": 37237,
+          "participatingVoters": 28568,
+          "turnoutPercent": "76.71",
+          "submittedEnvelopes": 28521,
+          "submittedEnvelopePercent": "99.83",
+          "validVotes": 28381,
+          "validVotePercent": "99.34",
+          "regionCode": "1",
+          "regionName": "Bratislavský kraj",
+          "territorialCircuitCode": "101",
+          "territorialCircuitName": "Bratislava",
+          "districtCode": "101",
+          "districtName": "Bratislava I",
+          "municipalityCode": "528595",
+          "municipalityName": "Bratislava - Staré Mesto",
+          "unitType": "domestic"
+        }
+      ],
+      "count": 1,
+      "total": 2927,
+      "limit": 1,
+      "offset": 0
+    },
+    "metadata": {
+      "source": "Štatistický úrad SR — NR SR 2023; CC BY 4.0; OpenSK CSV→JSON aggregate snapshot; not an official ŠÚ SR service",
+      "lastUpdated": "2026-10-31",
+      "version": "v1"
+    },
+    "error": null
+  },
+  "list_election_parties": {
+    "data": [
+      {
+        "partyNumber": "1",
+        "name": "Pirátska strana - Slovensko",
+        "abbreviation": "Piráti",
+        "validVotes": 9358,
+        "votePercent": "0.31",
+        "seats": null
+      }
+    ],
+    "metadata": {
+      "source": "Štatistický úrad SR — NR SR 2023; CC BY 4.0; OpenSK CSV→JSON aggregate snapshot; not an official ŠÚ SR service",
+      "lastUpdated": "2026-10-31",
+      "version": "v1"
+    },
+    "error": null
+  },
   "get_root": {
     "data": {
       "name": "OpenSK API",
-      "version": "0.23.13",
+      "version": "0.23.14",
       "apiVersion": "v1",
       "apiNamespace": "/v1",
       "docs_url": "/docs"
@@ -17,11 +114,11 @@
   "get_health": {
     "data": {
       "status": "ok",
-      "timestamp": "2026-10-28T22:34:23.279881+00:00"
+      "timestamp": "2026-10-31T17:28:01.379160+00:00"
     },
     "metadata": {
       "source": "OpenSK API",
-      "lastUpdated": "2026-10-28",
+      "lastUpdated": "2026-10-31",
       "version": "v1"
     },
     "error": null
@@ -908,7 +1005,7 @@
     ],
     "metadata": {
       "source": "OpenSK API curated source catalogue",
-      "lastUpdated": "2026-10-16",
+      "lastUpdated": "2026-10-31",
       "version": "v1"
     },
     "error": null
@@ -939,7 +1036,7 @@
     },
     "metadata": {
       "source": "OpenSK API curated source catalogue",
-      "lastUpdated": "2026-10-16",
+      "lastUpdated": "2026-10-31",
       "version": "v1"
     },
     "error": null
@@ -1850,6 +1947,49 @@
           "code": "NOT_FOUND",
           "message": "Project not found",
           "messageSk": "Projekt sa nenašiel"
+        }
+      }
+    },
+    "list_election_results": {
+      "400": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "INVALID_FORMAT",
+          "message": "Invalid regionCode",
+          "messageSk": "Neplatný parameter regionCode"
+        }
+      },
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Election not found",
+          "messageSk": "Voľby sa nenašli"
+        }
+      }
+    },
+    "list_election_parties": {
+      "404": {
+        "data": null,
+        "metadata": {
+          "source": "OpenSK API",
+          "lastUpdated": null,
+          "version": "v1"
+        },
+        "error": {
+          "code": "NOT_FOUND",
+          "message": "Election not found",
+          "messageSk": "Voľby sa nenašli"
         }
       }
     }
