@@ -196,7 +196,7 @@ def test_source_detail_returns_single_entry() -> None:
     assert entry["coverage"] == "partial"
     assert "TED" in entry["source"]["name"]
     assert entry["licence"]["termsUrl"].startswith("https://")
-    assert len(entry["limitations"]) == 2
+    assert len(entry["limitations"]) == 3
 
 
 def test_source_detail_for_blocked_domain_does_not_look_available() -> None:

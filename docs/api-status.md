@@ -19,7 +19,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | Local PSC coverage is not national coverage. |
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and stats | partial imported | Static `/search` and `/stats` routes are intentionally registered before `/{psc}`. |
 | `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete domestic v226 snapshot, effective 2026-10-08 | Downloaded 2026-10-15T16:23:00Z; direct NBS attribution/version/effective/download/hash metadata. NBS terms, not MIT data licensing. |
-| `GET /v1/holidays/{year}` | Holiday calendar | partial curated seed | Years outside the seed return 404. |
+| `GET /v1/holidays/{year}` | Statutory holiday calendar | generated 2024-2030 verified window | Years outside the window return 404; includes legally working state holidays (`isDayOfRest: false`). |
 | `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage; 0.14.0 did not approve RPO production import. |
 | `GET /v1/vat/{ico}` | VAT registration lookup | not implemented | 0.15.0 verified the official Finančná správa ZIP/XML source but blocked production import on privacy grounds. |
 | `GET /v1/trades/{ico}` | Trade registration lookup | not implemented | 0.16.0 found no safe official machine-readable ŽRSR source and did not add a public endpoint. |
@@ -32,7 +32,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
 | `GET /v1/procurement-notices`, `GET /v1/procurement-notices/{id}`, `GET /v1/procurement-notices/search`, `GET /v1/procurement-notices/stats` | Public procurement notice list, lookup, search, and stats | partial imported | 100-record TED_PARTIAL snapshot only; not the complete ÚVO national register. |
 | `GET /v1/sources`, `GET /v1/sources/{id}` | Curated public source/licence provenance catalogue | 20 registered domains | Typed public projection; internal maintainer fields excluded; elections stays research-only pending rights; exchangeRates and euFunds are production (euFunds partial, verified catalogue CC BY, version not separately identified). |
-| `GET /v1/business-days/check`, `GET /v1/business-days/add`, `GET /v1/business-days/between` | Slovak business-day check, arithmetic, and counting | supported years 2024-2026 | Derived from the local holiday dataset; strict `UNSUPPORTED_YEAR` error outside coverage. |
+| `GET /v1/business-days/check`, `GET /v1/business-days/add`, `GET /v1/business-days/between` | Slovak business-day check, arithmetic, and counting | supported years 2024-2030 | Monday–Friday minus statutory days of rest from the local calendar; `isHoliday` can be true while `isBusinessDay` is true; strict `UNSUPPORTED_YEAR` error outside coverage. |
 | `GET /v1/exchange-rates/latest`, `GET /v1/exchange-rates/{date}` | ECB EUR reference rates (latest in snapshot; exact publication date) | complete (full ECB history 1999-01-04 onwards) | Decimal-string rates; exact dates only, 404 with no fallback; `?currency=` filter; informational use only, not live/tradable prices. |
 | `GET /v1/eu-funds/projects`, `GET /v1/eu-funds/projects/{projectCode}` | ITMS21+ project-reference list/code lookup | partial, reviewed legal-entity projects only; 2021–2027 | 4,561 public projects from 4,574 acquired; titles/unsafe projects entirely omitted; manual 2026-10-15 snapshot, not all Slovak funds. MIRRI / generic CC BY; OpenSK transformed/minimized. Contract: `docs/eu-funds.md`. |
 | `/docs`, `/openapi.json` | Interactive docs and schema | platform | Useful for parameter-level details. |
@@ -41,7 +41,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
-| `GET /v1/holidays/{year}` | seed-backed | Local holiday dataset; reuse allowed with attribution and no modification |
+| `GET /v1/holidays/{year}` | generated | Local statutory holiday dataset generated offline from Act 241/1993; verified 2024-2030 window |
 | `GET /v1/companies/{ico}` | seed-backed | Local company lookup, backed by a small checked-in seed set |
 | `GET /v1/ico/{ico}` | seed-backed | Alias for the local company lookup |
 

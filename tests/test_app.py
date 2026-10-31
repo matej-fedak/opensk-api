@@ -277,14 +277,24 @@ def test_holidays_2026_returns_enveloped_response() -> None:
     assert response.headers["cache-control"] == "public, max-age=86400"
     body = response.json()
     assert isinstance(body["data"], list)
-    assert body["data"]
+    assert len(body["data"]) == 16
     first_holiday = body["data"][0]
     assert first_holiday["date"] == "2026-01-01"
     assert first_holiday["name"] == "Deň vzniku Slovenskej republiky"
     assert first_holiday["name_en"] == "Day of the Establishment of the Slovak Republic"
+    assert first_holiday["isStateHoliday"] is True
+    assert first_holiday["isDayOfRest"] is True
+    by_date = {entry["date"]: entry for entry in body["data"]}
+    assert by_date["2026-10-28"]["isStateHoliday"] is True  # added statutory holiday
+    assert by_date["2026-10-28"]["isDayOfRest"] is False
+    assert by_date["2026-09-01"]["isDayOfRest"] is False
+    assert by_date["2026-11-17"]["isDayOfRest"] is False
+    assert by_date["2026-05-08"]["isStateHoliday"] is False  # §4b 2026 exception, still present
+    assert by_date["2026-05-08"]["isDayOfRest"] is False
+    assert by_date["2026-09-15"]["isDayOfRest"] is False
     assert body["metadata"]["source"] == "OpenSK API static holidays dataset"
     assert body["metadata"]["version"] == "v1"
-    assert body["metadata"]["lastUpdated"] == "2026-05-25"
+    assert body["metadata"]["lastUpdated"] == "2026-10-28"
     assert body["error"] is None
 
 

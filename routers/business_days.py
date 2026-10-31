@@ -12,6 +12,7 @@ from services.business_days_service import (
     MAX_DAYS_DELTA,
     add_business_days,
     business_days_between,
+    day_of_rest_dates,
     holiday_names,
     is_business_day,
     parse_iso_date,
@@ -69,6 +70,7 @@ def _describe(day: date) -> dict[str, object]:
         "weekday": day.weekday(),
         "isWeekend": weekend,
         "isHoliday": holiday_name is not None,
+        "isDayOfRest": day in day_of_rest_dates(),
         "holidayName": holiday_name,
         "isBusinessDay": is_business_day(day),
         "supportedYears": supported_years(),
@@ -78,7 +80,7 @@ def _describe(day: date) -> dict[str, object]:
 @router.get(
     "/check",
     summary="Check a business day",
-    description="Checks Monday–Friday excluding a known local public holiday. Verified years 2024–2026 only; unsupported years return 400 UNSUPPORTED_YEAR. Not a bank settlement, employer-specific or authority-specific calendar.",
+    description="Checks Monday–Friday minus statutory Slovak days of rest, using the local calendar (2024–2030). isHoliday means a statutory holiday date; it can be true while isDayOfRest=false and isBusinessDay=true. Unsupported years return 400 UNSUPPORTED_YEAR. Not a TARGET/NBS/bank settlement, employer, shop-opening or authority-opening calendar.",
     **contract("check_business_day", SuccessResponse[BusinessDayCheck], 400, 429),
 )
 def check_business_day(
@@ -102,7 +104,7 @@ def check_business_day(
 @router.get(
     "/add",
     summary="Add business days",
-    description="Adds/subtracts business days, excluding the start date, using local holidays (2024–2026 only). Crossing unsupported coverage returns 400 UNSUPPORTED_YEAR. days=0 returns the start unchanged even on a weekend; the historical resultIsBusinessDay field remains true, so use /check to establish that date's status. Not a settlement calendar.",
+    description="Adds/subtracts Monday–Friday days, excluding the start date, skipping weekends and statutory days of rest, not working holidays (local coverage 2024–2030). Crossing unsupported coverage returns 400 UNSUPPORTED_YEAR. days=0 returns the start unchanged even on a weekend; the historical resultIsBusinessDay field remains true, so use /check to establish that date's status. Not a settlement, employer, shop-opening or authority-opening calendar.",
     **contract("add_business_days", SuccessResponse[BusinessDayAddition], 400, 429),
 )
 def add_business_days_endpoint(
@@ -138,7 +140,7 @@ def add_business_days_endpoint(
 @router.get(
     "/between",
     summary="Count business days",
-    description="Counts Monday–Friday excluding local holidays in an inclusive interval (from <= to, at most 366 days apart), verified years 2024–2026 only. Weekend holidays count as weekendDays, not holidayDays; holidays lists weekday holiday hits. Unsupported years return 400. Not a settlement calendar.",
+    description="Counts Monday–Friday minus statutory days of rest in an inclusive interval (from <= to, at most 366 days apart), local coverage 2024–2030. holidayDays and holidays include only weekday days of rest, not working state holidays. Weekend precedence remains: weekend holidays count as weekendDays only. Unsupported years return 400. Not a settlement, employer, shop-opening or authority-opening calendar.",
     **contract("count_business_days", SuccessResponse[BusinessDayInterval], 400, 429),
 )
 def business_days_between_endpoint(

@@ -3,231 +3,798 @@
     {
       "date": "2024-01-01",
       "name": "Deň vzniku Slovenskej republiky",
-      "name_en": "Day of the Establishment of the Slovak Republic"
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2024-01-06",
       "name": "Zjavenie Pána (Traja králi)",
-      "name_en": "Epiphany (Three Kings)"
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-03-29",
       "name": "Veľký piatok",
-      "name_en": "Good Friday"
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-04-01",
       "name": "Veľkonočný pondelok",
-      "name_en": "Easter Monday"
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-05-01",
       "name": "Sviatok práce",
-      "name_en": "Labour Day"
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-05-08",
       "name": "Deň víťazstva nad fašizmom",
-      "name_en": "Victory over Fascism Day"
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-07-05",
       "name": "Sviatok svätého Cyrila a Metoda",
-      "name_en": "Saints Cyril and Methodius Day"
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2024-08-29",
       "name": "Výročie SNP",
-      "name_en": "Slovak National Uprising Anniversary"
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2024-09-01",
-      "name": "Deň Ústavy SR",
-      "name_en": "Constitution Day of the Slovak Republic"
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2024-09-15",
       "name": "Sedembolestná Panna Mária",
-      "name_en": "Our Lady of Sorrows"
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2024-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2024-11-01",
       "name": "Sviatok všetkých svätých",
-      "name_en": "All Saints' Day"
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-11-17",
       "name": "Deň boja za slobodu a demokraciu",
-      "name_en": "Struggle for Freedom and Democracy Day"
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2024-12-24",
       "name": "Štedrý deň",
-      "name_en": "Christmas Eve"
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-12-25",
       "name": "Prvý sviatok vianočný",
-      "name_en": "Christmas Day"
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2024-12-26",
       "name": "Druhý sviatok vianočný",
-      "name_en": "St. Stephen's Day"
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     }
   ],
   "2025": [
     {
       "date": "2025-01-01",
       "name": "Deň vzniku Slovenskej republiky",
-      "name_en": "Day of the Establishment of the Slovak Republic"
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2025-01-06",
       "name": "Zjavenie Pána (Traja králi)",
-      "name_en": "Epiphany (Three Kings)"
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-04-18",
       "name": "Veľký piatok",
-      "name_en": "Good Friday"
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-04-21",
       "name": "Veľkonočný pondelok",
-      "name_en": "Easter Monday"
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-05-01",
       "name": "Sviatok práce",
-      "name_en": "Labour Day"
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-05-08",
       "name": "Deň víťazstva nad fašizmom",
-      "name_en": "Victory over Fascism Day"
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-07-05",
       "name": "Sviatok svätého Cyrila a Metoda",
-      "name_en": "Saints Cyril and Methodius Day"
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2025-08-29",
       "name": "Výročie SNP",
-      "name_en": "Slovak National Uprising Anniversary"
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2025-09-01",
-      "name": "Deň Ústavy SR",
-      "name_en": "Constitution Day of the Slovak Republic"
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2025-09-15",
       "name": "Sedembolestná Panna Mária",
-      "name_en": "Our Lady of Sorrows"
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2025-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2025-11-01",
       "name": "Sviatok všetkých svätých",
-      "name_en": "All Saints' Day"
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-11-17",
       "name": "Deň boja za slobodu a demokraciu",
-      "name_en": "Struggle for Freedom and Democracy Day"
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2025-12-24",
       "name": "Štedrý deň",
-      "name_en": "Christmas Eve"
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-12-25",
       "name": "Prvý sviatok vianočný",
-      "name_en": "Christmas Day"
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2025-12-26",
       "name": "Druhý sviatok vianočný",
-      "name_en": "St. Stephen's Day"
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     }
   ],
   "2026": [
     {
       "date": "2026-01-01",
       "name": "Deň vzniku Slovenskej republiky",
-      "name_en": "Day of the Establishment of the Slovak Republic"
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2026-01-06",
       "name": "Zjavenie Pána (Traja králi)",
-      "name_en": "Epiphany (Three Kings)"
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-04-03",
       "name": "Veľký piatok",
-      "name_en": "Good Friday"
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-04-06",
       "name": "Veľkonočný pondelok",
-      "name_en": "Easter Monday"
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-05-01",
       "name": "Sviatok práce",
-      "name_en": "Labour Day"
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-05-08",
       "name": "Deň víťazstva nad fašizmom",
-      "name_en": "Victory over Fascism Day"
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": false
     },
     {
       "date": "2026-07-05",
       "name": "Sviatok svätého Cyrila a Metoda",
-      "name_en": "Saints Cyril and Methodius Day"
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2026-08-29",
       "name": "Výročie SNP",
-      "name_en": "Slovak National Uprising Anniversary"
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
     },
     {
       "date": "2026-09-01",
-      "name": "Deň Ústavy SR",
-      "name_en": "Constitution Day of the Slovak Republic"
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2026-09-15",
       "name": "Sedembolestná Panna Mária",
-      "name_en": "Our Lady of Sorrows"
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2026-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2026-11-01",
       "name": "Sviatok všetkých svätých",
-      "name_en": "All Saints' Day"
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-11-17",
       "name": "Deň boja za slobodu a demokraciu",
-      "name_en": "Struggle for Freedom and Democracy Day"
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": false
     },
     {
       "date": "2026-12-24",
       "name": "Štedrý deň",
-      "name_en": "Christmas Eve"
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-12-25",
       "name": "Prvý sviatok vianočný",
-      "name_en": "Christmas Day"
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     },
     {
       "date": "2026-12-26",
       "name": "Druhý sviatok vianočný",
-      "name_en": "St. Stephen's Day"
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    }
+  ],
+  "2027": [
+    {
+      "date": "2027-01-01",
+      "name": "Deň vzniku Slovenskej republiky",
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-01-06",
+      "name": "Zjavenie Pána (Traja králi)",
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-03-26",
+      "name": "Veľký piatok",
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-03-29",
+      "name": "Veľkonočný pondelok",
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-05-01",
+      "name": "Sviatok práce",
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-05-08",
+      "name": "Deň víťazstva nad fašizmom",
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-07-05",
+      "name": "Sviatok svätého Cyrila a Metoda",
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-08-29",
+      "name": "Výročie SNP",
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-09-01",
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2027-09-15",
+      "name": "Sedembolestná Panna Mária",
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2027-11-01",
+      "name": "Sviatok všetkých svätých",
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-11-17",
+      "name": "Deň boja za slobodu a demokraciu",
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2027-12-24",
+      "name": "Štedrý deň",
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-12-25",
+      "name": "Prvý sviatok vianočný",
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2027-12-26",
+      "name": "Druhý sviatok vianočný",
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    }
+  ],
+  "2028": [
+    {
+      "date": "2028-01-01",
+      "name": "Deň vzniku Slovenskej republiky",
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-01-06",
+      "name": "Zjavenie Pána (Traja králi)",
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-04-14",
+      "name": "Veľký piatok",
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-04-17",
+      "name": "Veľkonočný pondelok",
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-05-01",
+      "name": "Sviatok práce",
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-05-08",
+      "name": "Deň víťazstva nad fašizmom",
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-07-05",
+      "name": "Sviatok svätého Cyrila a Metoda",
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-08-29",
+      "name": "Výročie SNP",
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-09-01",
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2028-09-15",
+      "name": "Sedembolestná Panna Mária",
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2028-11-01",
+      "name": "Sviatok všetkých svätých",
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-11-17",
+      "name": "Deň boja za slobodu a demokraciu",
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2028-12-24",
+      "name": "Štedrý deň",
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-12-25",
+      "name": "Prvý sviatok vianočný",
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2028-12-26",
+      "name": "Druhý sviatok vianočný",
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    }
+  ],
+  "2029": [
+    {
+      "date": "2029-01-01",
+      "name": "Deň vzniku Slovenskej republiky",
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-01-06",
+      "name": "Zjavenie Pána (Traja králi)",
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-03-30",
+      "name": "Veľký piatok",
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-04-02",
+      "name": "Veľkonočný pondelok",
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-05-01",
+      "name": "Sviatok práce",
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-05-08",
+      "name": "Deň víťazstva nad fašizmom",
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-07-05",
+      "name": "Sviatok svätého Cyrila a Metoda",
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-08-29",
+      "name": "Výročie SNP",
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-09-01",
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2029-09-15",
+      "name": "Sedembolestná Panna Mária",
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2029-11-01",
+      "name": "Sviatok všetkých svätých",
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-11-17",
+      "name": "Deň boja za slobodu a demokraciu",
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2029-12-24",
+      "name": "Štedrý deň",
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-12-25",
+      "name": "Prvý sviatok vianočný",
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2029-12-26",
+      "name": "Druhý sviatok vianočný",
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    }
+  ],
+  "2030": [
+    {
+      "date": "2030-01-01",
+      "name": "Deň vzniku Slovenskej republiky",
+      "name_en": "Day of the Establishment of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-01-06",
+      "name": "Zjavenie Pána (Traja králi)",
+      "name_en": "Epiphany (Three Kings)",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-04-19",
+      "name": "Veľký piatok",
+      "name_en": "Good Friday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-04-22",
+      "name": "Veľkonočný pondelok",
+      "name_en": "Easter Monday",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-05-01",
+      "name": "Sviatok práce",
+      "name_en": "Labour Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-05-08",
+      "name": "Deň víťazstva nad fašizmom",
+      "name_en": "Victory over Fascism Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-07-05",
+      "name": "Sviatok svätého Cyrila a Metoda",
+      "name_en": "Saints Cyril and Methodius Day",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-08-29",
+      "name": "Výročie SNP",
+      "name_en": "Slovak National Uprising Anniversary",
+      "isStateHoliday": true,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-09-01",
+      "name": "Deň Ústavy Slovenskej republiky",
+      "name_en": "Constitution Day of the Slovak Republic",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2030-09-15",
+      "name": "Sedembolestná Panna Mária",
+      "name_en": "Our Lady of Sorrows",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-10-28",
+      "name": "Deň vzniku samostatného česko-slovenského štátu",
+      "name_en": "Day of the Establishment of the Independent Czechoslovak State",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2030-11-01",
+      "name": "Sviatok všetkých svätých",
+      "name_en": "All Saints' Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-11-17",
+      "name": "Deň boja za slobodu a demokraciu",
+      "name_en": "Struggle for Freedom and Democracy Day",
+      "isStateHoliday": true,
+      "isDayOfRest": false
+    },
+    {
+      "date": "2030-12-24",
+      "name": "Štedrý deň",
+      "name_en": "Christmas Eve",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-12-25",
+      "name": "Prvý sviatok vianočný",
+      "name_en": "Christmas Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
+    },
+    {
+      "date": "2030-12-26",
+      "name": "Druhý sviatok vianočný",
+      "name_en": "St. Stephen's Day",
+      "isStateHoliday": false,
+      "isDayOfRest": true
     }
   ]
 }

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import pytest
 
 from scripts.import_procurement_notices import (
     build_procurement_notices_payload,
@@ -86,3 +87,10 @@ def test_procurement_notice_importer_validates_and_writes(tmp_path: Path) -> Non
     payload = json.loads(output_path.read_text(encoding="utf-8"))
     assert payload["metadata"]["lastUpdated"] == "2026-09-29"
     assert payload["procurementNotices"][0]["id"] == "669481-2026"
+
+
+def test_production_expansion_is_explicitly_paused(tmp_path: Path) -> None:
+    target = tmp_path / "must-not-exist.json"
+    with pytest.raises(ValueError, match="PAUSED"):
+        run_import(input_path=tmp_path, output_path=target, write_production=True)
+    assert not target.exists()
