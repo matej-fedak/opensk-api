@@ -2,6 +2,7 @@
   "banks.json": "f689a5766b5a6248a4cf44386eb3de9ddc5d649c96942470d5575d06fa7e7f43",
   "companies.json": "95c7d476b1600249f95d31d209b4c684fb9d561ee2f87aa3eb5591c1b51e014a",
   "districts.json": "b8db6377c4ffba093dc26497c26446b581465592a1a15e7b5b7f88ebd5e362a9",
+  "elections_nrsr_2023.json": "dde3a904767682499b48e4e23d61f25c54db2b7d157856fd23dea34a40633f7c",
   "eu_funds_projects.json": "6c00944e57ecfa141537b609eb9b2fe236058a7f1fa0aaf096877c7ac65c6209",
   "exchange_rates.json": "a0042387d492472cbffb26d0bf7a8c0616d768bba11822f44025dfcb875b09f4",
   "holidays.json": "35a880a20fc6efd6d4b25ba210872a6c1df9d0944ffce88bf2de389e659ae805",
@@ -11,6 +12,6 @@
   "psc.json": "db9cd5c2d833cec0d199f4a7199f9c13f77346572bbd1507503ce01774b0dc24",
   "regions.json": "7e7601e996909b63349e6d7862e16952fd87b642eebbb347c9df5acc1a8c6546",
   "school_facility_counts.json": "00bbfa708f769d41046b8fc51da0e82bd61a4b5c494df4c90f24b518244ba723",
-  "sources.json": "d898393aaa74605979e1f1993a1568ded7fc251b13456eecbe69670e77015a5b",
+  "sources.json": "b51e6c72f0a721447cf9cf7d8fe72798fc3a15082b00dadf3e42cd6eeaea31f0",
   "vehicle_registration_codes.json": "653b5d3a43c4b391f0ed7acc6ca7d57e52c4bc522e02d73674f583906d93274e"
 }

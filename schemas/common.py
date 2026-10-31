@@ -14,6 +14,8 @@ SCHOOL_FACILITY_COUNTS_LAST_UPDATED = "2025-09-15"
 PROCUREMENT_NOTICES_LAST_UPDATED = "2026-09-29"
 EXCHANGE_RATES_LAST_UPDATED = "2026-10-12"
 EU_FUNDS_LAST_UPDATED = "2026-10-15"
+# NRSR2023 manual production acquisition/verification date, not election/publication day.
+ELECTIONS_NRSR2023_LAST_UPDATED = "2026-10-31"
 REGIONS_LAST_UPDATED = "2026-05-27"
 # Successor geography freshness is the UTC OpenSK acquisition date, not validFrom.
 DISTRICTS_LAST_UPDATED = "2026-10-16"
