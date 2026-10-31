@@ -151,6 +151,9 @@ def _check_openapi(url: str) -> SmokeResult:
         "/v1/exchange-rates/{date}",
         "/v1/eu-funds/projects",
         "/v1/eu-funds/projects/{projectCode}",
+        "/v1/elections",
+        "/v1/elections/{electionId}/results",
+        "/v1/elections/{electionId}/parties",
     }
     try:
         paths = set(body["paths"])
@@ -312,6 +315,11 @@ def main(argv: list[str] | None = None) -> int:
         ("procurement-notice-item", f"{base_url}/v1/procurement-notices/670654-2026"),
         ("companies", f"{base_url}/v1/companies/50158635", 200),
         ("sources", f"{base_url}/v1/sources"),
+        ("elections", f"{base_url}/v1/elections"),
+        ("election-results", f"{base_url}/v1/elections/NRSR2023/results"),
+        ("election-parties", f"{base_url}/v1/elections/NRSR2023/parties"),
+        ("election-municipality", f"{base_url}/v1/elections/NRSR2023/results?municipalityCode=528595"),
+        ("election-foreign", f"{base_url}/v1/elections/NRSR2023/results?municipalityCode=599999"),
         ("source-item", f"{base_url}/v1/sources/regions"),
         ("business-days-check", f"{base_url}/v1/business-days/check?date=2026-10-08"),
         ("exchange-rates-latest", f"{base_url}/v1/exchange-rates/latest"),

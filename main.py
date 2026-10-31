@@ -11,6 +11,7 @@ from routers.companies import router as companies_router
 from routers.districts import router as districts_router
 from routers.exchange_rates import router as exchange_rates_router
 from routers.eu_funds import router as eu_funds_router
+from routers.elections import router as elections_router
 from routers.health import router as health_router
 from routers.holidays import router as holidays_router
 from routers.iban import router as iban_router
@@ -56,6 +57,7 @@ app = FastAPI(
         {"name": "procurement-notices", "description": "Static partial TED Slovak-buyer procurement notice snapshot; not the complete national ÚVO register."},
         {"name": "exchange-rates", "description": "Materialized ECB euro foreign exchange reference rates (EUR base, exact publication dates, informational use only)."},
         {"name": "eu-funds", "description": "Materialized ITMS21+ 2021–2027 project references for positively reviewed legal-entity beneficiaries only; titles and privacy-unsafe projects excluded."},
+        {"name": "elections", "description": "NRSR2023 aggregate historical unit summaries and national party results; manual acquisition, CC BY 4.0, no candidate/person, precinct or municipality-party records."},
     ],
 )
 
@@ -154,6 +156,7 @@ app.include_router(sources_router, prefix="/v1")
 app.include_router(business_days_router, prefix="/v1")
 app.include_router(exchange_rates_router, prefix="/v1")
 app.include_router(eu_funds_router, prefix="/v1")
+app.include_router(elections_router, prefix="/v1")
 
 
 def public_openapi():

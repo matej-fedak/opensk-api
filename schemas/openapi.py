@@ -136,7 +136,14 @@ def document_parameters(schema):
             name = parameter["name"]
             info = shared.get(name)
             extra = {}
-            if name == "psc":
+            if path.startswith("/v1/elections") and name in {"electionId", "regionCode", "districtCode", "municipalityCode"}:
+                info = {
+                    "electionId": ("Exact supported election adapter ID NRSR2023; case-sensitive. Unknown elections return 404.", "NRSR2023"),
+                    "regionCode": ("Exact one-digit election-native region code 1–9, trimmed; 9 is foreign voting. AND with other filters; not a PortalVS code.", "1"),
+                    "districtCode": ("Exact three-digit election-native district code, trimmed; 900 is foreign voting. AND with other filters; not a PortalVS code.", "101"),
+                    "municipalityCode": ("Exact six-digit election-native unit code, trimmed; 599999 means Cudzina (foreign voting), not a Slovak municipality. AND with other filters.", "528595"),
+                }[name]
+            elif name == "psc":
                 info = ("Five-digit postal code including leading zeros; spaces removed. Exact local-snapshot lookup/filter, not address validation.", "01001")
             elif name == "code":
                 if "/banks" in path:
@@ -174,12 +181,13 @@ def document_parameters(schema):
                     parameter["required"] = True
             elif name in {"limit", "offset"}:
                 eu = "/eu-funds" in path
+                election = path.startswith("/v1/elections")
                 search = path.endswith("/search")
-                default, maximum, minimum = (50, 200, 1) if eu else ((50, 200, 0) if search else (100, 500, 0))
+                default, maximum, minimum = (50, 100, 1) if election else ((50, 200, 1) if eu else ((50, 200, 0) if search else (100, 500, 0)))
                 if name == "offset":
-                    default, maximum, minimum = 0, (2**31 - 1 if eu else 10**9), 0
-                info = (f"Decimal integer string; default {default}, range {minimum}–{maximum}. " + ("Whitespace trimmed." if eu else "Digits only; zero allowed."), str(default))
-                extra = {"default": str(default), "pattern": r"^\s*[0-9]{1,10}\s*$" if eu else "^[0-9]+$"}
+                    default, maximum, minimum = 0, (2**31 - 1 if eu or election else 10**9), 0
+                info = (f"Decimal integer string; default {default}, range {minimum}–{maximum}. " + ("Whitespace trimmed." if eu or election else "Digits only; zero allowed."), str(default))
+                extra = {"default": str(default), "pattern": r"^\s*[0-9]{1,10}\s*$" if eu or election else "^[0-9]+$"}
             if info is None:
                 raise ValueError(f"Undocumented parameter: {path} {name}")
             description, example = info

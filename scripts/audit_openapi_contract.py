@@ -17,6 +17,9 @@ from main import app
 
 
 REQUESTS = {
+    "/v1/elections": "/v1/elections",
+    "/v1/elections/{electionId}/results": "/v1/elections/NRSR2023/results?limit=1",
+    "/v1/elections/{electionId}/parties": "/v1/elections/NRSR2023/parties",
     "/": "/",
     "/v1/health": "/v1/health",
     "/v1/banks": "/v1/banks",
@@ -60,6 +63,9 @@ REQUESTS = {
 
 # Reviewed against route/service branches, not inferred from HTTP status lists.
 APPLICATION_ERRORS = {
+    "/v1/elections": [],
+    "/v1/elections/{electionId}/results": [400, 404],
+    "/v1/elections/{electionId}/parties": [404],
     "/v1/banks/{code}": [400, 404], "/v1/holidays/{year}": [404, 422],
     "/v1/psc": [400], "/v1/psc/search": [400], "/v1/psc/{psc}": [400, 404],
     "/v1/companies/{ico}": [400, 404, 503], "/v1/ico/{ico}": [400, 404, 503],
