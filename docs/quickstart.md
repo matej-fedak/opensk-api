@@ -1,5 +1,10 @@
 # OpenSK in five minutes
 
+Elections (0.23.14) are not served yet: reuse was confirmed by ŠÚ SR reply
+received 2026-10-30, but the five manually downloaded NRSR2023 CSVs are still
+required. See [manual handoff](elections.md); no election results call is a
+working API example at this checkpoint. Automated source downloading is prohibited.
+
 **Base URL:** `https://opensk-api.onrender.com` · API prefix: `/v1`
 
 [Try requests in Swagger](https://opensk-api.onrender.com/docs) · [OpenAPI JSON](https://opensk-api.onrender.com/openapi.json)

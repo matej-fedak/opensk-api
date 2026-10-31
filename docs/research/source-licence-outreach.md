@@ -2,16 +2,16 @@
 
 These are prepared outreach packages for the human maintainer to send. Do not send emails automatically. This document pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and a ready-to-send Slovak message where a message is still required.
 
-**Dispatch/reply status, updated 2026-10-28:** the human maintainer sent all four packages manually on **2026-10-11**. NBS's bank-directory reply was received **2026-10-14** and resolves bank reuse under its Terms of Use. The maintainer sent manual follow-ups on the three unanswered packages on **2026-10-28**; no reply has been received since. Current states:
+**Dispatch/reply status, updated 2026-10-31:** the human maintainer sent all four packages manually on **2026-10-11**, then manual follow-ups for PortalVS, telecom and elections on **2026-10-28**. NBS's bank-directory reply was received **2026-10-14**. The ŠÚ SR elections reply was received **2026-10-30** (date confirmed by the maintainer), resolving election-table CC BY 4.0 reuse with manual official downloads only. Current states:
 
 | Package | State |
 | --- | --- |
 | PortalVS (§1) | `FOLLOW_UP_SENT_AWAITING_REPLY` (2026-10-28) |
 | NBS banks (§2) | `REPLY_RECEIVED_RESOLVED` |
 | Telecom regulator (§4) | `FOLLOW_UP_SENT_AWAITING_REPLY` (2026-10-28) |
-| ŠÚ SR elections (§7) | `FOLLOW_UP_SENT_AWAITING_REPLY` (2026-10-28) |
+| ŠÚ SR elections (§7) | `REPLY_RECEIVED_RESOLVED` (2026-10-30) |
 
-No permission is inferred for the three unanswered items; a sent follow-up is not an approval either. No Message-ID, mail headers, delivery confirmation or exact sent/received body is independently archived in this repository. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. The NBS substantive clarification is recorded below and in `nbs-bank-reuse-clarification.md`, without unnecessary email metadata.
+No permission is inferred for the two unanswered items; a sent follow-up is not an approval either. No Message-ID, mail headers, delivery confirmation or exact sent/received body is independently archived in this repository. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. The substantive clarifications are recorded in `nbs-bank-reuse-clarification.md` and `elections-reuse-clarification.md`, without unnecessary email metadata.
 
 Related documents:
 
@@ -261,7 +261,7 @@ These are recorded so the compliance matrix can move from "terms page identified
 ## Dispatch Checklist
 
 1. ~~Send section 1 (PortalVS) first~~ — done 2026-10-11 (`SENT_AWAITING_REPLY`); the reply still blocks the Red compliance rows and the candidate 1.0 inclusion of districts, municipalities, and PSC.
-2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11. NBS banks are `REPLY_RECEIVED_RESOLVED` on 2026-10-14; telecom and ŠÚ SR elections received manual follow-ups on 2026-10-28 and remain `FOLLOW_UP_SENT_AWAITING_REPLY`.
+2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11. NBS banks are `REPLY_RECEIVED_RESOLVED` on 2026-10-14; telecom remains `FOLLOW_UP_SENT_AWAITING_REPLY` after the 2026-10-28 follow-up; elections resolved by reply received 2026-10-30.
 3. After each reply, update `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` in the same commit so they stay aligned.
 4. Retain the exact sent message text and received replies under `docs/research/` (redact personal email addresses before committing, if desired). The exact sent bodies are currently retained privately by the maintainer, not in this repository.
 5. If no reply arrives within a reasonable interval, record a follow-up date in `docs/verification-backlog.md` rather than letting the item go stale.
@@ -273,15 +273,15 @@ These are recorded so the compliance matrix can move from "terms page identified
 - Do not present the 31.10.2026 PortalVS deadline as an emergency removal trigger; the correct response is outreach plus a mirrored-snapshot contingency (see `docs/research/roadmap-council-notes.md`, contested item on removal order).
 - Do not claim official endorsement from any of these institutions.
 
-## 7. NRSR2023 Elections — COVERAGE AND ACQUISITION CLARIFICATION REQUIRED
+## 7. NRSR2023 Elections — REPLY_RECEIVED_RESOLVED
 
-State: `FOLLOW_UP_SENT_AWAITING_REPLY` — human maintainer states the message was sent manually on 2026-10-11 (To `info@statistics.sk`, CC `volby@statistics.sk`) and a follow-up was sent manually on 2026-10-28. No reply received as of 2026-10-28; no permission is inferred from sending, and a sent request is not an approval. The draft below is the prepared text, not a retained copy of the sent message.
+State: `REPLY_RECEIVED_RESOLVED` — the human maintainer confirms the institutional reply was received **2026-10-30**, after the 2026-10-11 request and 2026-10-28 follow-up. Election-table CC BY 4.0 applicability, local storage, transformation, public API redistribution and downstream commercial reuse are confirmed. Attribution, modification disclosure and non-endorsement are required. **Automated downloading remains prohibited; MANUAL_OFFICIAL_DOWNLOAD_ONLY.** Summary and evidence boundary: `elections-reuse-clarification.md`. The draft below remains a historical prepared text, not a retained copy of the sent message. Manual production inputs are still required.
 
 Verified **2026-10-11**: `https://volby.statistics.sk/nrsr/nrsr2023/sk/kontakty.html` lists `info@statistics.sk` as Informačný servis and `volby@statistics.sk` as Obsahový správca a technický prevádzkovateľ. These are verified public contacts, not an inferred licensing-officer address.
 
 To: `info@statistics.sk`; CC: `volby@statistics.sk`.
 
-Evidence: `docs/research/elections-source-licence.md`. General ŠÚ SR terms expressly permit distribution/commercial use and name CC BY 4.0, but also expressly prohibit robots/crawlers/similar data-gathering/download tools. Election-subdomain coverage and an approved acquisition route need clarification; offered downloads alone are not permission.
+Historical evidence: `docs/research/elections-source-licence.md`. The 2026-10-30 reply resolves election-subdomain coverage and approves manual official downloads followed by offline processing; it does not lift the automated-download prohibition. Current evidence: `docs/research/elections-reuse-clarification.md`.
 
 Evidence retention: the maintainer retains the sent message and any dated reply privately, including the responding institution, named files, licence scope, acquisition permission and attribution conditions. Add exact relevant wording and its date to `source-verification-evidence.md`; redact personal contact details before publishing. Human-dispatched 2026-10-11 per the dispatch-status note at the top of this document; a draft is not permission and a sent request is not an approval.
 

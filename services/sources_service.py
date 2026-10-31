@@ -142,9 +142,11 @@ _LIMITATIONS: dict[str, list[str]] = {
     ],
     "courtDecisions": ["Reuse and privacy gates unresolved; no runtime dataset is served."],
     "elections": [
-        "Research spike only; no election results endpoint or production dataset.",
-        "Election-specific reuse and permitted acquisition require clarification.",
-        "Aggregate-only scope; candidate and preference-vote files are excluded.",
+        "Preparation only; no election results endpoint or production dataset until manually acquired NRSR2023 source files are supplied and validated.",
+        "ŠÚ SR reply received 2026-10-30 confirms CC BY 4.0; MANUAL_OFFICIAL_DOWNLOAD_ONLY, automated website downloads remain prohibited.",
+        "Planned scope: unit summaries and national party results only; no municipality-party cells, precinct, candidate or voter records; no PortalVS dependency.",
+        "Small-area aggregates may permit contextual inference with external information; no anonymity or zero-risk claim.",
+        "OpenSK is not an official ŠÚ SR service; modifications must be disclosed and no endorsement implied. MIT covers code, not election data.",
     ],
     "exchangeRates": [
         "ECB EUR reference rates only; informational values, not live, tradable or settlement prices.",
@@ -165,7 +167,7 @@ _LIMITATIONS: dict[str, list[str]] = {
 
 _LICENCE_NAMES: dict[str, str] = {
     "banks": "NBS Terms of Use (attribution; transformation clarified by NBS)",
-    "elections": "CC BY 4.0 (general ŠÚ SR policy; election applicability pending)",
+    "elections": "CC BY 4.0 (direct ŠÚ SR publisher reply, 2026-10-30)",
     "exchangeRates": "ECB free-use permission (attribution required)",
     "regions": "Eurostat reuse policy",
     "procurementNotices": "TED / Publications Office reuse terms",

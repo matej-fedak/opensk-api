@@ -18,7 +18,7 @@ REGIONS_LAST_UPDATED = "2026-05-27"
 # Successor geography freshness is the UTC OpenSK acquisition date, not validFrom.
 DISTRICTS_LAST_UPDATED = "2026-10-16"
 MUNICIPALITIES_LAST_UPDATED = "2026-10-16"
-SOURCES_LAST_UPDATED = "2026-10-16"
+SOURCES_LAST_UPDATED = "2026-10-31"
 PSC_LIST_SOURCE = "OpenSK API static PSC dataset"
 PSC_SEARCH_SOURCE = "OpenSK API static PSC dataset"
 PSC_STATS_SOURCE = "OpenSK API static PSC dataset"

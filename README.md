@@ -99,6 +99,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
 - `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
 - `docs/research/elections-spike.md` records the NR SR 2023 spike decision, source/schema evidence, offline prototype and production gates.
+- `docs/elections.md` is the **0.23.14 manual-source handoff**: ŠÚ SR's reply received 2026-10-30 confirms CC BY 4.0 reuse, but automated downloading remains prohibited. Elections remain pre-production until the five manually downloaded NRSR2023 CSVs and their actual acquisition timestamp are supplied; no election results endpoints exist yet. Current reply: `docs/research/elections-reuse-clarification.md`.
 - `docs/research/exchange-rates-spike.md` records the ECB exchange-rates spike decision and the offline importer evidence.
 - `docs/research/portalvs-source-resilience.md` records the PortalVS legacy→successor compatibility verdict and retained transition evidence.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.

@@ -99,7 +99,7 @@ EXPECTED_LICENCE_STATUS = {
     "phoneAreas": "pending",
     "vehicleRegistrationCodes": "pending",
     "courtDecisions": "blocked",
-    "elections": "pending",
+    "elections": "verified",
     "exchangeRates": "verified",
     "schoolFacilityCounts": "identified",
     "euFunds": "verified",

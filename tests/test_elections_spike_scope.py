@@ -1,4 +1,4 @@
-"""Keep the elections spike pre-production and the API namespace unchanged."""
+"""Keep elections pre-production until manual acquisition and validation pass."""
 
 from pathlib import Path
 
@@ -30,7 +30,11 @@ def test_elections_catalogue_entry_cannot_look_production_ready() -> None:
     assert entry["status"] == "research"
     assert entry["coverage"] is None
     assert entry["lastUpdated"] is None
-    assert entry["licence"]["status"] == "pending"
-    assert entry["licence"]["termsUrl"].startswith("https://slovak.statistics.sk/")
+    assert entry["licence"]["status"] == "verified"
+    assert entry["licence"]["termsUrl"] == "https://creativecommons.org/licenses/by/4.0/"
+    assert "2026-10-30" in entry["licence"]["name"]
     assert any("no election results endpoint" in text for text in entry["limitations"])
+    assert any("MANUAL_OFFICIAL_DOWNLOAD_ONLY" in text for text in entry["limitations"])
+    assert any("contextual inference" in text for text in entry["limitations"])
+    assert "nie je oficiálnou službou" in entry["attribution"]
     assert not {"nextAction", "notes", "riskLevel", "redistributionStatus"} & entry.keys()
