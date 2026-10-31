@@ -91,6 +91,6 @@ def test_no_runtime_network_or_new_routes(monkeypatch):
     assert client.get("/v1/banks").status_code == 200
     assert client.get(IBAN_PATH).status_code == 200
     schema = app.openapi()
-    assert sum("get" in operations for operations in schema["paths"].values()) == 39
+    assert sum("get" in operations for operations in schema["paths"].values()) == 42
     assert "/v1/banks/metadata" not in schema["paths"]
     assert schema["paths"]["/v1/banks"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["$ref"].endswith("BanksResponse")

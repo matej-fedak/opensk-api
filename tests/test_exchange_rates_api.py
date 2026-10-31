@@ -217,7 +217,7 @@ def test_openapi_exposes_typed_exchange_rate_contract() -> None:
     openapi = client.get("/openapi.json").json()
     assert "/v1/exchange-rates/latest" in openapi["paths"]
     assert "/v1/exchange-rates/{date}" in openapi["paths"]
-    assert sum("get" in methods for methods in openapi["paths"].values()) == 39
+    assert sum("get" in methods for methods in openapi["paths"].values()) == 42
     tags = {tag["name"] for tag in openapi["tags"]}
     assert "exchange-rates" in tags
     route = openapi["paths"]["/v1/exchange-rates/latest"]["get"]

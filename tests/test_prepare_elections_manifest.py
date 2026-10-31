@@ -67,6 +67,14 @@ def test_headers_and_historical_hashes_match_reviewed_research():
     assert manifest.TABLES["tab01"][1] == 1
 
 
+def test_approximate_time_is_not_misrepresented_as_exact(sources):
+    value = prepare(sources, acquisition_time_precision="approximate-minute")
+    assert value["acquisitionTimePrecision"] == "approximate-minute"
+    assert "not exact download time" in value["acquisitionTimeBasis"]
+    with pytest.raises(ValueError, match="precision"):
+        prepare(sources, acquisition_time_precision="guessed")
+
+
 def test_missing_files_never_creates_acquisition(sources):
     (sources / "NRSR2023_SK_tab0a.csv").unlink()
     with pytest.raises(ValueError, match="MANUAL_SOURCE_FILES_REQUIRED.*tab0a"):

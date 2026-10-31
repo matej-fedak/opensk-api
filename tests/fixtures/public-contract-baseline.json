@@ -232,5 +232,23 @@
     "bodySha256": "422fab46d79b33ea7805274b4ad2b495011c584292e478886ab59bacf83a037b",
     "cacheControl": "public, max-age=86400",
     "lastModified": "Thu, 15 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/elections": {
+    "url": "/v1/elections",
+    "bodySha256": "a4e02e9f9116aa0acb415f7cecb8a57c19d51e12e32f4038aef9629d718da329",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Sat, 31 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/elections/{electionId}/results": {
+    "url": "/v1/elections/NRSR2023/results?limit=1",
+    "bodySha256": "f9a78e278ef7ea8e76b0c31ef3720be6bd0783e70d0ba5723bfbd076de060a9a",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Sat, 31 Oct 2026 00:00:00 GMT"
+  },
+  "/v1/elections/{electionId}/parties": {
+    "url": "/v1/elections/NRSR2023/parties",
+    "bodySha256": "4521106fa360422a16cab355a5a2a7a2e10df43331fd324ff056ba6713304e49",
+    "cacheControl": "public, max-age=86400",
+    "lastModified": "Sat, 31 Oct 2026 00:00:00 GMT"
   }
 }

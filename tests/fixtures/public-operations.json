@@ -37,5 +37,8 @@
   ["GET", "/v1/exchange-rates/latest", "get_exchange_rates_latest"],
   ["GET", "/v1/exchange-rates/{date}", "get_exchange_rates_by_date"],
   ["GET", "/v1/eu-funds/projects", "list_eu_funds_projects"],
-  ["GET", "/v1/eu-funds/projects/{projectCode}", "get_eu_funds_project"]
+  ["GET", "/v1/eu-funds/projects/{projectCode}", "get_eu_funds_project"],
+  ["GET", "/v1/elections", "list_elections"],
+  ["GET", "/v1/elections/{electionId}/results", "list_election_results"],
+  ["GET", "/v1/elections/{electionId}/parties", "list_election_parties"]
 ]
