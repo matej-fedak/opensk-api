@@ -70,7 +70,14 @@ Municipality-party cells (`tab03e`), precinct results and all candidate/person
 records remain excluded. Small-area summaries still have contextual-inference
 risk; no anonymity or zero-risk claim is made.
 
-**Current implementation checkpoint: MANUAL_SOURCE_FILES_REQUIRED.** The five
-required CSVs and an attested acquisition timestamp have not been supplied.
-No production election dataset, results endpoint or snapshot freshness is
-claimed. See [manual handoff](../elections.md).
+**Subsequent production acquisition: 2026-10-31.** The maintainer manually
+downloaded all five required CSVs and confirmed the download happened “just
+now” during the handoff. Acquisition time is recorded as approximately
+**2026-10-31T17:20:00Z** with explicit approximate-minute precision (session
+clock, not an exact download timestamp or mtime). All five freshly rehashed
+files match the research digests and reviewed schemas/cardinalities. Full
+native/national/party reconciliation passed before explicit production write.
+**NRSR2023_PRODUCTION**, snapshot verified 2026-10-31; actual non-content
+[manifest](elections-nrsr2023-acquisition.json) and [production scope](../elections.md).
+The earlier `MANUAL_SOURCE_FILES_REQUIRED` pause is retained in commit history;
+the reply itself did not satisfy that separate input gate.

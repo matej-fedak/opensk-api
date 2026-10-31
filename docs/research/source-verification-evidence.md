@@ -19,9 +19,14 @@ This log records evidence checked for source and licence decisions. It is intent
 - **MANUAL_OFFICIAL_DOWNLOAD_ONLY**: robots/crawlers/similar automated downloads
   remain prohibited; use the official Údaje na stiahnutie files manually,
   then process offline. No automated recheck/download is authorized here.
-- **MANUAL_SOURCE_FILES_REQUIRED** at this checkpoint: no five-file manual
-  production acquisition, timestamp, manifest, snapshot or results endpoint is
-  claimed. Earlier research acquisition is not relabelled as manual production.
+- The initial **MANUAL_SOURCE_FILES_REQUIRED** checkpoint was subsequently
+  cleared by the maintainer's five manually downloaded files on 2026-10-31.
+  Acquisition time approximately 17:20 UTC, explicitly approximate-minute from
+  the user-confirmed “just now” handoff and session clock, not exact or mtime.
+  All five hashes/schemas/cardinalities match research; full native/national/
+  party reconciliation passed. Actual evidence: `elections-nrsr2023-acquisition.json`;
+  production scope/refresh/benchmarks: `../elections.md`. No raw CSVs committed
+  and no old research acquisition relabelled as manual production.
 - PortalVS/telecom remain **FOLLOW_UP_SENT_AWAITING_REPLY** after manual
   follow-ups 2026-10-28. Historical entries below retain their as-of conclusions.
 

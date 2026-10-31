@@ -1,9 +1,8 @@
 # OpenSK in five minutes
 
-Elections (0.23.14) are not served yet: reuse was confirmed by ŠÚ SR reply
-received 2026-10-30, but the five manually downloaded NRSR2023 CSVs are still
-required. See [manual handoff](elections.md); no election results call is a
-working API example at this checkpoint. Automated source downloading is prohibited.
+NR SR 2023 aggregate results are available in 0.23.14. See
+[election scope and manual-only refresh](elections.md). The hosted deployment
+must include this version before the new election calls work.
 
 **Base URL:** `https://opensk-api.onrender.com` · API prefix: `/v1`
 
@@ -19,6 +18,28 @@ curl "https://opensk-api.onrender.com/v1/sources"
 ```
 
 Health is operational liveness, not proof that every dataset is available. It is `no-store` and rate-limit exempt. Sources list provenance, freshness, licence status and limitations, including researched domains that have **no public data endpoint**.
+
+### Historical election example
+
+```bash
+curl "https://opensk-api.onrender.com/v1/elections"
+curl "https://opensk-api.onrender.com/v1/elections/NRSR2023/results?municipalityCode=528595"
+curl "https://opensk-api.onrender.com/v1/elections/NRSR2023/parties"
+```
+
+NRSR2023 is the only supported election; 528595 is a real election-native unit
+code. Results are a `data.items/count/total/limit/offset` page (default 50/max
+100); exact native region/district/unit filters combine with AND. Foreign voting
+is unit **599999 / Cudzina**, not a Slovak municipality. Parties are a national
+25-item array; numbers are election-scoped strings, percentages exact decimal
+strings, blank mandates `null`. Definitive historical results, not live reporting;
+no candidate/person, precinct or municipality-party data. Small-area aggregates
+may permit contextual inference with external information.
+
+Source: Štatistický úrad SR; **CC BY 4.0**. OpenSK converts selected CSV tables
+to JSON; source/licence links, attribution and manual acquisition provenance are
+in `/v1/sources/elections`. **OpenSK is not an official ŠÚ SR service.**
+Automated source downloading remains prohibited; code MIT is not the data licence.
 
 ## 2. Look up a postal code and its administrative matches
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.23.14
+
+- Added exactly three aggregate-only NR SR 2023 GET operations: `/v1/elections` (metadata/national totals), `/v1/elections/{electionId}/results` (native unit summaries, AND code filters, default/max page 50/100) and `/v1/elections/{electionId}/parties` (25 national subjects, exact percentage strings, nullable source-blank mandates). NRSR2023 only; 39 → 42 GET operations, all prior operation IDs, `/v1` and metadata version `v1` unchanged. Static caching and existing rate limiting retained.
+- ŠÚ SR directly confirmed CC BY 4.0 applicability on 2026-10-30, including storage/transformation/API/commercial reuse, subject to attribution, modification disclosure and non-endorsement. Automated downloading remains prohibited. The maintainer manually downloaded five official files 2026-10-31; fresh hashes all match research. Approximate-minute acquisition time is explicitly recorded, not treated as exact. No source downloader or raw CSVs committed.
+- Offline fail-closed importer promotes `data/elections_nrsr_2023.json` only with explicit flag and manifest-verified source files: 2,927 units (2,926 domestic plus Cudzina foreign), 25 subjects, 2,967,896 valid votes and 150 mandates; 6,013/6,014 precinct confirmation accepted. No municipality-party cells, precincts/candidates/voters, person enrichment or PortalVS election dependency. Small-area contextual-inference caveat retained. Production JSON is 1,985,346 bytes; `JSON_CONTINUE`, no DB/Redis/SDK. Scope, licence, measurements and manual refresh: `docs/elections.md`.
+
 ## 0.23.13
 
 - **Procurement: NO_GO_PROCUREMENT_EXPANSION (locked).** The privately acquired 68,926-notice TED Slovak-buyer corpus (277 pages, reconciled by an independent metadata-only capture) has no deterministic source-based natural-person discriminator: `buyer-person` is absent in every row including 22,730 eForms-explicit notices; hypothetical safe eligible corpus is 0. Production stays the byte-identical 100-record `TED_PARTIAL` snapshot with unchanged freshness; none of the 68,926 records is served. Evidence: `docs/research/procurement-buyer-privacy.md`.
