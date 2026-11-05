@@ -2,6 +2,80 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-11-05 source-owner clarification dispatch — SENT_AWAITING_REPLY
+
+- The maintainer confirms manually sending both new clarification requests on
+  **2026-11-05**: **Slovenská pošta PSC — `SENT_AWAITING_REPLY`** and **ŠÚ SR
+  municipality/district classifiers — `SENT_AWAITING_REPLY`**. The agent did not
+  send correspondence. Neither institution has replied to these new requests.
+- Evidence is the maintainer's dispatch confirmation only, not independently
+  inspected mailbox bytes. No Message-ID, delivery confirmation, receipt or
+  exact sent body is retained here. Prepared drafts are not claimed as exact
+  sent copies. Sending and silence grant no reuse permission.
+- PSC scope and prepared request: `slovenska-posta-psc-outreach.md`. PortalVS's
+  2026-11-02 redirect identifies Slovenská pošta but grants no rights.
+  `PSC_RIGHTS_PENDING`, `NO_GO_SUCCESSOR_PSC`, `MAPPING_PARTIAL`,
+  `CONTRACT_CLARIFICATION_REQUIRED` and `NO_SOURCE_READY` remain unchanged;
+  PSC remains partial, high-risk and frozen.
+- The separate ŠÚ SR request covers exact authoritative municipality/district
+  classifiers; CC BY 4.0 applicability; storage; CSV/XML → JSON; public API and
+  commercial downstream redistribution; attribution; allowed acquisition;
+  stable identifiers; municipality → district/region relationships; special
+  rows, city parts and military units. It does not reopen resolved elections
+  reuse or invalidate completed classifier, terms and provenance research.
+- Candidates remain `CL000024` / `0024` and `CL000025` / `0025`.
+  `NO_GO_SUSR_GEOGRAPHY_REPLACEMENT` / `MANUAL_SOURCE_FILES_REQUIRED` remains
+  because exact production source bytes and deterministic 79/2,927
+  reconciliation are absent. Pending outreach adds no technical blocker beyond
+  that gate; current PortalVS production/provenance/freshness is unchanged.
+  Details: `source-ownership-resolution.md`, `source-licence-outreach.md` §§8–9.
+
+## 2026-11-02 telecom and PortalVS replies — distinct outcomes
+
+Evidence below is supplied by the maintainer; original mailbox headers and full
+messages remain private. No agent sent correspondence or independently
+inspected delivery metadata. Personal signatures/contact details are not
+republished.
+
+### Telecom regulator — REPLY_RECEIVED_RESOLVED
+
+- Ing. Marián Jurkovič, Úrad pre reguláciu elektronických komunikácií a
+  poštových služieb, replied on **2026-11-02** after the 2026-10-11 manual
+  request and 2026-10-28 manual follow-up.
+- For Slovak telephone-area data on the existing exact source page, the answer
+  says the public data may be used “v zmysle nižšie požadovaného.” Mapped only
+  against the retained outbound scope: local snapshots; XLS → normalized JSON;
+  public open-source API redistribution; commercial downstream use; derived
+  local municipality/district/region joins. Exact attribution and version-notice
+  wording were requested but not answered.
+- **TELECOM_REUSE_RESOLVED** / **DIRECT_INSTITUTIONAL_REUSE_CLARIFICATION**,
+  not a new CC/CC0/MIT/Open Data licence. Conservative factual attribution to
+  the regulator, source URL and OpenSK transformation disclosure are retained.
+- Current production already identifies this exact official 30.xls / List1
+  workbook; 2,922 source mappings/2,919 geography-linked rows and data
+  freshness remain unchanged. No automated refresh was added. Full boundary:
+  `telecom-reuse-clarification.md`.
+
+### PortalVS — REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER
+
+- PortalVS support/project management replied on **2026-11-02** after the
+  2026-10-11 request and 2026-10-28 follow-up. It directed questions to each
+  classifier's “Zdroj”; it did **not** grant PortalVS reuse or redistribution.
+- Source-owner direction: municipalities → Štatistický úrad SR; PSC →
+  Slovenská pošta. Districts have no source listed on PortalVS, but the reply
+  identifies Štatistický úrad Slovenskej republiky as the main/legally
+  authoritative source; Register adries / Ministry of Interior is described as
+  a common technical implementation route.
+- Originating source, current producer/distributor, technical intermediary and
+  rights holder remain separate concepts. Existing PortalVS-derived production
+  does not become ŠÚ SR-licensed by this reply. PSC remains
+  `NO_GO_SUCCESSOR_PSC` / rights pending; identifying Slovenská pošta resolves
+  neither rights nor street/admin mapping semantics.
+- Exact ŠÚ SR classifier/reuse research, acquisition gate and migration verdict:
+  `source-ownership-resolution.md`. Slovenská pošta package:
+  `slovenska-posta-psc-outreach.md`, manually sent by the maintainer on
+  2026-11-05, `SENT_AWAITING_REPLY`; dispatch grants no permission.
+
 ## 2026-10-30 ŠÚ SR elections reply — REPLY_RECEIVED_RESOLVED
 
 - Logged 2026-10-31. The maintainer supplied the institutional answers and
@@ -27,8 +101,8 @@ This log records evidence checked for source and licence decisions. It is intent
   party reconciliation passed. Actual evidence: `elections-nrsr2023-acquisition.json`;
   production scope/refresh/benchmarks: `../elections.md`. No raw CSVs committed
   and no old research acquisition relabelled as manual production.
-- PortalVS/telecom remain **FOLLOW_UP_SENT_AWAITING_REPLY** after manual
-  follow-ups 2026-10-28. Historical entries below retain their as-of conclusions.
+- Subsequent 2026-11-02 telecom and PortalVS replies are recorded separately
+  above. Historical entries below retain their as-of conclusions.
 
 ## 2026-10-14 NBS Bank Reply — REPLY_RECEIVED_RESOLVED
 

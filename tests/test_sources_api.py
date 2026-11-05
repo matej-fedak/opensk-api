@@ -96,7 +96,7 @@ EXPECTED_LICENCE_STATUS = {
     "healthcareFacilities": "blocked",
     "procurementNotices": "identified",
     "schoolsDirectory": "blocked",
-    "phoneAreas": "pending",
+    "phoneAreas": "verified",
     "vehicleRegistrationCodes": "pending",
     "courtDecisions": "blocked",
     "elections": "verified",

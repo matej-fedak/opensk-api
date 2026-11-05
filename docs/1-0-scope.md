@@ -14,7 +14,7 @@ These domains are intended to receive a stable compatibility commitment if the l
 | IBAN validation | `/v1/iban/validate/{iban}` | Include | Keep local validation semantics documented. |
 | Regions | `/v1/regions`, `/v1/regions/{code}` | Include after evidence | Retain exact Eurostat reuse/attribution evidence. |
 | Banks | `/v1/banks`, `/v1/banks/{code}` | Include with NBS conditions | Reuse resolved; v226 / effective 2026-10-08 refreshed/audited in 0.23.8. Direct bank/IBAN attribution/version/effective/download metadata; retain NBS conditions and OpenSK-derived-field disclosure. |
-| Phone areas | `/v1/phone-areas`, `/v1/phone-areas/{code}`, `/v1/phone-areas/search` | Include after evidence | Verify telecom regulator workbook reuse terms and document 3 unmatched rows. |
+| Phone areas | `/v1/phone-areas`, `/v1/phone-areas/{code}`, `/v1/phone-areas/search` | Include with limitations | Telecom regulator reply received 2026-11-02 resolves the requested storage, JSON transformation, API/commercial redistribution and derived-join scope; retain factual attribution/transformation disclosure and the 3 unmatched-row warning. |
 
 ## Included With Documented Limitations
 

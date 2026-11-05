@@ -255,7 +255,7 @@ Where present, dataset metadata uses this shape:
 - `code` is the Slovak primary telephone area code, currently validated as `0#` or `0##`.
 - One code can have multiple municipality rows.
 - `municipalityCode`, `districtCode`, and `regionCode` are nullable for imported rows when source matching is not reliable.
-- Current checked-in data is imported from the retained telecom regulator workbook; source/licence verification remains pending.
+- Current checked-in data is imported from the retained telecom regulator workbook. The regulator's 2026-11-02 reply resolves the requested local-storage, JSON transformation, API redistribution, commercial downstream use and derived-join scope; no formal licence name or mandatory exact attribution/version wording was supplied. Three unmatched rows retain null local geography codes.
 
 ### `data/vehicle_registration_codes.json`
 

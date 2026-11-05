@@ -331,8 +331,17 @@ def test_current_production_snapshot_and_psc_freeze():
     assert {"83006", "83155", "91931", "93539", "97651"} <= set(psc)
     assert sources["psc"]["sourceUrl"] == "https://ciselniky.portalvs.sk/classifier/show/42/"
     assert sources["psc"]["sourceName"] == "PortalVS classifier 42 (PSČ obcí SR a ČR)"
+    # 0.23.15 changes only PSC registry evidence/routing metadata. Production
+    # bytes, source identity, freshness and partial/frozen decisions stay fixed.
+    assert sources["psc"]["riskLevel"] == "high"
+    assert "NO_GO_SUCCESSOR_PSC" in sources["psc"]["nextAction"]
+    assert "SENT_AWAITING_REPLY" in sources["psc"]["nextAction"]
+    assert "maintainer manually sent" in sources["psc"]["nextAction"]
+    assert "on 2026-11-05" in sources["psc"]["nextAction"]
+    assert "reply pending and no permission inferred" in sources["psc"]["nextAction"]
+    assert "The agent did not send correspondence" in sources["psc"]["nextAction"]
     assert hashlib.sha256(json.dumps(sources["psc"], ensure_ascii=False, sort_keys=True,
-                                    separators=(",", ":")).encode()).hexdigest() == "9a72cd6fa891ad312612b9caab22234916761dd030e4c1e9e45fcc8c4e5e0462"
+                                    separators=(",", ":")).encode()).hexdigest() == "bd7c33c52f11608214202f542fe63ff1ddaee4ab18bcc394c680f92d0b0424e5"
     from schemas.common import PSC_LAST_UPDATED
     assert PSC_LAST_UPDATED == "2026-06-02"
     assert len(json.loads((ROOT / "data/districts.json").read_bytes())["districts"]) == 79
