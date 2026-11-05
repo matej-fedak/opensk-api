@@ -1,8 +1,8 @@
 # Source Licence Outreach Package
 
-These are prepared outreach packages for the human maintainer to send. Do not send emails automatically. This document pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and a ready-to-send Slovak message where a message is still required.
+This document retains outreach packages for human maintainer review and dispatch. The agent does not send emails. It pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and request text where applicable.
 
-**Dispatch/reply status, updated 2026-11-02:** the human maintainer sent all four original packages manually on **2026-10-11**, then manual follow-ups for PortalVS, telecom and elections on **2026-10-28**. Replies were received from NBS on **2026-10-14**, ŠÚ SR elections on **2026-10-30**, and both PortalVS and the telecom regulator on **2026-11-02** (dates confirmed by the maintainer). Current states:
+**Dispatch/reply status, updated 2026-11-05:** the human maintainer sent all four original packages manually on **2026-10-11**, then manual follow-ups for PortalVS, telecom and elections on **2026-10-28**. Replies were received from NBS on **2026-10-14**, ŠÚ SR elections on **2026-10-30**, and both PortalVS and the telecom regulator on **2026-11-02** (dates confirmed by the maintainer). The maintainer also manually sent the two new direct source-owner clarification requests to Slovenská pošta and ŠÚ SR on **2026-11-05**. Current states:
 
 | Package | State |
 | --- | --- |
@@ -10,8 +10,10 @@ These are prepared outreach packages for the human maintainer to send. Do not se
 | NBS banks (§2) | `REPLY_RECEIVED_RESOLVED` |
 | Telecom regulator (§4) | `REPLY_RECEIVED_RESOLVED` (2026-11-02) |
 | ŠÚ SR elections (§7) | `REPLY_RECEIVED_RESOLVED` (2026-10-30) |
+| Slovenská pošta PSC | `SENT_AWAITING_REPLY` (2026-11-05) |
+| ŠÚ SR municipality/district classifiers | `SENT_AWAITING_REPLY` (2026-11-05) |
 
-The PortalVS redirect is not redistribution permission. The telecom reply resolves only the uses actually described in its original request; it does not create a formal licence name or exact attribution wording. No Message-ID, mail headers, delivery confirmation or exact sent/received body is independently archived in this repository. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. Substantive clarifications are recorded in the domain evidence documents without unnecessary personal contact metadata.
+The agent sent no correspondence. Neither Slovenská pošta nor ŠÚ SR has replied to these new requests, and no permission is inferred from dispatch or silence. The PortalVS redirect is not redistribution permission. The telecom reply resolves only the uses actually described in its original request; it does not create a formal licence name or exact attribution wording. No Message-ID, mail headers, delivery confirmation, receipt or exact sent/received body is independently archived in this repository for the new requests. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. Substantive clarifications are recorded in the domain evidence documents without unnecessary personal contact metadata.
 
 Related documents:
 
@@ -262,6 +264,9 @@ These are recorded so the compliance matrix can move from "terms page identified
 
 1. ~~Send section 1 (PortalVS) first~~ — done 2026-10-11; follow-up 2026-10-28; reply 2026-11-02 is `REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER`, not PortalVS reuse approval. Districts/municipalities remain unresolved while PortalVS-derived; PSC now requires source-owner clarification from Slovenská pošta before any reuse upgrade.
 2. ~~Send section 2 (NBS banks) and section 4 (telecom)~~ — done 2026-10-11. NBS banks resolved 2026-10-14; telecom resolved by direct regulator reply 2026-11-02 within the exact requested scope; elections resolved by reply received 2026-10-30.
+   Both new source-owner requests (§8 Slovenská pošta PSC and §9 ŠÚ SR geography)
+   were manually sent by the maintainer on 2026-11-05: `SENT_AWAITING_REPLY` for
+   each, with no reply or permission inferred. The agent sent no correspondence.
 3. After each reply, update `docs/source-compliance.md`, `docs/research/source-verification-evidence.md`, and `data/sources.json` in the same commit so they stay aligned.
 4. Retain the exact sent message text and received replies under `docs/research/` (redact personal email addresses before committing, if desired). The exact sent bodies are currently retained privately by the maintainer, not in this repository.
 5. If no reply arrives within a reasonable interval, record a follow-up date in `docs/verification-backlog.md` rather than letting the item go stale.
@@ -346,3 +351,39 @@ osobné kontaktné údaje.
 S pozdravom
 [Meno]
 ```
+
+## 8. Slovenská pošta PSC — SENT_AWAITING_REPLY
+
+State: **`SENT_AWAITING_REPLY` — 2026-11-05**. The maintainer confirms manual
+dispatch of the new PSC source-owner clarification; reply is pending. The agent
+did not send correspondence. Prepared Slovak text, official contact route and
+rights/acquisition/admin-mapping scope: `slovenska-posta-psc-outreach.md`.
+No delivery confirmation, Message-ID, receipt or reuse permission is claimed.
+`PSC_RIGHTS_PENDING`, `NO_GO_SUCCESSOR_PSC`, `MAPPING_PARTIAL`,
+`CONTRACT_CLARIFICATION_REQUIRED` and `NO_SOURCE_READY` remain unchanged;
+production remains partial, high-risk and frozen.
+
+## 9. ŠÚ SR municipality/district classifiers — SENT_AWAITING_REPLY
+
+State: **`SENT_AWAITING_REPLY` — 2026-11-05**. The maintainer confirms manual
+dispatch of the separate direct classifier/reuse clarification; reply is
+pending. The agent did not send correspondence. This is not the already-resolved
+NRSR2023 election request. No delivery confirmation, Message-ID, receipt, exact
+sent body or new permission is claimed from dispatch.
+
+The request concerns the exact authoritative municipality and district
+classifiers; applicability of ŠÚ SR CC BY 4.0 terms to those files; local storage;
+CSV/XML → JSON transformation; public API redistribution; commercial downstream
+reuse; attribution; allowed acquisition method; identifier stability;
+municipality → district/region relationships; and special rows, city parts and
+military units. The scope is maintainer-confirmed, not a reconstructed verbatim
+sent message.
+
+The completed 0.23.15 classifier/terms/provenance research remains valid.
+`CL000024` / `0024` (districts) and `CL000025` / `0025` (municipalities) remain
+candidates. `NO_GO_SUSR_GEOGRAPHY_REPLACEMENT` / `MANUAL_SOURCE_FILES_REQUIRED`
+remains due to absent exact manually supplied production bytes and deterministic
+79/2,927 reconciliation, not a new reply-waiting technical blocker. Current
+PortalVS-derived production, unresolved PortalVS redistribution and dataset
+freshness stay unchanged. Evidence: `source-ownership-resolution.md` and
+`source-verification-evidence.md`. No automatic compliance milestone is queued.

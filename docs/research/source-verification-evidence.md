@@ -2,6 +2,34 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-11-05 source-owner clarification dispatch — SENT_AWAITING_REPLY
+
+- The maintainer confirms manually sending both new clarification requests on
+  **2026-11-05**: **Slovenská pošta PSC — `SENT_AWAITING_REPLY`** and **ŠÚ SR
+  municipality/district classifiers — `SENT_AWAITING_REPLY`**. The agent did not
+  send correspondence. Neither institution has replied to these new requests.
+- Evidence is the maintainer's dispatch confirmation only, not independently
+  inspected mailbox bytes. No Message-ID, delivery confirmation, receipt or
+  exact sent body is retained here. Prepared drafts are not claimed as exact
+  sent copies. Sending and silence grant no reuse permission.
+- PSC scope and prepared request: `slovenska-posta-psc-outreach.md`. PortalVS's
+  2026-11-02 redirect identifies Slovenská pošta but grants no rights.
+  `PSC_RIGHTS_PENDING`, `NO_GO_SUCCESSOR_PSC`, `MAPPING_PARTIAL`,
+  `CONTRACT_CLARIFICATION_REQUIRED` and `NO_SOURCE_READY` remain unchanged;
+  PSC remains partial, high-risk and frozen.
+- The separate ŠÚ SR request covers exact authoritative municipality/district
+  classifiers; CC BY 4.0 applicability; storage; CSV/XML → JSON; public API and
+  commercial downstream redistribution; attribution; allowed acquisition;
+  stable identifiers; municipality → district/region relationships; special
+  rows, city parts and military units. It does not reopen resolved elections
+  reuse or invalidate completed classifier, terms and provenance research.
+- Candidates remain `CL000024` / `0024` and `CL000025` / `0025`.
+  `NO_GO_SUSR_GEOGRAPHY_REPLACEMENT` / `MANUAL_SOURCE_FILES_REQUIRED` remains
+  because exact production source bytes and deterministic 79/2,927
+  reconciliation are absent. Pending outreach adds no technical blocker beyond
+  that gate; current PortalVS production/provenance/freshness is unchanged.
+  Details: `source-ownership-resolution.md`, `source-licence-outreach.md` §§8–9.
+
 ## 2026-11-02 telecom and PortalVS replies — distinct outcomes
 
 Evidence below is supplied by the maintainer; original mailbox headers and full
@@ -45,7 +73,8 @@ republished.
   neither rights nor street/admin mapping semantics.
 - Exact ŠÚ SR classifier/reuse research, acquisition gate and migration verdict:
   `source-ownership-resolution.md`. Slovenská pošta package:
-  `slovenska-posta-psc-outreach.md`, prepared only and unsent.
+  `slovenska-posta-psc-outreach.md`, manually sent by the maintainer on
+  2026-11-05, `SENT_AWAITING_REPLY`; dispatch grants no permission.
 
 ## 2026-10-30 ŠÚ SR elections reply — REPLY_RECEIVED_RESOLVED
 

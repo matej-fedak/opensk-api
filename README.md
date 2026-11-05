@@ -12,7 +12,7 @@ curl "https://opensk-api.onrender.com/v1/municipalities/528595"
 
 **Pre-1.0, not a complete/live official register.** Coverage and reuse conditions differ by dataset; inspect [`/v1/sources`](https://opensk-api.onrender.com/v1/sources) before integrating. Public promotion remains gated by unresolved PortalVS compliance. MIT covers the code, not all source data.
 
-Status: `0.23.15` — **42 GET operations**, with source ownership and telecom reuse resolved on distinct evidence boundaries. The regulator's 2026-11-02 reply permits the requested phone-area storage/JSON/API/commercial/derived-join scope; production phone bytes are unchanged. PortalVS's reply redirects to source owners without granting redistribution. ŠÚ SR classifier terms are verified, but geography replacement is **NO_GO_SUSR_GEOGRAPHY_REPLACEMENT** pending exact manual files/reconciliation. PSC remains **NO_GO_SUCCESSOR_PSC** and Slovenská pošta outreach is prepared but unsent. `/v1`, metadata version `v1` and every operation ID are unchanged. [Ownership decision](docs/research/source-ownership-resolution.md); [manual developer pilot](docs/developer-adoption.md).
+Status: `0.23.15` — **42 GET operations**, with source ownership and telecom reuse resolved on distinct evidence boundaries. The regulator's 2026-11-02 reply permits the requested phone-area storage/JSON/API/commercial/derived-join scope; production phone bytes are unchanged. PortalVS's reply redirects to source owners without granting redistribution. ŠÚ SR classifier terms are verified, but geography replacement is **NO_GO_SUSR_GEOGRAPHY_REPLACEMENT** pending exact manual files/reconciliation. The maintainer manually sent both the ŠÚ SR municipality/district and Slovenská pošta PSC clarification requests on 2026-11-05; both are **SENT_AWAITING_REPLY**, with no permission inferred. PSC remains **NO_GO_SUCCESSOR_PSC**. `/v1`, metadata version `v1` and every operation ID are unchanged. [Ownership decision](docs/research/source-ownership-resolution.md); [manual developer pilot](docs/developer-adoption.md).
 
 OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
 
@@ -98,7 +98,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/roadmap.md` is the living strategic roadmap (Now/Next/Watch/Later/Completed).
 - `docs/research/opensk-research-roadmap-2026-q4.md` is the 2026 Q4 consolidated source-licence and roadmap research report.
 - `docs/research/roadmap-council-notes.md` records the multi-perspective roadmap-council verdicts.
-- `docs/research/source-licence-outreach.md` contains ready-to-send licence outreach packages; nothing is sent automatically.
+- `docs/research/source-licence-outreach.md` retains licence outreach packages and maintainer-confirmed dispatch/reply states; nothing is sent automatically.
 - `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
 - `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
 - `docs/research/elections-spike.md` records the NR SR 2023 spike decision, source/schema evidence, offline prototype and production gates.
@@ -106,7 +106,7 @@ The repository keeps its reference data in local JSON files under `data/`.
 - `docs/research/exchange-rates-spike.md` records the ECB exchange-rates spike decision and the offline importer evidence.
 - `docs/research/portalvs-source-resilience.md` records the historical PortalVS legacy→successor compatibility verdict and retained transition evidence.
 - `docs/research/source-ownership-resolution.md` records 0.23.15's separated origin/intermediary/rights analysis, exact ŠÚ SR classifiers/terms, unchanged-ID provenance, manual acquisition gate and single geography verdict.
-- `docs/research/telecom-reuse-clarification.md` maps the regulator's reply only to the retained outbound request scope; `docs/research/slovenska-posta-psc-outreach.md` is a prepared, unsent PSC clarification package.
+- `docs/research/telecom-reuse-clarification.md` maps the regulator's reply only to the retained outbound request scope; `docs/research/slovenska-posta-psc-outreach.md` records the PSC request manually sent by the maintainer on 2026-11-05, `SENT_AWAITING_REPLY`. The agent sent no correspondence.
 - `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
 - `docs/privacy-review.md` records the current privacy review.
 - `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.

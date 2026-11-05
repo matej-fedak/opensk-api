@@ -13,8 +13,9 @@
 This milestone resolves source-routing and the telecom reuse question. It does
 not convert the existing PortalVS-derived geography into ŠÚ SR production and
 does not promote a PSC successor. Runtime remains local JSON only. No upstream
-production download, email, route, importer or production data migration was
-performed.
+production download, route, importer or production data migration was performed.
+The agent did not send correspondence; the maintainer manually sent both
+source-owner clarification requests on 2026-11-05, as recorded below.
 
 ## 1. Evidence boundary
 
@@ -32,8 +33,26 @@ unnecessary contact details are republished.
   **2026-11-05** using official pages/metadata only. No classifier CSV/XML
   production bytes were downloaded.
 - Slovenská pošta's official PSC page, download link and general contact route
-  were checked on **2026-11-05**. The clarification package is prepared but
-  **unsent**; no reply or permission is claimed.
+  were checked on **2026-11-05**. The maintainer manually sent the PSC
+  clarification request that day: **`SENT_AWAITING_REPLY` — 2026-11-05**.
+- The maintainer also manually sent the separate ŠÚ SR municipality/district
+  classifier clarification on **2026-11-05**:
+  **`SENT_AWAITING_REPLY` — 2026-11-05**. It concerns the exact authoritative
+  municipality and district classifiers; CC BY 4.0 applicability to those files;
+  local storage; CSV/XML → JSON transformation; public API redistribution;
+  commercial downstream reuse; attribution; allowed acquisition method;
+  identifier stability; municipality → district/region relationships; and special
+  rows, city parts and military units. This is distinct from resolved elections
+  correspondence.
+
+Both dispatch dates and pending-reply states are maintainer-confirmed, not
+independently verified mailbox evidence. Neither institution has replied to
+these new requests. No Message-ID, delivery confirmation or receipt is retained
+here, and no permission is inferred from sending or silence. The agent did not
+send correspondence. These workflow updates do not invalidate the classifier,
+terms or provenance research, and do not add a reply-waiting technical blocker:
+`MANUAL_SOURCE_FILES_REQUIRED` and deterministic 79/2,927 reconciliation remain
+the geography replacement gate.
 
 ## 2. Four-domain ownership and production matrix
 
@@ -47,7 +66,7 @@ separate.
 | --- | --- | --- | --- | --- | --- |
 | Districts | PortalVS identifies **Štatistický úrad Slovenskej republiky** as the main/legal classifier authority. Exact replacement classifier: ŠÚ SR `CL000024` / `0024`. | PortalVS successor county rows acquired 2026-10-16, normalized by the existing OpenSK importer. All 79 public records remain this snapshot's output. | PortalVS / IS Číselníky `county.json?validity=valid` is the actual production acquisition API. Register adries / MV SR was described only as a common technical implementation route; it is not the production source or an automatic substitute. | PortalVS redistribution remains unresolved. ŠÚ SR terms are verified for an independently acquired `CL000024` replacement, not retroactively for PortalVS bytes. | Owner direction resolved; production exit blocked at acquisition/reconciliation. |
 | Municipalities | PortalVS's listed source and reply identify **Štatistický úrad SR**. Exact replacement classifier: ŠÚ SR `CL000025` / `0025`. | PortalVS successor town rows acquired 2026-10-16, normalized and display-disambiguated by OpenSK. All 2,927 public records remain this snapshot's output. | PortalVS / IS Číselníky `town.json?validity=valid` is the actual production acquisition API. ŠÚ SR metadata/catalogue is a candidate authoritative acquisition route only. | PortalVS redistribution remains unresolved. ŠÚ SR terms are verified for an independently acquired `CL000025` replacement. | Owner direction resolved; production exit blocked at acquisition/reconciliation. |
-| PSC | PortalVS identifies **Slovenská pošta** as the underlying source. | Historical PortalVS classifier 42 snapshot, with only the previously documented local municipality/district compatibility derivations. Bytes remain frozen and partial. | PortalVS classifier 42 is the current distribution copy. The official Slovenská pošta PSC page/ZIP is a future technical candidate, not an approved replacement or a source of administrative semantics by itself. | Neither PortalVS's redirect nor public downloadability grants reuse. Slovenská pošta clarification is prepared, not sent. Postal reuse, transformation, API/commercial redistribution, attribution and acquisition remain unanswered. | `NO_GO_SUCCESSOR_PSC`; no production or coverage change. |
+| PSC | PortalVS identifies **Slovenská pošta** as the underlying source. | Historical PortalVS classifier 42 snapshot, with only the previously documented local municipality/district compatibility derivations. Bytes remain frozen and partial. | PortalVS classifier 42 is the current distribution copy. The official Slovenská pošta PSC page/ZIP is a future technical candidate, not an approved replacement or a source of administrative semantics by itself. | Neither PortalVS's redirect nor public downloadability grants reuse. The maintainer manually sent Slovenská pošta clarification on 2026-11-05: `SENT_AWAITING_REPLY`, no permission inferred. Postal reuse, transformation, API/commercial redistribution, attribution and acquisition remain unanswered. | `NO_GO_SUCCESSOR_PSC`; no production or coverage change. |
 | Telephone areas | **Úrad pre reguláciu elektronických komunikácií a poštových služieb**, exact existing numbering page and `30.xls` / `List1` workbook. | Regulator workbook transformed offline by OpenSK to 2,922 normalized mappings; 2,919 have local geography joins and three remain unmatched. | Offline XLS/CSV conversion and local JSON; no runtime upstream call. Local municipality/district/region joins still consume the current PortalVS-derived geography and are not independent ŠÚ SR joins. | The regulator's 2026-11-02 reply resolves the exact retained request: local snapshots, XLS → normalized JSON, public API redistribution, commercial downstream use and the requested derived joins. | Reuse resolved for that scope only; production bytes/freshness unchanged. See `telecom-reuse-clarification.md`. |
 
 The telecom answer is not a formal licence name, mandatory attribution formula,
@@ -246,8 +265,14 @@ not a migration reconciliation.
   `PHONE_AREAS_LAST_UPDATED` remain unchanged.
 - **PSC:** `NO_GO_SUCCESSOR_PSC`; `data/psc.json` and freshness remain frozen.
   Source-owner direction resolves neither rights nor street/admin/temporal
-  mapping blockers. `docs/research/slovenska-posta-psc-outreach.md` is prepared
-  only and remains unsent.
+  mapping blockers. `PSC_RIGHTS_PENDING`, `MAPPING_PARTIAL`,
+  `CONTRACT_CLARIFICATION_REQUIRED` and `NO_SOURCE_READY` remain unchanged.
+  `docs/research/slovenska-posta-psc-outreach.md` records maintainer dispatch
+  on 2026-11-05: `SENT_AWAITING_REPLY`, no permission inferred.
+- **ŠÚ SR geography outreach:** `SENT_AWAITING_REPLY` after maintainer dispatch
+  on 2026-11-05; no reply or new permission. `CL000024` / `0024` and `CL000025` /
+  `0025` remain valid candidates; the existing manual-file/reconciliation gate,
+  technical verdicts and production provenance remain unchanged.
 - **Next priority:** the maintainer-run external-developer pilot remains next;
   no automatic geography retry, PSC evidence loop, new data domain, scheduled
   acquisition or runtime upstream dependency is queued.

@@ -1,6 +1,6 @@
 # Slovenská pošta — PSČ source-owner clarification package
 
-**PREPARED_NOT_SENT · PSC_RIGHTS_PENDING · NO_GO_SUCCESSOR_PSC**
+**SENT_AWAITING_REPLY (2026-11-05) · PSC_RIGHTS_PENDING · NO_GO_SUCCESSOR_PSC**
 
 PortalVS replied on **2026-11-02** that the underlying source of its PSC
 classifier is **Slovenská pošta**. That identifies the source owner; it does
@@ -8,9 +8,12 @@ not grant reuse, transformation, public API redistribution or commercial
 rights, and it does not resolve the documented street/administrative mapping
 problems.
 
-This package is prepared for the human maintainer to review and send manually.
-**No email or other contact was sent by the agent.** There is no claimed reply,
-licence or source-owner approval.
+The agent did not send correspondence. The maintainer manually sent this
+clarification request on **2026-11-05**; state is **`SENT_AWAITING_REPLY`** and
+reply is pending. No institutional reply, licence or source-owner approval is
+claimed. The repository retains no Message-ID, delivery confirmation or
+receipt, and the prepared text below is not asserted to be a byte-for-byte copy
+of the sent message.
 
 ## Verified official contact route
 
@@ -97,17 +100,18 @@ S pozdravom
 Questions 1–6 and 8 address rights/acquisition/notices; question 7 addresses
 machine-readable administrative semantics; question 8 also checks whether
 address-related fields require special treatment. Historical-snapshot retention
-is explicitly included in question 1. No permission is granted by preparing
-this text.
+is explicitly included in question 1. No permission is inferred from preparing
+or sending this request.
 
 Until actual new evidence arrives:
 
 - `data/psc.json` stays unchanged and partial;
 - the successor 13,700-row PSC dataset is not promoted;
-- `NO_GO_SUCCESSOR_PSC`, unresolved street/admin mappings and truthful
-  occurrence semantics remain in force;
+- `PSC_RIGHTS_PENDING`, `NO_GO_SUCCESSOR_PSC`, `MAPPING_PARTIAL`,
+  `CONTRACT_CLARIFICATION_REQUIRED`, `NO_SOURCE_READY`, unresolved street/admin
+  mappings and truthful occurrence semantics remain in force;
 - no PSC source licence upgrade or runtime/upstream acquisition is made.
 
-The maintainer may send the package manually if desired. Only a substantive
-reply should trigger a fresh evidence review; do not automatically queue
-another PSC migration or evidence loop.
+The maintainer's manual dispatch on 2026-11-05 changes outreach workflow only;
+reply is pending. Only substantive new evidence should trigger a fresh evidence
+review; do not automatically queue another PSC migration or evidence loop.

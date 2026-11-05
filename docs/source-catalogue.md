@@ -9,8 +9,10 @@ This mixed provenance is truthful, not a catalogue inconsistency. All three
 remain licence **pending**. In 0.23.15 their limitations record PortalVS's
 2026-11-02 source-owner redirect without treating it as redistribution rights;
 district/municipality replacement remains blocked by missing exact manual ŠÚ SR
-source files and deterministic reconciliation. PSC additionally retains
-`NO_GO_SUCCESSOR_PSC`, and its Slovenská pošta package is unsent.
+source files and deterministic reconciliation. The maintainer manually sent
+both the ŠÚ SR classifier and Slovenská pošta PSC clarification requests on
+2026-11-05; both are `SENT_AWAITING_REPLY`, with no permission inferred. PSC
+additionally retains `NO_GO_SUCCESSOR_PSC`.
 
 Since 0.23.8, `banks` is aligned with NBS v226 / effective 2026-10-08 / downloaded
 2026-10-15T16:23:00Z. Rights remain NBS Terms of Use + the 2026-10-14 clarification,

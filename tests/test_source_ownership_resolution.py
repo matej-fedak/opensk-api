@@ -76,8 +76,14 @@ def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
         assert "REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER" in internal["notes"]
         assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in internal["notes"]
         assert "MANUAL_SOURCE_FILES_REQUIRED" in internal["nextAction"]
+        assert "SENT_AWAITING_REPLY" in internal["nextAction"]
+        assert "maintainer manually sent" in internal["nextAction"]
+        assert "on 2026-11-05" in internal["nextAction"]
+        assert "reply pending and no permission inferred" in internal["nextAction"]
+        assert "does not replace the manual source-file/reconciliation gate" in internal["nextAction"]
         public = client.get(f"/v1/sources/{source_id}").json()["data"]
         assert public["licence"]["status"] == "pending"
+        assert public["lastUpdated"] == "2026-10-16"
         assert "does not grant PortalVS redistribution rights" in public["limitations"][0]
 
     psc = registry["psc"]
@@ -85,6 +91,12 @@ def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
     assert psc["riskLevel"] == "high"
     assert psc["coverage"] == "partial"
     assert "NO_GO_SUCCESSOR_PSC" in psc["nextAction"]
+    assert "PSC_RIGHTS_PENDING" in psc["nextAction"]
+    assert "SENT_AWAITING_REPLY" in psc["nextAction"]
+    assert "maintainer manually sent" in psc["nextAction"]
+    assert "on 2026-11-05" in psc["nextAction"]
+    assert "reply pending and no permission inferred" in psc["nextAction"]
+    assert "The agent did not send correspondence" in psc["nextAction"]
     public_psc = client.get("/v1/sources/psc").json()["data"]
     assert public_psc["licence"]["status"] == "pending"
     assert public_psc["lastUpdated"] == PSC_LAST_UPDATED == "2026-06-02"
@@ -107,11 +119,57 @@ def test_geography_verdict_is_single_and_acquisition_gate_is_explicit() -> None:
     assert "No `PORTALVS_REUSE_APPROVED` claim is made" in " ".join(text.split())
 
 
-def test_psc_source_owner_package_is_prepared_but_unsent() -> None:
+def test_psc_source_owner_request_is_maintainer_sent_awaiting_reply() -> None:
     text = (RESEARCH / "slovenska-posta-psc-outreach.md").read_text(encoding="utf-8")
-    assert "PREPARED_NOT_SENT" in text
-    assert "NO_GO_SUCCESSOR_PSC" in text
+    normalized = " ".join(text.split())
+    assert "SENT_AWAITING_REPLY (2026-11-05)" in text
+    assert "maintainer manually sent this clarification request on **2026-11-05**" in normalized
+    assert "reply is pending" in normalized
+    assert "No permission is inferred from preparing or sending this request" in normalized
+    for verdict in (
+        "PSC_RIGHTS_PENDING", "NO_GO_SUCCESSOR_PSC", "MAPPING_PARTIAL",
+        "CONTRACT_CLARIFICATION_REQUIRED", "NO_SOURCE_READY",
+    ):
+        assert verdict in text
     assert "zakaznickyservis@slposta.sk" in text
     assert "https://www.posta.sk/psc" in text
-    assert "No email or other contact was sent by the agent" in text
+    assert "The agent did not send correspondence" in text
+    assert "retains no Message-ID, delivery confirmation or receipt" in normalized
     assert "13,700-row" in text
+
+
+def test_both_source_owner_dispatches_are_consistent_across_current_docs() -> None:
+    paths = (
+        RESEARCH / "source-licence-outreach.md",
+        RESEARCH / "source-ownership-resolution.md",
+        RESEARCH / "source-verification-evidence.md",
+        ROOT / "docs/source-compliance.md",
+        ROOT / "docs/roadmap.md",
+    )
+    for path in paths:
+        text = " ".join(path.read_text(encoding="utf-8").split())
+        assert "SENT_AWAITING_REPLY" in text, path
+        assert "2026-11-05" in text, path
+        assert "Slovenská pošta" in text, path
+        assert "ŠÚ SR" in text, path
+        assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in text, path
+        assert "MANUAL_SOURCE_FILES_REQUIRED" in text, path
+        assert "NO_GO_SUCCESSOR_PSC" in text, path
+        assert "agent" in text and "correspondence" in text, path
+        assert "permission is inferred" in text or "permission inferred" in text, path
+
+
+def test_geography_outbound_scope_does_not_reopen_research_or_add_a_gate() -> None:
+    text = " ".join((RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8").split())
+    for scope in (
+        "exact authoritative municipality and district classifiers",
+        "CC BY 4.0 applicability", "local storage", "CSV/XML → JSON",
+        "public API redistribution", "commercial downstream reuse",
+        "attribution", "allowed acquisition method", "identifier stability",
+        "municipality → district/region relationships", "city parts and military units",
+    ):
+        assert scope in text
+    assert "Neither institution has replied to these new requests" in text
+    assert "No Message-ID, delivery confirmation or receipt is retained" in text
+    assert "do not invalidate the classifier, terms or provenance research" in text
+    assert "do not add a reply-waiting technical blocker" in text

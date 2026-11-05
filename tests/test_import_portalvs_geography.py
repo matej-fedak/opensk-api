@@ -335,9 +335,13 @@ def test_current_production_snapshot_and_psc_freeze():
     # bytes, source identity, freshness and partial/frozen decisions stay fixed.
     assert sources["psc"]["riskLevel"] == "high"
     assert "NO_GO_SUCCESSOR_PSC" in sources["psc"]["nextAction"]
-    assert "no message has been sent" in sources["psc"]["nextAction"]
+    assert "SENT_AWAITING_REPLY" in sources["psc"]["nextAction"]
+    assert "maintainer manually sent" in sources["psc"]["nextAction"]
+    assert "on 2026-11-05" in sources["psc"]["nextAction"]
+    assert "reply pending and no permission inferred" in sources["psc"]["nextAction"]
+    assert "The agent did not send correspondence" in sources["psc"]["nextAction"]
     assert hashlib.sha256(json.dumps(sources["psc"], ensure_ascii=False, sort_keys=True,
-                                    separators=(",", ":")).encode()).hexdigest() == "30985e2de6e1e72cb98cd62566108f8df8fe811c514e8e97919dcf918fdbb1ae"
+                                    separators=(",", ":")).encode()).hexdigest() == "bd7c33c52f11608214202f542fe63ff1ddaee4ab18bcc394c680f92d0b0424e5"
     from schemas.common import PSC_LAST_UPDATED
     assert PSC_LAST_UPDATED == "2026-06-02"
     assert len(json.loads((ROOT / "data/districts.json").read_bytes())["districts"]) == 79
