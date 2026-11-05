@@ -51,14 +51,19 @@ def test_telecom_resolution_does_not_refresh_or_rehash_production() -> None:
     assert sum(row["municipalityCode"] is not None for row in payload["phoneAreas"]) == 2919
     assert sum(row["municipalityCode"] is None for row in payload["phoneAreas"]) == 3
     assert payload["metadata"]["lastUpdated"] == PHONE_AREAS_LAST_UPDATED == "2026-09-15"
-    # These identify retained source bytes, not the unrecorded historical
-    # acquisition event. Neither the workbook nor its converted CSV was changed.
+    # The XLS digest is byte-exact. The converted CSV uses Git-style LF
+    # normalization so the freeze guard is stable on Windows/Linux checkouts.
+    # They identify retained repository bytes, not the historical acquisition
+    # event. Neither the workbook nor its converted CSV was changed.
     expected = {
         "teleoff-phone-areas-30.xls": "380025e006ddba17b062538cb347bda88a559137c95c09ec0b4cb528d6b468e2",
-        "teleoff-phone-areas-30.csv": "24cec61809358f67826995b390aa00a6754e747507e6fb05f716ab551edd8935",
+        "teleoff-phone-areas-30.csv": "ebd9834bcf3f109b675874240fe20e146f54fd08ea5c4fedbc9a5851cf660639",
     }
     for name, digest in expected.items():
-        assert hashlib.sha256((DATA / "raw" / name).read_bytes()).hexdigest() == digest
+        raw = (DATA / "raw" / name).read_bytes()
+        if name.endswith(".csv"):
+            raw = raw.replace(b"\r\n", b"\n")
+        assert hashlib.sha256(raw).hexdigest() == digest
 
 
 def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
