@@ -53,7 +53,9 @@ def test_participation_fields_read_sips_not_akt_uc(sips, expected) -> None:
 def test_bank_reply_does_not_resolve_holidays_or_other_outreach() -> None:
     client = TestClient(app)
     assert client.get("/v1/sources/holidays").json()["data"]["licence"]["status"] == "identified"
-    for source in ("districts", "municipalities", "psc", "phoneAreas"):
+    for source in ("districts", "municipalities", "psc"):
         assert client.get(f"/v1/sources/{source}").json()["data"]["licence"]["status"] == "pending"
-    # Elections were independently cleared by the ŠÚ SR reply, not the bank reply.
+    # Elections and phone areas were independently cleared by their own replies,
+    # not by the bank reply or by PortalVS's source-owner redirect.
     assert client.get("/v1/sources/elections").json()["data"]["licence"]["status"] == "verified"
+    assert client.get("/v1/sources/phoneAreas").json()["data"]["licence"]["status"] == "verified"

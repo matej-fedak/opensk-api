@@ -145,8 +145,10 @@ def test_phone_areas_dataset_is_valid() -> None:
     report = validate_phone_areas_dataset()
 
     assert report.ok
-    assert report.record_count > 5
-    assert report.warnings
+    assert report.record_count == 2922
+    # The requested reuse scope is resolved by the 2026-11-02 regulator reply;
+    # existing unmatched rows and byte-frozen embedded metadata remain unchanged.
+    assert not report.warnings
 
 
 def test_phone_area_references_are_valid() -> None:

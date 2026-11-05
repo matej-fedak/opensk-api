@@ -6,7 +6,11 @@ identify **ciselniky2** county/town as current production sources, with
 dataset publication date is provided). `/v1/sources/psc` intentionally retains
 historical **legacy classifier 42**, partial coverage and its old freshness.
 This mixed provenance is truthful, not a catalogue inconsistency. All three
-remain licence **pending**; technical migration does not resolve rights.
+remain licence **pending**. In 0.23.15 their limitations record PortalVS's
+2026-11-02 source-owner redirect without treating it as redistribution rights;
+district/municipality replacement remains blocked by missing exact manual ŠÚ SR
+source files and deterministic reconciliation. PSC additionally retains
+`NO_GO_SUCCESSOR_PSC`, and its Slovenská pošta package is unsent.
 
 Since 0.23.8, `banks` is aligned with NBS v226 / effective 2026-10-08 / downloaded
 2026-10-15T16:23:00Z. Rights remain NBS Terms of Use + the 2026-10-14 clarification,
@@ -14,6 +18,15 @@ not MIT data licensing. Bank/IBAN success metadata now also carries dataset-deri
 attribution, version/effective/download/file/hash/transformation provenance, so
 discovery does not depend solely on `/v1/sources/banks`. This does not add a route
 or expose internal registry fields in the source catalogue's curated model.
+
+Since 0.23.15, `phoneAreas` is licence **verified** by the regulator's direct
+2026-11-02 clarification of the retained outbound request. The public name says
+“Direct institutional reuse clarification … no formal licence named”; limitations
+state the permitted requested scope, three unmatched local geography rows and
+MIT/code versus regulator/data separation. Dataset `lastUpdated` deliberately
+stays `2026-09-15`; reply/`lastChecked` is `2026-11-02`. Factual attribution and
+transformation disclosure are exposed without inventing mandatory wording.
+The byte-frozen dataset's historical embedded metadata is not rewritten.
 
 `GET /v1/sources` and `GET /v1/sources/{id}` expose a **curated public projection** of the internal source registry (`data/sources.json`). The registry contains maintainer workflow material; the public surface deliberately exposes only consumer-relevant provenance. The registry file is never served verbatim.
 

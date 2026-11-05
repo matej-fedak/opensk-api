@@ -26,10 +26,10 @@
     "termsUrl": "pending",
     "attribution": "Attribute PortalVS / IS Číselníky, Slovenské okresy, if reuse is approved; exact required wording is pending.",
     "riskLevel": "pending",
-    "lastChecked": "2026-10-16",
-    "updateCadence": "Manual",
-    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether classifier 10 may be cached and redistributed through an open-source API and what attribution is required.",
-    "notes": "Successor-backed since 0.23.10: 80 current-valid county rows acquired 2026-10-16T08:04:45Z, one explicit foreign pseudo row excluded, 79 Slovak districts. All public IDs preserved; 12 successor letter suffixes verified against statistical note, title and region evidence. lastUpdated means OpenSK UTC snapshot acquisition date, not upstream publication. Acquisition bytes/hash/ETag: docs/research/portalvs-successor-geography-acquisition.json. PortalVS clarification remains SENT_AWAITING_REPLY; no rights inference. Legacy classifier 10 is historical provenance only."
+    "lastChecked": "2026-11-05",
+    "updateCadence": "Manual authoritative-source review; current production remains a frozen local PortalVS successor snapshot",
+    "nextAction": "MANUAL_SOURCE_FILES_REQUIRED for exact current ŠÚ SR CL000024 / 0024 bytes and actual acquisition evidence before any replacement. Then reconcile all 79 districts, public compatibility IDs and region relationships deterministically. PortalVS's 2026-11-02 redirect grants no PortalVS reuse; Register adries / MV SR is only a secondary technical route. Do not retry automatically.",
+    "notes": "REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER on 2026-11-02 resolves SOURCE_OWNERSHIP_DIRECTION, not PORTALVS_REDISTRIBUTION_RIGHTS. Exact candidate CL000024 / 0024 (Lokálna štatistická územná jednotka 1 – okres) has SUSR_REUSE_VERIFIED under current general ŠÚ SR CC BY 4.0 terms, but NO_GO_SUSR_GEOGRAPHY_REPLACEMENT applies because no exact manually supplied current classifier bytes or acquisition timestamp are available and no migration reconciliation was possible. Current 79 districts remain successor-backed from 80 current-valid county rows acquired 2026-10-16T08:04:45Z, one foreign pseudo row excluded. All public IDs are preserved OpenSK compatibility values, including 12 deterministic re-letterings, not proven direct ŠÚ SR identifiers. Acquisition bytes/hash/ETag: docs/research/portalvs-successor-geography-acquisition.json. Full ownership/classifier/acquisition evidence: docs/research/source-ownership-resolution.md."
   },
   "municipalities": {
     "status": "imported",
@@ -42,10 +42,10 @@
     "termsUrl": "pending",
     "attribution": "Attribute PortalVS / IS Číselníky, Slovenské obce, if reuse is approved; exact required wording is pending.",
     "riskLevel": "pending",
-    "lastChecked": "2026-10-16",
-    "updateCadence": "Manual",
-    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether classifier 9 may be cached and redistributed through an open-source API and whether excluded/special-purpose rows require any notice.",
-    "notes": "Successor-backed since 0.23.10: 2,928 current-valid town rows acquired 2026-10-16T08:04:45Z, one explicit foreign pseudo row excluded, 2,927 municipalities. Six-digit note IDs preserved; composite-code district prefix and statistical suffix verified. 205 duplicate-name records disambiguated; reviewed display corrections only at 504173 and 504742. All 3,101 historical PSC match links preserved without rewriting PSC. lastUpdated means OpenSK UTC snapshot acquisition date, not upstream publication. Acquisition bytes/hash/ETag: docs/research/portalvs-successor-geography-acquisition.json. PortalVS clarification remains SENT_AWAITING_REPLY; no rights inference. Legacy classifier 9 is historical provenance only."
+    "lastChecked": "2026-11-05",
+    "updateCadence": "Manual authoritative-source review; current production remains a frozen local PortalVS successor snapshot",
+    "nextAction": "MANUAL_SOURCE_FILES_REQUIRED for exact current ŠÚ SR CL000025 / 0025 bytes and actual acquisition evidence before any replacement. Then reconcile all 2,927 served IDs, names/display policy, hierarchy, military/special-purpose rows and district compatibility mappings deterministically. PortalVS's 2026-11-02 redirect grants no PortalVS reuse. Do not retry automatically.",
+    "notes": "REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER on 2026-11-02 resolves SOURCE_OWNERSHIP_DIRECTION, not PORTALVS_REDISTRIBUTION_RIGHTS. Exact candidate CL000025 / 0025 (Lokálna štatistická územná jednotka 2 – obec) has SUSR_REUSE_VERIFIED under current general ŠÚ SR CC BY 4.0 terms, but NO_GO_SUSR_GEOGRAPHY_REPLACEMENT applies because no exact manually supplied current classifier bytes or acquisition timestamp are available and no migration reconciliation was possible. Current 2,927 municipalities remain successor-backed from 2,928 current-valid town rows acquired 2026-10-16T08:04:45Z, one foreign pseudo row excluded. Six-digit note IDs and relationships remain PortalVS-derived; 205 duplicate-name records have OpenSK display disambiguation and two reviewed display corrections. All 3,101 historical PSC match links remain unchanged. REGPJ corroboration is not a direct CL000025 rebuild. Full evidence: docs/research/source-ownership-resolution.md."
   },
   "psc": {
     "status": "manual-seed",
@@ -58,10 +58,10 @@
     "termsUrl": "pending",
     "attribution": "Attribute PortalVS classifier 42 (PSČ obcí SR a ČR) if reuse is approved; exact required wording is pending.",
     "riskLevel": "high",
-    "lastChecked": "2026-09-07",
-    "updateCadence": "Unknown",
-    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: whether classifier 42 postal-code rows may be cached, transformed, and redistributed; keep partial coverage warnings until answered.",
-    "notes": "PortalVS classifier 42 is the current PSC source; the checked-in dataset is partial. districtCode is backfilled from municipalityCode using local municipality district mappings; no districtCode values are inferred from names or PSC patterns."
+    "lastChecked": "2026-11-05",
+    "updateCadence": "Frozen historical snapshot; source-owner clarification and any later acquisition remain manual",
+    "nextAction": "PortalVS replied 2026-11-02 that the underlying PSC source is Slovenská pošta. Maintainer may manually send the prepared Slovenská pošta clarification package (docs/research/slovenska-posta-psc-outreach.md); no message has been sent by the agent. Reuse, transformation, API/commercial redistribution, attribution, acquisition, historical snapshots and authoritative admin/street mappings remain unresolved. Keep NO_GO_SUCCESSOR_PSC and partial coverage warnings.",
+    "notes": "PortalVS classifier 42 remains the current production distribution copy; PortalVS's 2026-11-02 reply identifies Slovenská pošta as the underlying source owner but does not grant PortalVS or Slovenská pošta reuse/redistribution rights. The checked-in dataset is partial and byte-frozen. districtCode is backfilled from municipalityCode using local municipality district mappings; no districtCode values are inferred from names or PSC patterns. The 0.23.9/0.23.11 semantic and mapping failures are unresolved; source-owner identification alone does not repair them."
   },
   "banks": {
     "status": "imported",
@@ -221,16 +221,16 @@
     "sourceName": "Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data",
     "sourceUrl": "https://www.teleoff.gov.sk/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/1.html",
     "sourceFileUrl": "https://www.teleoff.gov.sk/files/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/30.xls",
-    "licence": "Source/licence verification pending.",
-    "licenceStatus": "pending verification",
-    "redistributionStatus": "pending verification",
-    "termsUrl": "pending",
-    "attribution": "Attribute Úrad pre reguláciu elektronických komunikácií a poštových služieb numbering data if reuse is approved; exact required wording is pending.",
-    "riskLevel": "pending",
-    "lastChecked": "2026-09-15",
-    "updateCadence": "Manual refresh from local regulator workbook snapshots",
-    "nextAction": "Clarification sent manually by the maintainer on 2026-10-11; awaiting reply (no permission inferred). Original question: reuse, caching, transformation, redistribution, commercial-use, and attribution terms for the retained official phone-area workbook.",
-    "notes": "2,922 unique municipality-to-primary-area rows imported from the official legacy Excel workbook; 2,919 rows link to local municipality, district, and region codes. Runtime routes read local JSON only."
+    "licence": "Direct institutional reuse clarification received 2026-11-02 for the requested OpenSK scope; no formal licence name was supplied and no CC/MIT/Open Data licence is inferred. MIT covers code, not regulator data.",
+    "licenceStatus": "verified 2026-11-02 by direct institutional clarification from Úrad pre reguláciu elektronických komunikácií a poštových služieb",
+    "redistributionStatus": "allowed for the requested OpenSK use scope: local snapshots, XLS-to-normalized-JSON transformation, public open-source API redistribution, derived local geography joins and commercial downstream use; retain source attribution and transformation disclosure",
+    "termsUrl": "https://www.teleoff.gov.sk/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/1.html",
+    "attribution": "Zdroj: Úrad pre reguláciu elektronických komunikácií a poštových služieb. Source: https://www.teleoff.gov.sk/urad/odbory-oddelenia/odbor-regulacie-elektronickych-komunikacii/cislovanie/1.html . OpenSK transformed the official 30.xls / List1 workbook to local normalized JSON and joined local municipality/district/region codes; the JSON is not the original workbook. This is conservative factual attribution, not mandatory wording supplied by the regulator; no formal licence name or endorsement is implied.",
+    "riskLevel": "low",
+    "lastChecked": "2026-11-02",
+    "updateCadence": "Manual monitoring and reviewed refresh from local regulator workbook snapshots; no automatic acquisition",
+    "nextAction": "Reuse is resolved; monitor the exact official source manually. Refresh only when justified, retaining source identity, bytes/hash, schema, row counts, actual acquisition provenance and deterministic diff. Exact attribution and version-notice wording were requested but not supplied; do not invent either. Evidence: docs/research/telecom-reuse-clarification.md.",
+    "notes": "REPLY_RECEIVED_RESOLVED on 2026-11-02. Regulator reply states that publicly available Slovak telephone-area data on the exact existing source page may be used in the manner requested below. Retained outbound scope explicitly includes public normalized API redistribution, local snapshots, commercial downstream use and derived geography joins; its stated JSON transformation is covered as requested use. Existing checked-in production is tied to that exact official 30.xls / List1 workbook, so this is a metadata-only resolution. 2,922 unique municipality-to-primary-area rows, 2,919 joined to local geography and three unmatched rows; data/phone_areas.json and data freshness unchanged. No formal CC/CC0/MIT/Open Data licence or mandatory exact attribution/version wording was supplied. Runtime routes read local JSON only; no refresh or automated downloader added."
   },
   "vehicleRegistrationCodes": {
     "status": "verified-source",
@@ -285,7 +285,7 @@
     "lastChecked": "2026-10-31",
     "updateCadence": "MANUAL_OFFICIAL_DOWNLOAD_ONLY; historical correction review; no automated downloads, polling or runtime upstream calls",
     "nextAction": "Manual correction-driven refresh only: maintainer downloads the five approved official CSVs, records provenance/hash manifest, runs offline import/reconciliation, reviews diff and explicitly promotes. No robots/crawlers/polling/scheduled downloads. No second election without explicit family-specific review. See docs/elections.md.",
-    "notes": "0.23.14 NRSR2023_PRODUCTION: complete for the selected NR SR 2023 unit-summary and national political-subject tables, not all Slovak elections. 2927 native units (2926 domestic plus 599999 Cudzina foreign), 25 parties, 2967896 valid votes, 150 allocated mandates, 18 source-blank mandate cells preserved as null. 6013 of 6014 configured precincts confirmed; Prešov precinct 34 excluded by State Commission decision. Five freshly manually downloaded CSVs rehashed: all match 0.23.2 historical hashes, including the full authoritative tab01 digest; raw files are not committed. Manifest: docs/research/elections-nrsr2023-acquisition.json. Source acquisition timestamp approximate to minute and explicitly user-attested. REPLY_RECEIVED_RESOLVED on 2026-10-30; CC BY 4.0 storage/transformation/API/commercial reuse verified. No tab03e municipality-party cells, precinct/candidate/preference/elected-person/voter records, contacts/addresses or PortalVS enrichment. Aggregate official election statistics; small-area aggregates may permit contextual inference with external information, no anonymity/zero-risk claim. Evidence: docs/research/elections-reuse-clarification.md. PortalVS and telecom remain FOLLOW_UP_SENT_AWAITING_REPLY."
+    "notes": "0.23.14 NRSR2023_PRODUCTION: complete for the selected NR SR 2023 unit-summary and national political-subject tables, not all Slovak elections. 2927 native units (2926 domestic plus 599999 Cudzina foreign), 25 parties, 2967896 valid votes, 150 allocated mandates, 18 source-blank mandate cells preserved as null. 6013 of 6014 configured precincts confirmed; Prešov precinct 34 excluded by State Commission decision. Five freshly manually downloaded CSVs rehashed: all match 0.23.2 historical hashes, including the full authoritative tab01 digest; raw files are not committed. Manifest: docs/research/elections-nrsr2023-acquisition.json. Source acquisition timestamp approximate to minute and explicitly user-attested. REPLY_RECEIVED_RESOLVED on 2026-10-30; CC BY 4.0 storage/transformation/API/commercial reuse verified. No tab03e municipality-party cells, precinct/candidate/preference/elected-person/voter records, contacts/addresses or PortalVS enrichment. Aggregate official election statistics; small-area aggregates may permit contextual inference with external information, no anonymity/zero-risk claim. Evidence: docs/research/elections-reuse-clarification.md. The separate telecom reply received 2026-11-02 resolves its requested reuse scope; PortalVS replied 2026-11-02 with source-owner redirection only, not PortalVS redistribution permission."
   },
   "exchangeRates": {
     "status": "imported",

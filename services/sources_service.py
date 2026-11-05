@@ -106,11 +106,12 @@ _UPDATE_CADENCE: dict[str, str] = {
 
 _LIMITATIONS: dict[str, list[str]] = {
     "regions": [],
-    "districts": ["PortalVS redistribution terms are unresolved."],
-    "municipalities": ["PortalVS redistribution terms are unresolved."],
+    "districts": ["Current production remains PortalVS-derived; the 2026-11-02 PortalVS reply redirects to ŠÚ SR as district authority and does not grant PortalVS redistribution rights."],
+    "municipalities": ["Current production remains PortalVS-derived; the 2026-11-02 PortalVS reply identifies ŠÚ SR as source owner and does not grant PortalVS redistribution rights."],
     "psc": [
         "Not national coverage.",
-        "PortalVS redistribution terms are unresolved.",
+        "PortalVS identified Slovenská pošta as source owner on 2026-11-02, but neither that redirect nor the existing PortalVS copy grants reuse/redistribution rights.",
+        "NO_GO_SUCCESSOR_PSC: reuse, street/admin mapping, temporal semantics and any successor migration remain unresolved.",
     ],
     "banks": [
         "Manually materialized NBS converter, not live; bank/IBAN response metadata exposes actual source version, effective/download dates and attribution.",
@@ -137,7 +138,11 @@ _LIMITATIONS: dict[str, list[str]] = {
         "0.23.13 expansion rejected: the privately acquired 68,926-notice corpus lacks a deterministic buyer privacy discriminator and is not served.",
     ],
     "schoolsDirectory": ["No approved institution-level source; only aggregate counts are served elsewhere."],
-    "phoneAreas": ["Redistribution terms of the regulator workbook are unresolved."],
+    "phoneAreas": [
+        "Regulator reply received 2026-11-02 permits the requested OpenSK storage, JSON transformation, API redistribution, derived geography joins and commercial downstream scope; no formal licence name was supplied.",
+        "Local materialized workbook snapshot, not live; three unmatched source municipality rows have no invented geography links.",
+        "Attribution and transformation disclosure are retained; MIT covers code, not regulator data.",
+    ],
     "vehicleRegistrationCodes": [
         "Historical legacy district codes only; not a current plate lookup.",
         "Does not decode full plates or identify vehicles or owners.",
@@ -171,6 +176,7 @@ _LIMITATIONS: dict[str, list[str]] = {
 _LICENCE_NAMES: dict[str, str] = {
     "banks": "NBS Terms of Use (attribution; transformation clarified by NBS)",
     "elections": "CC BY 4.0 (direct ŠÚ SR publisher reply, 2026-10-30)",
+    "phoneAreas": "Direct institutional reuse clarification (regulator reply, 2026-11-02); no formal licence named",
     "exchangeRates": "ECB free-use permission (attribution required)",
     "regions": "Eurostat reuse policy",
     "procurementNotices": "TED / Publications Office reuse terms",

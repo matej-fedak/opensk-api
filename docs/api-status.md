@@ -27,7 +27,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/healthcare-facilities` | Healthcare facility/provider lookup | not implemented | 0.18.0 researched NCZI NR PZS and e-VUC but did not approve a production source or endpoint. |
 | `GET /v1/schools` | Institution-level school lookup | not implemented | 0.20.0 researched MŠVVaM/RIS/CVTI candidates but did not approve production import or an endpoint. |
 | `GET /v1/court-decisions` | Court-decision list/search/detail | not implemented | 0.22.0 verified a Ministry OpenAPI decision endpoint, but reuse/redistribution and privacy gates block production data. |
-| `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, `GET /v1/phone-areas/search` | Phone-area list, lookup, and search | complete imported; 3 unmatched local geography links | Telecom regulator reuse verification pending. |
+| `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}`, `GET /v1/phone-areas/search` | Phone-area list, lookup, and search | complete imported; 3 unmatched local geography links | Regulator reply received 2026-11-02 resolves requested storage/JSON/API/commercial/derived-join reuse; no formal licence named. |
 | `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}`, `GET /v1/vehicle-registration-codes/search` | Legacy district-code reference | historical/reference | Not current plate lookup, full plate decoding, vehicle lookup, or owner lookup. |
 | `GET /v1/school-facility-counts`, `GET /v1/school-facility-counts/stats` | Aggregate school facility counts and totals | aggregate imported | Not a school directory; no `/v1/schools`. |
 | `GET /v1/procurement-notices`, `GET /v1/procurement-notices/{id}`, `GET /v1/procurement-notices/search`, `GET /v1/procurement-notices/stats` | Public procurement notice list, lookup, search, and stats | partial imported | 100-record TED_PARTIAL snapshot only; not the complete ÚVO national register. |
@@ -62,14 +62,15 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | Route/domain | Scope status | Requirement before 1.0 |
 | --- | --- | --- |
 | `/`, `/v1/health`, `/v1/iban/validate/{iban}` | stable candidate | Final deployment verification. |
-| Regions, banks, phone areas | stable candidate after evidence | Retain exact source/reuse evidence. |
-| Districts, municipalities, PSC | `INCLUDE_AFTER_COMPLIANCE_FIX` | Resolve PortalVS reuse/redistribution/commercial-use terms or exclude from stable contract. |
+| Regions, banks, phone areas | stable candidate after evidence | Retain exact source/reuse evidence. Telecom requested-scope reuse is resolved; 3 unmatched phone-area geography links remain disclosed. |
+| Districts, municipalities, PSC | `INCLUDE_AFTER_COMPLIANCE_FIX` | Replace current PortalVS-derived production through a fully evidenced authoritative-source migration, obtain applicable redistribution rights, or exclude from the stable contract. The source-owner redirect alone is insufficient. |
 | Holidays, companies/IČO, vehicle registration codes, school facility counts, procurement notices | limited stable candidate | Keep limitations explicit and retain source evidence. |
 | VAT, ŽRSR, streets, healthcare facilities, institution-level schools, court decisions | excluded from 1.0 | Not blockers while excluded. |
 
 ## Notes
 
-- 0.23.10 rematerializes **districts + municipalities only** from a fresh 2026-10-16 successor county/town acquisition. 79 / 2,927 records, all IDs/relationships preserved; only municipality names `504173` and `504742` receive reviewed suffix corrections. PSC bytes/provenance/freshness/grouping stay unchanged and legacy-backed (`NO_GO_SUCCESSOR_PSC`); no street/detail import. Still **39 GET operations**, `/v1`, metadata version `v1`; rights unresolved. Geography `lastUpdated`/Last-Modified is acquisition date, with unchanged static Cache-Control and conditional ETags.
+- **0.23.15 source ownership resolution:** telecom requested-scope reuse is verified by direct reply; PortalVS is `REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER`, not reuse approval. Exact ŠÚ SR `CL000024`/`CL000025` terms are verified but `NO_GO_SUSR_GEOGRAPHY_REPLACEMENT` / `MANUAL_SOURCE_FILES_REQUIRED` preserves all geography bytes. PSC remains frozen and Slovenská pošta outreach is unsent. Exactly **42 GET operations**, all operation IDs, `/v1` and metadata `v1` unchanged.
+- 0.23.10 rematerialized **districts + municipalities only** from a fresh 2026-10-16 successor county/town acquisition. 79 / 2,927 records, all IDs/relationships preserved; only municipality names `504173` and `504742` received reviewed suffix corrections. PSC bytes/provenance/freshness/grouping remain unchanged and legacy-backed (`NO_GO_SUCCESSOR_PSC`). Geography `lastUpdated`/Last-Modified is acquisition date, with unchanged static Cache-Control and conditional ETags.
 - No endpoint fetches live upstream data at request time.
 - 0.23.7 promotes title-free ITMS21+ project references with exactly two routes: **39 GET operations** total, source `euFunds` production/partial/verified. Exact filters: programmeCode, callCode, beneficiaryIco, inImplementation, completed, nuts; default/max limit 50/200. Decimal-string `contractedTotal` does not claim currency or payments. Static caching and standard 400/404 envelopes; excluded and unknown codes are indistinguishable. No ITMS2014+ or rich domains.
 - 0.23.2 adds no public elections results route or production dataset. Only the curated research entry `/v1/sources/elections` is added to the catalogue; OpenAPI remains 35 GET operations. See `docs/research/elections-spike.md`.
@@ -91,7 +92,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 - Districts are now complete, but PortalVS source terms remain restrictive.
 - Banks refreshed in 0.23.8 to NBS **v226 / effective 2026-10-08**, downloaded 2026-10-15T16:23:00Z. Two names/one BIC changed, still 30 domestic rows. Bank/IBAN metadata directly exposes source/version/effective/download/URLs/hash/attribution/transformation; checksum validation remains OpenSK/ISO, not NBS. Participation derives from CSV `Systém SIPS`, not HTML `Akt. úč.` or general operating status. Still 39 GET operations, standard metadata/version and bank data shapes retained. Audit/rights: `research/nbs-bank-reuse-clarification.md`.
 - Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
-- Phone areas are imported from the official telecom regulator Excel workbook, with licence/reuse verification still pending.
+- Phone areas are imported from the official telecom regulator Excel workbook. The 2026-11-02 institutional reply resolves the exact retained reuse request; production data/freshness are unchanged and three unmatched rows remain explicit.
 - Vehicle registration codes are historical district abbreviations only; the API does not expose `GET /v1/vehicles/{spz}` and does not decode full plates.
 - School facility counts are aggregate RIS rows only; the API does not expose `/v1/schools` and does not include per-school, staff, director, pupil, email, or phone data.
 - Dataset compliance status, retained evidence, and draft clarification questions are documented in `docs/source-compliance.md` and `docs/research/`.

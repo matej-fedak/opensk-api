@@ -1005,7 +1005,7 @@
     ],
     "metadata": {
       "source": "OpenSK API curated source catalogue",
-      "lastUpdated": "2026-10-31",
+      "lastUpdated": "2026-11-05",
       "version": "v1"
     },
     "error": null
@@ -1027,16 +1027,17 @@
       },
       "attribution": "Attribute PortalVS classifier 42 (PSČ obcí SR a ČR) if reuse is approved; exact required wording is pending.",
       "lastUpdated": "2026-06-02",
-      "lastChecked": "2026-09-07",
+      "lastChecked": "2026-11-05",
       "updateCadence": "unknown",
       "limitations": [
         "Not national coverage.",
-        "PortalVS redistribution terms are unresolved."
+        "PortalVS identified Slovenská pošta as source owner on 2026-11-02, but neither that redirect nor the existing PortalVS copy grants reuse/redistribution rights.",
+        "NO_GO_SUCCESSOR_PSC: reuse, street/admin mapping, temporal semantics and any successor migration remain unresolved."
       ]
     },
     "metadata": {
       "source": "OpenSK API curated source catalogue",
-      "lastUpdated": "2026-10-31",
+      "lastUpdated": "2026-11-05",
       "version": "v1"
     },
     "error": null
