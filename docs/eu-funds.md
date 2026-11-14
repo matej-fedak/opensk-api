@@ -219,10 +219,11 @@ uses its existing `imported` status, mapped to production by the service).
    **Stop** if the authoritative rights grant disappears or worsens. Recheck
    all observed legal forms; positive code/label additions need intentional
    evidence/review, not absence from a denylist.
-2. Select a **new/empty external temporary directory**. On Windows, for example:
+2. Select a **new/empty external temporary directory**. Set `$capture` to that
+   maintainer-selected path before running this PowerShell example:
 
    ```powershell
-   python scripts/acquire_itms21_projects.py --output-dir "C:\Users\matej\AppData\Local\Temp\opencode\itms-refresh" --page-size 250
+   python scripts/acquire_itms21_projects.py --output-dir "$capture" --page-size 250
    ```
 
    Stdlib fetching, fixed official project-list host/URL, no redirects, bounded
@@ -236,7 +237,7 @@ uses its existing `imported` status, mapped to production by the service).
    complete private acquisition. No previous raw capture is required:
 
    ```powershell
-   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json"
+   python scripts/import_itms21_projects.py --manifest "$capture/manifest.json"
    ```
 
    New raw byte sizes/hashes, manifest hash, offsets, sizes and unique
@@ -256,9 +257,9 @@ uses its existing `imported` status, mapped to production by the service).
 
    ```powershell
    # No removals: no previous acquisition or acknowledgement needed.
-   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --write-production
+   python scripts/import_itms21_projects.py --manifest "$capture/manifest.json" --write-production
    # After reviewing published removals/privacy withdrawals:
-   python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --write-production --acknowledge-removals
+   python scripts/import_itms21_projects.py --manifest "$capture/manifest.json" --write-production --acknowledge-removals
    ```
 
 6. Update non-personal manifest/evidence, `EU_FUNDS_LAST_UPDATED` and source
@@ -306,10 +307,11 @@ timestamps, ordering and current legal forms cannot establish this distinction.
 Only the added-public count is known; no source-level legal-form-set change or
 new-upstream-public count is claimed in the base report.
 
-**Optional** richer comparison, only if a prior acquisition was securely kept:
+**Optional** richer comparison, only if a prior acquisition was securely kept.
+Set `$previousManifest` to its manifest path:
 
 ```powershell
-python scripts/import_itms21_projects.py --manifest "C:\external\new\manifest.json" --previous-manifest "C:\secure\optional-archive\old\manifest.json"
+python scripts/import_itms21_projects.py --manifest "$capture/manifest.json" --previous-manifest "$previousManifest"
 ```
 
 The supplied old manifest must match the committed dataset's
@@ -359,10 +361,14 @@ in Git. Exact nested schema + synthetic exclusion/hash/removal/HTTP regressions
 enforce the policy; this cannot independently guarantee upstream classification
 accuracy, so every refresh still requires review.
 
-At milestone 0.23.7, NBS remained v225 / 2026-05-18 (subsequently refreshed in
+At the **historical 0.23.7 checkpoint**, NBS remained v225 / 2026-05-18 (subsequently refreshed in
 0.23.8; see `research/nbs-bank-reuse-clarification.md`); outreach states unchanged: banks
 `REPLY_RECEIVED_RESOLVED`; PortalVS/telecom/ŠÚ SR `SENT_AWAITING_REPLY`.
-Platform public-promotion gate remains unresolved PortalVS compliance.
+These are historical outreach states, not the current backlog: elections and
+telecom replies are now received/resolved, while PortalVS redirected without
+permission. Current replies and the separate pending 2026-11-05 geography/PSC
+requests are tracked in [source compliance](source-compliance.md).
+The public-promotion gate remains unresolved PortalVS compliance.
 
 ## Milestone validation
 

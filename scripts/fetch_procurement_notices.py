@@ -14,6 +14,12 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.source_safety import open_https, read_bounded, validate_https_url, validate_timeout
+
+MAX_DOWNLOAD_BYTES = 16 * 1024 * 1024
 DEFAULT_DATA_DIR = ROOT / "data"
 DEFAULT_OUTPUT = DEFAULT_DATA_DIR / "raw" / "procurement-notices-ted-search.json"
 TED_SEARCH_URL = "https://api.ted.europa.eu/v3/notices/search"
@@ -57,6 +63,7 @@ def build_search_payload(limit: int) -> dict[str, Any]:
 
 
 def fetch_search_response(limit: int, timeout: int = 60) -> dict[str, Any]:
+    validate_timeout(timeout)
     if not 1 <= limit <= FORBIDDEN_TIMED_REQUEST_LIMIT:
         raise ValueError(f"limit must be between 1 and {FORBIDDEN_TIMED_REQUEST_LIMIT}")
     body = json.dumps(build_search_payload(limit)).encode("utf-8")
@@ -66,8 +73,10 @@ def fetch_search_response(limit: int, timeout: int = 60) -> dict[str, Any]:
         headers={"Accept": "application/json", "Content-Type": "application/json"},
         method="POST",
     )
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        payload = json.load(response)
+    allowed_hosts = {"api.ted.europa.eu"}
+    with open_https(request, timeout=timeout, allowed_hosts=allowed_hosts) as response:
+        validate_https_url(response.geturl(), allowed_hosts)
+        payload = json.loads(read_bounded(response, MAX_DOWNLOAD_BYTES, "TED response"))
     if not isinstance(payload, dict):
         raise ValueError("TED Search API response must be a JSON object")
     notices = payload.get("notices")

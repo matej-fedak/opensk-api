@@ -1,6 +1,6 @@
 # Manual developer pilot
 
-**Next after 0.23.12:** ask **5–10 external developers** to try the API and report concrete integration friction. There are currently no known real external users; this is a proposed pilot, not completed outreach or proof of adoption.
+**Next after 0.23.15:** ask **5–10 external developers** to try the API and report concrete integration friction. No completed pilot or adoption evidence is recorded here; this is a proposed pilot, not completed outreach or proof of adoption.
 
 The **maintainer** selects and contacts participants, with honest pre-1.0, snapshot and source-reuse caveats. Public promotion remains gated by PortalVS compliance; keep any pilot appropriately scoped and do not imply permission to redistribute unresolved source data. Possible contacts: slovensko.digital community, Slovak university CS/data students, civic-tech developers, and builders of Slovak geography/business/finance utilities. No messages are sent automatically.
 

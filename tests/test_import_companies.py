@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from scripts.import_companies import run_import
 from scripts.validate_datasets import validate_companies_payload
 
@@ -134,8 +136,8 @@ def test_duplicate_icos_are_rejected(tmp_path: Path) -> None:
         json.dumps(
             {
                 "records": [
-                    {"ico": "12345678", "name": "Alpha, s.r.o.", "sidlo": {"postalCode": "82101"}, "updatedAt": "2026-06-03"},
-                    {"ico": "12345678", "name": "Beta, s.r.o.", "sidlo": {"postalCode": "82101"}, "updatedAt": "2026-06-03"},
+                    {"ico": "12345678", "name": "Alpha, s.r.o.", "legalForm": "s.r.o.", "sidlo": {"postalCode": "82101"}, "updatedAt": "2026-06-03"},
+                    {"ico": "12345678", "name": "Beta, s.r.o.", "legalForm": "s.r.o.", "sidlo": {"postalCode": "82101"}, "updatedAt": "2026-06-03"},
                 ]
             },
             ensure_ascii=False,
@@ -221,7 +223,7 @@ def test_natural_person_entrepreneurs_are_excluded_by_default(tmp_path: Path) ->
                         "fullNames": [{"value": "Private Entrepreneur"}],
                         "legalForms": [{"value": {"value": "fyzická osoba - podnikateľ"}}],
                     },
-                    {"ico": "22222222", "name": "Safe Entity, s.r.o.", "updatedAt": "2026-09-18"},
+                    {"ico": "22222222", "name": "Safe Entity, s.r.o.", "legalForm": "s.r.o.", "updatedAt": "2026-09-18"},
                 ]
             },
             ensure_ascii=False,
@@ -261,3 +263,43 @@ def test_recursive_forbidden_company_fields_fail_validation() -> None:
 
     assert not report.ok
     assert any("privateAddress" in issue.path for issue in report.errors)
+
+
+@pytest.mark.parametrize("alias", ["legalForm", "legal_form", "pravnaForma", "Právna forma", "form", "LEGAL_FORMS"])
+@pytest.mark.parametrize("label", ["fyzická osoba - podnikateľ", "Fyzicka osoba", "živnostník"])
+def test_natural_person_form_aliases_are_excluded(tmp_path, alias, label):
+    payload = _sample_payload()
+    payload["records"].append({"ico": "11111111", "name": "Private", alias: label})
+    source = tmp_path / "source.json"
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    result = run_import(input_path=source, output_path=tmp_path / "out.json")
+    assert result.ok
+    assert result.excluded_natural_persons == 1
+    assert result.record_count == 2
+
+
+@pytest.mark.parametrize("form", [None, "unknown form", "Nešpecifikovaná právna forma"])
+def test_company_unknown_form_fails_closed_without_inferring_from_name(tmp_path, form):
+    payload = _sample_payload()
+    payload["records"][0]["legalForm"] = form
+    source = tmp_path / "source.json"
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    output = tmp_path / "out.json"
+    output.write_bytes(b"existing")
+    result = run_import(input_path=source, output_path=output, write=True)
+    assert not result.ok and not result.wrote_files
+    assert output.read_bytes() == b"existing"
+
+
+def test_company_approved_aliases_canonicalized_and_conflicts_rejected(tmp_path):
+    payload = _sample_payload()
+    payload["records"][0]["legalForm"] = "Akciova spolocnost"
+    source = tmp_path / "source.json"
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    output = tmp_path / "out.json"
+    assert run_import(input_path=source, output_path=output, write=True).ok
+    assert json.loads(output.read_text(encoding="utf-8"))["companies"][1]["legalForm"] == "a.s."
+    payload["records"][0]["pravnaForma"] = "unknown"
+    source.write_text(json.dumps(payload), encoding="utf-8")
+    result = run_import(input_path=source, output_path=output, write=True)
+    assert not result.ok

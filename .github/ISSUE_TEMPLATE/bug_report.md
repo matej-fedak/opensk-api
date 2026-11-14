@@ -1,38 +1,37 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: API bug report
+about: Report a reproducible API, tooling or documentation problem
 title: ''
-labels: ''
+labels: bug
 assignees: ''
-
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+<!-- For security vulnerabilities or sensitive data, use SECURITY.md instead of a public issue. -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Problem and expected behavior
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+Describe the actual result and what you expected.
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+## Minimal reproduction
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+- HTTP method and path, or local command:
+- Synthetic/redacted parameters:
+- Response status and relevant body:
+- Reproduction steps:
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
+```text
+Paste a minimal command here. Do not include real IBANs, secrets, personal data,
+private source captures or authorization headers.
+```
 
-**Additional context**
-Add any other context about the problem here.
+## Environment
+
+- Hosted API or local clone:
+- Project version from `GET /` (and commit, if local):
+- Python version and OS (if local):
+- Dataset/snapshot involved, if applicable:
+
+## Additional context
+
+Include relevant sanitized logs or documentation links. A missing local record
+does not necessarily mean an identifier is legally invalid; check source coverage.

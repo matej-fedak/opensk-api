@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Hardened ASCII numeric parsing, Slovak IBAN structure validation and conditional caching (weak ETags and validator precedence). IBAN responses are now `no-store` with no ETag/Last-Modified; supplied server commands disable access logging. Existing route IDs, envelope versions and production datasets are unchanged.
+- Made dataset validation and offline writes fail closed; rejected contradictory PSC promotion/dry-run modes, added atomic PSC writes, bounded archive/worksheet/download/decimal processing, and hardened XML and research-company privacy checks.
+- Removed repeated filter scans and unused internal helpers, indexed geography lookups, and isolated preview-writing tests from existing developer artifacts. Added regression tests for the audited failure paths.
+- Added hash-locked runtime/development dependency sets, patched dependency resolution, synchronized Python declarations, focused linting and dependency auditing in CI, immutable action references, committed-range whitespace checking and checks-passed Render deployment configuration.
+- Reworked onboarding/contribution/security guidance, reconciled current developer documentation, indexed historical research, restored missing milestone notes and documented the legacy stable-looking tag without modifying it. Source rights/privacy gates remain unchanged.
+
 ## 0.23.15
 
 - Recorded the telecom regulator's **2026-11-02 `REPLY_RECEIVED_RESOLVED`** as direct institutional clarification for the exact retained request: local snapshots, XLS → normalized JSON, public API redistribution, commercial downstream use and requested derived geography joins. Public `phoneAreas` is now verified/low-risk with factual regulator attribution, source URL and OpenSK transformation disclosure. No formal licence name, mandatory attribution/version wording, automated-acquisition permission or endorsement is invented. `data/phone_areas.json`, 2,922 rows and `PHONE_AREAS_LAST_UPDATED=2026-09-15` are unchanged. Evidence: `docs/research/telecom-reuse-clarification.md`.
@@ -19,6 +27,23 @@
 - **Procurement: NO_GO_PROCUREMENT_EXPANSION (locked).** The privately acquired 68,926-notice TED Slovak-buyer corpus (277 pages, reconciled by an independent metadata-only capture) has no deterministic source-based natural-person discriminator: `buyer-person` is absent in every row including 22,730 eForms-explicit notices; hypothetical safe eligible corpus is 0. Production stays the byte-identical 100-record `TED_PARTIAL` snapshot with unchanged freshness; none of the 68,926 records is served. Evidence: `docs/research/procurement-buyer-privacy.md`.
 - **Calendar: HOLIDAYS_EXPANDED_VERIFIED (2024–2030).** `data/holidays.json` is now generated offline from reviewed Act 241/1993 Coll. rules (Slov-Lex versions 2024-01-01 and 2025-11-01, §2/§4b; NBS 2026/2027 corroboration; no published future-effective amendment through 2030 as of verification 2026-10-28). 112 statutory dates (16/year), stable-sorted, duplicate-free, including the previously missing 28 October in every year.
 - Holiday records gain additive `isStateHoliday` / `isDayOfRest`; the check response gains additive `isDayOfRest` (routes, operation IDs, `/v1`, envelope and `metadata.version` unchanged). Business days are now Monday–Friday minus statutory days of rest: 2025-09-01/10-28/11-17 and 2026-05-08/09-01/09-15/10-28/11-17 are correctly business days; `holidayDays` counts weekday days of rest only. `HOLIDAYS_LAST_UPDATED = 2026-10-28` (law/source verification date). Only `data/holidays.json` and `data/sources.json` changed. Evidence: `docs/research/holiday-calendar-correctness.md`.
+
+## 0.23.12
+
+- Corrected grouped PSC lookup to return flat logical matches consistently with collection/search: `01001` has `matchCount: 2`, not a single outer container containing two nested records. No source bytes, coverage or provenance changed.
+- Improved typed OpenAPI contracts and developer onboarding with checked examples and contract regression tests. Historical milestone: [PR #39](https://github.com/matej-fedak/opensk-api/pull/39).
+
+## 0.23.11
+
+- Resolved the PSC administrative-mapping evidence review without promoting successor PSC data. Retained the partial historical snapshot and explicit mapping/rights gates. [PR #38](https://github.com/matej-fedak/opensk-api/pull/38).
+
+## 0.23.10
+
+- Migrated district/municipality acquisition to successor PortalVS county/town data while preserving public identifiers and relationships. PSC stayed frozen; technical migration did not resolve redistribution rights. [PR #37](https://github.com/matej-fedak/opensk-api/pull/37).
+
+## 0.23.9
+
+- Reviewed successor PSC administrative, street and temporal semantics and retained `NO_GO_SUCCESSOR_PSC`; no successor production promotion. [PR #36](https://github.com/matej-fedak/opensk-api/pull/36).
 
 ## 0.23.8
 
@@ -74,7 +99,7 @@
 - PortalVS source resilience: re-verified both legacy `ciselniky.portalvs.sk` (end-of-support 2026-10-31 banner still present) and successor `ciselniky2.portalvs.sk` live; compact transition manifests with SHA-256 retained locally (not committed); verdict `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` — all three PortalVS-backed datasets rebuildable from the successor API with offline transforms only, no public contract change required. Licence remains pending.
 - Exchange-rates spike concluded **`GO_PRODUCTION_NEXT`**: ECB eurofxref feeds verified (1999-01-04 → present; 7,111 publication dates; 221,267 rate rows; full history only 3.48 MiB compact JSON), NBS confirmed as republication-only, ECB reuse permission explicitly written (attribution + modification notice). Added offline, dry-run-first `scripts/import_exchange_rates.py` with strict gesmes/XML/ISO/Decimal validation, numeric cross-feed dedup and 49 synthetic tests.
 - Added the research-only `exchangeRates` source entry and curated public projection (19 domains; coverage unknown, licence verified, no production dataset or endpoint). Public route count unchanged (`NO PUBLIC EXCHANGE-RATE ENDPOINT IS ADDED.`); `JSON_CONTINUE`; no runtime upstream calls.
-- Business-day finding: ECB publishes on TARGET working days only (zero weekend publications in 27 years; freshness can lag 4 calendar days) — the Slovak business-day utilities must not be reused for ECB publication semantics. No fallback/"previous business day" logic implemented or endorsed.
+- Business-day finding: ECB publishes on TARGET working days only; publication-calendar gaps can span Easter and must not be modeled using Slovak business days. The manually refreshed OpenSK snapshot has no fixed maximum lag. No fallback/"previous business day" logic implemented or endorsed.
 
 ## 0.23.2
 
@@ -216,7 +241,7 @@
 - Intentionally did not add `/v1/schools` or per-school lookup routes because the confirmed source CSV contains aggregate rows only.
 - Kept privacy guardrails: no school names, addresses, staff, directors, pupils, personal emails, or phone numbers are exposed.
 
-## Unreleased / pre-1.0 stabilization
+## Historical pre-1.0 stabilization reset
 
 - Reset project-facing versioning to `0.10.0-dev` so future `1.0.0` can represent the first stable public API contract.
 - Documented that earlier `v1.x` labels were internal development milestone labels, not formal stable releases.
@@ -393,12 +418,6 @@
 - Added `docs/dataset-format.md` with the local JSON file shapes and shared metadata conventions.
 - Updated the README with dataset tooling guidance.
 - No new public endpoints were added in this release.
-
-## v0.2.0
-
-- Added `GET /v1/banks` and `GET /v1/banks/{code}` from a static Slovak bank seed dataset.
-- Added `GET /v1/iban/validate/{iban}` for local Slovak IBAN validation and bank resolution.
-- Documented the new endpoints and dataset limitations.
 
 ## v0.4.0
 

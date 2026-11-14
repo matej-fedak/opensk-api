@@ -87,7 +87,7 @@ def document_parameters(schema):
         "noticeType": ("Exact TED notice type after trimming, case-insensitive; unknown values return an empty collection.", "can-standard"),
         "year": ("Publication year 2000–2100; malformed/out-of-range input retains framework 422.", 2026),
         "ico": ("Eight-digit IČO; spaces removed. Seed lookup only, not a live register.", "50158635"),
-        "iban": ("IBAN text, normalized to uppercase without spaces; invalid checksums return 200 with valid=false, not an application error. Synthetic checksum-valid example, not a payment instruction.", "SK5409000000000000000001"),
+        "iban": ("IBAN text, normalized to uppercase without spaces; valid requires Slovak structure SK plus 22 ASCII digits and a valid checksum. Invalid structure/checksums return 200 with valid=false, not an application error. No account-existence guarantee. Responses are no-store. Synthetic example, not a payment instruction.", "SK5409000000000000000001"),
         "id": ("Exact TED publication number from the partial local snapshot.", "670654-2026"),
         "source_id": ("Case-sensitive registry ID, starting with a letter and containing only ASCII letters/digits.", "psc"),
         "status": ("Exact case-sensitive source status: production, seed, historical, research or blocked.", "historical"),
@@ -107,7 +107,7 @@ def document_parameters(schema):
     }
     for path, item in schema["paths"].items():
         operation = item["get"]
-        if path != "/v1/health":
+        if path not in {"/v1/health", "/v1/iban/validate/{iban}"}:
             headers = {
                 "ETag": {"description": "Strong validator derived from exact response-body SHA-256 (first 32 hex characters).", "schema": {"type": "string"}},
                 "Cache-Control": {"description": "Existing endpoint cache policy; dataset freshness is not advanced by a request.", "schema": {"type": "string"}},
@@ -116,6 +116,10 @@ def document_parameters(schema):
                 headers["Last-Modified"] = {"description": "Dataset snapshot freshness, not request time.", "schema": {"type": "string"}}
             operation["responses"]["200"]["headers"] = headers
             operation["responses"]["304"] = {"description": "Unchanged conditional representation; empty body. Conditional requests still consume rate-limit budget.", "headers": headers}
+        elif path == "/v1/iban/validate/{iban}":
+            operation["responses"]["200"]["headers"] = {
+                "Cache-Control": {"description": "no-store: account-bearing validation responses must not be cached.", "schema": {"type": "string", "const": "no-store"}},
+            }
         # FastAPI encodes OpenAPI with exclude_none=True, which would strip
         # required nulls even inside literal example payloads. Restore only the
         # captured example values after generation, not schema nullability.

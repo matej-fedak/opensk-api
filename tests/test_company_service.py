@@ -7,7 +7,6 @@ import pytest
 
 from services.company_service import (
     CompanyDatasetError,
-    CompanyInvalidFormatError,
     CompanyNotFoundError,
     get_company_by_ico,
     load_companies,

@@ -9,7 +9,6 @@ client = TestClient(app)
 
 def build_valid_slovak_iban(bank_code: str, account_number: str) -> str:
     bban = f"{bank_code}{account_number}"
-    provisional = f"SK00{bban}"
     rearranged = f"{bban}SK00"
     numeric = "".join(str(ord(character) - 55) if character.isalpha() else character for character in rearranged)
 

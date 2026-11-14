@@ -120,7 +120,7 @@ recheck**. They are therefore **not** represented here as currently verified
 production download URLs. No row-specific `generateFile` URL was invoked and
 no CSV/XML body was acquired.
 
-A future maintainer handoff must use current official catalogue row links and
+A future manual acquisition must use current official catalogue row links and
 supply the exact selected CSV or XML files, their final URLs, actual acquisition
 timestamp, bytes and SHA-256. The catalogue HTML, metadata and terms do not
 substitute for those files.
@@ -146,8 +146,8 @@ rights. No classifier-specific reuse exception was found in the reviewed
 The automation language is not evidence of a universal automated-download
 permission: it addresses automated collection that would disproportionately
 burden or threaten service stability. Independently of that wording, this
-milestone deliberately requires human review and **manual official source-file
-handoff**. Public availability, terms permission and a download button do not
+milestone deliberately requires human review and **manually supplied official source
+files**. Public availability, terms permission and a download button do not
 waive the acquisition-evidence gate.
 
 CC BY 4.0 applies to a future properly acquired ŠÚ SR snapshot under these
@@ -220,7 +220,7 @@ facts. No production phone-area row was refreshed or relabelled.
 The repository root, checked-in raw-data directory and available research
 manifests contain no exact manually supplied current `CL000024`/`0024` or
 `CL000025`/`0025` CSV/XML source files. The retained REGPJ evidence from 0.23.11
-is corroborating research, not either exact classifier handoff. Consequently:
+is corroborating research, not either exact classifier input. Consequently:
 
 - **Manual source files are required.** Their exact format choice, final URLs,
   bytes, hashes and actual acquisition timestamp are not established.

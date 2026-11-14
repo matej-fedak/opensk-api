@@ -1,5 +1,10 @@
 # Existing dataset coverage audit — 0.23.13
 
+> **Final milestone outcome:** see [Finalization](#finalization--2026-10-28):
+> holidays promoted; procurement expansion frozen. Earlier tables, pause decisions
+> and test results below preserve their 2026-10-28 checkpoint context, not current
+> outreach status. For later source decisions use the [research index](README.md).
+
 Baseline: main `9bdfca621c1aea43f37f1d9a62dab20e4d2c3b52`, version
 0.23.12. Checked 2026-10-28 against local production files and `/v1/sources`.
 No new domain or route is proposed. Historical snapshot dates below are not
@@ -24,7 +29,7 @@ evidence are retained privately; final before/after hashes are recorded below.
 | Exchange rates | 7,112 publication dates / 221,296 rates / 41 currencies; 1999-01-04–2026-10-12 | ECB full-history feed; production / complete | Complete relative to imported feed; INTENTIONAL_PRODUCT_SCOPE (EUR reference values) | Reuse verified; exact decimal strings; not every day/world currency/live prices | **ALREADY_MEANINGFUL**, no refresh |
 | EU funds | 4,561 of 4,574 acquired projects; ITMS21+ 2021–2027, snapshot 2026-10-15 | MIRRI; production / partial | INTENTIONAL_PRODUCT_SCOPE + PRIVACY_BLOCKED for excluded records; 13 wholly excluded | Positive legal-form review; no natural-person/unreviewed restoration or ITMS2014+ fusion | **ALREADY_MEANINGFUL**, preserve bytes |
 
-Only procurement and holidays are eligible for production expansion. No source
+Only procurement and holidays were selected for expansion evaluation. No source
 acquisition/research is reopened for any blocked domain. Follow-up emails sent by
 the maintainer on 2026-10-28 do not establish permission; no correspondence is sent
 by the agent and no pending licence state is upgraded.
@@ -72,12 +77,12 @@ as-of the evidence check, not a guarantee against future legislative changes.
 - https://nbs.sk/o-narodnej-banke/sviatky-v-sr/
 - https://www.ip.gov.sk/aktuality/sviatky-8-maj-15-september-2026-z-pohladu-pracovneho-prava.html
 
-## Pause decision — no production promotion
+## Historical pause decision — no production promotion at this checkpoint
 
 The maintainer explicitly selected **Pause for privacy decision** after the full
-acquisition exposed natural-person/sole-trader buyers. **0.23.13 is unfinished**;
+acquisition exposed natural-person/sole-trader buyers. **At this pause, 0.23.13 was unfinished**;
 no production data, source catalogue, freshness or public API change is approved
-or made. Version remains `0.23.13-dev`; no PR/tag/release or outreach.
+or made at this checkpoint. Version was `0.23.13-dev`; no outreach was sent.
 
 The acquisition completed 2026-10-28T21:23:21.101159Z–21:28:05.490605Z:
 **68,926 reported / 68,926 acquired**, 276 nonempty pages plus one empty terminal
@@ -147,7 +152,7 @@ blocked. `git diff --check` passed. All **14 production JSON byte hashes** match
 the pre-work main baseline exactly; `data/` and the production dataset validator
 have no content diff. Actual OpenAPI still has **39 GET operations** with the same
 complete path/method/operationId inventory. Full milestone validation, smoke,
-hosted CI and PR-ready status are **not claimed** at this unfinished checkpoint.
+hosted CI are **not claimed** at this unfinished checkpoint.
 
 ## Subsequent buyer-privacy evidence spike — 2026-10-28
 

@@ -199,11 +199,17 @@ def _load_json(report: ValidationReport, path: Path) -> Any | None:
         return None
 
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            report.add_error("root", "dataset must be a JSON object")
+            return None
+        return payload
     except json.JSONDecodeError as exc:
         report.add_error("json", f"Invalid JSON: {exc.msg} (line {exc.lineno}, column {exc.colno})")
     except OSError as exc:
         report.add_error("file", f"Unable to read file: {exc}")
+    except UnicodeError as exc:
+        report.add_error("json", f"Invalid JSON encoding: {exc}")
 
     return None
 
@@ -1096,7 +1102,7 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
             continue
 
         match_count = item.get("matchCount")
-        if match_count is not None and (not isinstance(match_count, int) or match_count < 0):
+        if match_count is not None and (type(match_count) is not int or match_count < 0):
             report.add_error(f"{item_path}.matchCount", "PSC matchCount must be a non-negative integer")
         elif isinstance(match_count, int) and match_count != len(matches_list):
             report.add_error(f"{item_path}.matchCount", f"PSC matchCount must equal len(matches), got {match_count} and {len(matches_list)}")
@@ -1108,55 +1114,7 @@ def validate_psc_dataset(path: Path = DEFAULT_PSC_PATH) -> ValidationReport:
             if match_item is None:
                 continue
 
-            delivery_post = _require_string(report, match_item.get("deliveryPost"), f"{match_path}.deliveryPost", "PSC deliveryPost must be a non-empty string")
-            valid_from_match = _require_nullable_iso_date(
-                report,
-                match_item.get("validFrom"),
-                f"{match_path}.validFrom",
-                "PSC validFrom must be null or a YYYY-MM-DD date",
-            )
-            valid_to_match = _require_nullable_iso_date(
-                report,
-                match_item.get("validTo"),
-                f"{match_path}.validTo",
-                "PSC validTo must be null or a YYYY-MM-DD date",
-            )
-            if valid_from_match is not None and valid_to_match is not None and date.fromisoformat(valid_from_match) > date.fromisoformat(valid_to_match):
-                report.add_error(f"{match_path}.validFrom", "PSC validFrom must be on or before validTo")
-
-            municipality_code_match = match_item.get("municipalityCode")
-            if municipality_code_match is not None and (
-                not isinstance(municipality_code_match, str) or not _MUNICIPALITY_CODE_RE.fullmatch(municipality_code_match)
-            ):
-                report.add_error(f"{match_path}.municipalityCode", f"PSC municipalityCode must be 6 digits, got {municipality_code_match!r}")
-
-            exact_key = json.dumps(match_item, ensure_ascii=False, sort_keys=True)
-            if exact_key in seen_matches:
-                report.add_error(match_path, "duplicate PSC record")
-            seen_matches.add(exact_key)
-
-        matches = item.get("matches")
-        if matches is None:
-            continue
-
-        matches_list = _require_list(report, matches, f"{item_path}.matches", "PSC matches must be a list")
-        if matches_list is None:
-            continue
-
-        match_count = item.get("matchCount")
-        if match_count is not None and (not isinstance(match_count, int) or match_count < 0):
-            report.add_error(f"{item_path}.matchCount", "PSC matchCount must be a non-negative integer")
-        elif isinstance(match_count, int) and match_count != len(matches_list):
-            report.add_error(f"{item_path}.matchCount", f"PSC matchCount must equal len(matches), got {match_count} and {len(matches_list)}")
-
-            seen_matches: set[str] = set()
-            for index, match in enumerate(matches_list):
-                match_path = f"{item_path}.matches[{index}]"
-                match_item = _require_dict(report, match, match_path, "PSC match must be an object")
-                if match_item is None:
-                    continue
-
-            delivery_post = _require_string(report, match_item.get("deliveryPost"), f"{match_path}.deliveryPost", "PSC deliveryPost must be a non-empty string")
+            _require_string(report, match_item.get("deliveryPost"), f"{match_path}.deliveryPost", "PSC deliveryPost must be a non-empty string")
             valid_from_match = _require_nullable_iso_date(
                 report,
                 match_item.get("validFrom"),

@@ -30,6 +30,11 @@ stays `2026-09-15`; reply/`lastChecked` is `2026-11-02`. Factual attribution and
 transformation disclosure are exposed without inventing mandatory wording.
 The byte-frozen dataset's historical embedded metadata is not rewritten.
 
+Since 0.23.13, `holidays` describes **112 statutory-rule-generated dates across
+2024–2030**, with distinct `isStateHoliday`/`isDayOfRest` semantics. Act 241/1993
+is the rule source; NBS pages are corroboration only, not a blanket dataset
+licence. Coverage is bounded and future law must be reviewed before extension.
+
 `GET /v1/sources` and `GET /v1/sources/{id}` expose a **curated public projection** of the internal source registry (`data/sources.json`). The registry contains maintainer workflow material; the public surface deliberately exposes only consumer-relevant provenance. The registry file is never served verbatim.
 
 ## Public Schema
@@ -90,7 +95,7 @@ All keys are always present; unavailable values are explicit `null`, never omitt
 
 Per-id curated values (public names, limitations, update cadences, licence names) live in `services/sources_service.py`.
 
-0.23.2 adds an eighteenth domain, `elections`: `research`, coverage `null`, licence `pending`. General ŠÚ SR CC BY 4.0 terms are identified, but election-specific applicability and permitted acquisition require clarification. This entry does not make election results available or grant reuse permission.
+0.23.2 added an eighteenth domain, `elections`, initially `research`, coverage `null`, licence `pending`. **0.23.14 promotes it to `production`, coverage `partial`, licence `verified`** after the 2026-10-30 ŠÚ SR reply and manual file acquisition/full reconciliation on 2026-10-31. Only selected NRSR2023 native-unit summaries/national party results are served; CC BY 4.0 attribution/modification/non-endorsement notices and manual-only acquisition remain. No municipality-party/precinct/person records or anonymity claim. [Scope and refresh](elections.md).
 
 0.23.3 added a nineteenth domain, `exchangeRates`, as `research` with licence `verified`. 0.23.4 promotes it to `production` with coverage `complete` (complete relative to the imported ECB full-history eurofxref feed — not all world currencies, not live FX, not every calendar date): `data/exchange_rates.json` is a checked-in runtime dataset served by `/v1/exchange-rates`, its `lastUpdated` tracks `EXCHANGE_RATES_LAST_UPDATED`, and its limitations state the informational-only/ECB-publication-date semantics plus the manual offline refresh lag.
 

@@ -169,16 +169,45 @@ def _rpo_value(record: dict[str, Any], key: str) -> Any:
     return _current_timed_value(value)
 
 
+LEGAL_FORM_KEYS = frozenset(_normalize_key(key) for key in
+                            ("legalForms", "legalForm", "pravnaForma", "legal_form", "form"))
+# Deliberately narrow research profile, not a catalogue of all legal entities.
+# Unknown/missing forms must be reviewed rather than inferred from a name or IČO.
+RESEARCH_LEGAL_FORMS = {
+    _normalize_key(alias): canonical
+    for canonical, aliases in (
+        ("s.r.o.", ("s.r.o.", "spol. s r.o.", "spoločnosť s ručením obmedzeným", "112")),
+        ("a.s.", ("a.s.", "akciová spoločnosť", "121")),
+        ("občianske združenie", ("občianske združenie", "701")),
+    ) for alias in aliases
+}
+
+
+def _legal_form_values(raw_record: dict[str, Any]) -> list[str]:
+    return [text for key, value in raw_record.items()
+            if _normalize_key(key) in LEGAL_FORM_KEYS
+            if (text := _code_value_text(value))]
+
+
+def _research_legal_form(raw_record: dict[str, Any]) -> str:
+    forms = _legal_form_values(raw_record)
+    canonical = {RESEARCH_LEGAL_FORMS.get(_normalize_key(form)) for form in forms}
+    if not forms or None in canonical or len(canonical) != 1:
+        raise ValueError("missing, unknown or conflicting legal form; research import fails closed")
+    return canonical.pop()
+
+
 def _is_natural_person_record(raw_record: dict[str, Any]) -> bool:
-    if any(raw_record.get(key) for key in ("personName", "birthDate", "birthNumber", "personalNumber")):
+    mapping = _field_map(raw_record)
+    if any(mapping.get(_normalize_key(key)) for key in ("personName", "birthDate", "birthNumber", "personalNumber")):
         return True
 
-    for field_name in ("legalForms", "legalForm", "entityType", "subjectType", "sourceRegister"):
-        text = _code_value_text(raw_record.get(field_name))
-        if not text:
-            continue
-        normalized = text.casefold()
-        if "fyzická osoba" in normalized or "podnikateľ" in normalized or "živnost" in normalized:
+    values = _legal_form_values(raw_record)
+    values.extend(_code_value_text(mapping.get(_normalize_key(key))) or ""
+                  for key in ("entityType", "subjectType", "sourceRegister"))
+    for text in values:
+        normalized = _normalize_key(text)
+        if any(marker in normalized for marker in ("fyzickaosoba", "podnikatel", "zivnost", "naturalperson", "soletrader")):
             return True
 
     return False
@@ -350,7 +379,7 @@ def _normalize_company_record(raw_record: dict[str, Any], *, source: str, source
     record: dict[str, Any] = {
         "ico": ico,
         "name": name,
-        "legalForm": _pick(raw_record, "legalForm", "pravnaForma", "legal_form", "form") or _code_value_text(raw_record.get("legalForms")),
+        "legalForm": _research_legal_form(raw_record),
         "legalStatus": _pick(raw_record, "legalStatus", "status", "stav", "state") or _code_value_text(raw_record.get("legalStatuses")),
         "sourceRegister": _code_value_text(raw_record.get("sourceRegister")) or _pick(raw_record, "registerName", "register", "registry", "source_registry"),
         "address": _build_address(raw_record),

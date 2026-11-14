@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
+import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -14,6 +16,9 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
+
+from scripts.import_utils import collect_referential_integrity_errors, write_json_atomic
+from scripts.validate_datasets import validate_psc_dataset
 
 DEFAULT_INPUT = ROOT / "data" / "psc.json"
 DEFAULT_OUTPUT = ROOT / "data" / "generated" / "psc.with-districts.json"
@@ -49,8 +54,24 @@ def _read_json(path: Path) -> Any:
 
 
 def _write_json(path: Path, payload: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    write_json_atomic(path, payload)
+
+
+def _validate_candidate(payload: dict[str, Any], data_dir: Path) -> None:
+    with tempfile.TemporaryDirectory(prefix="psc-backfill-") as directory:
+        candidate_dir = Path(directory)
+        for name in ("regions.json", "districts.json", "municipalities.json", "sources.json"):
+            source = data_dir / name
+            if source.is_file():
+                shutil.copy2(source, candidate_dir / name)
+        candidate = candidate_dir / "psc.json"
+        _write_json(candidate, payload)
+        report = validate_psc_dataset(candidate)
+        errors = [f"{issue.path}: {issue.message}" for issue in report.errors]
+        if not errors:
+            errors.extend(collect_referential_integrity_errors(candidate_dir))
+        if errors:
+            raise ValueError("PSC candidate validation failed:\n- " + "\n- ".join(errors))
 
 
 def _load_index(path: Path, collection_key: str) -> dict[str, dict[str, Any]]:
@@ -114,17 +135,15 @@ def _backfill_record(
     psc_region_code = record.get("regionCode")
     if isinstance(psc_region_code, str) and municipality_region_code != psc_region_code:
         record["districtCode"] = None
-        if counted:
-            psc = record.get("psc") or "unknown"
-            stats.region_conflicts.append(f"PSC {psc}: municipalityCode {municipality_code} regionCode {municipality_region_code} != PSC regionCode {psc_region_code}")
+        psc = record.get("psc") or "unknown"
+        stats.region_conflicts.append(f"PSC {psc}: municipalityCode {municipality_code} regionCode {municipality_region_code} != PSC regionCode {psc_region_code}")
         return
 
     district_code = municipality.get("districtCode")
     if not isinstance(district_code, str) or district_code not in districts:
         record["districtCode"] = None
-        if counted:
-            psc = record.get("psc") or "unknown"
-            stats.invalid_district_codes.append(f"PSC {psc}: municipalityCode {municipality_code} has invalid districtCode {district_code!r}")
+        psc = record.get("psc") or "unknown"
+        stats.invalid_district_codes.append(f"PSC {psc}: municipalityCode {municipality_code} has invalid districtCode {district_code!r}")
         return
 
     record["districtCode"] = district_code
@@ -188,15 +207,30 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--dry-run", action="store_true", help="Validate and report only; do not write files")
     mode.add_argument("--write", action="store_true", help="Write the generated PSC JSON")
-    parser.add_argument("--promote", action="store_true", help="Write directly to data/psc.json after validation")
+    mode.add_argument("--promote", action="store_true", help="Atomically promote a validated candidate to data/psc.json")
     args = parser.parse_args(argv)
 
     output_path = ROOT / "data" / "psc.json" if args.promote else args.output
-    payload, stats = backfill_psc_districts(args.input)
+    try:
+        payload, stats = backfill_psc_districts(args.input, DEFAULT_DATA_DIR)
+    except (OSError, ValueError) as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
     dry_run = not args.write and not args.promote
 
-    if not dry_run:
-        _write_json(output_path, payload)
+    if not stats.ok:
+        _print_stats(stats, dry_run=True, output_path=output_path)
+        return 1
+
+    try:
+        _validate_candidate(payload, DEFAULT_DATA_DIR)
+        if not dry_run:
+            if not args.promote and output_path.resolve() == (ROOT / "data" / "psc.json").resolve():
+                raise ValueError("production output requires --promote")
+            _write_json(output_path, payload)
+    except (OSError, ValueError) as exc:
+        print(f"ERROR {exc}", file=sys.stderr)
+        return 1
 
     _print_stats(stats, dry_run=dry_run, output_path=output_path)
     return 0 if stats.ok else 1

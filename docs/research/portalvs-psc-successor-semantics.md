@@ -430,8 +430,7 @@ retains evidence if private captures are later deleted.
 ## 14. Validation and production safety
 
 Production baseline: main **0.23.8**, PR #35, commit
-`97aa23c0454cf826bb3afaf7a6a0d60d37ba5817`. Research branch
-`research/portalvs-psc-semantics`; version 0.23.9 at PR readiness.
+`97aa23c0454cf826bb3afaf7a6a0d60d37ba5817`; milestone version 0.23.9.
 All production JSON (not just the protected four) must equal that baseline.
 
 | Protected file | Unchanged SHA-256 |

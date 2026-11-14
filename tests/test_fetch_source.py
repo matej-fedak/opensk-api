@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import io
 from pathlib import Path
 from urllib import error
 from unittest.mock import MagicMock, Mock
@@ -28,13 +29,13 @@ def test_fetch_source_writes_payload_and_metadata(monkeypatch, tmp_path, capsys)
     config_path.write_text(json.dumps({"url": "https://example.com/source.txt", "filename": "download.txt"}), encoding="utf-8")
 
     response = MagicMock()
-    response.read.return_value = b"payload"
+    response.read1.side_effect = io.BytesIO(b"payload").read1
     response.geturl.return_value = "https://example.com/source.txt"
     response.__enter__.return_value = response
     response.__exit__.return_value = False
 
     urlopen = Mock(return_value=response)
-    monkeypatch.setattr(fetch_source.request, "urlopen", urlopen)
+    monkeypatch.setattr(fetch_source, "open_https", urlopen)
 
     exit_code = fetch_source.main(["--config", str(config_path)])
 
@@ -62,7 +63,7 @@ def test_fetch_source_refuses_overwrite_without_force(monkeypatch, tmp_path, cap
     (raw_dir / "download.txt").write_bytes(b"existing")
 
     urlopen = Mock()
-    monkeypatch.setattr(fetch_source.request, "urlopen", urlopen)
+    monkeypatch.setattr(fetch_source, "open_https", urlopen)
 
     exit_code = fetch_source.main(["--config", str(config_path)])
 
@@ -82,7 +83,7 @@ def test_fetch_source_reports_network_errors(monkeypatch, tmp_path, capsys) -> N
     config_path = raw_dir / "source.json"
     config_path.write_text(json.dumps({"url": "https://example.com/source.txt", "filename": "download.txt"}), encoding="utf-8")
 
-    monkeypatch.setattr(fetch_source.request, "urlopen", Mock(side_effect=error.URLError("offline")))
+    monkeypatch.setattr(fetch_source, "open_https", Mock(side_effect=error.URLError("offline")))
 
     exit_code = fetch_source.main(["--config", str(config_path), "--timeout", "1"])
 

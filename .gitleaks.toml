@@ -1,0 +1,11 @@
+title = "OpenSK secret scanning"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Reviewed false positives: OpenAPI SHA-256 digests, not API credentials"
+condition = "AND"
+paths = ['''^docs/research/procurement-(buyer-privacy|coverage)-acquisition\.json$''']
+regexTarget = "line"
+regexes = ['''^\s*"sourceOpenapiSha256":\s*"[0-9a-f]{64}",?\s*$''']

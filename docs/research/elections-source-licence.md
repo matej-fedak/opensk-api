@@ -1,6 +1,11 @@
 # Elections source and reuse evidence — OpenSK 0.23.2 spike
 
-Verified: **2026-10-11** (local clock `2026-10-11T21:31:48+02:00`). Branch: `data/elections-spike`. Research only; no production clearance, no email sent, no commit. No `AGENTS.md` was found in the workspace search.
+Verified: **2026-10-11** (local clock `2026-10-11T21:31:48+02:00`). Historical research only; no production clearance or correspondence from this verification.
+
+> The later [2026-10-30 publisher clarification](elections-reuse-clarification.md)
+> resolves reuse and requires manual official acquisition; [production scope](../elections.md)
+> records the separate 2026-10-31 manual acquisition. This note preserves what was
+> known at the original spike, not current pending status or retrospective download permission.
 
 ## Conclusion
 

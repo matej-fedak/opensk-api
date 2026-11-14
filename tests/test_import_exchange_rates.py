@@ -100,7 +100,7 @@ def test_schema_drift_is_rejected(raw: bytes, match: str) -> None:
 
 def test_dtd_and_entity_declarations_forbidden(tmp_path: Path) -> None:
     for name, prefix in (("dtd.xml", b'<?xml version="1.0"?><!DOCTYPE r []>'),
-                         ("entity.xml", b'<?xml version="1.0"?><!ENTITY amp2 "x">')):
+                         ("entity.xml", b'<?xml version="1.0"?><!DOCTYPE r [<!ENTITY amp2 "x">]>')):
         path = tmp_path / name
         path.write_bytes(prefix + tiny())
         with pytest.raises(ValueError, match="DTD/entity declarations are forbidden"):
@@ -234,20 +234,15 @@ def test_preview_path_accepts_only_generated_json() -> None:
     assert importer.validate_preview_path(importer.DEFAULT_OUTPUT) == importer.DEFAULT_OUTPUT.resolve()
 
 
-def test_write_preview_only_into_generated(tmp_path: Path) -> None:
+def test_write_preview_only_into_generated(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(importer, "GENERATED_DIR", tmp_path / "generated")
     target = importer.GENERATED_DIR / "exchange_rates_test_preview.json"
-    try:
-        if target.exists():
-            target.unlink()
-        result = import_ok(tmp_path, ("f.xml", tiny()), dry_run=False, write_preview=True, output=target)
-        assert result.ok and result.report["dryRun"] is False and result.report["wrotePreview"] is True
-        assert result.wrote_files == [target.resolve()]
-        written = json.loads(target.read_text(encoding="utf-8"))
-        assert written["status"] == "unapproved-research-preview"
-        assert written["baseCurrency"] == "EUR"
-    finally:
-        if target.exists():
-            target.unlink()
+    result = import_ok(tmp_path, ("f.xml", tiny()), dry_run=False, write_preview=True, output=target)
+    assert result.ok and result.report["dryRun"] is False and result.report["wrotePreview"] is True
+    assert result.wrote_files == [target.resolve()]
+    written = json.loads(target.read_text(encoding="utf-8"))
+    assert written["status"] == "unapproved-research-preview"
+    assert written["baseCurrency"] == "EUR"
 
 
 def test_source_hash_and_url_recorded(tmp_path: Path) -> None:

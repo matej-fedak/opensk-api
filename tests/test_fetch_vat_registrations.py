@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import io
 from pathlib import Path
 from unittest.mock import MagicMock, Mock
 
@@ -9,11 +10,11 @@ import scripts.fetch_vat_registrations as fetch_vat_registrations
 
 def test_fetch_vat_registrations_writes_zip_and_metadata(monkeypatch, tmp_path: Path) -> None:
     response = MagicMock()
-    response.read.return_value = b"zip-payload"
+    response.read1.side_effect = io.BytesIO(b"zip-payload").read1
     response.geturl.return_value = "https://report.financnasprava.sk/ds_dphs.zip"
     response.__enter__.return_value = response
     response.__exit__.return_value = False
-    monkeypatch.setattr(fetch_vat_registrations.request, "urlopen", Mock(return_value=response))
+    monkeypatch.setattr(fetch_vat_registrations, "open_https", Mock(return_value=response))
 
     output = tmp_path / "ds_dphs.zip"
     exit_code = fetch_vat_registrations.main(["--output", str(output), "--timeout", "1", "--retries", "0"])
@@ -30,7 +31,7 @@ def test_fetch_vat_registrations_refuses_overwrite(monkeypatch, tmp_path: Path) 
     output = tmp_path / "ds_dphs.zip"
     output.write_bytes(b"existing")
     urlopen = Mock()
-    monkeypatch.setattr(fetch_vat_registrations.request, "urlopen", urlopen)
+    monkeypatch.setattr(fetch_vat_registrations, "open_https", urlopen)
 
     exit_code = fetch_vat_registrations.main(["--output", str(output)])
 

@@ -153,7 +153,18 @@ activemq-data/
 
 # Environments
 .env
+.env.*
+!.env.example
+!.env.*.example
 .envrc
+# Local private credentials (never dataset/source evidence).
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+credentials.json
+service-account*.json
 .venv
 env/
 venv/
@@ -173,6 +184,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.ruff_cache/
 .dmypy.json
 dmypy.json
 

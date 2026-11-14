@@ -2,9 +2,14 @@
 
 Status: research and planning record for milestone `0.23.0`. This report adds no endpoints, datasets, or runtime behavior. It consolidates source-licence verification performed in 2026 Q4, a multi-perspective roadmap council, and the resulting prioritized backlog. It is not legal advice.
 
+> **Historical 0.23.0 planning record.** Outreach drafts below were subsequently
+> dispatched manually and several replies resolved. Use the [research index](README.md)
+> for current decisions and the [outreach record](source-licence-outreach.md) for
+> dispatch/reply evidence; the original priorities are not current work instructions.
+
 Quick links:
 
-- `docs/research/source-licence-outreach.md` — ready-to-send outreach packages (the immediate action).
+- [Source-licence outreach](source-licence-outreach.md) — dispatch/reply record and historical prepared packages.
 - `docs/research/roadmap-council-notes.md` — full council verdicts (consensus/majority/contested/rejected).
 - `docs/roadmap.md` — the living strategic roadmap (Now/Next/Watch/Later/Completed).
 - `docs/1-0-scope.md`, `docs/release-readiness.md` — the candidate 1.0 contract and blockers this report feeds into.

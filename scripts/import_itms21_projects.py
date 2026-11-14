@@ -157,6 +157,13 @@ def money_string(obj: dict, key: str, where: str, *, mandatory: bool) -> str | N
             f"{where}: money field '{key}' must be a JSON number")
     amount = value if isinstance(value, Decimal) else Decimal(value)
     require(amount.is_finite() and amount >= 0, f"{where}: invalid amount '{key}'")
+    # Bound the fixed-point representation BEFORE formatting. Tiny exponent
+    # lexemes can otherwise request gigabytes of zero padding.
+    digits = len(amount.as_tuple().digits)
+    exponent = amount.as_tuple().exponent
+    fixed_length = (digits + exponent if exponent >= 0
+                    else max(digits, -exponent) + 2)
+    require(fixed_length <= 128, f"{where}: money field '{key}' exceeds fixed-point length limit")
     # normalize() applies the ambient Decimal precision and can round. Plain
     # formatting plus lexical zero removal preserves every significant digit.
     text = format(amount, "f")

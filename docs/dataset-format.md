@@ -14,13 +14,13 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Generated/curated JSON under `data/` is the runtime input.
 - Production requests read those JSON files only; they do not call upstream sources.
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
-- For geography datasets, regions are verified against the Eurostat LAU 2025 correspondence table; municipalities are imported from PortalVS classifier 9 (`Obce`) with district mappings derived from `code_su`; districts are imported from PortalVS classifier 10 filtered to Slovak rows.
+- Regions are verified against the Eurostat LAU 2025 correspondence table. Since 0.23.10, current districts/municipalities use the PortalVS successor **county/town** capture acquired 2026-10-16: town note IDs and composite prefixes are reconciled against county evidence. Legacy classifier 9/`code_su` and classifier 10 describe historical provenance only, not the current refresh workflow. PSC remains the frozen legacy classifier 42 snapshot. The 0.23.15 source-owner redirect does not license current PortalVS-derived bytes or relabel them as direct ŠÚ SR data; replacement still requires exact manual files and reconciliation.
 
 ## Source Registry And Public Projection
 
 `data/sources.json` is the internal, maintainer-facing registry. The public `GET /v1/sources*` surface serves a typed curated projection only (`services/sources_service.py`); internal fields such as `redistributionStatus`, `riskLevel`, `nextAction`, `notes`, `sourceFileUrl`, `sourceDocumentationUrl`, and `candidateSourceUrls` are never exposed. The public schema, field boundary, and status mapping are documented in `docs/source-catalogue.md`.
 
-Since 0.23.1, API `metadata.lastUpdated` is an ISO dataset-freshness date or an explicit `null` for meta and error responses; it is never the request-time date.
+Since 0.23.1, API `metadata.lastUpdated` is an ISO dataset-freshness date or an explicit `null` for root and error responses. **Health is the operational exception**: its timestamp changes per request and its metadata uses today's UTC date; it is `no-store`, not dataset freshness.
 
 ## Company Seed Dataset
 
@@ -220,7 +220,7 @@ Where present, dataset metadata uses this shape:
 - `activePartyMarker` is **OpenSK-derived categorical normalization of `Payment system SIPS`**, not a verbatim NBS marker or the source's separate `Akt. úč.` column. The importer maps `X` to `C`, preserves `K`, and canonicalizes negative/empty markers to `Ø`; `activeParty` is OpenSK's derived boolean (`C`/`K` true, `Ø` false). These fields do not establish general institutional operating status.
 - `country` is OpenSK's derived `SK` scope label for runtime bank rows.
 - NBS data is subject to NBS Terms of Use + direct clarification received 2026-10-14, not MIT. Current **v226 / effective 2026-10-08**, downloaded **2026-10-15T16:23:00Z**, is transformed JSON, not the original NBS file. All 30 domestic records and current CSV headings/title row were reconciled. Mapping/diff/attribution/refresh: `research/nbs-bank-reuse-clarification.md`.
-- Required production metadata (`schemas/banks.py`): `source`, canonical `sourceUrl`, exact `sourceFileUrl`, `termsUrl`, `sourceVersion`, `sourceEffectiveDate`, timezone-qualified `downloadedAt`, `sourceBytes`, original-byte `sourceSha256`, resolved `license`, `attribution`, `transformation`, `lastUpdated`, `complete=true`. `lastUpdated == sourceEffectiveDate == BANKS_LAST_UPDATED`; no pending placeholder or invented acquisition dates. `Systém SIPS` is the current CSV input; `Akt. úč.` is an HTML heading, not a second CSV column. Bank/IBAN metadata projects provenance additively (`sourceDownloadedAt` maps dataset `downloadedAt`).
+- Required production metadata (`schemas/banks.py`): `source`, canonical `sourceUrl`, exact `sourceFileUrl`, `termsUrl`, `sourceVersion`, `sourceEffectiveDate`, timezone-qualified `downloadedAt`, `sourceBytes`, original-byte `sourceSha256`, resolved `license`, `attribution`, `transformation`, `lastUpdated`, `complete=true`. `lastUpdated == sourceEffectiveDate == BANKS_LAST_UPDATED`; no pending placeholder or invented acquisition dates. `Systém SIPS` is the current CSV input; `Akt. úč.` is an HTML heading, not a second CSV column. Bank/IBAN metadata projects provenance additively (`sourceDownloadedAt` maps dataset `downloadedAt`), but IBAN validation is `no-store` with no ETag or Last-Modified.
 
 ### `data/regions.json`
 
@@ -482,13 +482,15 @@ Example preview shape for an ambiguous PSC code:
 ```json
 {
   "2026": [
-    { "date": "2026-01-01", "name": "...", "name_en": "..." }
+    { "date": "2026-01-01", "name": "Deň vzniku Slovenskej republiky", "name_en": "Day of the Establishment of the Slovak Republic", "isStateHoliday": true, "isDayOfRest": true }
   ]
 }
 ```
 
-- Each holiday entry uses `date`, `name`, and `name_en`.
+- Each holiday entry uses `date`, `name`, `name_en`, `isStateHoliday` and `isDayOfRest`; the last two are explicit booleans and are not interchangeable.
 - Years are stored as strings to keep the file stable and predictable.
+- Current coverage is **112 dates across 2024–2030**, generated offline from Act 241/1993 with date-exact amendment/exception handling (including the 2025-11-01 transition and 2026 §4b). NBS calendar pages are corroboration only, not the production source or a blanket data licence.
+- A working state holiday has `isStateHoliday: true`, `isDayOfRest: false`. Business-day utilities subtract statutory days of rest, not every holiday-labelled date. This is not a bank settlement calendar; re-review law before extending the bounded verified window.
 
 ## Adding a New Dataset Safely
 

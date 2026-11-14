@@ -5,7 +5,8 @@ from schemas.psc import PSCLookup, PSCMatch, PSCStats
 
 from schemas.common import API_SOURCE, PSC_GEOGRAPHY_SOURCE, PSC_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_municipality_code_format, validate_region_code_format
-from services.psc_service import PSCInvalidFormatError, PSCNotFoundError, filter_psc_records, get_psc_stats, list_psc_records, lookup_psc, search_psc, search_psc_records, validate_psc_format
+from services.numeric_parser import parse_ascii_integer
+from services.psc_service import PSCInvalidFormatError, PSCNotFoundError, filter_psc_records, get_psc_stats, lookup_psc, search_psc_records, validate_psc_format
 
 
 router = APIRouter(prefix="/psc", tags=["psc"])
@@ -58,12 +59,10 @@ def _parse_optional_municipality_code(value: str | None) -> str | None:
 def _parse_optional_limit(value: str | None, *, default: int, maximum: int, field_name: str) -> int:
     if value is None:
         return default
-    if not value.isdigit():
+    try:
+        return parse_ascii_integer(value, maximum=maximum)
+    except ValueError:
         raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    parsed = int(value)
-    if parsed > maximum:
-        raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    return parsed
 
 
 def _parse_offset(value: str | None) -> int:
@@ -126,7 +125,7 @@ def list_psc_endpoint(
         filters["hasGeography"] = normalized_has_geography
 
     filtered = filter_psc_records(filters)
-    page = list_psc_records(filters, limit=parsed_limit, offset=parsed_offset)
+    page = filtered[parsed_offset : parsed_offset + parsed_limit]
 
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
@@ -166,7 +165,7 @@ def search_psc_endpoint(
 
     try:
         all_matches = search_psc_records(normalized_query)
-        page = search_psc(normalized_query, limit=parsed_limit, offset=parsed_offset)
+        page = all_matches[parsed_offset : parsed_offset + parsed_limit]
     except PSCInvalidFormatError:
         raise _invalid_format("q must be at least 2 characters or a 5-digit PSC", "Parameter q musí mať aspoň 2 znaky alebo byť 5-ciferné PSČ")
 

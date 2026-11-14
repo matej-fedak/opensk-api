@@ -1,19 +1,21 @@
 # Versioning
 
-OpenSK API is currently in pre-1.0 development.
+OpenSK is in pre-1.0 development. The authoritative project version is [`PROJECT_VERSION` in `version.py`](../version.py), also returned by `GET /` and OpenAPI. Change it there, not independently in routes or smoke tests.
 
-0.23.4 is an exchange-rates production milestone. It materializes the full-history ECB eurofxref snapshot at `data/exchange_rates.json`, adds `GET /v1/exchange-rates/latest` and `GET /v1/exchange-rates/{date}`, promotes `/v1/sources/exchangeRates` to production, and documents the manual offline refresh workflow. Elections remain research-only and no outreach reply changes any compliance state. Project version lives in `version.PROJECT_VERSION`; bump it there.
+The `/v1` route prefix and response `metadata.version: "v1"` identify the API namespace, not a stable project release. Pre-1.0 changes can still alter behavior; document intentional contract changes in the [changelog](../CHANGELOG.md) and retain explicit dataset limitations.
 
-The current project version is `0.23.3`. The public API namespace remains `/v1`, and response `metadata.version` remains `"v1"`.
+## Legacy release labels
 
-Earlier `v1.x` labels in the changelog and commit history were internal development milestone labels. They are retained as historical notes, but they are not formal stable public releases.
+Earlier `v1.x` changelog labels were internal development milestones. There is also an existing annotated Git tag **`v1.0.0`**, created on 2026-06-03, pointing to commit `e64ea38`; that commit reports **`1.0.0-rc.6`** in the application. This is a legacy release-label/version mismatch, not evidence that today's datasets or API have stable-release approval.
 
-Future formal releases should use semantic versioning:
+Do not delete, move or silently overwrite the published tag. Before a future stable release, explicitly choose and document an unused version/tag and a migration notice addressing this history. The stable milestone is called “1.0 readiness” in planning documents; that name does not reserve an already-used Git tag or authorize retagging it.
 
-- `1.0.0` is reserved for the first stable public API contract.
-- `0.x` versions may still include breaking changes while the API is stabilizing.
-- Public endpoints are usable during pre-1.0 development, but their long-term compatibility is not yet guaranteed.
-- The `/v1` route prefix is an API namespace and does not mean the project has reached formal `1.0.0` release status.
-- Git tags and GitHub Releases should only be created intentionally as part of a release process.
+## Release policy
 
-Before a true `1.0.0`, source/licence evidence, endpoint behavior, response shapes, deployment checks, and dataset coverage must be reviewed and documented. See `docs/1-0-readiness-audit.md` and `docs/release-readiness.md`.
+- Use semantic project versions; `0.x` remains pre-stable.
+- Keep the API namespace independent from the project version.
+- Create tags/releases only intentionally, after testing and deployment verification of the exact final versioned commit.
+- Verify source reuse, privacy, coverage, response shapes and operational checks before describing a release as stable.
+- Record historical facts as dated records; link current guidance rather than duplicating changing version numbers across policy pages.
+
+See [candidate stable scope](1-0-scope.md), [release readiness](release-readiness.md) and the [historical readiness audit](1-0-readiness-audit.md).

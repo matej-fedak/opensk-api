@@ -2,7 +2,9 @@
 
 ## Current Status
 
-OpenSK API is pre-1.0 at `0.23.5`. The public API uses `/v1`, and response `metadata.version` remains `"v1"`. Runtime requests use local normalized datasets only. The current OpenAPI schema exposes 37 GET operations. The candidate first stable scope is defined in `docs/1-0-scope.md`.
+OpenSK API is pre-1.0. The authoritative project version is in [`version.py`](../version.py) and `GET /`; `/v1` and response `metadata.version: "v1"` remain independent namespace identifiers. Runtime requests use local normalized datasets only. OpenAPI exposes 42 GET operations. The candidate stable scope is defined in [1-0-scope.md](1-0-scope.md).
+
+The published legacy `v1.0.0` tag points to an application reporting `1.0.0-rc.6`. Before any stable release, choose and document an unused version/tag under the [versioning policy](versioning.md); never move or overwrite the existing tag silently. “1.0 readiness” below names a stability milestone, not permission to reuse that tag.
 
 OpenSK API should not be released as `1.0.0` today because source/licence redistribution evidence (notably PortalVS) is still unresolved — and sending clarification outreach is not permission. Operational guardrails (application rate limiting, daily scheduled public smoke monitoring) are in place since 0.23.5; public promotion remains gated by source compliance, not by operations.
 
@@ -46,8 +48,10 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 ## Operational Readiness
 
 - Render configuration is checked in as `render.yaml`.
-- Build command is `pip install -r requirements.txt`.
-- Start command is `uvicorn main:app --host 0.0.0.0 --port $PORT`.
+- Build command is `python -m pip install --require-hashes -r requirements.txt`; CI installs the separate development lock, constrained to the same runtime versions.
+- Python is declared in `.python-version`; CI reads that file and Render's native Python runtime uses it. Update the interpreter patch and dependency locks deliberately and test in a fresh environment.
+- Start command is `uvicorn main:app --host 0.0.0.0 --port $PORT --no-access-log`. Account-bearing paths are not logged by Uvicorn; proxy/CDN logging still needs a hosting-side review.
+- The Blueprint declares `autoDeployTrigger: checksPass`. Apply/sync the Blueprint and verify this setting in Render; require the `verify` CI job through GitHub branch rules. These external settings are not established merely by editing the repository.
 - No application-specific environment variables are required beyond Render-provided `PORT` and `RENDER`; the rate limiter is auto-enabled under `RENDER=true` and can be overridden with `OPENSK_RATE_LIMIT_ENABLED` (`auto|true|false`).
 - The application rate limiter (100 requests/60 s/client-IP, fixed window, in-memory process-local) protects the single-instance deployment; policy and evidence in `docs/rate-limiting-contract.md`. It is not a globally exact quota across multiple instances; revisit shared-state limiting on that documented trigger.
 - The `Public Smoke` GitHub Actions workflow runs `scripts/smoke_test.py --expect-rate-limit` daily (06:17 UTC, `workflow_dispatch` available) against the public deployment with a bounded `/v1/health` warm-up for free-tier cold starts. It is a best-effort daily external check — not an uptime SLA, incident management, or latency monitoring. Its own Actions failure status is the alerting channel; no external monitoring service is used. Caveat: GitHub auto-disables scheduled workflows after 60 days of repository inactivity — re-enable via any commit or the Actions UI.
@@ -75,7 +79,10 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 - `python scripts/validate_datasets.py`
 - `python scripts/check_referential_integrity.py`
 - `python -m pytest -q`
-- `python -m compileall scripts routers services tests schemas`
+- `python -m ruff check .`
+- `python scripts/check_docs.py`
+- `python -m pip_audit -r requirements.txt --disable-pip --require-hashes`
+- `python -m compileall -q main.py version.py scripts routers services tests schemas`
 - `git diff --check`
 - Local smoke test against a running app
 - Public smoke test against Render after deployment from release commit
@@ -83,23 +90,15 @@ OpenSK API should not be released as `1.0.0` today because source/licence redist
 
 ## Proposed 1.0 Release Procedure
 
-1. All required PRs merged.
-2. Clean `main`.
-3. CI green.
-4. Dataset validation green.
-5. Referential integrity green.
-6. Test suite green.
-7. Local smoke test green.
-8. Render deployed from `main`.
-9. Public smoke test green.
-10. Docs reviewed.
-11. Version changed to `1.0.0`.
-12. Final PR opened.
-13. Final PR merged.
-14. Git tag created.
-15. GitHub Release created.
+1. Resolve or explicitly exclude source/privacy blockers for every included route group; freeze the intended stable contract.
+2. Resolve legacy tag ambiguity and select an unused release version/tag. Update `version.py`, changelog, lockfiles if needed and release documentation in the final release PR.
+3. Review and merge that PR through required CI. Record the exact resulting commit SHA; start from clean `main`.
+4. Install hash-locked development dependencies in a fresh environment and run all required verification above, including a local smoke test against that exact versioned commit.
+5. Deploy that exact commit to Render after checks pass. Confirm Render's deployed commit and root/OpenAPI versions, then run the public smoke suite with `--expect-rate-limit`.
+6. Only after those checks succeed, create the chosen immutable tag at the verified commit and publish release notes with coverage, licensing, compatibility and migration caveats.
+7. If code or version changes after verification, repeat deployment and smoke verification before tagging. Do not tag a different commit from the one tested.
 
-Do not execute this release procedure during `0.23.1`.
+This checklist documents a future explicit release operation; it is not an instruction to publish a stable release while blockers remain.
 
 ## Proposed Follow-Up Issues
 

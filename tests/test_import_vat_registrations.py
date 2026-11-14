@@ -4,7 +4,7 @@ import json
 import zipfile
 from pathlib import Path
 
-from scripts.import_vat_registrations import PRODUCTION_OUTPUT, run_import
+from scripts.import_vat_registrations import run_import
 from scripts.validate_datasets import validate_vat_registrations_payload
 
 
@@ -91,7 +91,7 @@ def test_vat_importer_reports_invalid_values(tmp_path: Path) -> None:
 
     result = run_import(source, output_path=tmp_path / "out.json", write=False)
 
-    assert result.ok
+    assert not result.ok
     assert result.invalid_icos == 1
     assert result.records_without_ico == 1
     assert result.record_count == 0
@@ -152,3 +152,21 @@ def test_vat_validation_rejects_duplicate_registration() -> None:
 
     assert not report.ok
     assert any("duplicate VAT registration" in issue.message for issue in report.errors)
+
+
+def test_vat_errors_do_not_replace_existing_output(tmp_path):
+    source = tmp_path / "invalid.xml"
+    source.write_text(_xml().replace("<DRUH_REG_DPH>§4</DRUH_REG_DPH>", "<DRUH_REG_DPH/>"), encoding="utf-8")
+    output = tmp_path / "out.json"
+    output.write_bytes(b"existing research output")
+    result = run_import(source, output_path=output, write=True)
+    assert not result.ok and not result.wrote_files
+    assert output.read_bytes() == b"existing research output"
+
+
+def test_vat_invalid_payload_does_not_write(tmp_path):
+    source = tmp_path / "invalid.xml"
+    source.write_text(_xml().replace("28092026", "bad date"), encoding="utf-8")
+    output = tmp_path / "out.json"
+    result = run_import(source, output_path=output, write=True)
+    assert not result.ok and not output.exists()

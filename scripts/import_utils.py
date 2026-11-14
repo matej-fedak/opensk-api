@@ -10,13 +10,13 @@ import re
 import shutil
 import zipfile
 import tempfile
-from dataclasses import dataclass
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
 from scripts.validate_datasets import validate_all_datasets
+from scripts.source_safety import check_zip_limits, read_bounded, safe_xml_fromstring
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,13 +47,6 @@ XLSX_HEADER_ALIASES: dict[str, tuple[str, ...]] = {
 _PORTALVS_COUNTRY_CODE = "703"
 
 
-@dataclass(frozen=True)
-class LocalImportFile:
-    dataset: str
-    path: Path
-    records: list[dict[str, Any]]
-
-
 def _coerce_path(path: str | os.PathLike[str] | Path) -> Path:
     return path if isinstance(path, Path) else Path(path)
 
@@ -69,21 +62,6 @@ def normalize_ico(value: Any) -> str:
     if not _COMPANY_ICO_RE.fullmatch(text):
         raise ValueError(f"company ico must be exactly 8 digits, got {value!r}")
     return text
-
-
-def validate_company_record(record: dict[str, Any]) -> dict[str, Any]:
-    if not isinstance(record, dict):
-        raise ValueError("company record must be an object")
-
-    normalized = dict(record)
-
-    name = normalize_whitespace(normalized.get("name"))
-    if not name:
-        raise ValueError("company name must be a non-empty string")
-    normalized["name"] = name
-
-    normalized["ico"] = normalize_ico(normalized.get("ico"))
-    return normalized
 
 
 def today_iso() -> str:
@@ -197,30 +175,54 @@ def _normalize_header(value: Any) -> str:
     return "".join(char for char in text if char.isalnum())
 
 
+XLSX_MAX_INPUT_BYTES = 64 * 1024 * 1024
+XLSX_MAX_MEMBER_BYTES = 64 * 1024 * 1024
+XLSX_MAX_TOTAL_BYTES = 128 * 1024 * 1024
+XLSX_MAX_COLUMNS = 16384
+XLSX_MAX_CELLS = 1_000_000
+XLSX_MAX_OUTPUT_CELLS = 2_000_000
+
+
 def _xlsx_column_index(cell_ref: str) -> int:
+    if not re.fullmatch(r"[A-Za-z]{1,3}[1-9][0-9]{0,6}", cell_ref):
+        raise ValueError("xlsx cell reference is invalid or exceeds column/row limits")
+    if int(re.search(r"[0-9]+$", cell_ref).group()) > 1048576:
+        raise ValueError("xlsx row index exceeds limit")
     index = 0
     for char in cell_ref:
         if not char.isalpha():
             break
         index = index * 26 + (ord(char.upper()) - 64)
+        if index > XLSX_MAX_COLUMNS:
+            raise ValueError("xlsx column index exceeds limit")
     return index - 1
+
+
+def _xlsx_xml(archive: zipfile.ZipFile, name: str) -> ET.Element:
+    with archive.open(name) as member:
+        return safe_xml_fromstring(
+            read_bounded(member, XLSX_MAX_MEMBER_BYTES, "xlsx member"),
+            element_limits={"c": XLSX_MAX_CELLS, "row": XLSX_MAX_CELLS, "si": XLSX_MAX_CELLS},
+        )
 
 
 def _xlsx_shared_strings(archive: zipfile.ZipFile) -> list[str]:
     try:
-        root = ET.fromstring(archive.read("xl/sharedStrings.xml"))
+        root = _xlsx_xml(archive, "xl/sharedStrings.xml")
     except KeyError:
         return []
 
     strings: list[str] = []
-    for item in root.findall("main:si", XLSX_NS):
+    for item in root.iterfind("main:si", XLSX_NS):
+        if len(strings) >= XLSX_MAX_CELLS:
+            raise ValueError("xlsx shared string count exceeds limit")
         strings.append("".join(text or "" for text in (node.text for node in item.findall(".//main:t", XLSX_NS))))
     return strings
 
 
 def _xlsx_sheet_path(archive: zipfile.ZipFile, preferred_names: tuple[str, ...] = ()) -> str:
-    workbook = ET.fromstring(archive.read("xl/workbook.xml"))
-    rels = ET.fromstring(archive.read("xl/_rels/workbook.xml.rels"))
+    workbook = _xlsx_xml(archive, "xl/workbook.xml")
+    rels = _xlsx_xml(archive, "xl/_rels/workbook.xml.rels")
 
     targets = {
         rel.attrib["Id"]: rel.attrib["Target"]
@@ -274,18 +276,27 @@ def _xlsx_cell_value(cell: ET.Element, shared_strings: list[str]) -> str | None:
 
 
 def _xlsx_rows(path: Path, preferred_sheet_names: tuple[str, ...] = ()) -> list[list[str | None]]:
+    if path.stat().st_size > XLSX_MAX_INPUT_BYTES:
+        raise ValueError("xlsx compressed input size exceeds limit")
     with zipfile.ZipFile(path) as archive:
+        check_zip_limits(archive, member_limit=XLSX_MAX_MEMBER_BYTES, total_limit=XLSX_MAX_TOTAL_BYTES)
         shared_strings = _xlsx_shared_strings(archive)
         sheet_path = _xlsx_sheet_path(archive, preferred_sheet_names)
-        root = ET.fromstring(archive.read(sheet_path))
+        root = _xlsx_xml(archive, sheet_path)
         sheet_data = root.find("main:sheetData", XLSX_NS)
         if sheet_data is None:
             return []
 
         rows: list[list[str | None]] = []
-        for row in sheet_data.findall("main:row", XLSX_NS):
+        cell_count = output_cells = 0
+        for row in sheet_data.iterfind("main:row", XLSX_NS):
+            if len(rows) >= XLSX_MAX_CELLS:
+                raise ValueError("xlsx row count exceeds limit")
             cells: dict[int, str | None] = {}
-            for cell in row.findall("main:c", XLSX_NS):
+            for cell in row.iterfind("main:c", XLSX_NS):
+                cell_count += 1
+                if cell_count > XLSX_MAX_CELLS:
+                    raise ValueError("xlsx cell count exceeds limit")
                 ref = cell.attrib.get("r")
                 if not ref:
                     continue
@@ -294,7 +305,11 @@ def _xlsx_rows(path: Path, preferred_sheet_names: tuple[str, ...] = ()) -> list[
             if not cells:
                 continue
 
-            row_values = [None] * (max(cells) + 1)
+            width = max(cells) + 1
+            output_cells += width
+            if output_cells > XLSX_MAX_OUTPUT_CELLS:
+                raise ValueError("xlsx expanded cell count exceeds limit")
+            row_values = [None] * width
             for index, value in cells.items():
                 row_values[index] = value
             rows.append(row_values)
@@ -410,7 +425,7 @@ def write_json_atomic(path: str | os.PathLike[str] | Path, payload: Any) -> None
     validate_before_write(file_path.stem, payload)
     file_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with tempfile.NamedTemporaryFile(
+    handle = tempfile.NamedTemporaryFile(
         mode="w",
         encoding="utf-8",
         newline="\n",
@@ -418,18 +433,17 @@ def write_json_atomic(path: str | os.PathLike[str] | Path, payload: Any) -> None
         dir=str(file_path.parent),
         prefix=f".{file_path.name}.",
         suffix=".tmp",
-    ) as handle:
-        temp_path = Path(handle.name)
-        try:
+    )
+    temp_path = Path(handle.name)
+    try:
+        with handle:
             json.dump(payload, handle, ensure_ascii=False, indent=2)
             handle.write("\n")
             handle.flush()
             os.fsync(handle.fileno())
-        except Exception:
-            temp_path.unlink(missing_ok=True)
-            raise
-
-    os.replace(temp_path, file_path)
+        os.replace(temp_path, file_path)
+    finally:
+        temp_path.unlink(missing_ok=True)
 
 
 def write_json(path: Path, payload: Any) -> None:
@@ -722,7 +736,6 @@ def collect_referential_integrity_errors(data_dir: Path) -> list[str]:
             errors.append("psc.json: psc array must not be empty")
             return errors
 
-        partial_coverage_documented = documented_partial_coverage(psc_payload.get("metadata"))
         for index, record in enumerate(psc_payload["psc"]):
             item_label = f"PSC psc[{index}]"
             if not isinstance(record, dict):

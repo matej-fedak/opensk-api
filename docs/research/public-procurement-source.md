@@ -2,6 +2,13 @@
 
 Date checked: 2026-09-29
 
+> **Historical 0.19.0 acquisition decision.** The
+> [0.23.13 final coverage decision](existing-dataset-coverage-audit.md#finalization--2026-10-28)
+> and [buyer-privacy evidence](procurement-buyer-privacy.md) supersede this note's
+> field-name-only privacy rationale for expansion. Procurement stays frozen at
+> the existing 100-record `TED_PARTIAL` snapshot; the later evidence neither
+> retroactively certifies nor revokes those records.
+
 ## Acquisition decision
 
 Acquisition decision: PRODUCTION_IMPORT_APPROVED
@@ -80,13 +87,16 @@ TED legal and reuse documentation was checked from the official domain. TED/SIMA
 
 OpenSK stores only a small normalized reference snapshot derived from the public Search API response. It links back to the TED XML URL and clearly identifies the snapshot as `TED_PARTIAL`, not the national ÚVO register.
 
-Required attribution wording for this dataset:
+OpenSK attribution wording for this dataset (not a retained publisher-mandated formula):
 
 `Source: TED (Tenders Electronic Daily), EU Open Data Portal; OpenSK normalized reference snapshot, partial Slovak-buyer coverage.`
 
+Retain the applicable publisher notice and any required formula before claiming
+that this exact OpenSK sentence is mandatory or sufficient.
+
 ## Privacy decision
 
-OpenSK procurement scope is institutional notice-reference data only:
+The intended 0.19.0 procurement scope was institutional notice-reference data only:
 
 - TED publication number
 - notice title
@@ -110,6 +120,11 @@ Excluded by default:
 - raw XML/PDF/HTML notice body storage
 
 TED search responses can contain broad multilingual values. The importer selects Slovak or English title/buyer display values only and rejects unexpected personal/contact/address keys before writing.
+
+That key allowlist does not prove that a `buyer-name` value is institutional or
+that free text contains no personal data. The later [buyer-privacy review](procurement-buyer-privacy.md)
+establishes the superseding expansion gate; this original scope is not evidence
+that every existing record passed that later gate.
 
 ## Coverage decision
 
@@ -163,7 +178,15 @@ Runtime behavior remains local. No API request calls TED, ÚVO, XML/PDF links, o
 
 ## Remaining blockers
 
+- **Expansion remains NO_GO** under the [final coverage decision](existing-dataset-coverage-audit.md#finalization--2026-10-28).
+  Reopen only with a new authoritative source-based buyer-eligibility
+  discriminator and complete deterministic buyer-to-status association for
+  **every buyer** on a notice. Missing/unknown/natural-person or ambiguous buyers
+  exclude the whole notice; flattened arrays must not be zipped or missing
+  markers treated as false. Names, suffixes, IČO-like identifiers and BT-11 alone
+  do not satisfy this gate. Keep a separate retained-output/free-text privacy
+  review. See [buyer eligibility and association evidence](procurement-buyer-privacy.md).
 - Verify a current anonymous machine-readable ÚVO national notice distribution with explicit reuse/redistribution terms before changing coverage to `NATIONAL`.
 - Retain exact TED legal-notice and attribution wording as local evidence when the release process requires it.
 - Verify an official reliable mapping between TED place-of-performance city/postal fields and local municipality codes before adding geography links.
-- Revisit privacy if future fields include winners, contact points, organization identifiers, addresses, or narrative notice text.
+- Any future winners, contact points, organization identifiers, addresses or narrative notice text require a separate scope/privacy decision; the existing fields already have the expansion blocker above.

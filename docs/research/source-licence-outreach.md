@@ -96,7 +96,7 @@ S pozdravom
 
 State: **`REPLY_RECEIVED_RESOLVED`** — sent manually 2026-10-11 (To `info@nbs.sk`); institutional clarification received by the maintainer **2026-10-14** from NBS, odbor komunikácie značky NBS a inštitucionálnych vzťahov. This is real reply evidence, not inferred permission. The original mail remains private; the draft below is historical.
 
-Dataset affected: banks; reuse resolved, served snapshot still **v225 / 2026-05-18**. The reply identified upstream **v226 / 2026-10-08**; refresh is separate and not performed in PR #33.
+Dataset affected: banks; reuse resolved. The served snapshot is **v226 / effective 2026-10-08**, acquired **2026-10-15T16:23:00Z** in 0.23.8. At the 2026-10-14 reply/PR #33 checkpoint it was still v225; that historical checkpoint did not perform the later refresh. See the [production refresh evidence](nbs-bank-reuse-clarification.md#0238-production-refresh).
 
 ### Verified 2026-10-07 findings
 
@@ -111,7 +111,7 @@ The NBS website disclaimer (retained wording from the official NBS legal/disclai
 - **MIT covers code, not NBS data**. NBS data remains under <https://nbs.sk/disclaimer-sk/> plus the clarification, not a new CC licence.
 - Recommended attribution preserves NBS, converter title, actual version/effective date, original-source URL, OpenSK JSON conversion and separation of derived fields. The exact recommended sentence is not mandatory wording.
 - Future refresh should retain version/effective/download dates; v225's actual download date is not established here. NBS logo/flag/symbols require separate approval and are not used.
-- Holidays remain a separate unresolved transformation/evidence question; this reply does not grant blanket holiday clearance.
+- This bank reply does not grant blanket holiday clearance. The separate statutory holiday decision is recorded in [holiday calendar correctness](holiday-calendar-correctness.md).
 
 ### Historical questions in the dispatched package (answered above)
 
@@ -161,24 +161,31 @@ S pozdravom
 [Meno]
 ```
 
-## 3. NBS Holidays — EMAIL LIKELY NOT NECESSARY, EVIDENCE RETENTION REQUIRED
+## 3. Statutory holidays — separate legal basis, NBS corroboration only
 
 State: `DIRECT_CONTACT_MAY_NOT_BE_NECESSARY`.
 
-Dataset affected: holidays (partial/curated seed; candidate 1.0 Yellow).
+Dataset affected: holidays; the former 2024–2026 curated seed was replaced in
+0.23.13 by **112 statutory dates across 2024–2030**, with separate state-holiday
+and day-of-rest flags. **Act 241/1993 Z. z. via official Slov-Lex is the primary
+generation basis; NBS is corroboration only**, not a copied source file or a
+bank-reply extension. See [holiday calendar correctness](holiday-calendar-correctness.md)
+for retained law versions, exceptions, verification date and future-law limits.
 
-Reasoning, recorded conservatively:
+Historical outreach reasoning (0.23.0, not the current generation basis):
 
 - Holiday dates are facts, not a creative dataset; the NBS disclaimer explicitly permits storage, reproduction, and further use with attribution and without modification of the reproduced file.
 - The OpenSK holiday JSON is a curated list of dates cross-checked against Act 241/1993 Z. z.; it does not reproduce an NBS file verbatim.
 
-Required action even without an email:
+Historical evidence-retention recommendations:
 
 - Retain the exact NBS disclaimer wording and source URL in `docs/research/source-verification-evidence.md` (exact quote above in section 2 is the same disclaimer).
 - Retain the Act 241/1993 Z. z. reference (© Slov-Lex legal text; see section 5 for the legal-text copyright position).
 - Keep attribution "National Bank of Slovakia holidays page and Act 241/1993 Z. z." in docs and dataset metadata.
 
-The 2026-10-14 bank-directory reply (section 2) does not expressly cover curated holidays. Keep the holidays evidence/interpretation work separate.
+The 2026-10-14 bank-directory reply (section 2) does not expressly cover holidays.
+The separate statutory evidence and 0.23.13 promotion supersede the seed-era
+NBS-plus-law attribution recommendation above; they do not infer NBS permission.
 
 ## 4. Telecom Regulator Phone-Area Workbook — REPLY_RECEIVED_RESOLVED
 

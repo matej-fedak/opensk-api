@@ -24,21 +24,21 @@ def normalize_code(code: str) -> str:
 
 def validate_region_code_format(code: str) -> str:
     normalized = normalize_code(code)
-    if not re.fullmatch(r"SK\d{3}", normalized):
+    if not re.fullmatch(r"SK[0-9]{3}", normalized):
         raise GeographyInvalidFormatError(code)
     return normalized
 
 
 def validate_district_code_format(code: str) -> str:
     normalized = normalize_code(code)
-    if not re.fullmatch(r"SK\d{4,5}", normalized):
+    if not re.fullmatch(r"SK[0-9]{4,5}", normalized):
         raise GeographyInvalidFormatError(code)
     return normalized
 
 
 def validate_municipality_code_format(code: str) -> str:
     normalized = normalize_code(code)
-    if not re.fullmatch(r"\d{6}", normalized):
+    if not re.fullmatch(r"[0-9]{6}", normalized):
         raise GeographyInvalidFormatError(code)
     return normalized
 
@@ -73,12 +73,35 @@ def load_municipalities() -> list[dict[str, str]]:
     return list(load_municipalities_data().get("municipalities", []))
 
 
+def _code_index(records: list[dict[str, str]]) -> dict[str, dict[str, str]]:
+    indexed: dict[str, dict[str, str]] = {}
+    for record in records:
+        # Keep the first match, as the original ordered lookup did.
+        indexed.setdefault(record["code"], record)
+    return indexed
+
+
+@lru_cache(maxsize=1)
+def index_regions() -> dict[str, dict[str, str]]:
+    return _code_index(load_regions())
+
+
+@lru_cache(maxsize=1)
+def index_districts() -> dict[str, dict[str, str]]:
+    return _code_index(load_districts())
+
+
+@lru_cache(maxsize=1)
+def index_municipalities() -> dict[str, dict[str, str]]:
+    return _code_index(load_municipalities())
+
+
 def get_region(code: str) -> dict[str, str]:
     normalized = validate_region_code_format(code)
 
-    for region in load_regions():
-        if region.get("code") == normalized:
-            return region
+    region = index_regions().get(normalized)
+    if region is not None:
+        return region
 
     raise GeographyNotFoundError(normalized)
 
@@ -86,9 +109,9 @@ def get_region(code: str) -> dict[str, str]:
 def get_district(code: str) -> dict[str, str]:
     normalized = validate_district_code_format(code)
 
-    for district in load_districts():
-        if district.get("code") == normalized:
-            return district
+    district = index_districts().get(normalized)
+    if district is not None:
+        return district
 
     raise GeographyNotFoundError(normalized)
 
@@ -96,9 +119,9 @@ def get_district(code: str) -> dict[str, str]:
 def get_municipality(code: str) -> dict[str, str]:
     normalized = validate_municipality_code_format(code)
 
-    for municipality in load_municipalities():
-        if municipality.get("code") == normalized:
-            return municipality
+    municipality = index_municipalities().get(normalized)
+    if municipality is not None:
+        return municipality
 
     raise GeographyNotFoundError(normalized)
 

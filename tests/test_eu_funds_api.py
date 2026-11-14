@@ -1,6 +1,5 @@
 """Synthetic service/router/cache tests, independent of upstream availability."""
 
-import copy
 
 import pytest
 from fastapi.testclient import TestClient

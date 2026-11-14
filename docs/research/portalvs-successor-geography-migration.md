@@ -3,10 +3,16 @@
 **Districts + municipalities only. PSC is unchanged, legacy-backed and frozen.**
 Technical source migration is not licence clearance; public promotion remains gated.
 
+> **Historical 0.23.10 migration evidence (2026-10-16).** Pending-reply states
+> below are dated checkpoint facts. The later [source-ownership decision](source-ownership-resolution.md)
+> records the 2026-11-02 PortalVS redirect (not permission), telecom clarification
+> and the separate unfulfilled ŠÚ SR replacement gate. For PSC, use the
+> [subsequent mapping decision](psc-administrative-mapping.md).
+
 ## Scope and acquisition
 
 Base: main **0.23.9**, PR #36, `33ed94c53b7f07e89cb0fd944413c996d0a0870b`.
-Branch: `data/portalvs-successor-geography`. Fresh manual acquisition completed
+Fresh manual acquisition completed
 **2026-10-16T08:04:45Z**, not reused 0.23.9 raw. New raw resides privately at
 `C:\Users\matej\AppData\Local\Temp\opencode\portalvs-02310\capture\`.
 Only two requests were acquired; **no PSC source was requested**.
@@ -216,7 +222,8 @@ Telecom/ŠÚ SR states remain pending; NBS remains resolved. No outreach was sen
 Legacy shutdown cannot break local runtime. Geography refresh has moved to
 successor; PSC remains historical materialized data until a safe authoritative
 mapping/source and truthful scope are approved. **No PSC mapping research was
-performed in this branch.** The next workstream is document-only here:
+performed in this milestone.** The following subsequent research questions were
+investigated in the linked mapping evidence, without approving PSC migration:
 
 1. Can REGPJ or another ŠÚ SR source establish postal/local settlement →
    settlement unit/local part → municipality → district containment?
@@ -261,7 +268,7 @@ Local final gates (2026-10-16):
 - `python -m pytest -q`: **799 passed**, including **59 new geography cases**;
   synthetic input fixtures need no private captures or live source access.
 - `python -m compileall scripts routers services tests schemas`: passed.
-- `git diff --check`: passed; staged/full-branch checks also required before push.
+- `git diff --check`: passed.
 - Local HTTP smoke (`scripts/smoke_test.py`): **41 passed / 0 failed**.
 - Fresh capture repeated offline dry-run after replacement: **idempotent**,
   no further record differences; network access forbidden during this check.
@@ -273,4 +280,3 @@ Local final gates (2026-10-16):
   transaction directory, PSC/street/detail input or REGPJ work committed.
 
 Hosted CI is reported by the PR checks, separately from these local results.
-No auto-merge, tag or release; stop at PR-ready.

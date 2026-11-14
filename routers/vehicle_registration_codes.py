@@ -5,6 +5,7 @@ from schemas.vehicle_registration_codes import VehicleRegistrationCode
 
 from schemas.common import API_SOURCE, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, VEHICLE_REGISTRATION_CODES_LAST_UPDATED, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_region_code_format
+from services.numeric_parser import parse_ascii_integer
 from services.vehicle_registration_service import (
     VEHICLE_REGISTRATION_LIST_DEFAULT_LIMIT,
     VEHICLE_REGISTRATION_LIST_MAX_LIMIT,
@@ -14,9 +15,7 @@ from services.vehicle_registration_service import (
     VehicleRegistrationCodeNotFoundError,
     filter_vehicle_registration_code_records,
     get_vehicle_registration_code,
-    list_vehicle_registration_codes,
     search_vehicle_registration_code_records,
-    search_vehicle_registration_codes,
     validate_vehicle_registration_code_format,
 )
 
@@ -35,12 +34,10 @@ def _invalid_format(message: str, message_sk: str) -> HTTPException:
 def _parse_optional_limit(value: str | None, *, default: int, maximum: int, field_name: str) -> int:
     if value is None:
         return default
-    if not value.isdigit():
+    try:
+        return parse_ascii_integer(value, maximum=maximum)
+    except ValueError:
         raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    parsed = int(value)
-    if parsed > maximum:
-        raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    return parsed
 
 
 def _parse_offset(value: str | None) -> int:
@@ -106,7 +103,7 @@ def list_vehicle_registration_codes_endpoint(
         filters["districtName"] = districtName
 
     filtered = filter_vehicle_registration_code_records(filters)
-    page = list_vehicle_registration_codes(filters, limit=parsed_limit, offset=parsed_offset)
+    page = filtered[parsed_offset : parsed_offset + parsed_limit]
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
         data={"items": page, "count": len(page), "total": len(filtered), "limit": parsed_limit, "offset": parsed_offset},
@@ -133,7 +130,7 @@ def search_vehicle_registration_codes_endpoint(
     parsed_offset = _parse_offset(offset)
     try:
         all_matches = search_vehicle_registration_code_records(q)
-        page = search_vehicle_registration_codes(q, limit=parsed_limit, offset=parsed_offset)
+        page = all_matches[parsed_offset : parsed_offset + parsed_limit]
     except VehicleRegistrationCodeInvalidFormatError:
         raise _invalid_format("q must be at least 2 characters", "Parameter q musí mať aspoň 2 znaky")
     response.headers["Cache-Control"] = SEARCH_CACHE_CONTROL

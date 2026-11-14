@@ -1,5 +1,9 @@
 # Exchange-Rate Source Research (Optional Task 23)
 
+> **Historical 0.23.1 candidate note.** Superseded by the measured
+> [0.23.3 spike and 0.23.4 production follow-up](exchange-rates-spike.md) and
+> [retained reuse wording](exchange-rates-source-verification.md).
+
 Status: research note only. No endpoint, importer, or dataset is added in 0.23.1.
 
 ## Question

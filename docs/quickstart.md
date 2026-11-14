@@ -78,7 +78,7 @@ Successful JSON has `data`, `metadata`, and `error: null`. `data` is an object, 
 
 - `metadata.source`: source/local dataset label; consult `/v1/sources` for provenance and reuse conditions.
 - `metadata.lastUpdated`: snapshot freshness (`YYYY-MM-DD`), not request time or a promise of upstream currentness; null where no dataset applies (root/errors). Health reports today's UTC date.
-- `metadata.version`: always **`"v1"`**. This is distinct from project SemVer **0.23.12** in `/` and OpenAPI; it does not change the `/v1` namespace.
+- `metadata.version`: always **`"v1"`**. This is distinct from project SemVer **0.23.15** in `/` and OpenAPI; it does not change the `/v1` namespace.
 
 ## Handle errors and cache politely
 
@@ -90,13 +90,13 @@ curl -i "https://opensk-api.onrender.com/v1/municipalities/528595"
 
 The first two produce standard **400 `INVALID_FORMAT`** and **404 `NOT_FOUND`** envelopes: `data: null`, `metadata.version: "v1"`, and `error.code`, English `error.message`, Slovak `error.messageSk`. Branch on status/code, not message text. Other codes are operation-specific; Swagger lists them. Existing integer validation on holiday year and procurement year uses **422**, still with the OpenSK envelope. Only company routes document **503 `DATASET_UNAVAILABLE`**.
 
-Responses advertise `ETag`, dataset `Last-Modified` where applicable, and `Cache-Control`. Save the ETag from the third request, then use it literally:
+Cacheable successful responses advertise `ETag`, dataset `Last-Modified` where applicable, and `Cache-Control`. Health and IBAN validation use **`no-store`**, with no ETag or Last-Modified; avoid sending real account identifiers to a URL-based validator because URLs may appear in client/proxy logs. Save the ETag from the third request, then use it literally:
 
 ```bash
 curl -i -H 'If-None-Match: "PASTE_THE_ETAG_VALUE_HERE"' "https://opensk-api.onrender.com/v1/municipalities/528595"
 ```
 
-Replace the placeholder with the server's hex value (retain the quotes). A matching validator returns **304 with no body**: reuse your cached JSON instead of parsing the empty response. `If-Modified-Since` also works; ETag takes precedence. No dataset refresh occurs on a request. [Cache details](http-caching.md).
+Replace the placeholder with the server's hex value (retain the quotes). A matching validator returns **304 with no body**: reuse your cached JSON instead of parsing the empty response. Weak `If-None-Match` validators also match; when that header is present it takes precedence over `If-Modified-Since`, even if it does not match. Revalidation saves response transfer, not endpoint computation. No dataset refresh occurs on a request. [Cache details](http-caching.md).
 
 The deployed limit is **100 requests / 60 seconds / client IP**. Read `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`; on **429 `RATE_LIMITED`**, wait `Retry-After` seconds. Conditional 304 requests consume budget too. This is a process-local fixed-window guardrail, not a globally exact quota: NAT users share a bucket and restarts reset counters. Render uses its documented edge-IP resolution; off Render forwarded headers are ignored. [Full policy and enablement caveats](rate-limiting-contract.md).
 

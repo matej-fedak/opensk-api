@@ -4,6 +4,10 @@ Audit date: 2026-09-18
 
 Milestone: `0.12.0`
 
+> Historical checkpoint only. For the current **42 GET operations**, pagination
+> exceptions and 400/422 error semantics, use [API status](api-status.md) and
+> [candidate v1 contract](api-contract-v1.md).
+
 ## Authoritative Surface
 
 The authoritative route list comes from the FastAPI OpenAPI schema, not from hand-maintained docs. The 0.12.0 audit schema exposed 26 GET operations: `GET /` plus 25 `/v1` API operations. Later milestones may change that count; `/docs` and `/openapi.json` are platform routes.
@@ -24,7 +28,7 @@ The authoritative route list comes from the FastAPI OpenAPI schema, not from han
 - Geography list endpoints still return arrays directly, while collection-style endpoints with larger/filterable result sets return `{ items, count, total, limit, offset }`.
 - Seed-backed, partial, historical/reference, and aggregate dataset labels remain conservative.
 
-## Current Pagination Pattern
+## Pagination Pattern At This Checkpoint
 
 - PSC, phone areas, vehicle registration codes, school facility counts, and procurement notices support `limit` and `offset`. Procurement search follows the standard paginated envelope pattern.
 - List defaults are `limit=100` and `offset=0` where pagination is implemented.

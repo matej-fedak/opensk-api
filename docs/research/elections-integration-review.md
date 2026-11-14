@@ -1,6 +1,12 @@
 # Elections spike: independent integration, product and privacy review
 
-Review date: 2026-10-11. Scope: `0.23.2` research spike, NR SR 2023 aggregate results. Author role: Agent C, independent of licence and acquisition/schema-measurement tracks. This review creates no endpoint, dataset, importer or production approval.
+Review date: 2026-10-11. Scope: `0.23.2` research spike, NR SR 2023 aggregate results. Integration/product/privacy review, independent of licence and acquisition/schema-measurement tracks. This review creates no endpoint, dataset, importer or production approval.
+
+> **Historical review, not the current production contract.** See the
+> [publisher clarification](elections-reuse-clarification.md) and [0.23.14 production scope](../elections.md)
+> for subsequent decisions. The cache warning below is retained as an observed
+> spike-time constraint, not proof of the current middleware's behavior or of
+> later remediation tests passing.
 
 ## Recommendation
 
@@ -89,10 +95,10 @@ Election date, acquisition date and dataset revision date are different. A corre
 
 Use the existing body-hash ETag and static `public, max-age=86400` policy for bounded historical result GETs; each filter/page is its own URL representation. An HTTP 304 saves transfer, not initial JSON load, filtering or body hashing in the current implementation. Historical final results can still be corrected, so avoid an unconditional immutable-cache claim.
 
-Two existing implementation constraints need explicit future testing, not changes in this spike:
+Two implementation constraints observed on 2026-10-11 needed explicit future testing, not changes in this spike:
 
-- `ConditionalCachingMiddleware` falls through to `If-Modified-Since` when a supplied `If-None-Match` does not match. ETag conditional precedence must be respected; otherwise a changed body can receive an incorrect 304 from an old date validator.
-- Last-Modified currently comes from a date-only route-prefix map. Same-day revisions cannot be distinguished, and a shared `/elections` date would not accurately represent multiple snapshots. Use a valid representation revision timestamp if available, or omit Last-Modified and rely on ETag until a safe mapping exists. Do not reuse the election date as that validator.
+- At review time, `ConditionalCachingMiddleware` fell through to `If-Modified-Since` when a supplied `If-None-Match` did not match. ETag conditional precedence must be respected; otherwise a changed body can receive an incorrect 304 from an old date validator. Any remediation must verify matching and nonmatching ETags together with date validators; this historical review does not certify later test results. See the [caching contract](../http-caching.md).
+- At review time, Last-Modified came from a date-only route-prefix map. Same-day revisions could not be distinguished, and a shared `/elections` date would not accurately represent multiple snapshots. Use a valid representation revision timestamp if available, or omit Last-Modified and rely on ETag until a safe mapping exists. Do not reuse the election date as that validator.
 
 These are relevant integration gates because corrections/history are central here; they do not authorize a caching rewrite in the research spike.
 
@@ -104,7 +110,7 @@ Horizontal `tab08d` is an interesting acquisition option, not automatically the 
 
 Checks must cover deterministic byte output, duplicate territorial/subject keys, integer/nonnegative counts, missing versus zero, strict decoding, separators/decimal conventions, totals and documented rounding. Never sum mixed city/borough/summary layers or assume a domestic municipal sum includes every SR vote; explain any reconciliation difference from source evidence.
 
-For `JSON_CONTINUE`, Agent B's measured evidence should include:
+For `JSON_CONTINUE`, the schema/acquisition measurements should include:
 
 | Measurement | Acceptance condition for this recommendation |
 | --- | --- |
@@ -124,8 +130,8 @@ Every additional year/family needs its own schema/rights/privacy/budget review. 
 
 Production is conditional on **all**, not merely a combined optimistic score:
 
-1. Retained explicit rights evidence approves the chosen aggregate files, transformation, caching and redistribution; attribution is implementable. This review does not substitute for Agent A's work.
-2. Agent B's exact schema/acquisition evidence confirms reproducibility, strict decoding, native geography integrity, keys, coverage and source-total reconciliation, with special/excluded rows explicitly accounted for.
+1. Retained explicit rights evidence approves the chosen aggregate files, transformation, caching and redistribution; attribution is implementable. This review does not substitute for source/licence verification.
+2. Exact schema/acquisition evidence confirms reproducibility, strict decoding, native geography integrity, keys, coverage and source-total reconciliation, with special/excluded rows explicitly accounted for.
 3. A fresh privacy review approves the exact municipality/party fields and low-count policy; no candidate-personal files or hidden raw-row leakage enter outputs, fixtures or logs.
 4. A concrete bounded client task supports an API rather than merely duplicating official bulk downloads; absent that evidence, research-only remains an acceptable outcome.
 5. Measured output/runtime/page/history budgets support `JSON_CONTINUE`, with a named maintenance owner and correction workflow.

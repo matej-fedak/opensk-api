@@ -5,12 +5,12 @@ from schemas.school_facility_counts import SchoolFacilityCount, SchoolFacilitySt
 
 from schemas.common import API_SOURCE, SCHOOL_FACILITY_COUNTS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_region_code_format
+from services.numeric_parser import parse_ascii_integer
 from services.school_facility_count_service import (
     SCHOOL_FACILITY_COUNT_LIST_DEFAULT_LIMIT,
     SCHOOL_FACILITY_COUNT_LIST_MAX_LIMIT,
     filter_school_facility_count_records,
     get_school_facility_count_stats,
-    list_school_facility_counts,
 )
 
 
@@ -28,12 +28,10 @@ def _invalid_format(message: str, message_sk: str) -> HTTPException:
 def _parse_optional_limit(value: str | None, *, default: int, maximum: int, field_name: str) -> int:
     if value is None:
         return default
-    if not value.isdigit():
+    try:
+        return parse_ascii_integer(value, maximum=maximum)
+    except ValueError:
         raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    parsed = int(value)
-    if parsed > maximum:
-        raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    return parsed
 
 
 def _parse_offset(value: str | None) -> int:
@@ -99,7 +97,7 @@ def list_school_facility_counts_endpoint(
         filters["districtCode"] = parsed_district_code
 
     filtered = filter_school_facility_count_records(filters)
-    page = list_school_facility_counts(filters, limit=parsed_limit, offset=parsed_offset)
+    page = filtered[parsed_offset : parsed_offset + parsed_limit]
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
         data={"items": page, "count": len(page), "total": len(filtered), "limit": parsed_limit, "offset": parsed_offset},

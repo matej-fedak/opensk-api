@@ -7,7 +7,7 @@
 
 Authority: **Štatistický úrad Slovenskej republiky** (ŠÚ SR).
 The maintainer supplied the substantive institutional answers and confirmed the
-received date in this implementation session. This is a summary of that
+received date for this record. This is a summary of that
 first-party account, not a claim that the agent inspected mailbox metadata or
 archived a verbatim email. Original correspondence should remain with the
 maintainer; personal signatures, phone numbers and mail headers are not published.
@@ -36,8 +36,11 @@ attribution. The reply confirms:
    exports normally do not change after publication; this is not an immutability
    guarantee.
 
-No source-owner messages were sent by the agent. PortalVS and telecom remain
-**FOLLOW_UP_SENT_AWAITING_REPLY** (2026-10-28); this reply does not clear them.
+No source-owner messages were sent by the agent. Separate replies received on
+**2026-11-02** resolved [telecom reuse within the requested scope](telecom-reuse-clarification.md)
+and [PortalVS source-owner direction](source-ownership-resolution.md).
+The PortalVS redirect is **not redistribution permission**; the election reply
+does not clear unrelated sources. See [outreach status](source-licence-outreach.md).
 
 ## Attribution and licence separation
 
@@ -72,7 +75,7 @@ risk; no anonymity or zero-risk claim is made.
 
 **Subsequent production acquisition: 2026-10-31.** The maintainer manually
 downloaded all five required CSVs and confirmed the download happened “just
-now” during the handoff. Acquisition time is recorded as approximately
+now” when supplying the files. Acquisition time is recorded as approximately
 **2026-10-31T17:20:00Z** with explicit approximate-minute precision (session
 clock, not an exact download timestamp or mtime). All five freshly rehashed
 files match the research digests and reviewed schemas/cardinalities. Full

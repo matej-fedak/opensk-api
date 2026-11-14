@@ -6,6 +6,7 @@ from schemas.common import STATIC_CACHE_CONTROL, error_detail
 from schemas.eu_funds import DetailResponse, ListData, ListResponse, ResponseMetadata
 from schemas.openapi import contract
 from services import eu_funds_service as service
+from services.numeric_parser import parse_ascii_integer
 from services.eu_funds_policy import LICENCE_NOTICE, NUTS_PATTERN, PROJECT_CODE_PATTERN, SOURCE_NOTICE
 
 router = APIRouter(prefix="/eu-funds/projects", tags=["eu-funds"])
@@ -29,9 +30,10 @@ def invalid(parameter: str):
 
 def integer(value: str, parameter: str, minimum: int, maximum: int):
     value = value.strip()
-    if not re.fullmatch(r"[0-9]{1,10}", value) or not minimum <= int(value) <= maximum:
+    try:
+        return parse_ascii_integer(value, minimum=minimum, maximum=maximum)
+    except ValueError:
         raise invalid(parameter)
-    return int(value)
 
 
 def optional_code(value: str | None, parameter: str, pattern: str):
