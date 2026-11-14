@@ -6,8 +6,8 @@ CC_BY_4_0_VERIFIED_BY_PUBLISHER_REPLY · AGGREGATE_NO_PERSON_RECORDS**
 The ŠÚ SR reply received **2026-10-30** resolves reuse. The maintainer manually
 downloaded the five files and confirmed this happened during the handoff on
 **2026-10-31**, approximately **17:20 UTC / 18:20 CET**. This is explicitly
-**approximate-minute precision**, based on the maintainer's “just now” account
-and the session clock, not an invented exact download time or filesystem mtime.
+**approximate-minute precision**, based on the maintainer's contemporaneous
+account and recorded time, not an invented exact download time or filesystem mtime.
 All five files were freshly rehashed and match the 0.23.2 historical digests;
 old research files were not substituted. Headers, UTF-8/comma/LF format and row
 counts match; no source revision was found.
@@ -40,11 +40,10 @@ unit summaries and centralized provenance; no duplicated production lookup files
    | `NRSR2023_SK_tab03a.csv` | National political-subject results and mandates | 25 |
    | `NRSR2023_SK_tab0a.csv` | Political-subject names/numbers/abbreviations | 25 |
 
-   Save to a **private directory outside this repository**, for example
-   `%LOCALAPPDATA%\Temp\opencode\elections-02314\`. Provide its location
-   and the actual acquisition timestamp (with timezone and honest precision).
-   The agent will not download files, infer their acquisition from filesystem
-   modification times, or substitute the 0.23.2 research bytes.
+   Save to a **maintainer-selected private directory outside this repository**.
+   Record its actual acquisition timestamp with timezone and honest precision.
+   Do not automate downloading, infer acquisition from filesystem modification
+   times, or substitute the 0.23.2 research bytes.
 3. Do **not** download candidate/preference/elected-person files, precinct
    tables or a bulk archive. `tab03e` is not required or promoted. Optional
    regional/district reconciliation controls `tab02a`/`tab02c` are not required
@@ -131,7 +130,8 @@ Implemented API (three explicit stable operation IDs):
 - `GET /v1/elections` — `list_elections`, actually materialized elections only.
 - `GET /v1/elections/{electionId}/results` — `list_election_results`, native
   region/district/municipality exact filters combined with AND; page default
-  50/max 100, stable native geography order; no match is an empty 200 page.
+   50, allowed limit **1–100**, offset **0–2147483647**, stable native geography
+   order; no match is an empty 200 page. Numeric bounds use ASCII decimal digits.
 - `GET /v1/elections/{electionId}/parties` — `list_election_parties`, national
   results in numeric election-local party-number order, no local party cells.
 
@@ -229,34 +229,14 @@ This narrow artifact is substantially smaller than the historical 12.84 MiB
 research preview that included municipality-party rows. No storage trigger
 justifies DB/Redis adoption; **JSON_CONTINUE**. No SDK/new dependency added.
 
-## Historical preparation checkpoint — before manual file handoff
+## Historical preparation checkpoint
 
-Started only after PR #40 merged: updated `main` base
-`0b5d3bae4a563b0149327ad04e9ff179840e468a`, version 0.23.13, clean tree;
-the completed 0.23.13 feature branch has the same file tree as that base.
-Work is on `feat/elections-production-surface`, version **0.23.14-dev**.
-
-- `python scripts/validate_datasets.py`: 0 errors / 42 warnings; the two
-  elections rights/acquisition-policy pending warnings are now resolved by the
-  reply. This does not certify missing production inputs.
-- Referential integrity, compileall and diff checks pass.
-- `python -m pytest -q`: **1,105 passed**, including 18 offline manifest
-  cases (manual attestation, supplied timestamp/timezone, schema/cardinality,
-  excluded-table boundaries, deterministic non-content output and write guards).
-- Local HTTP smoke: **41/41 passed**, server stopped afterward.
-- Exact **39 GET path/method/operationId inventory unchanged**; OpenAPI refs
-  resolve and existing examples validate. `/v1` and `metadata.version=v1` remain.
-- All **13 non-catalogue production JSON byte hashes** match the base; only
-  `data/sources.json` records the new reply. Source-catalogue freshness reflects
-  this evidence update (2026-10-31); no election snapshot freshness is invented.
-- No source downloads, raw CSVs, production election JSON or actual acquisition
-  manifest; no new runtime upstream, DB, Redis, SDK or source polling.
-
-This is **not PR-ready** and not `NRSR2023_PRODUCTION`. Blocker:
-**MANUAL_SOURCE_FILES_REQUIRED**. No push/PR/hosted CI, merge, tag or release
-is claimed for this preparation checkpoint. Once the manual inputs arrive,
-complete the importer/snapshot/service/three routes, measure storage and run
-full milestone validation again before promotion and PR creation.
+Before the 2026-10-31 manual handoff, the licence reply alone did not permit
+production promotion: `MANUAL_SOURCE_FILES_REQUIRED` still applied. That
+checkpoint is superseded by the acquisition, full reconciliation and final
+milestone validation recorded here. Future refreshes must independently satisfy
+the same manual-acquisition/provenance gates; old research bytes are not a
+substitute for newly supplied official files.
 
 ## Final privacy red team (0.23.14)
 
@@ -330,9 +310,9 @@ At `PROJECT_VERSION = "0.23.14"`:
   `data/sources.json`; all **13** other production JSON files are byte-identical
   to main base `0b5d3bae4a563b0149327ad04e9ff179840e468a`, including holidays
   and the 100-record procurement snapshot. No raw CSVs in Git.
-- No automated source downloader, runtime upstream dependency, DB, Redis, SDK,
-  outreach, tag or release. Hosted CI is reported on the PR, not inferred from
-  these local checks; no auto-merge.
+- No automated source downloader, runtime upstream dependency, DB, Redis or SDK.
+  These historical local checks are not proof of current hosted deployment or a
+  released 1.0 contract; see [release readiness](release-readiness.md).
 
 Verdicts: **NRSR2023_PRODUCTION**, **JSON_CONTINUE**,
 **MANUAL_OFFICIAL_DOWNLOAD_ONLY**, **CC_BY_4_0_VERIFIED_BY_PUBLISHER_REPLY**,

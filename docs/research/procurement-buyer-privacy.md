@@ -1,7 +1,14 @@
 # TED buyer privacy evidence spike — 0.23.13
 
-Checked **2026-10-28**. Research-only on `data/expand-existing-coverage`, starting
-at `0ec659788133d82d57ed2500f63fbed89113fe4d`; version `0.23.13-dev`.
+> **Historical 0.23.13-dev checkpoint, checked 2026-10-28.** The
+> [final 0.23.13 coverage decision](existing-dataset-coverage-audit.md#finalization--2026-10-28)
+> subsequently promoted the statutory holiday calendar and froze procurement
+> expansion. Statements below that neither domain was promoted describe this
+> checkpoint only, not current 0.23.15 production. This evidence neither revokes
+> nor independently certifies the existing 100 procurement notices.
+
+Research baseline: `0ec659788133d82d57ed2500f63fbed89113fe4d`;
+checkpoint version `0.23.13-dev`.
 
 ## Verdict
 
@@ -383,7 +390,7 @@ Full milestone CI / full test suite / hosted CI are not required or claimed.
 No procurement/calendar/source-catalogue JSON, runtime, routes, schemas, response
 shapes, freshness constants, dependencies or operation IDs are changed. Holiday
 tooling remains retained and unpromoted. **39 GET operations**, `/v1`, metadata
-version `v1` and project `0.23.13-dev` remain unchanged. No push, PR, outreach, tag
-or release. Any future broader source acquisition, privacy-policy change,
-calendar-only promotion or research-only milestone closure needs the maintainer's
-separate decision.
+version `v1` and project `0.23.13-dev` were unchanged at this checkpoint.
+No source correspondence was sent. The subsequent calendar promotion and final
+procurement freeze are recorded in the linked finalization, not in these
+checkpoint validation results.

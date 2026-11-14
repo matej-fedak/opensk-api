@@ -300,9 +300,9 @@ ITMS2014+ v2 uses plural/state-bucket routes such as `/projekty/vrealizacii`, `/
 
 Historical extension must retain distinct source/period/license provenance and independently establish mapping/volume/privacy. No ITMS2014+ records or normalization are shipped in this milestone.
 
-## 24. Delegated research and lead reconciliation
+## 24. Research reconciliation
 
-Four independent research tracks were launched: **A** source/API/acquisition and historical operations; **B** licence/reuse; **C** schema/money/product; **D** privacy red-team. C and its retry timed out, but left captures and analysis notes; the lead completed C from those artifacts. D's retry delivered the privacy report. Reports/captures remain in the local research temp directory, not runtime/Git.
+The source/API/acquisition, licence/reuse, schema/money/product and privacy reviews were reconciled against retained captures and analysis notes. Reports/captures remain in the local research temp directory, not runtime/Git.
 
 Reconciliation corrections: licence proof is the **project-specific publisher graph**, not merely an unrelated catalogue entry; CC BY version was not explicit; `/2` is not proof of anonymisation; source GDPR transfer statements are not downstream licence restrictions; `modifiedSince` observations are unit-limited; SK010 is NUTS3; wire versus reserialized sizes differ; unknown forms fail closed; exact instants avoid UTC date loss; Decimal normalization must not round. PR review additionally rejected the earlier name/title-redaction fallback: IDs/URLs remain linkable, so unsafe projects and their detail manifests are now excluded entirely. Specialist recommendations were reviewed, not copied as authority.
 
@@ -332,4 +332,4 @@ Initial pre-review verification: 519 tests, 0 dataset errors / 51 compliance war
 
 Proceed only with a **reviewed-legal-entity-projects-only candidate** in a separately approved promotion, not all-source coverage or a generic EU-funds framework. Unsafe/unreviewed beneficiaries exclude the whole project because stable codes and source URLs trivially re-link name-redacted records. Keep ITMS2014+ historical extension, ŽoNFP/ŽoP, suppliers/partners, procurement fusion, irregularities/debts, free-text descriptions and automated acquisition deferred.
 
-Final milestone verdict: **`GO_PRODUCTION_NEXT`**. Final storage verdict: **`JSON_CONTINUE`**. This branch delivers research, privacy-aware offline preview tooling and a research source catalogue entry only; it does not promote EU-funds data to production or change PortalVS/elections permissions.
+Final milestone verdict: **`GO_PRODUCTION_NEXT`**. Final storage verdict: **`JSON_CONTINUE`**. This milestone delivered research, privacy-aware offline preview tooling and a research source catalogue entry only; it did not promote EU-funds data to production or change PortalVS/elections permissions. Subsequent production scope is documented in [EU funds](../eu-funds.md).

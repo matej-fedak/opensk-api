@@ -493,7 +493,7 @@ neither runtime nor future tests require the private 0.23.9/0.23.11 captures.
 
 ## 17. Validation and production safety
 
-Branch `research/psc-administrative-mapping`, base main **0.23.10** / PR #37,
+Baseline: main **0.23.10** / PR #37,
 `670237a69755d04c7396f686dc8d72319ad50c53`. Final project version **0.23.11**,
 API namespace `/v1`, envelope metadata version `v1`, **39 GET operations**.
 
@@ -522,7 +522,7 @@ Local final gates (2026-10-16):
 - `python -m pytest -q`: **834 passed** including **35 new synthetic evidence and
   negative-control cases**; no live calls or retained official archives required.
 - `python -m compileall scripts routers services tests schemas`: passed.
-- `git diff --check`: passed; full-branch/staged checks before push.
+- `git diff --check`: passed.
 - Local HTTP smoke (`scripts/smoke_test.py`): **41 passed / 0 failed**.
 - All 14 production JSON byte hashes match the pre-work main baseline. `data/`,
   routers/services/schemas, dependency files and outreach package have no diff.
@@ -534,5 +534,5 @@ Local final gates (2026-10-16):
   report SHA-256:
   `ba1a23524047474a3034e97c322b927af6e1bb84c986d0987dbc743ee98ef5e8`.
 
-Hosted CI is reported by PR checks separately from local results. No auto-merge,
-tag, release, production deployment or source promotion is part of this spike.
+Hosted CI is reported by PR checks separately from local results. No production
+deployment or source promotion was part of this spike.

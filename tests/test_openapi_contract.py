@@ -100,7 +100,8 @@ def test_each_public_contract(method, path, operation_id):
     expected_errors = set(APPLICATION_ERRORS.get(path, []))
     if path != "/v1/health":
         expected_errors.add(429)
-    assert set(op["responses"]) == {"200"} | set(map(str, expected_errors)) | ({"304"} if path != "/v1/health" else set())
+    cacheable = path not in {"/v1/health", "/v1/iban/validate/{iban}"}
+    assert set(op["responses"]) == {"200"} | set(map(str, expected_errors)) | ({"304"} if cacheable else set())
     for code in expected_errors:
         error_content = op["responses"][str(code)]["content"]["application/json"]
         assert error_content["schema"]["$ref"] == "#/components/schemas/ErrorResponse"
@@ -123,9 +124,17 @@ def test_runtime_validates_and_matches_before(path, baseline):
     assert body["error"] is None
     if path != "/v1/psc/{psc}":
         assert digest(normalized_body(path, body)) == baseline["bodySha256"]
-    assert response.headers.get("cache-control") == baseline["cacheControl"]
-    assert response.headers.get("last-modified") == baseline["lastModified"]
-    if path != "/v1/health":
+    if path == "/v1/iban/validate/{iban}":
+        # The historical baseline's public caching policy was unsafe for IBANs.
+        assert response.headers.get("cache-control") == "no-store"
+        assert "last-modified" not in response.headers
+        assert "etag" not in response.headers
+        cached = TestClient(app).get(baseline["url"], headers={"If-None-Match": "*"})
+        assert cached.status_code == 200
+    else:
+        assert response.headers.get("cache-control") == baseline["cacheControl"]
+        assert response.headers.get("last-modified") == baseline["lastModified"]
+    if path not in {"/v1/health", "/v1/iban/validate/{iban}"}:
         assert response.headers["etag"] == '"' + hashlib.sha256(response.content).hexdigest()[:32] + '"'
         cached = TestClient(app).get(baseline["url"], headers={"If-None-Match": response.headers["etag"]})
         assert cached.status_code == 304 and cached.content == b""

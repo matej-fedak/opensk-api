@@ -115,12 +115,3 @@ def search_vehicle_registration_codes(
     offset: int = 0,
 ) -> list[dict[str, object]]:
     return search_vehicle_registration_code_records(q)[offset : offset + limit]
-
-
-def get_vehicle_registration_code_stats() -> dict[str, int]:
-    records = load_vehicle_registration_code_records()
-    return {
-        "recordCount": len(records),
-        "districtLinkedCount": sum(1 for record in records if record.get("districtCode")),
-        "regionLinkedCount": sum(1 for record in records if record.get("regionCode")),
-    }

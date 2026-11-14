@@ -40,14 +40,14 @@ def normalize_psc(psc: str) -> str:
 
 def validate_psc_format(psc: str) -> str:
     normalized = normalize_psc(psc)
-    if not re.fullmatch(r"\d{5}", normalized):
+    if not re.fullmatch(r"[0-9]{5}", normalized):
         raise PSCInvalidFormatError(psc)
     return normalized
 
 
 def validate_psc_search_query(q: str) -> str:
     normalized = normalize_psc(q)
-    if not re.fullmatch(r"\d{2,5}", normalized):
+    if not re.fullmatch(r"[0-9]{2,5}", normalized):
         raise PSCInvalidFormatError(q)
     return normalized
 
@@ -218,15 +218,10 @@ def lookup_psc(psc: str, include_geography: bool = False) -> dict[str, object]:
         raise PSCNotFoundError(normalized)
 
     ordered_matches = sorted(matches, key=_primary_match_sort_key)
-    primary_match = _expand_match(ordered_matches[0], include_geography=include_geography, fallback_psc=normalized)
-
-    result = dict(primary_match)
+    expanded_matches = [_expand_match(match, include_geography=include_geography, fallback_psc=normalized) for match in ordered_matches]
+    result = dict(expanded_matches[0])
     result["matchCount"] = len(ordered_matches)
-    result["matches"] = [_expand_match(match, include_geography=include_geography, fallback_psc=normalized) for match in ordered_matches]
-    if include_geography:
-        geography = _resolve_geography(result)
-        if geography is not None:
-            result["geography"] = geography
+    result["matches"] = expanded_matches
     return result
 
 
@@ -332,9 +327,11 @@ def search_psc_records(query: str) -> list[dict[str, object]]:
     normalized_query = query.strip()
     if len(normalized_query) < 2:
         raise PSCInvalidFormatError(query)
+    compact_query = normalize_psc(normalized_query)
+    if compact_query.isnumeric() and not compact_query.isascii():
+        raise PSCInvalidFormatError(query)
 
-    normalized_psc_query = normalize_psc(normalized_query)
-    is_numeric_query = bool(re.fullmatch(r"\d[\d ]*", normalized_query))
+    is_numeric_query = bool(re.fullmatch(r"[0-9][0-9 ]*", normalized_query))
 
     if is_numeric_query:
         digits = validate_psc_search_query(normalized_query)

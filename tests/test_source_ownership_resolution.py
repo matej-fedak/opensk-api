@@ -155,7 +155,8 @@ def test_both_source_owner_dispatches_are_consistent_across_current_docs() -> No
         assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in text, path
         assert "MANUAL_SOURCE_FILES_REQUIRED" in text, path
         assert "NO_GO_SUCCESSOR_PSC" in text, path
-        assert "agent" in text and "correspondence" in text, path
+        # Preserve the evidence boundary, not execution-diary phrasing in guides.
+        assert "maintainer" in text.lower() and "manually sent" in text.lower(), path
         assert "permission is inferred" in text or "permission inferred" in text, path
 
 

@@ -84,8 +84,9 @@ def resolve_identity(request: Request, render_context: bool) -> str:
     (Cloudflare appends the real peer at the right end); never trust
     client-supplied left-most entries. If nothing resolves, use the shared
     fail-closed `"unknown"` bucket — never a bypass.
-    Off Render: use the immediate peer from the connection only; ignore
-    `CF-Connecting-IP` and `X-Forwarded-For` entirely.
+    Off Render: use the ASGI client address; do not parse forwarded headers
+    here. Server proxy middleware may already have rewritten that address, so
+    deployments must constrain their server-level trusted-proxy configuration.
     """
     if render_context:
         # Primary: Cloudflare's visitor IP header, set at Cloudflare's edge;

@@ -765,7 +765,7 @@ Final local gates (2026-10-28), project **0.23.12**:
 - `python scripts/check_referential_integrity.py`: passed.
 - `python -m pytest -q`: **1,016 passed** (182 added contract/PSC/docs tests).
 - `python -m compileall scripts routers services tests schemas`: passed.
-- `git diff --check`: passed; staged/full-branch checks also required before push.
+- `git diff --check`: passed.
 - Local HTTP smoke: **41 passed / 0 failed**. Actual `curl.exe` against all **12
   distinct README/quickstart targets** passed with expected 200/400/404 statuses;
   URLs/query strings match the public-base examples. No deployed-version or source

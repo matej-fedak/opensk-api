@@ -2,6 +2,12 @@
 
 Use this checklist before enabling production company data.
 
+The [acquisition decision](rpo-acquisition-decision.md) identifies **MV SR
+(Ministry of Interior)** as the current official operator; older ŠÚ SR API
+documentation is historical infrastructure evidence, not the current contact
+authority. Verify the current official MV SR/RPO contact route before any manual
+request. Company production remains seed-backed until all promotion gates pass.
+
 ## Questions
 
 - Is RPO data redistributable?
@@ -14,7 +20,7 @@ Use this checklist before enabling production company data.
 - Is a public API wrapper allowed?
 - Are there retention or refresh restrictions for local copies?
 
-## Suggested Request to ŠÚ SR
+## Suggested request to the current MV SR / RPO operator
 
 Subject: Request for clarification on RPO data use, redistribution, and public API wrapping
 

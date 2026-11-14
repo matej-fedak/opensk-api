@@ -18,14 +18,20 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
-from urllib import error, parse, request
+from urllib import error, parse
 
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+from scripts.source_safety import open_https, read_bounded, validate_https_url, validate_timeout
+
+MAX_DOWNLOAD_BYTES = 64 * 1024 * 1024
 DATA_DIR = ROOT_DIR / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 DEFAULT_CONFIG_PATH = RAW_DATA_DIR / "source.json"
@@ -71,7 +77,10 @@ def _load_config(path: Path) -> SourceConfig:
 
 def _derive_filename(config: SourceConfig) -> str:
     if config.filename:
-        return Path(config.filename).name
+        candidate = Path(config.filename).name
+        if candidate in {"", ".", ".."} or ":" in candidate:
+            raise ValueError("Config filename must name a regular file")
+        return candidate
 
     parsed = parse.urlparse(config.url)
     candidate = Path(parsed.path).name.strip()
@@ -90,9 +99,13 @@ def _output_paths(config: SourceConfig) -> tuple[Path, Path]:
 
 
 def _fetch_bytes(url: str, timeout: int) -> tuple[bytes, str]:
+    validate_timeout(timeout)
+    validate_https_url(url)
     try:
-        with request.urlopen(url, timeout=timeout) as response:
-            return response.read(), response.geturl()
+        with open_https(url, timeout=timeout) as response:
+            resolved_url = response.geturl()
+            validate_https_url(resolved_url)
+            return read_bounded(response, MAX_DOWNLOAD_BYTES, "source download"), resolved_url
     except error.HTTPError as exc:
         raise RuntimeError(f"HTTP error {exc.code} while fetching {url}: {exc.reason}") from exc
     except (error.URLError, TimeoutError, OSError) as exc:

@@ -4,23 +4,54 @@ on:
   pull_request:
   push:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
-          python-version: "3.12"
+          python-version-file: .python-version
 
       - name: Install dependencies
-        run: python -m pip install --upgrade pip && pip install -r requirements.txt
+        run: python -m pip install --require-hashes -r requirements-dev.txt
+
+      - name: Check Python errors and unused code
+        run: python -m ruff check .
+
+      - name: Audit runtime dependencies
+        run: python -m pip_audit -r requirements.txt --disable-pip --require-hashes
+
+      - name: Scan reachable history for secrets
+        # Pin both the scanner release and archive digest; never execute an
+        # unchecked latest binary. Reports redact any matching secret values.
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --max-time 120 --proto '=https' --proto-redir '=https' \
+            https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz \
+            --output "$RUNNER_TEMP/gitleaks.tar.gz"
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  $RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+          "$RUNNER_TEMP/gitleaks" git --redact --no-banner --log-opts="--all" .
 
       - name: Validate datasets
         run: python scripts/validate_datasets.py
+
+      - name: Check documentation links
+        run: python scripts/check_docs.py
 
       - name: Check referential integrity
         run: python scripts/check_referential_integrity.py
@@ -29,7 +60,15 @@ jobs:
         run: python -m pytest -q
 
       - name: Compile Python files
-        run: python -m compileall scripts routers services tests schemas
+        run: python -m compileall -q main.py version.py scripts routers services tests schemas
 
       - name: Check whitespace errors
-        run: git diff --check
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [[ -n "$BASE_SHA" && ! "$BASE_SHA" =~ ^0+$ ]]; then
+            git diff --check "$BASE_SHA" "$HEAD_SHA"
+          else
+            git show --format= --check "$HEAD_SHA"
+          fi

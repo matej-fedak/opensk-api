@@ -10,10 +10,16 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib import error, request
+from urllib import error, parse
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.source_safety import open_https, read_bounded, validate_https_url, validate_timeout
+
+MAX_DOWNLOAD_BYTES = 128 * 1024 * 1024
 DEFAULT_URL = "https://report.financnasprava.sk/ds_dphs.zip"
 DEFAULT_OUTPUT = ROOT / "data" / "raw" / "ds_dphs.zip"
 
@@ -29,12 +35,18 @@ def _sha256(payload: bytes) -> str:
 
 
 def fetch(url: str, *, timeout: float, retries: int) -> tuple[bytes, str]:
+    validate_timeout(timeout)
+    validate_https_url(url)
+    if not 0 <= retries <= 5:
+        raise ValueError("retries must be between 0 and 5")
+    allowed_hosts = {parse.urlsplit(url).hostname.lower()}
     last_error: Exception | None = None
     for attempt in range(retries + 1):
         try:
-            with request.urlopen(url, timeout=timeout) as response:
+            with open_https(url, timeout=timeout, allowed_hosts=allowed_hosts) as response:
                 resolved_url = response.geturl()
-                return response.read(), resolved_url
+                validate_https_url(resolved_url, allowed_hosts)
+                return read_bounded(response, MAX_DOWNLOAD_BYTES, "VAT download"), resolved_url
         except (error.URLError, TimeoutError) as exc:
             last_error = exc
             if attempt < retries:
@@ -57,8 +69,8 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     try:
-        payload, resolved_url = fetch(args.url, timeout=args.timeout, retries=max(args.retries, 0))
-    except RuntimeError as exc:
+        payload, resolved_url = fetch(args.url, timeout=args.timeout, retries=args.retries)
+    except (RuntimeError, ValueError, OSError) as exc:
         print(str(exc), file=sys.stderr)
         return 1
 

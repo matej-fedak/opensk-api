@@ -22,6 +22,15 @@ from xml.etree import ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.import_utils import write_json_atomic
+from scripts.source_safety import check_zip_limits, read_bounded, safe_xml_fromstring
+from scripts.validate_datasets import validate_vat_registrations_payload
+
+MAX_INPUT_BYTES = 128 * 1024 * 1024
+MAX_XML_BYTES = 256 * 1024 * 1024
 DEFAULT_OUTPUT = ROOT / "data" / "generated" / "vat_registrations.json"
 PRODUCTION_OUTPUT = ROOT / "data" / "vat_registrations.json"
 SOURCE_NAME = "Finančná správa SR - Zoznam daňových subjektov registrovaných pre DPH"
@@ -119,14 +128,19 @@ def _source_date(value: str) -> str | None:
 
 
 def _xml_from_input(path: Path) -> tuple[bytes, str]:
+    if path.stat().st_size > MAX_INPUT_BYTES:
+        raise ValueError("VAT input size exceeds limit")
     if zipfile.is_zipfile(path):
         with zipfile.ZipFile(path) as archive:
+            check_zip_limits(archive, member_limit=MAX_XML_BYTES, total_limit=MAX_XML_BYTES)
             xml_names = [name for name in archive.namelist() if name.lower().endswith(".xml")]
             if len(xml_names) != 1:
                 raise ValueError(f"expected exactly one XML file in ZIP, found {xml_names}")
             name = xml_names[0]
-            return archive.read(name), name
-    return path.read_bytes(), path.name
+            with archive.open(name) as member:
+                return read_bounded(member, MAX_XML_BYTES, "VAT XML"), name
+    with path.open("rb") as source:
+        return read_bounded(source, MAX_XML_BYTES, "VAT XML"), path.name
 
 
 def _registration_from_item(item: ET.Element, *, result: ImportResult) -> tuple[str | None, dict[str, Any] | None]:
@@ -162,7 +176,7 @@ def normalize_vat_registrations(path: Path, *, output_path: Path = DEFAULT_OUTPU
     result.xml_filename = xml_filename
     result.xml_size_bytes = len(xml_payload)
 
-    root = ET.fromstring(xml_payload)
+    root = safe_xml_fromstring(xml_payload)
     if root.tag != "ZoznamSubjektovRegistrovanychkDPH":
         raise ValueError(f"unexpected VAT XML root element {root.tag!r}")
     result.source_date = _source_date(_text(root.find("DatumAktualizacieZoznamu")))
@@ -225,10 +239,14 @@ def run_import(input_path: Path, *, output_path: Path = DEFAULT_OUTPUT, write: b
         )
         return result
 
-    if write:
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        result.wrote_files.append(output_path)
+    report = validate_vat_registrations_payload(payload, path=output_path)
+    result.errors.extend(f"{issue.path}: {issue.message}" for issue in report.errors)
+    if write and result.ok:
+        try:
+            write_json_atomic(output_path, payload)
+            result.wrote_files.append(output_path)
+        except (OSError, ValueError) as exc:
+            result.errors.append(str(exc))
 
     return result
 

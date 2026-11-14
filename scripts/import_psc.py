@@ -8,7 +8,6 @@ checked-in geography datasets, and writes the canonical `data/psc.json` shape.
 from __future__ import annotations
 
 import argparse
-import csv
 import json
 import shutil
 import sys

@@ -72,7 +72,7 @@ def validate_ico(ico: str) -> bool:
         normalized = normalize_ico(ico)
     except CompanyInvalidFormatError:
         return False
-    return bool(re.fullmatch(r"\d{8}", normalized))
+    return bool(re.fullmatch(r"[0-9]{8}", normalized))
 
 
 def _load_json(path: Path) -> Any:

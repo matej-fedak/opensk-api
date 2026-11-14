@@ -21,6 +21,10 @@ from scripts.validate_datasets import (
     validate_school_facility_counts_dataset,
     validate_sources_registry,
     validate_vehicle_registration_codes_dataset,
+    validate_vat_registrations_dataset,
+    validate_exchange_rates_dataset,
+    validate_eu_funds_projects_dataset,
+    validate_elections_dataset,
 )
 
 
@@ -49,6 +53,36 @@ PRODUCTION_DATASETS = {
 }
 SOURCE_COMPLIANCE_FIELDS = {"licenceStatus", "redistributionStatus", "termsUrl", "attribution", "riskLevel", "nextAction"}
 ALLOWED_RISK_LEVELS = {"low", "medium", "high", "pending"}
+
+
+@pytest.mark.parametrize("validator", [
+    validate_sources_registry, validate_banks_dataset, validate_holidays_dataset,
+    validate_regions_dataset, validate_districts_dataset, validate_municipalities_dataset,
+    validate_psc_dataset, validate_phone_areas_dataset,
+    validate_vehicle_registration_codes_dataset, validate_school_facility_counts_dataset,
+    validate_procurement_notices_dataset, validate_companies_dataset,
+    validate_vat_registrations_dataset, validate_exchange_rates_dataset,
+    validate_eu_funds_projects_dataset, validate_elections_dataset,
+])
+@pytest.mark.parametrize("raw", ["[]", "42", "null", '"text"', "false"])
+def test_validators_reject_non_object_json_roots(tmp_path, validator, raw):
+    source = tmp_path / "dataset.json"
+    source.write_text(raw, encoding="utf-8")
+    report = validator(source)
+    assert not report.ok
+    assert any(issue.path == "root" for issue in report.errors)
+
+
+@pytest.mark.parametrize("matches,count,expected", [([], 1, 1), ([42], 1, 1),
+                                                    ([], False, 1), ([], 0, 0)])
+def test_psc_matches_are_validated_once_without_crashing(tmp_path, matches, count, expected):
+    for collection in ("regions", "districts", "municipalities"):
+        (tmp_path / f"{collection}.json").write_text(json.dumps({collection: []}), encoding="utf-8")
+    source = tmp_path / "psc.json"
+    source.write_text(json.dumps({"81101": {"psc": "81101", "country": "Slovakia",
+                                              "matches": matches, "matchCount": count}}), encoding="utf-8")
+    report = validate_psc_dataset(source)
+    assert len(report.errors) == expected
 
 
 def _copy_dataset_dir(target_dir: Path) -> None:

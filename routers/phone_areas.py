@@ -5,6 +5,7 @@ from schemas.phone_areas import PhoneArea, PhoneAreaLookup
 
 from schemas.common import API_SOURCE, PHONE_AREAS_LAST_UPDATED, SEARCH_CACHE_CONTROL, STATIC_CACHE_CONTROL, error_detail, success_response
 from services.geography_service import GeographyInvalidFormatError, validate_district_code_format, validate_municipality_code_format, validate_region_code_format
+from services.numeric_parser import parse_ascii_integer
 from services.phone_area_service import (
     PHONE_AREA_LIST_DEFAULT_LIMIT,
     PHONE_AREA_LIST_MAX_LIMIT,
@@ -14,9 +15,7 @@ from services.phone_area_service import (
     PhoneAreaNotFoundError,
     filter_phone_area_records,
     get_phone_area_by_code,
-    list_phone_areas,
     search_phone_area_records,
-    search_phone_areas,
     validate_phone_area_code_format,
 )
 
@@ -35,12 +34,10 @@ def _invalid_format(message: str, message_sk: str) -> HTTPException:
 def _parse_optional_limit(value: str | None, *, default: int, maximum: int, field_name: str) -> int:
     if value is None:
         return default
-    if not value.isdigit():
+    try:
+        return parse_ascii_integer(value, maximum=maximum)
+    except ValueError:
         raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    parsed = int(value)
-    if parsed > maximum:
-        raise _invalid_format(f"{field_name} must be a non-negative integer up to {maximum}", f"Parameter {field_name} musí byť nezáporné celé číslo do {maximum}")
-    return parsed
 
 
 def _parse_offset(value: str | None) -> int:
@@ -119,7 +116,7 @@ def list_phone_areas_endpoint(
         filters["municipalityName"] = municipalityName
 
     filtered = filter_phone_area_records(filters)
-    page = list_phone_areas(filters, limit=parsed_limit, offset=parsed_offset)
+    page = filtered[parsed_offset : parsed_offset + parsed_limit]
     response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
     return success_response(
         data={"items": page, "count": len(page), "total": len(filtered), "limit": parsed_limit, "offset": parsed_offset},
@@ -146,7 +143,7 @@ def search_phone_areas_endpoint(
     parsed_offset = _parse_offset(offset)
     try:
         all_matches = search_phone_area_records(q)
-        page = search_phone_areas(q, limit=parsed_limit, offset=parsed_offset)
+        page = all_matches[parsed_offset : parsed_offset + parsed_limit]
     except PhoneAreaInvalidFormatError:
         raise _invalid_format("q must be at least 2 characters", "Parameter q musí mať aspoň 2 znaky")
     response.headers["Cache-Control"] = SEARCH_CACHE_CONTROL

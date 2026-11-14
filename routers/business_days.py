@@ -6,6 +6,7 @@ from schemas.common import SuccessResponse
 from schemas.openapi import contract
 
 from schemas.common import API_SOURCE, HOLIDAYS_LAST_UPDATED, STATIC_CACHE_CONTROL, error_detail, success_response
+from services.numeric_parser import ASCIIIntegerFormatError, parse_ascii_integer
 from services.business_days_service import (
     BusinessDayInvalidError,
     BusinessDayUnsupportedYearError,
@@ -50,16 +51,15 @@ def _parse_days(value: str | None) -> int:
     if value is None:
         raise _invalid_format("days is required", "Parameter days je povinný")
     normalized = value.strip()
-    integer = normalized.startswith("-") and normalized[1:].isdigit() or normalized.isdigit()
-    if not integer:
+    try:
+        return parse_ascii_integer(normalized, minimum=-MAX_DAYS_DELTA, maximum=MAX_DAYS_DELTA, signed=True)
+    except ASCIIIntegerFormatError:
         raise _invalid_format("days must be an integer", "Parameter days musí byť celé číslo")
-    parsed = int(normalized)
-    if abs(parsed) > MAX_DAYS_DELTA:
+    except ValueError:
         raise _invalid_format(
             f"days must be between -{MAX_DAYS_DELTA} and {MAX_DAYS_DELTA}",
             f"Parameter days musí byť medzi -{MAX_DAYS_DELTA} a {MAX_DAYS_DELTA}",
         )
-    return parsed
 
 
 def _describe(day: date) -> dict[str, object]:

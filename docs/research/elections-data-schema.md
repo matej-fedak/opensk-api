@@ -2,21 +2,26 @@
 
 Verified **2026-10-11**, for the OpenSK 0.23.2 spike. This is acquisition/schema research, not a production dataset, endpoint, implementation, or licence clearance. Only this Markdown file is added to the repository. No candidate records, candidate preference-vote files, or bulk archives were downloaded.
 
-**Decision status: licence/acquisition-evidence gated.** The technical feasibility findings below are not acquisition approval. After the downloads had completed, Agent A reported a newly verified explicit automated-collection restriction in ŠÚ SR's general terms. No new scripted download requests were made after that instruction; analysis and hash checks continued only on already retrieved local files. Existing raw evidence was retained, not discarded or re-labelled as authorized acquisition.
+> **Historical acquisition evidence.** The later [publisher reply](elections-reuse-clarification.md)
+> resolved reuse, not automated acquisition. Production used separately supplied
+> manual files on 2026-10-31, with a narrower [approved scope](../elections.md).
+> The original downloads and timestamps below are not relabelled as permitted.
+
+**Spike-time decision status: licence/acquisition-evidence gated.** The technical feasibility findings below are not acquisition approval. After the downloads had completed, the source/licence review reported a newly verified explicit automated-collection restriction in ŠÚ SR's general terms. No new scripted download requests were made after that instruction; analysis and hash checks continued only on already retrieved local files. Existing raw evidence was retained, not discarded or re-labelled as authorized acquisition.
 
 ## Retrospective acquisition restriction
 
-Agent A's supplied official terms URL: <https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/>. Reported exact wording:
+Official terms URL supplied by the source/licence review: <https://slovak.statistics.sk/wps/portal/ext/aboutus/webpage/terms/>. Reported exact wording:
 
 > používanie robotov, pavúkov (spiders, crawlers) a ďalších podobných nástrojov na zhromažďovanie a sťahovanie dát, je výslovne zakázané.
 
-This document records the finding as supplied by Agent A; this agent did not make a further HTTP request to independently retrieve the terms after receiving the stop instruction. Applicability of those general terms to the election-specific downloadable files remains unresolved. Public links, successful HTTP responses, and source publication alone do not establish permission for scripted acquisition or redistribution.
+This document records the finding as supplied by the source/licence review; the schema review made no further HTTP request to independently retrieve the terms after the stop instruction. At that time, applicability of those general terms to the election-specific downloadable files remained unresolved. Public links, successful HTTP responses, and source publication alone do not establish permission for scripted acquisition or redistribution.
 
 Acquisition was performed with Python `urllib.request` before the restriction was communicated: the retained NRSR2023 manifest records responses completed **2026-10-11 19:31:45.955098–19:31:48.704778 UTC**; the retained historical/referendum sample manifest records final responses completed **19:33:27.340238–19:33:28.033326 UTC**. Earlier exploratory/retry requests also occurred before these retained final downloads, including a first completed drift-sample acquisition at approximately **19:32:27–19:32:28 UTC**. Encoding/delimiter analysis was corrected and those small drift samples were fetched again before the stop instruction; the final retained hashes remained unchanged. Discovery requests and failed guessed URLs also preceded the instruction. These timestamps document actual acquisition timing, not retrospective permission.
 
 Historical sampling described below was already completed before the stop, so none of its reported tables is an unperformed download. No further historical sampling, terms retrieval, horizontal-party-table retrieval, or candidate/bulk acquisition was undertaken after the instruction. Final offline rehash of all 17 raw files at **19:37:43 UTC** matched both retained manifests. Further automated acquisition/refresh should remain blocked pending evidence that the election-download use is permitted (for example publisher clarification or election-specific terms/permission); reuse/redistribution clearance is a separate unresolved requirement.
 
-## Findings for the importer lead
+## Findings for importer design
 
 - NRSR2023 `tab0c` and `tab02d`: **2,927 rows each**, consisting of 2,926 domestic units and one foreign-vote pseudo-unit. They join exactly on the six-digit municipality code and agree on every territory field and precinct count.
 - Join to `data/municipalities.json`: **2,926 matches**, one official-only `599999 / Cudzina`, one local-only `518638 / Valaškovce (vojenský obvod)`. Both lists happen to contain 2,927 units; equal counts do **not** mean identical coverage.

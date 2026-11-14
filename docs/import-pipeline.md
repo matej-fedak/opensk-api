@@ -10,7 +10,7 @@ Districts/municipalities now use **successor county/town only**, with raw captur
 `--write-production`). It stages/validates both datasets with full surrounding
 context, blocks unreviewed drift and supports paired rollback/interruption
 recovery. Stop readers before writing; there is no live multi-file transaction.
-Commands, fixed paths, recovery and acquisition-date freshness:
+Commands, output boundaries, recovery and acquisition-date freshness:
 [`research/portalvs-successor-geography-migration.md`](research/portalvs-successor-geography-migration.md).
 No previous private capture or legacy export is needed for a future refresh.
 **PSC stays frozen, legacy-backed and byte-identical**; the older PSC tooling
@@ -81,8 +81,10 @@ python scripts/import_companies.py --input data/raw/rpo_sample.json --output dat
 ```
 
 ```bash
-python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --dry-run
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --source-version 226 --effective-date 2026-10-08 --downloaded-at 2026-10-15T16:23:00Z --source-file-url "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true" --dry-run
 ```
+
+This bank command illustrates the **actual retained v226 provenance**, not reusable defaults for a new download. Supply the matching original CSV bytes. On a future acquisition use its real version, effective date, timezone-qualified download time and exact source-file URL; never copy the example's old timestamp to new bytes. All four provenance arguments are required. The importer computes SHA-256/size from the original bytes; do not resave the CSV or invent provenance.
 
 ```bash
 python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
@@ -115,8 +117,10 @@ python scripts/import_companies.py --input data/raw/rpo_sample.json --output dat
 ```
 
 ```bash
-python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --source-version 226 --effective-date 2026-10-08 --downloaded-at 2026-10-15T16:23:00Z --source-file-url "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true" --dry-run
+python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --source-version 226 --effective-date 2026-10-08 --downloaded-at 2026-10-15T16:23:00Z --source-file-url "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true" --write
 ```
+
+The bank write command writes the reviewed **generated preview**, not production. Use the real provenance of your input as above; validate and review the deterministic refresh diff before deliberate production promotion and freshness updates.
 
 ```bash
 python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write --last-updated YYYY-MM-DD
@@ -144,7 +148,7 @@ python scripts/check_referential_integrity.py
 ## Adding a New Source
 
 1. Add a source entry to `data/sources.json`.
-2. Place raw material in `data/raw/` if it is small enough for Git; otherwise keep it outside the repo and document the download step.
+2. Retain raw material only where its rights/privacy policy permits. Sensitive or restricted captures stay outside Git regardless of size; document acquisition/provenance without publishing private paths, source rows or excluded identifiers.
 3. Extend `scripts/import_geography.py` or add a dataset-specific importer such as `scripts/import_psc.py`.
 4. Add/extend validation before any write step.
 5. Add tests for both dry-run and write behavior.

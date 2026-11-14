@@ -1,12 +1,13 @@
 # PortalVS → IS Číselníky (ciselniky2) source resilience
 
-> **Current production, 0.23.10 (2026-10-16):** districts and municipalities
-> have migrated to fresh successor county/town captures; 79 / 2,927 records,
-> all IDs preserved, two reviewed municipality display corrections. Refresh no
-> longer needs legacy PortalVS. **PSC is unchanged and legacy-backed**, with
-> successor promotion still NO_GO. Rights remain `SENT_AWAITING_REPLY`, no
-> runtime upstream dependency. See [migration/refresh evidence](portalvs-successor-geography-migration.md).
-> The remainder below retains historical 0.23.3/0.23.9 provenance and findings.
+> **Historical resilience research, 0.23.3 (2026-10-11).** Geography migrated to
+> successor county/town captures in [0.23.10](portalvs-successor-geography-migration.md).
+> The current 0.23.15 [source-ownership/replacement decision](source-ownership-resolution.md)
+> supersedes the pending-outreach status below: PortalVS replied on 2026-11-02
+> with a source-owner redirect, **not redistribution permission**. Production
+> remains PortalVS-derived; the ŠÚ SR replacement lacks exact manual source files
+> and reconciliation. PSC remains frozen under `NO_GO_SUCCESSOR_PSC`.
+> The dated findings below are not current availability or rights checks.
 
 > **0.23.9 full-source correction (2026-10-15):** this is historical 0.23.3
 > feasibility evidence, **not proof of PSC promotion readiness**. Excluding
@@ -17,7 +18,7 @@
 > `NO_GO_SUCCESSOR_PSC` decision and independent geography GO verdicts.
 
 Milestone 0.23.3, verified live on **2026-10-11** (all timestamps UTC, same day).
-Scope: technical resilience and provenance only. Rights remain unresolved
+Scope: technical resilience and provenance only. At that checkpoint, rights were unresolved
 (non-commercial-only portal copyright wording; clarification `SENT_AWAITING_REPLY`
 2026-10-11 — see `docs/research/source-licence-outreach.md` §1). This document draws
 no licence conclusion, redistributes no raw data, and commits no raw snapshots.

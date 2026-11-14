@@ -9,6 +9,7 @@ from schemas.common import (ELECTIONS_NRSR2023_LAST_UPDATED, STATIC_CACHE_CONTRO
 from schemas.elections import ElectionCatalogueEntry, ElectionParty, ElectionUnit
 from schemas.openapi import contract
 from services import elections_service as service
+from services.numeric_parser import parse_ascii_integer
 
 
 router = APIRouter(prefix="/elections", tags=["elections"])
@@ -48,9 +49,10 @@ def code(value: str | None, parameter: str, pattern: str) -> str | None:
 
 def integer(value: str, parameter: str, minimum: int, maximum: int) -> int:
     value = value.strip()
-    if not re.fullmatch(r"[0-9]{1,10}", value) or not minimum <= int(value) <= maximum:
+    try:
+        return parse_ascii_integer(value, minimum=minimum, maximum=maximum)
+    except ValueError:
         raise invalid(parameter)
-    return int(value)
 
 
 def envelope(data, response: Response):

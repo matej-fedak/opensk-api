@@ -513,38 +513,28 @@ def test_preview_path_rejects_escape_and_non_json(tmp_path: Path) -> None:
             importer.validate_preview_path(path)
 
 
-def test_write_preview_only_into_generated(tmp_path: Path) -> None:
+def test_write_preview_only_into_generated(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(importer, "GENERATED_DIR", tmp_path / "generated")
     target = importer.GENERATED_DIR / "itms21_projects_test_preview.json"
-    try:
-        if target.exists():
-            target.unlink()
-        result = import_ok(tmp_path, page_bytes(row()), dry_run=False,
-                           write_preview=True, output=target)
-        assert result.ok and result.report["wrotePreview"] is True
-        assert result.wrote_files == [target.resolve()]
-        written = json.loads(target.read_text(encoding="utf-8"))
-        assert written["status"] == "unapproved-research-preview"
-        assert written["projects"][0]["projectCode"] == "408030I900"
-    finally:
-        if target.exists():
-            target.unlink()
+    result = import_ok(tmp_path, page_bytes(row()), dry_run=False,
+                       write_preview=True, output=target)
+    assert result.ok and result.report["wrotePreview"] is True
+    assert result.wrote_files == [target.resolve()]
+    written = json.loads(target.read_text(encoding="utf-8"))
+    assert written["status"] == "unapproved-research-preview"
+    assert written["projects"][0]["projectCode"] == "408030I900"
 
 
-def test_write_preview_bytes_match_report(tmp_path: Path) -> None:
+def test_write_preview_bytes_match_report(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(importer, "GENERATED_DIR", tmp_path / "generated")
     target = importer.GENERATED_DIR / "itms21_projects_test_bytes.json"
-    try:
-        if target.exists():
-            target.unlink()
-        result = import_ok(tmp_path, page_bytes(row()), dry_run=False,
-                           write_preview=True, output=target)
-        assert result.ok
-        raw = target.read_bytes()
-        assert len(raw) == result.report["previewBytes"]
-        import hashlib
-        assert hashlib.sha256(raw).hexdigest() == result.report["previewSha256"]
-    finally:
-        if target.exists():
-            target.unlink()
+    result = import_ok(tmp_path, page_bytes(row()), dry_run=False,
+                        write_preview=True, output=target)
+    assert result.ok
+    raw = target.read_bytes()
+    assert len(raw) == result.report["previewBytes"]
+    import hashlib
+    assert hashlib.sha256(raw).hexdigest() == result.report["previewSha256"]
 
 
 def test_modes_are_mutually_exclusive(tmp_path: Path) -> None:

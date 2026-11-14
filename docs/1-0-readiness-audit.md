@@ -1,5 +1,14 @@
 # 1.0 Readiness Audit
 
+> **Historical audit — 0.23.1 (2026-10-07), not the current readiness verdict.**
+> Counts, source states and blockers below describe that checkpoint only. Current
+> project 0.23.15 has **42 GET operations**, NBS v226 banks, a **112-date
+> 2024–2030** statutory calendar and production ECB/ITMS21+/NRSR2023 slices.
+> Use [API status](api-status.md), [candidate scope](1-0-scope.md),
+> [source compliance](source-compliance.md), [privacy review](privacy-review.md)
+> and [release readiness](release-readiness.md) for current decisions. Received
+> elections/telecom replies do not resolve PortalVS redistribution rights.
+
 Audit date: 2026-10-07
 
 Latest reviewed application version: `0.23.1`
@@ -12,7 +21,7 @@ The largest blockers are not new endpoints or data modeling work. The 0.21.0 sco
 
 ## Public API Inventory
 
-This inventory is generated from the FastAPI/OpenAPI route surface. It has 35 GET operations total (0.23.1: root plus 34 `/v1` operations, including the sources catalogue and business-day utilities added in 0.23.1).
+The 0.23.1 FastAPI/OpenAPI surface had 35 GET operations total (root plus 34 `/v1` operations). The historical table below retains **30 operations**; it omits the two sources-catalogue and three business-day operations added in 0.23.1 and is not a complete route inventory. See [API status](api-status.md) for the current complete index.
 
 | Method | Path | Purpose | Domain | Response shape | Stability status | Coverage | Source status | Known limitations |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -29,8 +38,8 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 35 GE
 | GET | `/v1/psc/{psc}` | PSC lookup | PSC | envelope object | 1.0 blocker until source/scope decision | partial imported | PortalVS high risk | Unknown valid PSC may return 404 due to partial coverage. |
 | GET | `/v1/psc/search` | PSC search | PSC | paginated envelope object | 1.0 blocker until source/scope decision | partial imported | PortalVS high risk | Search only covers local partial dataset. |
 | GET | `/v1/psc/stats` | PSC stats | PSC | envelope object | 1.0 blocker until source/scope decision | partial imported | PortalVS high risk | Stats describe local dataset only. |
-| GET | `/v1/banks` | List bank codes | banks | envelope array | candidate stable with NBS conditions | complete domestic v226 snapshot | Reuse resolved by reply 2026-10-14 | Direct NBS provenance/attribution; SIPS-derived flags; foreign BIC rows excluded. |
-| GET | `/v1/banks/{code}` | Bank lookup | banks | envelope object | candidate stable with NBS conditions | complete domestic v226 snapshot | Reuse resolved by reply 2026-10-14 | Direct provenance metadata, not account validation. |
+| GET | `/v1/banks` | List bank codes | banks | envelope array | candidate after source evidence | domestic v225 snapshot | NBS clarification not yet received at audit date | Snapshot reference data, not account validation. |
+| GET | `/v1/banks/{code}` | Bank lookup | banks | envelope object | candidate after source evidence | domestic v225 snapshot | NBS clarification not yet received at audit date | Not account validation. |
 | GET | `/v1/holidays/{year}` | Holiday calendar by year | holidays | envelope array | candidate stable with explicit seed years | partial curated seed | NBS/legal act medium risk | Only checked-in years are available. |
 | GET | `/v1/companies/{ico}` | Company lookup | companies | envelope object | scope decision required | seed-backed | RPO production acquisition blocked | Not full RPO coverage. |
 | GET | `/v1/ico/{ico}` | Company lookup alias | companies | envelope object | retain for compatibility | seed-backed | RPO production acquisition blocked | Alias retained as compatibility route. |
@@ -55,7 +64,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 35 GE
 | Districts | `data/districts.json` | 79 | complete imported | checked 2026-07-20 | PortalVS pending/restricted | importer exists for geography data | valid | high legal/source risk | blocker until source strategy resolved |
 | Municipalities | `data/municipalities.json` | 2,927 | complete imported | checked 2026-09-07 | PortalVS pending/restricted | importer exists for geography data | valid | high legal/source risk | blocker until source strategy resolved |
 | PSC | `data/psc.json` | 1,420 PSC records; 3,101 matches | partial imported | checked 2026-09-07 | PortalVS pending/restricted; risk high | importer/backfill tooling exists | valid for local rows | high legal/source and coverage risk | blocker unless excluded or clearly scoped |
-| Banks | `data/banks.json` | 30 | complete domestic v226 snapshot | NBS v226 effective 2026-10-08, downloaded 2026-10-15T16:23:00Z | Reuse verified by NBS clarification 2026-10-14 | 0.23.8 row/column audit, hash/provenance validation and direct metadata | valid | low rights risk; manual refresh lag | candidate with attribution/disclosure |
+| Banks | `data/banks.json` | 30 | domestic v225 snapshot | effective 2026-05-18 | NBS clarification not yet received at audit date | offline importer | valid | source evidence and manual refresh lag | candidate after evidence |
 | Holidays | `data/holidays.json` | 45 holiday rows | partial curated seed | checked 2026-05-25 | NBS disclaimer noted; exact evidence pending | manual/curated | not geography-linked | medium evidence risk | candidate if seed scope explicit |
 | Companies | `data/companies.json` | 4 | seed-backed | checked 2026-09-18 | seed-backed only; RPO CC BY evidence exists in API docs but production acquisition not approved | manual seed; RPO-style importer hardened | not geography-linked | acquisition, provenance, and privacy expansion risk | company/IČO blocker remains partially unresolved; alias decision resolved |
 | VAT registrations | not promoted | 0 | research/tooling only | checked 2026-09-28 | current export page says CC0, catalogue lists CC 4.0 international | fetch/import tooling exists for generated output only | not applicable | privacy gate blocked; no natural/legal marker in XML | blocker until privacy strategy resolved |
@@ -82,7 +91,7 @@ This inventory is generated from the FastAPI/OpenAPI route surface. It has 35 GE
 | Public procurement notices | TED Search API/OpenAPI/live query verified; ÚVO national distribution not verified | ÚVO national machine-readable source, exact TED attribution wording, national-only notice exclusions | keep as explicit TED_PARTIAL until a verified ÚVO source can support NATIONAL |
 | Institution-level school directory | MŠVVaM aggregate CSV, MŠVVaM PDF register page, RIS screens, and CVTI XLS lists identified | institution-level reuse rights, documented non-scraping export, stable EDUID/current identifier semantics, coverage, refresh cadence, privacy-safe fields | no public endpoint, importer, or production data until all gates pass |
 | Court decisions | Ministry OpenAPI/Swagger decision endpoints, Ministry public decision pages, and Constitutional Court search guidance identified | court-decision reuse/redistribution/caching/transformation rights, metadata-only privacy projection, published-decision scope, Constitutional Court machine-readable source, full-text exclusion | no public endpoint, importer, or production data until all gates pass |
-| NBS bank directory | Terms of Use + institutional reply 2026-10-14, reuse resolved | retain direct response attribution/derived-field disclosure and review future manual refreshes | v226 refreshed/reconciled in 0.23.8; `research/nbs-bank-reuse-clarification.md` |
+| NBS bank directory | source and general Terms of Use identified; no institutional clarification yet at audit date | storage, transformation, redistribution and attribution clarification | retain evidence before stable inclusion; later resolution is tracked in [current compliance](source-compliance.md) |
 | NBS holidays | source and legal act identified, medium confidence | exact disclaimer and curated JSON permission | should resolve before 1.0 |
 | Telecom regulator workbook | source and raw file retained, medium confidence | reuse and redistribution terms | should resolve before 1.0 |
 | Slov-Lex legal text | official legal text identified, medium confidence | reuse/transformation/redistribution terms | should resolve before 1.0 |

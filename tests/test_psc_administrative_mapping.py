@@ -2,13 +2,11 @@
 
 import hashlib
 import io
-import json
 import socket
 import urllib.request
 import zipfile
 from collections import Counter
 from datetime import date
-from pathlib import Path
 from xml.etree import ElementTree as ET
 
 import pytest

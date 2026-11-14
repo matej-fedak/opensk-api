@@ -1,154 +1,67 @@
-<!-- omit in toc -->
-# Contributing to opensk-api
+# Contributing to OpenSK API
 
-First off, thanks for taking the time to contribute! ❤️
+Thank you for helping improve a consistent interface to Slovak public data. Follow the [Code of Conduct](CODE_OF_CONDUCT.md) and keep source coverage, provenance and reuse limitations explicit.
 
-All types of contributions are encouraged and valued. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. Please make sure to read the relevant section before making your contribution. It will make it a lot easier for us maintainers and smooth out the experience for all involved. The community looks forward to your contributions. 🎉
+## Set up and verify
 
-> And if you like the project, but just don't have time to contribute, that's fine. There are other easy ways to support the project and show your appreciation, which we would also be very happy about:
-> - Star the project
-> - Tweet about it
-> - Refer this project in your project's readme
-> - Mention the project at local meetups and tell your friends/colleagues
+Follow the [local setup](README.md#local-development) using the Python version in `.python-version`. Install `requirements-dev.txt` with `--require-hashes`, then run:
 
-<!-- omit in toc -->
-## Table of Contents
+```bash
+python -m ruff check .
+python scripts/check_docs.py
+python scripts/validate_datasets.py
+python scripts/check_referential_integrity.py
+python -m pytest -q
+python -m compileall -q main.py version.py scripts routers services tests schemas
+git diff --check
+```
 
-- [I Have a Question](#i-have-a-question)
-- [I Want To Contribute](#i-want-to-contribute)
-- [Reporting Bugs](#reporting-bugs)
-- [Suggesting Enhancements](#suggesting-enhancements)
-- [Your First Code Contribution](#your-first-code-contribution)
-- [Improving The Documentation](#improving-the-documentation)
-- [Styleguides](#styleguides)
-- [Commit Messages](#commit-messages)
-- [Join The Project Team](#join-the-project-team)
+Use synthetic inputs and pytest temporary directories. Tests must not overwrite production snapshots or delete a developer's existing generated previews. Source/coverage warnings are not permission to ignore a gate; explain accepted warnings in your PR.
 
+## Changes and pull requests
 
+1. Check [existing issues](https://github.com/matej-fedak/opensk-api/issues) and the [roadmap](docs/roadmap.md).
+2. Branch from current `main`; keep one coherent change per PR.
+3. Preserve `/v1` operation IDs and response behavior unless a pre-1.0 contract change is intentional, documented and tested.
+4. Add regression tests for failure paths as well as successful examples. Keep runtime requests independent of upstream networks.
+5. Update the relevant guide and the current `Unreleased` changelog entry. Mark historical research as historical instead of silently rewriting its original conclusions.
+6. Describe the problem, solution, tests and any source/privacy/compatibility implications in the PR.
 
-## I Have a Question
+Use descriptive commits, for example `fix: reject non-ASCII pagination values` or `docs: clarify snapshot coverage`. Do not mix broad reformatting with behavioral changes.
 
-> If you want to ask a question, we assume that you have read the available [Documentation]().
+## Dataset contributions
 
-Before you ask a question, it is best to search for existing [Issues](https://github.com/matej-fedak/opensk-api/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
+Follow [adding a dataset](docs/adding-a-dataset.md), the [import pipeline](docs/import-pipeline.md) and [dataset format](docs/dataset-format.md). New or refreshed data requires authoritative provenance, a reproducible permitted acquisition, reuse/redistribution evidence, privacy review, stable identifiers and validation.
 
-If you then still feel the need to ask a question and need clarification, we recommend the following:
+- Code and original documentation contributions are provided under the repository's MIT licence.
+- Third-party data and evidence retain their applicable source terms; they are **not automatically MIT**. You must have sufficient rights to contribute or redistribute them, preserve required attribution and disclose transformations.
+- Do not contribute personal source captures, secrets, unsupported licence claims or invented acquisition timestamps.
+- Do not scrape or automate sources whose documented acquisition rules prohibit it.
+- Dry-run first, inspect the normalized diff, and promote only after all relevant gates pass. A source-owner redirect or sent request is not redistribution permission.
 
-- Open an [Issue](https://github.com/matej-fedak/opensk-api/issues/new).
-- Provide as much context as you can about what you're running into.
-- Provide project and platform versions (nodejs, npm, etc), depending on what seems relevant.
+## Dependency and interpreter updates
 
-We will then take care of the issue as soon as possible.
+`requirements.in` declares runtime dependencies; `requirements-dev.in` adds development tools and constrains runtime packages to the runtime lock. The generated `.txt` files pin the full dependency graphs and SHA-256 hashes for Linux and Windows.
 
-<!--
-You might want to create a separate issue tag for questions and include it in this description. People should then tag their issues accordingly.
+With [uv](https://docs.astral.sh/uv/) installed, regenerate both locks from the repository root using the Python version in `.python-version`:
 
-Depending on how large the project is, you may want to outsource the questioning, e.g. to Stack Overflow or Gitter. You may add additional contact and information possibilities:
-- IRC
-- Slack
-- Gitter
-- Stack Overflow tag
-- Blog
-- FAQ
-- Roadmap
-- E-Mail List
-- Forum
--->
+```bash
+uv pip compile requirements.in --python-version 3.12.16 --universal --generate-hashes --no-emit-index-url --output-file requirements.txt
+uv pip compile requirements-dev.in --python-version 3.12.16 --universal --generate-hashes --no-emit-index-url --output-file requirements-dev.txt
+```
 
-## I Want To Contribute
+To intentionally refresh existing pins, add `--upgrade` to each command, compiling runtime first. Review both diffs, install in a fresh environment, and run the full checks plus:
 
-> ### Legal Notice <!-- omit in toc -->
-> When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project licence.
+```bash
+python -m pip_audit -r requirements.txt --disable-pip --require-hashes
+```
 
-### Reporting Bugs
+Audit the resolved set rather than assuming an unversioned package name is safe. Update the interpreter patch in `.python-version` and this regeneration example together; CI and Render use that declaration. Dependabot proposes weekly updates, but generated locks must remain synchronized and tested before merge.
 
-<!-- omit in toc -->
-#### Before Submitting a Bug Report
+## Bugs, questions and security
 
-A good bug report shouldn't leave others needing to chase you up for more information. Therefore, we ask you to investigate carefully, collect information and describe the issue in detail in your report. Please complete the following steps in advance to help us fix any potential bug as fast as possible.
+Use the [API bug template](https://github.com/matej-fedak/opensk-api/issues/new?template=bug_report.md) for ordinary bugs. Include the project version, method/path, synthetic reproduction, expected result and actual status/body. For local failures, include Python and OS versions. Redact real account identifiers and private data.
 
-- Make sure that you are using the latest version.
-- Determine if your bug is really a bug and not an error on your side e.g. using incompatible environment components/versions (Make sure that you have read the [documentation](). If you are looking for support, you might want to check [this section](#i-have-a-question)).
-- To see if other users have experienced (and potentially already solved) the same issue you are having, check if there is not already a bug report existing for your bug or error in the [bug tracker](https://github.com/matej-fedak/opensk-api/issues?q=label%3Abug).
-- Also make sure to search the internet (including Stack Overflow) to see if users outside of the GitHub community have discussed the issue.
-- Collect information about the bug:
-- Stack trace (Traceback)
-- OS, Platform and Version (Windows, Linux, macOS, x86, ARM)
-- Version of the interpreter, compiler, SDK, runtime environment, package manager, depending on what seems relevant.
-- Possibly your input and the output
-- Can you reliably reproduce the issue? And can you also reproduce it with older versions?
+Questions and scoped suggestions can use [GitHub issues](https://github.com/matej-fedak/opensk-api/issues). Check the [quickstart](docs/quickstart.md), [limitations](docs/known-limitations.md) and current research decision first.
 
-<!-- omit in toc -->
-#### How Do I Submit a Good Bug Report?
-
-> You must never report security related issues, vulnerabilities or bugs including sensitive information to the issue tracker, or elsewhere in public. Instead sensitive bugs must be sent by email to .
-<!-- You may add a PGP key to allow the messages to be sent encrypted as well. -->
-
-We use GitHub issues to track bugs and errors. If you run into an issue with the project:
-
-- Open an [Issue](https://github.com/matej-fedak/opensk-api/issues/new). (Since we can't be sure at this point whether it is a bug or not, we ask you not to talk about a bug yet and not to label the issue.)
-- Explain the behavior you would expect and the actual behavior.
-- Please provide as much context as possible and describe the *reproduction steps* that someone else can follow to recreate the issue on their own. This usually includes your code. For good bug reports you should isolate the problem and create a reduced test case.
-- Provide the information you collected in the previous section.
-
-Once it's filed:
-
-- The project team will label the issue accordingly.
-- A team member will try to reproduce the issue with your provided steps. If there are no reproduction steps or no obvious way to reproduce the issue, the team will ask you for those steps and mark the issue as `needs-repro`. Bugs with the `needs-repro` tag will not be addressed until they are reproduced.
-- If the team is able to reproduce the issue, it will be marked `needs-fix`, as well as possibly other tags (such as `critical`), and the issue will be left to be [implemented by someone](#your-first-code-contribution).
-
-<!-- You might want to create an issue template for bugs and errors that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
-
-
-### Suggesting Enhancements
-
-This section guides you through submitting an enhancement suggestion for opensk-api, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community to understand your suggestion and find related suggestions.
-
-<!-- omit in toc -->
-#### Before Submitting an Enhancement
-
-- Make sure that you are using the latest version.
-- Read the [documentation]() carefully and find out if the functionality is already covered, maybe by an individual configuration.
-- Perform a [search](https://github.com/matej-fedak/opensk-api/issues) to see if the enhancement has already been suggested. If it has, add a comment to the existing issue instead of opening a new one.
-- Find out whether your idea fits with the scope and aims of the project. It's up to you to make a strong case to convince the project's developers of the merits of this feature. Keep in mind that we want features that will be useful to the majority of our users and not just a small subset. If you're just targeting a minority of users, consider writing an add-on/plugin library.
-
-<!-- omit in toc -->
-#### How Do I Submit a Good Enhancement Suggestion?
-
-Enhancement suggestions are tracked as [GitHub issues](https://github.com/matej-fedak/opensk-api/issues).
-
-- Use a **clear and descriptive title** for the issue to identify the suggestion.
-- Provide a **step-by-step description of the suggested enhancement** in as many details as possible.
-- **Describe the current behavior** and **explain which behavior you expected to see instead** and why. At this point you can also tell which alternatives do not work for you.
-- You may want to **include screenshots or screen recordings** which help you demonstrate the steps or point out the part which the suggestion is related to. You can use [LICEcap](https://www.cockos.com/licecap/) to record GIFs on macOS and Windows, and the built-in [screen recorder in GNOME](https://help.gnome.org/users/gnome-help/stable/screen-shot-record.html.en) or [SimpleScreenRecorder](https://github.com/MaartenBaert/ssr) on Linux. <!-- this should only be included if the project has a GUI -->
-- **Explain why this enhancement would be useful** to most opensk-api users. You may also want to point out the other projects that solved it better and which could serve as inspiration.
-
-<!-- You might want to create an issue template for enhancement suggestions that can be used as a guide and that defines the structure of the information to be included. If you do so, reference it here in the description. -->
-
-### Your First Code Contribution
-
-Adding a new dataset or domain? Follow the minimum-gates checklist in `docs/adding-a-dataset.md` (authoritative source, machine-readable acquisition, licence, privacy, stable identifiers, offline normalization, validation, referential integrity, source metadata, tests, and no runtime upstream dependency).
-
-<!-- TODO
-include Setup of env, IDE and typical getting started instructions?
-
--->
-
-### Improving The Documentation
-<!-- TODO
-Updating, improving and correcting the documentation
-
--->
-
-## Styleguides
-### Commit Messages
-<!-- TODO
-
--->
-
-## Join The Project Team
-<!-- TODO -->
-
-<!-- omit in toc -->
-## Attribution
-This guide is based on the [contributing.md](https://contributing.md/generator)!
+**Do not post vulnerabilities or sensitive data publicly.** Follow [SECURITY.md](SECURITY.md) for private reporting. This is a volunteer-maintained project; no guaranteed response time or support SLA is offered.

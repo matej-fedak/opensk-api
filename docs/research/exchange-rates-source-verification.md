@@ -1,6 +1,6 @@
 # Exchange-rate source & licence verification — ECB and NBS
 
-**Task:** OpenSK milestone 0.23.3, branch `research/exchange-rates-resilience`, Agent A (source/licence specialist).
+**Milestone:** OpenSK 0.23.3, historical source/licence verification.
 **Verification date:** 2026-10-11 (all URLs below live-checked on this date unless stated otherwise).
 **Scope:** Fresh verification of reuse terms for official EUR foreign-exchange reference-rate sources: (1) European Central Bank (ECB) euro foreign exchange reference rates; (2) National Bank of Slovakia (NBS) exchange-rate publications.
 

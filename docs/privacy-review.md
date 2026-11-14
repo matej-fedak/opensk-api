@@ -1,14 +1,12 @@
 # Privacy Review
 
-Review date: 2026-10-07
-
-Latest reviewed application version: `0.23.0`
+Documentation alignment: project **0.23.15**, including the current ITMS21+ and NRSR2023 production projections. This is a scope/guardrail review, not a legal determination or anonymity guarantee.
 
 Scope: production JSON datasets, public API schemas, and import guardrails for the pre-1.0 public API.
 
 ## Result
 
-No intentional personal-data dataset is exposed. Current public data is institutional, geographic, reference, aggregate, or validation-oriented.
+The intended public projection is institutional, geographic, reference, aggregate, or validation-oriented, with no voter/candidate/person-record endpoint. This does **not** establish anonymity: small-area election aggregates may permit contextual inference, institutional/free-text source labels can be imperfect, and upstream legal-form classification is not independently guaranteed. Minimize fields, fail closed and review every refresh; public availability or a source licence alone does not settle privacy.
 
 ## Dataset Notes
 
@@ -20,11 +18,13 @@ No intentional personal-data dataset is exposed. Current public data is institut
 - School facility counts: aggregate rows only. The API does not expose school names, school IDs, addresses, staff, directors, pupils, emails, or phone numbers.
 - Institution-level school directory: 0.20.0 adds no production dataset or endpoint. Future school-directory scope must recursively exclude directors, principals, deputies, staff/employee/person names, personal emails/phones, direct phones, responsible persons, birth data, personal identifiers, pupil/person-level data, RFO matching counts, batch status, error-file links, and operational/contact fields.
 - Court decisions: 0.22.0 adds no production dataset or endpoint. Future court-decision scope must be metadata-only and recursively exclude party/participant names, representatives, lawyers, judges unless separately approved, addresses, emails, phones, IBANs/bank accounts, birth data, identity documents, personal identifiers, raw participant structures, snippets/highlights, and full text. No de-anonymization, identity inference, correlation to other registers, address reconstruction, or participant fingerprinting is allowed.
-- Elections results: 0.23.0 selects ŠÚ SR elections open data as the next data-spike candidate but adds no dataset or endpoint. Elections outputs are aggregate vote/turnout counts by territory tier; any future production scope must remain aggregate-only (SR/region/district/municipality/okrsky tallies) and must not expose voter-level data, candidate personal details beyond officially published result tables, or any record that could identify individual voters.
+- Elections results: **0.23.14 production NRSR2023** includes 2,927 native unit summaries (2,926 domestic plus foreign **599999 / Cudzina**), national totals and 25 national political-subject results. No municipality-party cells, precinct results, candidates/preferences/elected-person lists, voter records, addresses/contacts or person enrichment. Political-subject names remain official institutional labels, not person profiles. Low-count local party cells remain deferred; the CC BY 4.0 reply does not approve their privacy. **Aggregate does not mean anonymous**: small-area contextual inference with external information remains possible. Preserve the manual-acquisition and native-geography boundaries in [elections](elections.md).
+- EU-funds projects: **0.23.7 production ITMS21+** includes only title-free references for positively reviewed legal-entity beneficiaries: **4,561 public / 4,574 acquired**, 13 whole-project exclusions. Unknown, missing, ambiguous, unspecified or natural-person legal forms remove the entire project and all linkable identifiers/URLs/facts, not merely the beneficiary name. Project titles/descriptions, contacts/addresses/tax IDs, statutory persons, partners/suppliers and rich/detail domains are omitted. IČO alone is not eligibility evidence. Excluded and nonexistent codes return the same 404; no exclusion oracle or excluded-identity diagnostics in public artifacts. Review all forms each refresh and acknowledge published removals; prior raw capture is optional, not required retention. Source classification can still be wrong. [Contract and refresh](eu-funds.md).
 - Public procurement notices: 0.19.0 exposes a small TED_PARTIAL institutional notice-reference snapshot. It excludes personal/contact data, phone/email/fax, street-level addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, raw XML/PDF/HTML notice bodies, and narrative lot text. Buyer names are retained only as institutional buyer labels.
 - Vehicle registration codes: historical district abbreviations only. The API does not decode full plates and does not expose vehicles or owners.
 - Phone areas, PSC, regions, districts, and municipalities: public geography/reference data. Some source rows include place names, not person records.
 - Banks and holidays: institutional/reference data.
+- IBAN validation: submitted account identifiers may be sensitive even without a stored dataset. Responses use **`Cache-Control: no-store`**, no ETag or Last-Modified. This cannot prevent client/proxy URL logging; use synthetic examples only and do not submit real account data unnecessarily. Validation does not establish account existence, ownership or payment safety.
 
 ## Existing Protections
 
@@ -32,7 +32,9 @@ No intentional personal-data dataset is exposed. Current public data is institut
 - Procurement validation rejects personal/contact/address, winner, tenderer, subcontractor, beneficial-owner, phone, fax, and email fields recursively in `data/procurement_notices.json`.
 - Company docs and tests keep the current company contract seed-backed and exclude personal role-holder data.
 - Runtime routes read curated local JSON instead of proxying broad upstream records.
+- ITMS21+ uses strict nested allowlisted schemas and positive legal-form eligibility with whole-project exclusion; raw pages and excluded identifiers stay outside Git.
+- NRSR2023 imports reconcile only approved aggregate tables; candidate, precinct and municipality-party tables are not production inputs. No current PortalVS enrichment is performed.
 
 ## 1.0 Privacy Readiness
 
-Privacy posture is acceptable for the candidate 1.0 scope defined in `docs/1-0-scope.md` if company lookup remains seed-backed, VAT, ŽRSR, street/address, healthcare-facility lookup, court-decision lookup, and institution-level school lookup remain absent, school data remains aggregate-only, and procurement notices remain a minimal institutional TED_PARTIAL notice-reference snapshot. Any production RPO/company expansion, VAT registration endpoint, ŽRSR/trade-register endpoint, street/address endpoint, healthcare-facility endpoint, court-decision endpoint, procurement winner/contact/address/XML-body expansion, institution-level school directory, or court-decision text/person-field expansion would need a fresh privacy review before release.
+Candidate inclusion is conditional on preserving the [scope](1-0-scope.md): seed-backed companies, aggregate-only schools, minimal TED_PARTIAL notices, title-free positive-legal-entity ITMS21+ references and selected NRSR2023 aggregates with the residual inference caveat. VAT, ŽRSR, street/address, healthcare-facility, court-decision and institution-level school endpoints remain absent. This review does not close source-compliance or release gates. Any person/contact/free-text expansion, RPO expansion, second election, precinct/municipality-party output, ITMS21+ titles/detail/partner/supplier expansion or broader procurement import requires a fresh privacy review before release.

@@ -27,7 +27,7 @@ def normalize_phone_area_code(code: str) -> str:
 
 def validate_phone_area_code_format(code: str) -> str:
     normalized = normalize_phone_area_code(code)
-    if not re.fullmatch(r"0\d{1,2}", normalized):
+    if not re.fullmatch(r"0[0-9]{1,2}", normalized):
         raise PhoneAreaInvalidFormatError(code)
     return normalized
 
@@ -89,19 +89,7 @@ def get_phone_area_by_code(code: str) -> list[dict[str, object]]:
 
 
 def search_phone_areas(q: str, *, limit: int = PHONE_AREA_SEARCH_DEFAULT_LIMIT, offset: int = 0) -> list[dict[str, object]]:
-    query = q.strip()
-    if len(query) < 2:
-        raise PhoneAreaInvalidFormatError(q)
-    normalized_query = _normalize_text(query)
-    matches = [
-        record
-        for record in load_phone_area_records()
-        if normalized_query in _normalize_text(record.get("code"))
-        or normalized_query in _normalize_text(record.get("name"))
-        or normalized_query in _normalize_text(record.get("municipalityName"))
-        or normalized_query in _normalize_text(record.get("municipalityCode"))
-    ]
-    return matches[offset : offset + limit]
+    return search_phone_area_records(q)[offset : offset + limit]
 
 
 def search_phone_area_records(q: str) -> list[dict[str, object]]:
@@ -117,13 +105,3 @@ def search_phone_area_records(q: str) -> list[dict[str, object]]:
         or normalized_query in _normalize_text(record.get("municipalityName"))
         or normalized_query in _normalize_text(record.get("municipalityCode"))
     ]
-
-
-def get_phone_area_stats() -> dict[str, int]:
-    records = load_phone_area_records()
-    linked = [record for record in records if record.get("municipalityCode") and record.get("districtCode") and record.get("regionCode")]
-    return {
-        "recordCount": len(records),
-        "uniqueCodeCount": len({str(record.get("code")) for record in records}),
-        "municipalityLinkedCount": len(linked),
-    }

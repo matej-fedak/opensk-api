@@ -55,7 +55,7 @@ def test_refreshed_bank_values_and_iban_resolution():
     assert client.get("/v1/iban/validate/CZ6508000000192000145399").json()["data"]["supportedCountry"] is False
 
 
-@pytest.mark.parametrize("path", ["/v1/banks", "/v1/banks/1100", IBAN_PATH])
+@pytest.mark.parametrize("path", ["/v1/banks", "/v1/banks/1100"])
 def test_new_effective_date_and_conditional_cache(path):
     response = client.get(path)
     assert response.headers["Cache-Control"] == STATIC_CACHE_CONTROL
@@ -63,6 +63,15 @@ def test_new_effective_date_and_conditional_cache(path):
     assert client.get(path, headers={"If-None-Match": response.headers["ETag"]}).status_code == 304
     assert client.get(path, headers={"If-Modified-Since": response.headers["Last-Modified"]}).status_code == 304
     assert client.get(path, headers={"If-Modified-Since": "Mon, 18 May 2026 00:00:00 GMT"}).status_code == 200
+
+
+def test_iban_provenance_does_not_make_private_result_cacheable():
+    response = client.get(IBAN_PATH, headers={"If-None-Match": "*"})
+    assert response.status_code == 200
+    assert response.json()["metadata"]["lastUpdated"] == BANKS_LAST_UPDATED
+    assert response.headers["Cache-Control"] == "no-store"
+    assert "etag" not in response.headers
+    assert "last-modified" not in response.headers
 
 
 def test_provenance_comes_from_dataset_not_router_constants(tmp_path, monkeypatch):

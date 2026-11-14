@@ -12,14 +12,14 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | --- | --- | --- | --- |
 | `GET /` | Project metadata | service metadata | Distinguishes project SemVer from API namespace `v1`. |
 | `GET /v1/health` | Health check | service metadata | Local service response. |
-| `GET /v1/iban/validate/{iban}` | IBAN validation | validation endpoint | Uses local bank data only for Slovak bank resolution. |
+| `GET /v1/iban/validate/{iban}` | IBAN validation | validation endpoint | Local checksum/Slovak structure checks and bank resolution, not account existence; `no-store`, no ETag or Last-Modified. |
 | `GET /v1/regions`, `GET /v1/regions/{code}` | Region list and lookup | complete | Eurostat source terms tracked. |
 | `GET /v1/districts`, `GET /v1/districts/{code}` | District list and lookup | complete imported | PortalVS terms may restrict reuse. |
 | `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse. |
 | `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | Local PSC coverage is not national coverage. |
 | `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and stats | partial imported | Static `/search` and `/stats` routes are intentionally registered before `/{psc}`. |
 | `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete domestic v226 snapshot, effective 2026-10-08 | Downloaded 2026-10-15T16:23:00Z; direct NBS attribution/version/effective/download/hash metadata. NBS terms, not MIT data licensing. |
-| `GET /v1/holidays/{year}` | Statutory holiday calendar | generated 2024-2030 verified window | Years outside the window return 404; includes legally working state holidays (`isDayOfRest: false`). |
+| `GET /v1/holidays/{year}` | Statutory holiday calendar | 112 generated dates, 2024-2030 verified window | Act 241/1993; NBS corroboration only. Years outside the window return 404; `isStateHoliday`/`isDayOfRest` distinguish legally working holidays. |
 | `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Company lookup and IČO alias | seed-backed | Small local seed only, not full RPO coverage; 0.14.0 did not approve RPO production import. |
 | `GET /v1/vat/{ico}` | VAT registration lookup | not implemented | 0.15.0 verified the official Finančná správa ZIP/XML source but blocked production import on privacy grounds. |
 | `GET /v1/trades/{ico}` | Trade registration lookup | not implemented | 0.16.0 found no safe official machine-readable ŽRSR source and did not add a public endpoint. |
@@ -40,7 +40,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | `GET /v1/eu-funds/projects`, `GET /v1/eu-funds/projects/{projectCode}` | ITMS21+ project-reference list/code lookup | partial, reviewed legal-entity projects only; 2021–2027 | 4,561 public projects from 4,574 acquired; titles/unsafe projects entirely omitted; manual 2026-10-15 snapshot, not all Slovak funds. MIRRI / generic CC BY; OpenSK transformed/minimized. Contract: `docs/eu-funds.md`. |
 | `/docs`, `/openapi.json` | Interactive docs and schema | platform | Useful for parameter-level details. |
 
-## Seed-backed
+## Bounded Calendar And Seed-backed Lookups
 
 | Endpoint | Status | Notes |
 | --- | --- | --- |
@@ -65,6 +65,8 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 | Regions, banks, phone areas | stable candidate after evidence | Retain exact source/reuse evidence. Telecom requested-scope reuse is resolved; 3 unmatched phone-area geography links remain disclosed. |
 | Districts, municipalities, PSC | `INCLUDE_AFTER_COMPLIANCE_FIX` | Replace current PortalVS-derived production through a fully evidenced authoritative-source migration, obtain applicable redistribution rights, or exclude from the stable contract. The source-owner redirect alone is insufficient. |
 | Holidays, companies/IČO, vehicle registration codes, school facility counts, procurement notices | limited stable candidate | Keep limitations explicit and retain source evidence. |
+| Source catalogue, business days, ECB reference rates | stable candidate with constraints | Curated provenance only; business days bounded to 2024–2030, not settlement dates; ECB local snapshots/informational rates with exact-date no-fallback semantics and source notices. |
+| ITMS21+ project references, NRSR2023 aggregates | limited stable candidate | Preserve title-free positive-legal-entity/whole-project exclusions, generic MIRRI CC BY, no currency invention; selected historical election/native-unit scope, CC BY 4.0 notices, manual official downloads and inference caveat. See [candidate scope](1-0-scope.md). |
 | VAT, ŽRSR, streets, healthcare facilities, institution-level schools, court decisions | excluded from 1.0 | Not blockers while excluded. |
 
 ## Notes
@@ -91,7 +93,7 @@ The candidate `1.0.0` scope is defined in `docs/1-0-scope.md`. Some existing rou
 - PSC `districtCode` is backfilled from `municipalityCode` using local municipality mappings; no districtCode values are inferred from names or PSC patterns.
 - Districts are now complete, but PortalVS source terms remain restrictive.
 - Banks refreshed in 0.23.8 to NBS **v226 / effective 2026-10-08**, downloaded 2026-10-15T16:23:00Z. Two names/one BIC changed, still 30 domestic rows. Bank/IBAN metadata directly exposes source/version/effective/download/URLs/hash/attribution/transformation; checksum validation remains OpenSK/ISO, not NBS. Participation derives from CSV `Systém SIPS`, not HTML `Akt. úč.` or general operating status. Still 39 GET operations, standard metadata/version and bank data shapes retained. Audit/rights: `research/nbs-bank-reuse-clarification.md`.
-- Holidays and PSC remain partial or seed-backed datasets rather than exhaustive official registers.
+- Holidays are a bounded **112-date 2024–2030 statutory-rule calendar**, not a seed or a bank settlement calendar; future legislation requires review. PSC remains a partial historical lookup, not national postal/address validity.
 - Phone areas are imported from the official telecom regulator Excel workbook. The 2026-11-02 institutional reply resolves the exact retained reuse request; production data/freshness are unchanged and three unmatched rows remain explicit.
 - Vehicle registration codes are historical district abbreviations only; the API does not expose `GET /v1/vehicles/{spz}` and does not decode full plates.
 - School facility counts are aggregate RIS rows only; the API does not expose `/v1/schools` and does not include per-school, staff, director, pupil, email, or phone data.

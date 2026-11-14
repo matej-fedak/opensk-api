@@ -96,7 +96,7 @@ republished.
 - The initial **MANUAL_SOURCE_FILES_REQUIRED** checkpoint was subsequently
   cleared by the maintainer's five manually downloaded files on 2026-10-31.
   Acquisition time approximately 17:20 UTC, explicitly approximate-minute from
-  the user-confirmed “just now” handoff and session clock, not exact or mtime.
+  the maintainer-confirmed “just now” file supply and session clock, not exact or mtime.
   All five hashes/schemas/cardinalities match research; full native/national/
   party reconciliation passed. Actual evidence: `elections-nrsr2023-acquisition.json`;
   production scope/refresh/benchmarks: `../elections.md`. No raw CSVs committed

@@ -35,6 +35,10 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.source_safety import reject_xml_declarations, safe_xml_fromstring
 GENERATED_DIR = ROOT / "data" / "generated"
 DEFAULT_OUTPUT = GENERATED_DIR / "exchange_rates_preview.json"
 PRODUCTION_OUTPUT = ROOT / "data" / "exchange_rates.json"
@@ -64,8 +68,7 @@ def read_source_bytes(path: Path) -> bytes:
         raw = source.read(MAX_INPUT_BYTES + 1)
     if len(raw) > MAX_INPUT_BYTES:
         raise ValueError(f"input exceeds {MAX_INPUT_BYTES} byte spike limit: {path.name}")
-    if b"<!DOCTYPE" in raw or b"<!ENTITY" in raw:
-        raise ValueError(f"DTD/entity declarations are forbidden: {path.name}")
+    reject_xml_declarations(raw)
     return raw
 
 
@@ -106,7 +109,7 @@ def parse_rate(value: str) -> str:
 def parse_eurofxref_xml(raw: bytes, label: str) -> dict[str, dict[str, str]]:
     """Parse one eurofxref document strictly; returns {date: {currency: lexeme}}."""
     try:
-        root = ET.fromstring(raw)  # noqa: S314 - DTD/entities rejected in read_source_bytes
+        root = safe_xml_fromstring(raw)
     except ET.ParseError as exc:
         raise ValueError(f"{label}: not well-formed XML: {exc}") from exc
     if root.tag != ENVELOPE:

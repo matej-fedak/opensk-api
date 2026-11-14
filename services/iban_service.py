@@ -1,4 +1,5 @@
 from collections.abc import Callable
+import re
 
 
 def normalize_iban(iban: str) -> str:
@@ -14,14 +15,16 @@ def extract_country_code(iban: str) -> str | None:
 
 def extract_slovak_bank_code(iban: str) -> str | None:
     normalized = normalize_iban(iban)
-    if not normalized.startswith("SK") or len(normalized) < 8:
+    if not iban.isascii() or not re.fullmatch(r"SK[0-9]{22}", normalized):
         return None
     return normalized[4:8]
 
 
 def iban_checksum_valid(iban: str) -> bool:
     normalized = normalize_iban(iban)
-    if len(normalized) < 4 or not normalized.isalnum():
+    # Unicode digit/letter predicates include characters outside ISO 13616,
+    # some of which int() cannot parse or upper() maps into ASCII letters.
+    if not iban.isascii() or not re.fullmatch(r"[A-Z]{2}[0-9]{2}[A-Z0-9]{0,30}", normalized):
         return False
 
     rearranged = normalized[4:] + normalized[:4]
@@ -40,9 +43,10 @@ def validate_iban(
 ) -> dict[str, object]:
     normalized = normalize_iban(iban)
     country_code = extract_country_code(normalized)
-    checksum_valid = iban_checksum_valid(normalized)
+    checksum_valid = iban_checksum_valid(iban)
     supported_country = country_code == "SK"
-    bank_code = extract_slovak_bank_code(normalized) if supported_country else None
+    slovak_structure = iban.isascii() and re.fullmatch(r"SK[0-9]{22}", normalized) is not None
+    bank_code = extract_slovak_bank_code(iban) if slovak_structure else None
     bank_name = None
 
     if bank_code and bank_lookup is not None:
@@ -61,5 +65,5 @@ def validate_iban(
         "checksumValid": checksum_valid,
         "bankCode": bank_code,
         "bankName": bank_name,
-        "valid": supported_country and checksum_valid,
+        "valid": slovak_structure and checksum_valid,
     }

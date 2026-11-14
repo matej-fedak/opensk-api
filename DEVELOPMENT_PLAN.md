@@ -1,5 +1,12 @@
 # Development Plan
 
+> **Archived MVP plan — not instructions for the current branch.** This file
+> preserves the original foundation checklist and architecture intentions.
+> For current 0.23.15 decisions, use the [roadmap](docs/roadmap.md),
+> [API contract](docs/api-contract-v1.md), [release readiness](docs/release-readiness.md)
+> and [research index](docs/research/README.md). Historical checklist items below
+> do not certify current test or deployment status.
+
 ## MVP Checklist
 - `GET /v1/health` works.
 - `GET /v1/holidays/2026` works.
@@ -34,13 +41,3 @@
 - Do not add scraping yet.
 - Do not add database infrastructure yet unless absolutely necessary.
 - Avoid large rewrites.
-
-## Commit Rules
-- Work on `mvp-foundation`.
-- Keep commits small and logical.
-- After each logical block, run tests or import checks.
-- Inspect the diff before committing.
-- Commit message style:
-  - `chore: ...` for planning and maintenance.
-  - `feat: ...` for endpoint work.
-  - `test: ...` for test-only changes.

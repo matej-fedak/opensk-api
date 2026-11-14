@@ -2,6 +2,10 @@
 
 Verified 2026-10-11. Candidate domain: **ECB euro foreign exchange reference rates** as a future OpenSK snapshot dataset. This is a research/tooling milestone, not production implementation.
 
+> **Historical 0.23.3 spike.** Production shipped in 0.23.4; see the final
+> production follow-up below. Dated outreach/PortalVS conclusions are superseded
+> by [current source decisions](README.md), not new checks of upstream status.
+
 **NO PUBLIC EXCHANGE-RATE ENDPOINT IS ADDED. No production exchange-rate dataset was created. No public elections endpoint was added.**
 
 ## 1. Executive summary
@@ -71,7 +75,7 @@ Measured (`docs/research/exchange-rates-data-schema.md`): **UTF-8, no BOM**, `ge
 
 ## 9. Update cadence
 
-"around 16:00 CET every working day, except on TARGET closing days" (concertation ~14:10 CET). Measured: zero weekend publications in 27 years; 134 missing weekdays in 90 gaps (all TARGET closings; 3–6 per year typical). Freshness can lag real time by up to 4 calendar days (Sunday fetch → Friday rates). Production must treat the dataset as as-of publication dates, never "now".
+"around 16:00 CET every working day, except on TARGET closing days" (concertation ~14:10 CET). Measured: zero weekend publications in 27 years; 134 missing weekdays in 90 gaps (all TARGET closings; 3–6 per year typical). Sunday fetch → Friday rates is a two-day example, not a maximum. Easter Thursday 2026-04-02 → Tuesday 2026-04-07's release spans **five calendar days**. No hard freshness bound follows: OpenSK's manually refreshed snapshot can remain stale indefinitely without a refresh. Production must expose the latest available as-of publication date, never promise "now" or a maximum lag.
 
 ## 10. Currency coverage
 
@@ -95,7 +99,7 @@ Row-set canonical form: one object per publication date `{"date","base":"EUR","r
 
 ## 15. Import prototype
 
-`scripts/import_exchange_rates.py` + `tests/test_import_exchange_rates.py` (49 synthetic tests, offline). Properties: explicit `--source PATH=URL` inputs (repeatable), `--retrieved-at` metadata, **dry-run default**, `--write-preview` restricted to gitignored `data/generated/`, no `--dry-run`+`--write-preview` combo, production writes structurally impossible. Validation: 32 MiB input cap, DTD/entity rejection, strict gesmes envelope/sender/subject, single outer Cube, strict ISO dates/currencies, EUR-never-listed rule, positive-decimal rates, intra-file duplicates rejected, cross-feed duplicates must be numerically equal (conflicts fail), deterministic sorted serialization with source SHA-256 recorded. Measured: full-history 8.2 MB parses+validates in ~1.9 s; three-feed merge 7,111 dates / 221,267 rows, 0 errors; preview (indent=2) 6,155,292 bytes, SHA-256 `cbcb84ba36d8b2c2ee68502de44e47127935c87ff7686fcaffd163b1e69b6d47` (lead independently re-ran the dry-run with identical merged counts).
+`scripts/import_exchange_rates.py` + `tests/test_import_exchange_rates.py` (49 synthetic tests, offline). Properties: explicit `--source PATH=URL` inputs (repeatable), `--retrieved-at` metadata, **dry-run default**, `--write-preview` restricted to gitignored `data/generated/`, no `--dry-run`+`--write-preview` combo, production writes structurally impossible. Validation: 32 MiB input cap, DTD/entity rejection, strict gesmes envelope/sender/subject, single outer Cube, strict ISO dates/currencies, EUR-never-listed rule, positive-decimal rates, intra-file duplicates rejected, cross-feed duplicates must be numerically equal (conflicts fail), deterministic sorted serialization with source SHA-256 recorded. Measured: full-history 8.2 MB parses+validates in ~1.9 s; three-feed merge 7,111 dates / 221,267 rows, 0 errors; preview (indent=2) 6,155,292 bytes, SHA-256 `cbcb84ba36d8b2c2ee68502de44e47127935c87ff7686fcaffd163b1e69b6d47` (independent dry-run reproduced identical merged counts).
 
 ## 16. Size/storage findings
 
@@ -129,6 +133,6 @@ Publication follows the **TARGET calendar**, not the Slovak holiday calendar, an
 
 All gates pass with evidence: authoritative source (ECB, high confidence), acceptable reuse rights (explicit written permission, attribution + modification-notice conditions), reproducible approved acquisition (intended machine-readable channels, no anti-automation clause), deterministic transformation (strict importer, 49 tests, reproducible merge), privacy-safe scope (pure public factual rates; no persons, credentials, or tracking data retained; NO personal-data review exceptions needed), stable 27-year schema, useful bounded product surface, and materialized JSON remaining operationally sensible (≤3.5 MiB compact full history).
 
-**Recommended next milestone at spike time: 0.23.4 — Exchange Rates Production Surface**: production dataset wiring, minimal routes, attribution/notices, cache headers and anomaly-guarded refresh. This production work has since shipped. Outreach update: NBS bank clarification resolved 2026-10-14; PortalVS/telecom/ŠÚ SR replies remain outstanding, independent of ECB rates.
+**Recommended next milestone at spike time: 0.23.4 — Exchange Rates Production Surface**: production dataset wiring, minimal routes, attribution/notices, cache headers and anomaly-guarded refresh. This production work has since shipped. Later source replies are independent of ECB rates; use the [outreach record](source-licence-outreach.md) for their current states rather than the spike-time pending status.
 
 > **Production follow-up (2026-10-12, done in 0.23.4):** the recommendation above was implemented. The full-history scope was chosen (no material regression vs the 0.23.3 measurements: 6,006,060 bytes indented JSON, ~74 ms cold parse, ~23 MiB retained heap). `data/exchange_rates.json` materializes 7,112 publication dates (1999-01-04→2026-10-12; one new date since the spike) from the canonical full-history feed with `--write-production`; routes `GET /v1/exchange-rates/latest` and `GET /v1/exchange-rates/{date}` run with exact-date/no-fallback semantics and an optional `?currency=` filter; the snapshotted `latest` alias uses `max-age=3600`, exact dates `max-age=86400`; refresh is a manual offline workflow with a historical-changes/removed-dates guard (`--acknowledge-changes` escape). No outreach reply had arrived by promotion; no compliance status beyond exchangeRates changed.

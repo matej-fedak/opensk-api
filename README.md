@@ -2,325 +2,151 @@
 
 **One consistent developer interface to Slovakia's fragmented public data.**
 
-Look up administrative geography, postal codes and bank codes; validate an IBAN, check a business day, or use a local ECB reference rate. No API key; runtime reads local materialized snapshots, not upstream services.
+Look up administrative geography, postal codes and bank codes; validate a Slovak IBAN, calculate business days, or read historical ECB reference rates. FastAPI serves checked-in, normalized snapshots: requests never depend on an upstream service.
 
-**Base URL:** https://opensk-api.onrender.com · **[Interactive API docs](https://opensk-api.onrender.com/docs)** · **[Five-minute quickstart](docs/quickstart.md)** · **[OpenAPI JSON](https://opensk-api.onrender.com/openapi.json)**
+**[Live API](https://opensk-api.onrender.com)** · **[Interactive docs](https://opensk-api.onrender.com/docs)** · **[Five-minute quickstart](docs/quickstart.md)** · **[OpenAPI JSON](https://opensk-api.onrender.com/openapi.json)**
 
 ```bash
 curl "https://opensk-api.onrender.com/v1/municipalities/528595"
 ```
 
-**Pre-1.0, not a complete/live official register.** Coverage and reuse conditions differ by dataset; inspect [`/v1/sources`](https://opensk-api.onrender.com/v1/sources) before integrating. Public promotion remains gated by unresolved PortalVS compliance. MIT covers the code, not all source data.
+## Status and important limitations
 
-Status: `0.23.15` — **42 GET operations**, with source ownership and telecom reuse resolved on distinct evidence boundaries. The regulator's 2026-11-02 reply permits the requested phone-area storage/JSON/API/commercial/derived-join scope; production phone bytes are unchanged. PortalVS's reply redirects to source owners without granting redistribution. ŠÚ SR classifier terms are verified, but geography replacement is **NO_GO_SUSR_GEOGRAPHY_REPLACEMENT** pending exact manual files/reconciliation. The maintainer manually sent both the ŠÚ SR municipality/district and Slovenská pošta PSC clarification requests on 2026-11-05; both are **SENT_AWAITING_REPLY**, with no permission inferred. PSC remains **NO_GO_SUCCESSOR_PSC**. `/v1`, metadata version `v1` and every operation ID are unchanged. [Ownership decision](docs/research/source-ownership-resolution.md); [manual developer pilot](docs/developer-adoption.md).
+**Pre-1.0: not a complete or live official register.** The current project version is single-sourced in [`version.py`](version.py) and returned by `GET /`. The API namespace and response metadata version remain `/v1` and `v1`; they are independent of the project version. There are 42 GET operations.
 
-OpenSK API is still before its first formal stable `1.0.0` release. Earlier `v1.x` labels in the changelog were internal development milestone labels, not formal stable releases. The current `/v1` route prefix is an API namespace and remains unchanged during the pre-1.0 reset.
+No API key is required. Browser clients are supported through CORS. On Render, an application limiter allows 100 requests per 60 seconds per client IP; health checks are exempt. Free-tier cold starts can delay the first request.
 
-See `docs/versioning.md` for the versioning policy. Future `1.0.0` is reserved for the first stable public API contract after stabilization and source/compliance review.
+**MIT covers the code, not all source data.** Inspect [`/v1/sources`](https://opensk-api.onrender.com/v1/sources) and the [compliance review](docs/source-compliance.md) before reusing a dataset. PortalVS-derived districts, municipalities and PSC still have unresolved redistribution rights; public promotion remains gated. A source-owner redirect or an unanswered clarification request is not permission.
 
-No API key is required. CORS is enabled for browser clients. All responses are JSON.
+## What you can use
 
-## Public API Surface
+| API group | Scope and key limitation |
+| --- | --- |
+| `/v1/regions`, `/v1/districts`, `/v1/municipalities` | 8 regions, 79 districts and 2,927 municipality records. Current district/municipality bytes remain PortalVS-derived. |
+| `/v1/psc` | Partial historical postal-code lookup, search and stats; not address validation. One code can have multiple administrative matches. |
+| `/v1/banks`, `/v1/iban/validate/{iban}` | NBS domestic bank snapshot v226, effective 2026-10-08. IBAN validation checks Slovak structure and checksum, not account existence; responses are `no-store`. |
+| `/v1/holidays/{year}`, `/v1/business-days/*` | Statutory calendar verified for 2024–2030. State-holiday and day-of-rest flags distinguish working holidays. |
+| `/v1/exchange-rates/*` | Local ECB EUR reference-rate history since 1999-01-04. Exact publication dates, decimal strings, informational use only; not live prices. |
+| `/v1/companies/{ico}`, `/v1/ico/{ico}` | Four checked-in seed organizations, not full RPO coverage. |
+| `/v1/phone-areas` | Regulator numbering snapshot; three local geography links remain unmatched. |
+| `/v1/vehicle-registration-codes` | Historical district abbreviations, not current plate or vehicle lookup. |
+| `/v1/school-facility-counts` | Aggregate facility counts, not an institution-level school directory. |
+| `/v1/procurement-notices` | 100-record `TED_PARTIAL` snapshot, not complete national ÚVO coverage. |
+| `/v1/eu-funds/projects` | 4,561 privacy-reviewed ITMS21+ project references; partial scope, no project titles or unsafe beneficiaries. |
+| `/v1/elections` | Definitive NRSR2023 selected unit summaries and national parties; no candidate, precinct or municipality-party records. Small-area contextual-inference risk remains. |
+| `/v1/sources` | Public provenance, freshness, coverage and reuse conditions for 20 registered domains, including research-only domains. |
 
-Use `/docs` or `/openapi.json` for parameter-level details. The table below is a concise index of the current public routes; all runtime routes read local normalized data only.
+See the [route/status inventory](docs/api-status.md) or interactive docs for every operation and parameter. Lists do not all use the same pagination shape. A `404` means absent from the local snapshot, not necessarily legally invalid.
 
-| Endpoint | Purpose | Coverage | Source status |
-| --- | --- | --- | --- |
-| `GET /` | Project metadata, including project SemVer and API namespace | project metadata | local service metadata |
-| `GET /v1/health` | Health check | service health | local service metadata |
-| `GET /v1/iban/validate/{iban}` | IBAN checksum validation with Slovak bank resolution when possible | validation endpoint | local bank dataset for bank resolution |
-| `GET /v1/regions`, `GET /v1/regions/{code}` | Region list and lookup | complete | Eurostat source; reuse terms tracked |
-| `GET /v1/districts`, `GET /v1/districts/{code}` | District list and lookup | complete imported | PortalVS terms may restrict reuse |
-| `GET /v1/municipalities`, `GET /v1/municipalities/{code}` | Municipality list and lookup | complete imported | PortalVS terms may restrict reuse |
-| `GET /v1/psc`, `GET /v1/psc/{psc}` | PSC list and lookup | partial imported | PortalVS terms may restrict reuse |
-| `GET /v1/psc/search`, `GET /v1/psc/stats` | PSC search and dataset stats | partial imported | PortalVS terms may restrict reuse |
-| `GET /v1/banks`, `GET /v1/banks/{code}` | Bank-code list and lookup | complete domestic v226 snapshot, effective 2026-10-08 | NBS attribution/version/effective/download provenance directly in response metadata |
-| `GET /v1/holidays/{year}` | Statutory Slovak holiday calendar by year | generated 2024-2030 verified window; working state holidays included | Act 241/1993 (Slov-Lex) provenance tracked; `isStateHoliday` vs `isDayOfRest` explicit |
-| `GET /v1/companies/{ico}`, `GET /v1/ico/{ico}` | Seed-backed company lookup and IČO alias | seed-backed | RPO expansion/licence/privacy verification pending |
-| `GET /v1/phone-areas`, `GET /v1/phone-areas/{code}` | Phone-area list and lookup | complete imported; 3 unmatched local geography links | requested reuse scope resolved by regulator reply 2026-11-02; no formal licence named |
-| `GET /v1/phone-areas/search` | Phone-area search | complete imported; 3 unmatched local geography links | requested reuse scope resolved by regulator reply 2026-11-02; no formal licence named |
-| `GET /v1/vehicle-registration-codes`, `GET /v1/vehicle-registration-codes/{code}` | Legacy vehicle registration district-code list and lookup | historical/reference | Slov-Lex reuse verification pending |
-| `GET /v1/vehicle-registration-codes/search` | Legacy vehicle registration district-code search | historical/reference | Slov-Lex reuse verification pending |
-| `GET /v1/school-facility-counts` | Aggregate school facility counts | aggregate imported | MŠVVaM lists Creative Commons BY |
-| `GET /v1/school-facility-counts/stats` | Aggregate school facility count totals | aggregate imported | MŠVVaM lists Creative Commons BY |
-| `GET /v1/procurement-notices` | Public procurement notice list | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
-| `GET /v1/procurement-notices/{id}` | Public procurement notice lookup | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
-| `GET /v1/procurement-notices/search` | Public procurement notice search | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
-| `GET /v1/procurement-notices/stats` | Public procurement notice snapshot stats | partial imported; 100-record TED snapshot | TED attribution-backed; not national ÚVO coverage |
-| `GET /v1/sources` | Curated public source/licence provenance catalogue | 20 registered domains | unresolved licence status stays unresolved |
-| `GET /v1/sources/{id}` | Source catalogue entry by stable registry id | 20 registered domains | internal maintainer fields are excluded |
-| `GET /v1/elections` | Materialized election catalogue and national totals | NRSR2023 only | definitive historical snapshot; ŠÚ SR / CC BY 4.0 |
-| `GET /v1/elections/{electionId}/results` | Paginated election-native unit summaries | 2,927 units; native region/district/unit filters | foreign 599999 retained; no precinct or municipality-party detail |
-| `GET /v1/elections/{electionId}/parties` | National political-subject votes and mandates | 25 election-local subjects | no candidates; blank source mandates remain null |
-| `GET /v1/business-days/check` | Slovak business-day check for an ISO date | 2024-2030 holiday coverage | Monday–Friday minus days of rest; strict error outside supported years |
-| `GET /v1/business-days/add` | Add/subtract business days from an ISO date | 2024-2030 holiday coverage | skips weekends and days of rest, not working holidays |
-| `GET /v1/business-days/between` | Count business days in a bounded ISO interval | 2024-2030 holiday coverage | `holidayDays` counts weekday days of rest only |
-| `GET /v1/exchange-rates/latest` | Latest ECB EUR reference rates in the local snapshot (not live rates) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
-| `GET /v1/exchange-rates/{date}` | ECB EUR reference rates for an exact publication date (404 otherwise; optional `?currency=` filter) | full ECB history 1999-01-04 onwards | ECB free-use permission verified; informational use only |
-| `GET /v1/eu-funds/projects` | Paginated ITMS21+ project references; exact programme/call/IČO/status/NUTS filters | partial, 2021–2027 reviewed legal-entity beneficiaries only | MIRRI / catalogue CC BY (version not separately identified); OpenSK transformed/minimized |
-| `GET /v1/eu-funds/projects/{projectCode}` | Official project-code lookup | same local privacy-approved snapshot | no titles, unsafe projects, payments, procurement or ITMS2014+ |
-
-`/v1/schools` is intentionally not implemented. The confirmed MŠVVaM open-data CSV is aggregate-only, and the institution-level RIS/CVTI candidates still lack verified production reuse, acquisition, identifier, coverage, and privacy gates. Procurement notices are explicit `TED_PARTIAL`; the endpoint does not claim ÚVO national vestník completeness.
-
-Exchange rates are official European Central Bank reference rates, normalized from the ECB eurofxref XML feed into local JSON (rate values reproduced verbatim as decimal strings). `1 EUR = X units of the foreign currency` — for example `USD = "1.16"` means 1 EUR = 1.16 USD. Exact ECB publication dates only: there is no weekend, TARGET-holiday or nearest-date fallback, and `latest` means the newest publication date in the OpenSK snapshot (it can lag the ECB until the offline refresh runs). The ECB publishes these rates for information purposes only and strongly discourages using them for transaction or settlement purposes; they are not live market prices. Currency availability changes historically (legacy series such as SKK and suspended series such as RUB are included for their publication windows).
-
-EU-funds snapshot **2026-10-15**: 4,574 source projects acquired in full, **4,561 included**, 13 wholly excluded (3 natural persons/SZČO, 4 unspecified, 6 ambiguous). No project titles or raw source captures are committed. `financials.contractedTotal` is the exact total contracted amount as a decimal string; the integration manual does not separately establish currency, so no EUR claim is made. MIRRI SR / ITMS21+ data transformed and privacy-minimized by OpenSK, not an official representation. Manual snapshot, not live or all Slovak EU funds. Contract, evidence and refresh procedure: [`docs/eu-funds.md`](docs/eu-funds.md).
-
-## PSC Collection Surface
-
-The PSC collection routes, pagination model, and current dataset limitations remain aligned with the shipped local-data contract.
-
-PSC is a **partial historical local lookup**, not an address validator or proof that a code applies to every address in a municipality. One code can have multiple administrative matches. A 404 means absent from this snapshot, not legally invalid.
-
-**0.23.12 correction:** `/v1/psc/{psc}` now counts logical flat matches and returns them directly in `matches`, consistent with list/search. For `01001`, `matchCount` is **2**, not one outer container holding two nested matches. The underlying dataset, provenance and coverage are unchanged; this is not a data migration.
-
-## Dataset Tooling
-
-The repository keeps its reference data in local JSON files under `data/`.
-
-- `data/sources.json` is the machine-readable source registry.
-- `docs/import-pipeline.md` explains the offline raw -> checked-in JSON -> production runtime flow.
-- `docs/data-sources.md` lists the current dataset inventory and coverage notes.
-- `docs/source-compliance.md` summarizes licence, redistribution, attribution, and risk status for each production dataset.
-- `docs/source-catalogue.md` documents the curated `/v1/sources` public/internal field boundary and status mapping.
-- `docs/http-caching.md` documents ETag, Last-Modified, and Cache-Control semantics.
-- `docs/rate-limiting-contract.md` is the authoritative per-IP rate-limiting policy (implemented since 0.23.5).
-- `docs/adding-a-dataset.md` lists the minimum gates for adding a new dataset domain.
-- `docs/dataset-format.md` documents the JSON file layout and record shapes.
-- `docs/research/ico-sources.md` captures the IČO/company research notes and upstream questions.
-- `docs/research/source-verification-evidence.md` records retained source-verification evidence.
-- `docs/research/eu-funds-itms21-spike.md` records the historical 0.23.6 spike; `docs/eu-funds.md` documents the 0.23.7 production projection, positive legal-form policy, manifest-backed acquisition, refresh guard and `JSON_CONTINUE` measurements.
-- `docs/research/source-licence-questions.md` contains draft clarification questions; nothing is sent automatically.
-- `docs/api-status.md` lists the endpoint status categories.
-- `docs/public-api-consistency-audit.md` records the 0.12.0 public API consistency audit.
-- `docs/1-0-readiness-audit.md` and `docs/release-readiness.md` track what remains before a future `1.0.0`.
-- `docs/1-0-scope.md` defines the candidate first stable release scope and excluded roadmap domains.
-- `docs/roadmap.md` is the living strategic roadmap (Now/Next/Watch/Later/Completed).
-- `docs/research/opensk-research-roadmap-2026-q4.md` is the 2026 Q4 consolidated source-licence and roadmap research report.
-- `docs/research/roadmap-council-notes.md` records the multi-perspective roadmap-council verdicts.
-- `docs/research/source-licence-outreach.md` retains licence outreach packages and maintainer-confirmed dispatch/reply states; nothing is sent automatically.
-- `docs/research/paper-roadmap-coverage.md` compares the May 2026 research-paper roadmap with the actual repository and verified 2026 sources.
-- `docs/research/court-decisions-source.md` records why 0.22.0 remains research-only for Slovak court-decision production data.
-- `docs/research/elections-spike.md` records the NR SR 2023 spike decision, source/schema evidence, offline prototype and production gates.
-- `docs/elections.md` records the **0.23.14 NRSR2023 production scope**, manual-only acquisition, source hashes/time precision, CC BY 4.0 attribution/non-endorsement, reconciliation and refresh procedure. Small-area aggregates retain contextual-inference risk; no anonymity claim. Current reply: `docs/research/elections-reuse-clarification.md`.
-- `docs/research/exchange-rates-spike.md` records the ECB exchange-rates spike decision and the offline importer evidence.
-- `docs/research/portalvs-source-resilience.md` records the historical PortalVS legacy→successor compatibility verdict and retained transition evidence.
-- `docs/research/source-ownership-resolution.md` records 0.23.15's separated origin/intermediary/rights analysis, exact ŠÚ SR classifiers/terms, unchanged-ID provenance, manual acquisition gate and single geography verdict.
-- `docs/research/telecom-reuse-clarification.md` maps the regulator's reply only to the retained outbound request scope; `docs/research/slovenska-posta-psc-outreach.md` records the PSC request manually sent by the maintainer on 2026-11-05, `SENT_AWAITING_REPLY`. The agent sent no correspondence.
-- `docs/api-contract-v1.md` describes the candidate v1 contract for eventual `1.0.0`.
-- `docs/privacy-review.md` records the current privacy review.
-- `docs/research/rpo-acquisition-decision.md` records why 0.14.0 remains research/tooling-only for RPO production data.
-- `docs/research/vat-source.md` records why 0.15.0 remains research/tooling-only for VAT registration production data.
-- `docs/research/zrsr-source.md` records why 0.16.0 remains research-only for ŽRSR production data.
-- `docs/research/streets-source.md` records why 0.17.0 remains research-only for Register adries / streets production data.
-- `docs/research/healthcare-facilities-source.md` records why 0.18.0 remains research-only for healthcare-facility/provider production data.
-- `docs/research/public-procurement-source.md` records why 0.19.0 uses a TED-backed partial public procurement snapshot rather than claiming ÚVO national coverage.
-- `docs/research/school-directory-source.md` records why 0.20.0 remains research/tooling-only for institution-level school directory data.
-- `docs/verification-backlog.md` tracks the remaining verification tasks.
-- `docs/known-limitations.md` collects the current public-readiness caveats.
-- `data/sources.json` and the dataset-specific research notes document source and licence verification per dataset.
-- `Source/licence verification pending.` applies to any dataset whose upstream provenance is not fully confirmed.
-- Runtime requests do not call upstream services; the API reads local JSON only.
-- Current project versioning is pre-1.0; endpoint availability does not yet guarantee a stable `1.0.0` public contract.
-- Company lookup remains seed-backed; RPO production import is blocked until a safe acquisition method is verified.
-- VAT registration lookup is not public in `0.15.0`; source acquisition is verified, but privacy import is blocked because the XML has no reliable natural/legal subject marker.
-- ŽRSR/trade-register lookup is not public in `0.16.0`; no safe official machine-readable acquisition route was verified.
-- Streets/address lookup is not public in `0.17.0`; no approved official anonymous reproducible streets distribution was verified.
-- Healthcare-facility lookup is not public in `0.18.0`; no approved machine-readable non-scraping facility source with reuse rights and deterministic privacy filtering was verified.
-- Procurement notice lookup is public in `0.19.0` as a 100-record TED_PARTIAL snapshot only; it excludes national-only ÚVO notices and personal/contact/address/winner fields.
-- Institution-level school lookup is not public in `0.20.0`; official RIS/CVTI candidates were identified, but production import is blocked by reuse, acquisition, identifier, coverage, and privacy gates.
-- 0.21.0 freezes the candidate 1.0 scope: company/IČO remains seed-backed, PortalVS-backed districts/municipalities/PSC require compliance fixes, and research-only domains are excluded rather than treated as 1.0 blockers.
-- 0.22.0 verifies a Ministry court-decision OpenAPI source, but court-decision lookup remains research-only because reuse/redistribution and metadata-only privacy gates are unresolved.
-- 0.23.0 verifies PortalVS end-of-support (legacy support ends 2026-10-31; `ciselniky2.portalvs.sk` is the successor), confirms the portal's non-commercial copyright wording (districts/municipalities/PSC stay compliance-Red pending outreach), verifies ŠÚ SR elections open data as the next data spike, and prepares licence outreach packages; no endpoint or dataset is added.
-- 0.23.1 adds the curated `/v1/sources` provenance catalogue, Slovak business-day utilities with strict 2024-2026 holiday coverage, deterministic ETag/Last-Modified conditional caching, project-version single-sourcing (`version.py`), unified CI, Dependabot, a manual source-health checker, and a documented (not implemented) rate-limit contract.
-- Root and error envelopes now use `metadata.lastUpdated: null` instead of a daily-changing date; dataset routes keep their real dataset dates.
-- 0.23.2 investigates NR SR 2023 aggregate election statistics with an offline, dry-run-first import prototype. Decision: `GO_AFTER_LICENCE_EVIDENCE` (including approved acquisition). `/v1/sources/elections` is research-only with pending licence status; no results endpoint or production election JSON is added. Raw official files and generated previews are not committed.
-- 0.23.3 verifies ECB exchange-rate sources and PortalVS legacy→successor resilience. Decisions: `GO_PRODUCTION_NEXT` (exchange rates, production milestone recommended) and `SUCCESSOR_COMPATIBLE_WITH_TRANSFORM_CHANGES` (PortalVS). `/v1/sources/exchangeRates` was research-only at that milestone. Four outreach packages were sent manually 2026-10-11; subsequent replies through 2026-11-02 are recorded in 0.23.14 and 0.23.15.
-- 0.23.5 adds a 100 requests/60 s/client-IP fixed-window application rate limiter (Render-enabled by default via `RENDER=true`, `429` with `Retry-After`, `X-RateLimit-*` headers, `/v1/health` exempt, process-local in-memory state) and a daily scheduled public smoke workflow with Render cold-start warm-up. No API keys, no new datastore, no data-domain changes.
-- 0.23.4 promotes ECB euro reference rates to production: `GET /v1/exchange-rates/latest` and `GET /v1/exchange-rates/{date}` serve the full-history ECB snapshot (1999-01-04 onwards) materialized offline at `data/exchange_rates.json`. Rates are decimal strings (`1 EUR = rate units of the foreign currency`), exact publication dates only (404 with no weekend/TARGET fallback), optional `?currency=` filter, ECB attribution and "information purposes only / transaction use strongly discouraged" notices, ETag/Last-Modified conditional caching. `/v1/sources/exchangeRates` is production (licence verified). No runtime upstream calls; elections were research-only at that milestone. Subsequent replies are recorded in 0.23.14 and 0.23.15.
-- Historical internal milestones include the phone-area workbook import, legacy vehicle registration district abbreviations, and aggregate school facility counts.
-- `/v1/schools` is intentionally not implemented because no institution-level school source has passed production acquisition gates.
-- `/v1/court-decisions` is intentionally not implemented because no court-decision source has passed reuse/redistribution and privacy gates.
-
-## Dataset Import Pipeline
-
-The import pipeline is offline-only and defaults to dry-run.
+## Examples
 
 ```bash
-python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.json --dry-run --output data/generated/municipalities.json
-python scripts/import_geography.py --dataset municipalities --input data/raw/portalvs-classifier-9.csv --output data/generated/municipalities.json --write
-python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --dry-run
-python scripts/import_psc.py --input data/raw/psc-source.csv --output data/generated/psc.json --write
-python scripts/import_banks.py --input data/raw/nbs-bank-directory.csv --output data/generated/banks.json --source-version 226 --effective-date 2026-10-08 --downloaded-at 2026-10-15T16:23:00Z --source-file-url "https://nbs.sk/dokument/a5050ba9-1b79-4a1b-82c6-0f3a0b666af4/stiahnut/?force=true" --dry-run
-python scripts/import_phone_areas.py --input data/raw/phone-areas.csv --output data/generated/phone_areas.json --dry-run
-python scripts/import_phone_areas.py --input data/raw/phone-areas.xlsx --output data/generated/phone_areas.json --write
-python scripts/import_school_facility_counts.py --input data/raw/minedu-school-facility-counts-2025-09-15.csv --output data/generated/school_facility_counts.json --dry-run
-python scripts/fetch_procurement_notices.py --limit 100 --write
-python scripts/import_procurement_notices.py --input data/raw/procurement-notices-ted-search.json --output data/generated/procurement_notices.json --dry-run
-python scripts/fetch_vat_registrations.py --output data/raw/ds_dphs.zip
-python scripts/import_vat_registrations.py data/raw/ds_dphs.zip --output data/generated/vat_registrations.json --write
-python scripts/backfill_psc_districts.py --dry-run
-python scripts/backfill_psc_districts.py --write
-python scripts/validate_datasets.py
-python scripts/check_referential_integrity.py
+curl "https://opensk-api.onrender.com/v1/psc/01001?include=geography"
+curl "https://opensk-api.onrender.com/v1/banks/1100"
+curl "https://opensk-api.onrender.com/v1/business-days/check?date=2026-10-08"
+curl "https://opensk-api.onrender.com/v1/exchange-rates/latest?currency=USD"
+curl "https://opensk-api.onrender.com/v1/elections/NRSR2023/results?municipalityCode=528595"
 ```
 
-Use `data/raw/` for source material and `data/generated/` for normalized previews. Promote generated files into `data/*.json` only after review.
-
-`scripts/import_vat_registrations.py` intentionally refuses to write `data/vat_registrations.json` while the VAT privacy gate remains blocked.
-
-`scripts/import_procurement_notices.py` can promote a reviewed TED_PARTIAL snapshot to `data/procurement_notices.json`, but refresh edits should be reviewed as dataset diffs before commit.
-
-## Company Lookup
-
-Company/IČO lookup is backed by a small checked-in local seed dataset, not full RPO coverage.
-
-- Source notes: `docs/research/ico-sources.md`
-- Licence notes: `docs/research/rpo-licence.md`
-- Proposed schema: `docs/dataset-format.md`
-- Registry entry: `data/sources.json`
-- No live upstream calls are made by the API routes.
-- Personal/stakeholder fields are intentionally excluded from the public response.
-- Public-readiness status is documented in `docs/api-status.md` and `docs/known-limitations.md`.
-
-## Response Envelope
+Responses use a consistent JSON envelope:
 
 ```json
 {
   "data": {},
   "metadata": {
     "source": "OpenSK API",
-    "lastUpdated": "YYYY-MM-DD",
+    "lastUpdated": null,
     "version": "v1"
   },
   "error": null
 }
 ```
 
-`metadata.lastUpdated` carries the dataset freshness date; meta and error responses report an explicit `null` instead of a request-time date.
+Dataset responses carry their actual freshness date; root/error metadata uses `null`. Operational health is the documented current-date exception. Errors use `data: null` and a structured error. Cacheable responses support ETag revalidation; account-bearing IBAN responses do not. [Response contract](docs/api-contract-v1.md) · [HTTP caching](docs/http-caching.md).
 
-Error responses use the same envelope with `data: null` and a structured error object.
+## Architecture
 
-## Examples
+```text
+Official source → offline acquisition/import → reviewed data/*.json
+                                                  ↓
+                                     cached local services
+                                                  ↓
+                                         FastAPI routers
+```
+
+- `routers/`: request validation and HTTP contracts.
+- `services/`: local loading, lookups, filtering and utilities.
+- `schemas/`: typed responses, examples and dataset contracts.
+- `scripts/`: offline acquisition, normalization, validation and benchmarks.
+- `tests/`: API contracts, failure paths, privacy gates and dataset integrity.
+- `docs/`: developer guides and source/decision evidence.
+
+No runtime scraping, database, API key or upstream network dependency is required. New data goes through explicit source, reuse, privacy and validation gates rather than automatic publication.
+
+## Local development
+
+Use **Python 3.12.16**, matching [`.python-version`](.python-version), CI and the Render runtime declaration.
+
+### Bash (Linux/macOS)
 
 ```bash
-curl <base-url>/
-curl <base-url>/v1/health
-curl <base-url>/v1/psc/stats
-curl <base-url>/v1/psc/search?q=Bratislava
-curl <base-url>/v1/banks
-curl <base-url>/v1/regions
-curl <base-url>/v1/vehicle-registration-codes/BA
-curl <base-url>/v1/school-facility-counts/stats
-curl <base-url>/v1/procurement-notices/stats
-curl <base-url>/v1/procurement-notices/search?q=Bratislava
-curl <base-url>/v1/companies/50158635
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --require-hashes -r requirements-dev.txt
+python -m pytest -q
+uvicorn main:app --reload --no-access-log
 ```
 
-PSC source previews can expose repeated codes like this:
+### PowerShell (Windows)
 
-```json
-{
-  "data": {
-    "psc": "81101",
-    "matchCount": 2,
-    "matches": [
-      { "psc": "81101", "city": "Bratislava" },
-      { "psc": "81101", "city": "Bratislava - mestská časť Staré Mesto" }
-    ]
-  },
-  "metadata": {
-    "source": "OpenSK API PSC import preview",
-    "lastUpdated": "YYYY-MM-DD",
-    "version": "v1"
-  },
-  "error": null
-}
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --require-hashes -r requirements-dev.txt
+python -m pytest -q
+uvicorn main:app --reload --no-access-log
 ```
 
-Swagger docs: `https://opensk-api.onrender.com/docs`
+Open **http://127.0.0.1:8000/docs**. The server occupies that terminal; use another activated terminal for further checks. If PowerShell activation is restricted, call `.\.venv\Scripts\python.exe` directly instead of changing system execution policy.
 
-## Local Development
+Production installs only the hash-locked `requirements.txt`; development dependencies are separate. [Contribution and dependency-update workflow](CONTRIBUTING.md).
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn main:app --reload
-python -m pytest
-```
+## Data maintenance and documentation
+
+- [Dataset inventory and coverage](docs/data-sources.md)
+- [Offline import pipeline](docs/import-pipeline.md) and [dataset format](docs/dataset-format.md)
+- [Adding a dataset](docs/adding-a-dataset.md)
+- [Source compliance](docs/source-compliance.md), [privacy review](docs/privacy-review.md) and [known limitations](docs/known-limitations.md)
+- [Election scope/refresh](docs/elections.md) and [EU-funds scope/refresh](docs/eu-funds.md)
+- [Research index: current decisions versus historical records](docs/research/README.md)
+- [Roadmap](docs/roadmap.md), [release readiness](docs/release-readiness.md) and [versioning](docs/versioning.md)
+- [Changelog](CHANGELOG.md)
+
+Imports default to dry-run. Keep source captures in the documented private/raw location and normalized previews under `data/generated/`; review dataset diffs before promotion. Some sources require manual acquisition or have unresolved rights. Do not automate those sources merely because a URL is available.
 
 ## Deployment
 
-Render is the recommended MVP host because it is simple, GitHub-based, and gives the app a public HTTPS URL. The app is still a standard FastAPI project, so it can move later to Fly.io, Koyeb, Railway, Vercel, or Cloudflare with minimal changes.
-
-### Manual Render Setup
-
-1. Create a new Render Web Service.
-2. Connect the GitHub repository.
-3. Use the Python environment.
-4. Build command: `pip install -r requirements.txt`
-5. Start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
-
-### Smoke Tests After Deploy
+[`render.yaml`](render.yaml) defines a standard Python/ASGI service with health checks and checks-passed deployment gating:
 
 ```bash
-curl https://opensk-api.onrender.com/
-curl https://opensk-api.onrender.com/v1/health
-curl https://opensk-api.onrender.com/v1/holidays/2026
-curl https://opensk-api.onrender.com/v1/psc/81101
-open https://opensk-api.onrender.com/docs
+python -m pip install --require-hashes -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port "$PORT" --no-access-log
 ```
 
-The free Render instance may sleep when idle and can cold-start on the first request.
+Apply the Blueprint configuration and require the CI check through GitHub repository rules; local files alone do not configure existing dashboard settings. Other ASGI-compatible Python hosts are possible, but serverless/edge runtimes can require packaging and lifecycle changes.
 
-## Data Notes
+Uvicorn access logs are disabled to avoid logging account identifiers in IBAN paths. This does not control reverse-proxy/CDN logs; their retention and redaction require a separate hosting review. Do not submit real account identifiers in public bug reports.
 
-- Raw source material is handled offline and curated into the checked-in JSON datasets under `data/`.
-- Production requests read those local JSON files only.
-- Holiday responses currently use a static seed dataset.
-- Holiday and PSC datasets use stable `lastUpdated` values for release reproducibility.
-- Banks now serve NBS converter **v226 / effective 2026-10-08**, downloaded **2026-10-15T16:23:00Z** (30 domestic rows). Bank/IBAN metadata carries NBS attribution, version, effective/download dates, URLs/hash and transformation notice. IBAN checksum validation is OpenSK/ISO logic; NBS supplies only Slovak bank resolution. Reuse is resolved under [NBS Terms of Use](https://nbs.sk/disclaimer-sk/) + the 2026-10-14 clarification; **MIT covers code, not NBS data**, and JSON is not the original NBS file. Participation fields remain OpenSK-derived from CSV `Systém SIPS`, not a direct `Akt. úč.` copy or general operating-status guarantee. No NBS symbols. [Acquisition, column audit, three-record diff and refresh workflow](docs/research/nbs-bank-reuse-clarification.md#0238-production-refresh). The import example uses this actual capture; future imports must use then-current version/effective date and their own actual download timestamp.
-- Phone areas are imported from the telecom regulator's machine-processable workbook. The 2026-11-02 direct reply resolves the requested local-storage, JSON transformation, API/commercial redistribution and derived-join scope; no formal licence name or automated-acquisition permission is inferred. Three unmatched local geography links remain.
-- Vehicle registration district codes are legacy/reference data from Slov-Lex legal text; they are not reliable for current plate lookup and do not decode full licence plates.
-- School facility counts are aggregate rows from the MŠVVaM `Register škôl a školských zariadení` CSV, valid as of `2025-09-15`; the API does not provide institution-level `/v1/schools` lookup.
-- Institution-level RIS/CVTI school-directory candidates are research-only in 0.20.0; no `data/schools.json` or `/v1/schools` endpoint is shipped.
-- School aggregate responses exclude school names, addresses, directors, staff, pupils, personal emails, and phone numbers.
-- Public procurement notices are a normalized 100-record TED Search API snapshot of Slovak-buyer notices, acquired 2026-09-29; coverage is `TED_PARTIAL`, not the complete national ÚVO vestník.
-- Procurement API responses exclude personal/contact data, street addresses, winners, tenderers, subcontractors, beneficial owners, organization identifiers, and raw XML/PDF/HTML notice bodies.
-- IBAN validation and Slovak bank-code resolution run locally without network access.
-- The PSC dataset is expanded beyond the original tiny seed-only sample, but it does not claim national coverage.
-- PSC coverage and source/licence details are tracked in `docs/data-sources.md`; the dataset remains partial and may contain repeated postal-code records.
-- PSC redistribution is restricted by upstream PortalVS terms, so do not present the dataset as open redistribution material.
-- Imported PSC source data does not provide reliable district links, so PSC `districtCode` is backfilled locally from `municipalityCode` using verified municipality -> district mappings.
-- PSC `districtCode` coverage is 100% for current local PSC records; no values are inferred from names or PSC patterns.
-- PSC source rows can repeat the same postal code; the importer/preview should surface that with `matchCount` and `matches` before choosing a canonical runtime record.
-- `GET /v1/psc` returns paginated PSC match records with `limit` and `offset`.
-- `GET /v1/psc/search?q=...` searches PSC records by PSC prefix, municipality, and delivery post.
-- `GET /v1/psc/stats` exposes local dataset totals and geography coverage.
-- IČO/company work uses a local seed dataset; do not treat it as exhaustive or a full register.
-- Regions cover the 8 Slovak self-governing regions and are verified against the Eurostat LAU 2025 correspondence table.
-- Municipalities use successor PortalVS / IS Číselníky `town.json?validity=valid`: 2,927 regular rows; six-digit IDs come from the reviewed statistical `note` field, with composite suffix/district-prefix validation. Classifier 9 is historical provenance only.
-- Municipality district mappings use successor county evidence, not name inference; all public IDs remain unchanged. Names at `504173` and `504742` now consistently use `(okres Galanta)` / `(okres Skalica)`. Embedded historical PSC labels are deliberately not rewritten.
-- PortalVS source/licence verification is still pending; do not treat the municipality dataset as open redistribution material.
-- Districts use successor `county.json?validity=valid`, covering all 79 Slovak districts; the 12 letter-form successor suffixes are verified and projected to unchanged decimal public IDs. Classifier 10 is historical provenance only; PortalVS terms may restrict reuse.
-- Geography freshness is the OpenSK UTC acquisition date, not an upstream publication date. Offline refresh: `docs/research/portalvs-successor-geography-migration.md`. Legacy shutdown cannot break runtime: requests never call upstream. Geography refresh no longer needs legacy PortalVS; PSC stays frozen on the historical snapshot pending mapping evidence (`NO_GO_SUCCESSOR_PSC`).
-- ORSR and ŽRSR stay reference-only in research notes; this repository does not scrape them.
-- Source notes live in `docs/data-sources.md`, and file format notes live in `docs/dataset-format.md`.
-- Research notes for company/IČO work live in `docs/research/ico-sources.md`.
-- Remaining verification tasks are tracked in `docs/verification-backlog.md`.
-- Candidate 1.0 inclusion and exclusion decisions are tracked in `docs/1-0-scope.md`.
-- Dataset compliance status is summarized in `docs/source-compliance.md`.
-- Verification evidence and draft licence questions are tracked under `docs/research/`.
-- Use `Source/licence verification pending.` when a dataset's upstream provenance is not fully confirmed.
-- Do not assume any dataset is official government data unless the source explicitly says so.
+After deployment from the intended commit:
 
-## Contributing
+```bash
+python scripts/smoke_test.py --base-url https://opensk-api.onrender.com --expect-rate-limit
+```
 
-Contributions are welcome, especially new data sources that can be added with clear attribution and licensing.
+## Contributing and security
 
-See `CONTRIBUTING.md` for contribution guidance.
+[Contributions](CONTRIBUTING.md) are welcome, especially well-evidenced source and data improvements. Follow the [Code of Conduct](CODE_OF_CONDUCT.md). Report sensitive issues privately using [the security policy](SECURITY.md).
 
 ## License
 
-The code in this repository is licensed under MIT. See `LICENSE`.
+Code: [MIT](LICENSE). Data: the individual source terms, attribution and limitations recorded in `/v1/sources` and the compliance documentation. OpenSK is not an official government service and does not imply publisher endorsement.

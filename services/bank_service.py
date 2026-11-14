@@ -24,7 +24,7 @@ def normalize_bank_code(code: str) -> str:
 
 def validate_bank_code_format(code: str) -> str:
     normalized = normalize_bank_code(code)
-    if not re.fullmatch(r"\d{4}", normalized):
+    if not re.fullmatch(r"[0-9]{4}", normalized):
         raise BankInvalidCodeError(code)
     return normalized
 

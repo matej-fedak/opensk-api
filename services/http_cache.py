@@ -44,7 +44,6 @@ _LAST_MODIFIED_BY_PREFIX: dict[str, str] = {
     "/v1/holidays": HOLIDAYS_LAST_UPDATED,
     "/v1/business-days": HOLIDAYS_LAST_UPDATED,
     "/v1/banks": BANKS_LAST_UPDATED,
-    "/v1/iban": BANKS_LAST_UPDATED,
     "/v1/psc": PSC_LAST_UPDATED,
     "/v1/regions": REGIONS_LAST_UPDATED,
     "/v1/districts": DISTRICTS_LAST_UPDATED,
@@ -83,15 +82,16 @@ def _last_modified_for(path: str) -> datetime | None:
 
 def _matches_etag(if_none_match: str, etag: str) -> bool:
     tokens = [token.strip() for token in if_none_match.split(",")]
-    return "*" in tokens or etag in tokens
+    # If-None-Match on GET uses weak comparison even for a strong validator.
+    return "*" in tokens or any(token.removeprefix("W/") == etag.removeprefix("W/") for token in tokens)
 
 
 class ConditionalCachingMiddleware(BaseHTTPMiddleware):
     """Attach ETag/Last-Modified and honor If-None-Match/If-Modified-Since.
 
     Applies to GET requests on `/` and `/v1/*` with status 200. Error
-    responses, `/v1/health`, and framework-owned paths are passed through
-    unchanged.
+    responses, health/IBAN paths, private/no-store responses, and framework-owned
+    paths are passed through unchanged.
     """
 
     async def dispatch(self, request: Request, call_next):  # type: ignore[no-untyped-def]
@@ -100,11 +100,14 @@ class ConditionalCachingMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
         if path != "/" and not path.startswith("/v1/"):
             return await call_next(request)
-        if path in _ETAG_EXCLUDED_PATHS:
+        if path in _ETAG_EXCLUDED_PATHS or path == "/v1/iban" or path.startswith("/v1/iban/"):
             return await call_next(request)
 
         response = await call_next(request)
         if response.status_code != 200:
+            return response
+        cache_directives = {part.strip().split("=", 1)[0].lower() for part in response.headers.get("cache-control", "").split(",")}
+        if cache_directives & {"private", "no-store"}:
             return response
 
         body = b""
@@ -123,7 +126,7 @@ class ConditionalCachingMiddleware(BaseHTTPMiddleware):
         if if_none_match and _matches_etag(if_none_match, etag):
             return Response(status_code=304, headers=headers)
 
-        if last_modified is not None:
+        if if_none_match is None and last_modified is not None:
             if_modified_since = request.headers.get("if-modified-since")
             if if_modified_since:
                 parsed = _parse_http_date(if_modified_since)

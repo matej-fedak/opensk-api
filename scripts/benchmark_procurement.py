@@ -56,14 +56,15 @@ def benchmark(path):
     records = service.load_procurement_notice_records()
     report["serviceColdLoadMs"] = round((time.perf_counter() - start) * 1000, 3)
     report["records"] = len(records)
+    record_count = len(records)
     report["rssAfterLoadBytes"] = rss()
     lookup_id = records[-1]["id"]
     year = int(records[len(records) // 2]["publicationDate"][:4])
     notice_type = records[0]["noticeType"]
     report["lookupLast"] = elapsed(lambda: service.get_procurement_notice_by_id(lookup_id))
     report["listFirst"] = elapsed(lambda: service.list_procurement_notices(limit=100))
-    report["listMiddle"] = elapsed(lambda: service.list_procurement_notices(limit=100, offset=len(records) // 2))
-    report["listEnd"] = elapsed(lambda: service.list_procurement_notices(limit=100, offset=max(0, len(records) - 100)))
+    report["listMiddle"] = elapsed(lambda: service.list_procurement_notices(limit=100, offset=record_count // 2))
+    report["listEnd"] = elapsed(lambda: service.list_procurement_notices(limit=100, offset=max(0, record_count - 100)))
     report["listPastEnd"] = elapsed(lambda: service.list_procurement_notices(limit=500, offset=10**9))
     report["yearFilter"] = elapsed(lambda: service.list_procurement_notices({"year": year}, limit=100))
     report["combinedFilter"] = elapsed(lambda: service.list_procurement_notices({"year": year, "noticeType": notice_type}, limit=100))

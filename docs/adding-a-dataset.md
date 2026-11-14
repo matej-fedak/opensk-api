@@ -3,7 +3,7 @@
 The minimum-gates checklist for adding any new dataset/domain to OpenSK. Each gate must be documented before merge; skipped gates mean research-only status.
 
 1. **Authoritative source** — an official primary source is identified (no scraping human-facing portals).
-2. **Machine-readable acquisition** — a documented reproducible download/export/API exists (CSV/JSON/XML/OpenAPI), acquired offline into `data/raw/`.
+2. **Machine-readable acquisition** — a documented reproducible download/export/API exists (CSV/JSON/XML/OpenAPI), acquired offline into approved local storage. Sensitive/restricted raw captures stay outside Git; respect manual-only source policies and retain non-content provenance instead of private paths or raw personal data.
 3. **Reuse/licence** — reuse, caching, transformation, and redistribution terms are verified and retained in `docs/research/source-verification-evidence.md`. Unresolved means the dataset cannot ship as production.
 4. **Privacy** — personal data (names, contacts, natural persons, sensitive identifiers) is excluded or the domain is rejected; see `docs/privacy-review.md`.
 5. **Stable identifiers** — records have deterministic stable IDs suitable for detail routes.

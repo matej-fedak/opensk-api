@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Response
 
-from schemas.common import STATIC_CACHE_CONTROL
 from schemas.banks import IbanValidationResponse
 from schemas.openapi import contract
 from services.bank_service import bank_response_metadata, lookup_bank
@@ -18,5 +17,5 @@ router = APIRouter(prefix="/iban", tags=["iban"])
 )
 def validate_iban_endpoint(iban: str, response: Response) -> dict[str, object]:
     result = validate_iban(iban, bank_lookup=lookup_bank)
-    response.headers["Cache-Control"] = STATIC_CACHE_CONTROL
+    response.headers["Cache-Control"] = "no-store"
     return {"data": result, "metadata": bank_response_metadata(iban=True), "error": None}

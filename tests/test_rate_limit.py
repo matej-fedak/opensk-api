@@ -10,7 +10,6 @@ import json
 
 import pytest
 from fastapi import FastAPI
-from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
 
 import services.rate_limit as rate_limit_module
