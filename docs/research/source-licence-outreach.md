@@ -2,7 +2,7 @@
 
 This document retains outreach packages for human maintainer review and dispatch. The agent does not send emails. It pairs each open licence question with a verified contact, the retained evidence discovered during the 0.23.0 research review, and request text where applicable.
 
-**Dispatch/reply status, updated 2026-11-05:** the human maintainer sent all four original packages manually on **2026-10-11**, then manual follow-ups for PortalVS, telecom and elections on **2026-10-28**. Replies were received from NBS on **2026-10-14**, ŠÚ SR elections on **2026-10-30**, and both PortalVS and the telecom regulator on **2026-11-02** (dates confirmed by the maintainer). The maintainer also manually sent the two new direct source-owner clarification requests to Slovenská pošta and ŠÚ SR on **2026-11-05**. Current states:
+**Dispatch/reply status, updated 2026-11-27:** the human maintainer sent all four original packages manually on **2026-10-11**, then follow-ups for PortalVS, telecom and elections on **2026-10-28**. NBS banks replied **2026-10-14**, ŠÚ SR elections **2026-10-30**, and PortalVS/telecom **2026-11-02**. Separate Slovenská pošta PSC and ŠÚ SR geography requests were manually sent **2026-11-05**. The ŠÚ SR geography reply received **2026-11-20** confirms technical source identity but declines questions 2–6; a follow-up was manually sent **2026-11-27** as a reply in that thread. Dates are maintainer-confirmed, day precision; specialist routing is not established. Current states:
 
 | Package | State |
 | --- | --- |
@@ -11,9 +11,9 @@ This document retains outreach packages for human maintainer review and dispatch
 | Telecom regulator (§4) | `REPLY_RECEIVED_RESOLVED` (2026-11-02) |
 | ŠÚ SR elections (§7) | `REPLY_RECEIVED_RESOLVED` (2026-10-30) |
 | Slovenská pošta PSC | `SENT_AWAITING_REPLY` (2026-11-05) |
-| ŠÚ SR municipality/district classifiers | `SENT_AWAITING_REPLY` (2026-11-05) |
+| ŠÚ SR municipality/district classifiers | `REPLY_RECEIVED_TECHNICAL_SOURCE_CONFIRMED_RIGHTS_ESCALATION_REQUIRED` (2026-11-20); follow-up `SENT_AWAITING_REPLY` (2026-11-27) |
 
-The agent sent no correspondence. Neither Slovenská pošta nor ŠÚ SR has replied to these new requests, and no permission is inferred from dispatch or silence. The PortalVS redirect is not redistribution permission. The telecom reply resolves only the uses actually described in its original request; it does not create a formal licence name or exact attribution wording. No Message-ID, mail headers, delivery confirmation, receipt or exact sent/received body is independently archived in this repository for the new requests. The drafts are historical prepared texts, not asserted byte-for-byte sent copies. Substantive clarifications are recorded in the domain evidence documents without unnecessary personal contact metadata.
+The agent sent no correspondence. No Slovenská pošta reply or expert-unit geography rights determination has been supplied, and no permission is inferred from dispatch or silence. The PortalVS redirect is not redistribution permission. The telecom reply resolves only its requested scope, not a formal licence or mandatory formula. No Message-ID, mail headers, delivery confirmation, exact sent/received body or competent-unit forwarding is independently archived here. Drafts are historical prepared texts, not byte-for-byte sent copies. General ŠÚ SR terms support CC BY 4.0 in their scope, but exact `0024`/`0025` applicability remains pending: [reply](susr-geography-clarification.md), [rights](susr-geography-rights.md).
 
 Related documents:
 
@@ -370,7 +370,18 @@ No delivery confirmation, Message-ID, receipt or reuse permission is claimed.
 `CONTRACT_CLARIFICATION_REQUIRED` and `NO_SOURCE_READY` remain unchanged;
 production remains partial, high-risk and frozen.
 
-## 9. ŠÚ SR municipality/district classifiers — SENT_AWAITING_REPLY
+## 9. ŠÚ SR municipality/district classifiers — technical reply; rights escalation
+
+Current state: **`REPLY_RECEIVED_TECHNICAL_SOURCE_CONFIRMED_RIGHTS_ESCALATION_REQUIRED`**,
+received **2026-11-20**. LSUJ1/0024 and LSUJ2/0025 are directly confirmed, but
+the responding unit declined questions 2–6. The maintainer manually sent a
+follow-up in the same thread **2026-11-27**, **`SENT_AWAITING_REPLY`**; the
+competent recipient/forwarding remains unverified. No agent correspondence or
+rights approval. Details and follow-up scope: [clarification](susr-geography-clarification.md)
+and [rights review](susr-geography-rights.md).
+
+The paragraphs below preserve the original 2026-11-05 dispatch checkpoint;
+their pending-original-reply state is superseded by the current state above.
 
 State: **`SENT_AWAITING_REPLY` — 2026-11-05**. The maintainer confirms manual
 dispatch of the separate direct classifier/reuse clarification; reply is

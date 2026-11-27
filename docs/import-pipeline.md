@@ -15,7 +15,7 @@ Commands, output boundaries, recovery and acquisition-date freshness:
 No previous private capture or legacy export is needed for a future refresh.
 **PSC stays frozen, legacy-backed and byte-identical**; the older PSC tooling
 examples below document historical capabilities, not approval to refresh PSC or
-import successor street/detail rows. In 0.23.15, PortalVS's reply is source-owner redirection, not redistribution permission. Current geography remains PortalVS-derived; `NO_GO_SUSR_GEOGRAPHY_REPLACEMENT` / `MANUAL_SOURCE_FILES_REQUIRED` blocks replacement until exact manually supplied ŠÚ SR files and deterministic reconciliation exist. PSC remains `NO_GO_SUCCESSOR_PSC`.
+import successor street/detail rows. PortalVS's reply is source-owner redirection, not redistribution permission. Geography remains PortalVS-derived. [0.23.16 offline manual-capture reconciliation](research/susr-geography-reconciliation.md) establishes `SUSR_TECHNICAL_FULL_REPLACEMENT_READY`; `RIGHTS_CONFIRMATION_PENDING` still blocks promotion. PSC remains `NO_GO_SUCCESSOR_PSC`.
 
 ## Storage Layers
 

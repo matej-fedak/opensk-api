@@ -14,7 +14,7 @@ The repository stores its reference data as JSON files under `data/`. These file
 - Generated/curated JSON under `data/` is the runtime input.
 - Production requests read those JSON files only; they do not call upstream sources.
 - Import scripts should preview into `data/generated/` before promotion to `data/*.json`.
-- Regions are verified against the Eurostat LAU 2025 correspondence table. Since 0.23.10, current districts/municipalities use the PortalVS successor **county/town** capture acquired 2026-10-16: town note IDs and composite prefixes are reconciled against county evidence. Legacy classifier 9/`code_su` and classifier 10 describe historical provenance only, not the current refresh workflow. PSC remains the frozen legacy classifier 42 snapshot. The 0.23.15 source-owner redirect does not license current PortalVS-derived bytes or relabel them as direct ŠÚ SR data; replacement still requires exact manual files and reconciliation.
+- Regions are verified against the Eurostat LAU 2025 correspondence table. Since 0.23.10, current districts/municipalities use the PortalVS successor **county/town** capture acquired 2026-10-16: town note IDs and composite prefixes are reconciled against county evidence. Legacy classifier 9/`code_su` and classifier 10 describe historical provenance only, not the current refresh workflow. PSC remains the frozen legacy classifier 42 snapshot. The [0.23.16 ŠÚ SR comparison](research/susr-geography-reconciliation.md) reproduced the reviewed geography independently, but does not relabel the served bytes or clear classifier-specific reuse.
 
 ## Source Registry And Public Projection
 

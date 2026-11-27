@@ -2,6 +2,51 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
+## 2026-11-27 manual capture and completed technical comparison
+
+- Both exact official CSVs were manually acquired on **2026-11-27** (maintainer
+  confirmed, day precision). Hashes, observed schema and validity are recorded
+  in the [non-content manifest](susr-geography-acquisition.json); no raw exports
+  are committed. The earlier missing-input checkpoint below is superseded.
+- **`SUSR_TECHNICAL_FULL_REPLACEMENT_READY`**: 81 / 2,930 source rows, exact
+  reproduction of all 79 / 2,927 served records with no material PortalVS-only
+  dependencies. Five source-only rows classified, 12 compatibility IDs and
+  205 display suffixes reproduced. [Technical evidence](susr-geography-reconciliation.md).
+- **`RIGHTS_CONFIRMATION_PENDING`** independently. No migration, rights upgrade,
+  production source/freshness change, or new postal/outreach evidence.
+
+## 2026-11-27 geography follow-up and current terms; 2026-11-20 technical reply (pre-capture checkpoint)
+
+- Original ŠÚ SR geography request manually sent **2026-11-05**; reply received
+  **2026-11-20**, both dates confirmed by the maintainer at day precision.
+  Direct confirmation: **LSUJ1 / 0024** districts and **LSUJ2 / 0025** municipalities,
+  through the official catalogue. Use original codes, code-based joins, verified
+  coded hierarchy and explicit retention/classification of boroughs, military
+  units and special rows; derived links are not independently authoritative.
+- State: **`REPLY_RECEIVED_TECHNICAL_SOURCE_CONFIRMED_RIGHTS_ESCALATION_REQUIRED`**.
+  The responding unit explicitly declined competence for questions 2–6:
+  exact-file CC BY applicability, transformation, commercial reuse, attribution
+  and automated acquisition. [Reply boundary](susr-geography-clarification.md).
+- The maintainer confirms a follow-up manually sent **2026-11-27** as a reply
+  in the existing thread: **`SENT_AWAITING_REPLY`**. Recipient unit/forwarding is
+  unverified; no specialist receipt, verbatim sent body or permission is inferred.
+  The agent sent no correspondence. PSC's separate 2026-11-05 request is unchanged.
+- Official general terms were reverified live **2026-11-27**; displayed update
+  **2026-10-13**. Distribution/use/commercial-use permissions, attribution,
+  non-endorsement, CC BY 4.0 dissemination and third-party-IP exclusion remain.
+  Current automation restrictions concern excessive system load, threatened
+  stability or reduced availability—not an unqualified blanket prohibition.
+  **`GENERAL_SUSR_TERMS_SUPPORT_CC_BY_4_0`** remains distinct from
+  **`CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING`**. [Rights review](susr-geography-rights.md).
+- No exact classifier CSV/XML files were supplied or downloaded by tools.
+  **`MANUAL_SOURCE_FILES_REQUIRED`**, technical verdict **not established**,
+  production **`RIGHTS_CONFIRMATION_PENDING`**. The generic official attribute
+  PDF supports a provisional parser vocabulary only, not exact CSV schema or
+  relationships. The [non-content acquisition record](susr-geography-acquisition.json)
+  has an empty file list, not invented hashes/timestamps. Production geography,
+  PSC, all other served snapshots/freshness, 42 GETs, operation IDs and `v1` stay
+  unchanged. No automatic migration is queued.
+
 ## 2026-11-05 source-owner clarification dispatch — SENT_AWAITING_REPLY
 
 - The maintainer confirms manually sending both new clarification requests on

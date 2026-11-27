@@ -5,8 +5,9 @@ Technical source migration is not licence clearance; public promotion remains ga
 
 > **Historical 0.23.10 migration evidence (2026-10-16).** Pending-reply states
 > below are dated checkpoint facts. The later [source-ownership decision](source-ownership-resolution.md)
-> records the 2026-11-02 PortalVS redirect (not permission), telecom clarification
-> and the separate unfulfilled ŠÚ SR replacement gate. For PSC, use the
+> records the 2026-11-02 PortalVS redirect (not permission) and telecom clarification.
+> The [0.23.16 ŠÚ SR comparison](susr-geography-reconciliation.md) established
+> technical readiness, not classifier-specific reuse rights. For PSC, use the
 > [subsequent mapping decision](psc-administrative-mapping.md).
 
 ## Scope and acquisition

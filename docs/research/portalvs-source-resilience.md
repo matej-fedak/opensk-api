@@ -2,11 +2,12 @@
 
 > **Historical resilience research, 0.23.3 (2026-10-11).** Geography migrated to
 > successor county/town captures in [0.23.10](portalvs-successor-geography-migration.md).
-> The current 0.23.15 [source-ownership/replacement decision](source-ownership-resolution.md)
+> The 0.23.15 [source-ownership decision](source-ownership-resolution.md)
 > supersedes the pending-outreach status below: PortalVS replied on 2026-11-02
 > with a source-owner redirect, **not redistribution permission**. Production
-> remains PortalVS-derived; the ŠÚ SR replacement lacks exact manual source files
-> and reconciliation. PSC remains frozen under `NO_GO_SUCCESSOR_PSC`.
+> remains PortalVS-derived. The [0.23.16 comparison](susr-geography-reconciliation.md)
+> reproduced the reviewed surface but did not clear classifier-specific rights.
+> PSC remains frozen under `NO_GO_SUCCESSOR_PSC`.
 > The dated findings below are not current availability or rights checks.
 
 > **0.23.9 full-source correction (2026-10-15):** this is historical 0.23.3

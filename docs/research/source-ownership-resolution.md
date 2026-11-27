@@ -1,3 +1,14 @@
+> **Historical 0.23.15 record.** The original text below is retained as a dated
+> checkpoint, not current classifier-specific clearance. The [2026-11-20 reply](susr-geography-clarification.md)
+> confirms LSUJ1/0024 and LSUJ2/0025 but declines to decide questions 2–6.
+> [Current rights](susr-geography-rights.md) are `CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING`;
+> the earlier candidate-level reuse interpretation is superseded. The follow-up
+> was manually sent 2026-11-27 in the existing thread, `SENT_AWAITING_REPLY`;
+> routing to the competent unit is unverified. No permission is inferred.
+> The [0.23.16 comparison](susr-geography-reconciliation.md) closes the historical
+> manual-file and technical gates, not the rights gate.
+
+<!-- BEGIN PRESERVED 0.23.15 RECORD -->
 # 0.23.15 — Source Ownership Resolution & PortalVS Exit
 
 **Geography verdict: `NO_GO_SUSR_GEOGRAPHY_REPLACEMENT`**

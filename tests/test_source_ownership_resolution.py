@@ -68,19 +68,29 @@ def test_telecom_resolution_does_not_refresh_or_rehash_production() -> None:
 
 def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
     registry = _registry()
-    for source_id in ("districts", "municipalities"):
+    for source_id, confirmed_classifier, matched in (
+        ("districts", "LSUJ1 / 0024", "79/79 district"),
+        ("municipalities", "LSUJ2 / 0025", "2927/2927 municipality"),
+    ):
         internal = registry[source_id]
         assert internal["licenceStatus"] == "pending verification"
         assert internal["termsUrl"] == "pending"
         assert internal["sourceUrl"].startswith("https://ciselniky2.portalvs.sk/")
         assert "REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER" in internal["notes"]
-        assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in internal["notes"]
-        assert "MANUAL_SOURCE_FILES_REQUIRED" in internal["nextAction"]
+        assert "Production remains PortalVS-derived" in internal["notes"]
+        assert f"reply received 2026-11-20 confirmed {confirmed_classifier}" in internal["notes"]
+        assert "manually acquired the official LSUJ1 / 0024 and LSUJ2 / 0025 CSVs on 2026-11-27" in internal["notes"]
+        assert "SUSR_TECHNICAL_FULL_REPLACEMENT_READY" in internal["notes"]
+        assert f"{matched} records reproduced exactly" in internal["notes"]
+        assert "zero material PortalVS dependency for rebuilding the reviewed snapshot" in internal["notes"]
+        assert "MANUAL_SOURCE_FILES_REQUIRED" not in internal["nextAction"] + internal["notes"]
+        assert "RIGHTS_CONFIRMATION_PENDING" in internal["nextAction"]
         assert "SENT_AWAITING_REPLY" in internal["nextAction"]
-        assert "maintainer manually sent" in internal["nextAction"]
-        assert "on 2026-11-05" in internal["nextAction"]
-        assert "reply pending and no permission inferred" in internal["nextAction"]
-        assert "does not replace the manual source-file/reconciliation gate" in internal["nextAction"]
+        assert "maintainer manually sent the rights escalation on 2026-11-27" in internal["nextAction"]
+        assert "Competent-unit routing is unverified; no permission is inferred" in internal["nextAction"]
+        assert "CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING" in internal["notes"]
+        assert "SUSR_REUSE_VERIFIED" not in internal["notes"]
+        assert internal["lastChecked"] == "2026-11-27"
         public = client.get(f"/v1/sources/{source_id}").json()["data"]
         assert public["licence"]["status"] == "pending"
         assert public["lastUpdated"] == "2026-10-16"
@@ -105,6 +115,9 @@ def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
 
 def test_geography_verdict_is_single_and_acquisition_gate_is_explicit() -> None:
     text = (RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8")
+    banner, text = text.split("<!-- BEGIN PRESERVED 0.23.15 RECORD -->", 1)
+    assert "Historical 0.23.15 record" in banner
+    assert "CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING" in banner
     assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in text
     assert "SUSR_GEOGRAPHY_FULL_REPLACEMENT" not in text
     assert "SUSR_GEOGRAPHY_PARTIAL_REPLACEMENT" not in text
@@ -153,7 +166,11 @@ def test_both_source_owner_dispatches_are_consistent_across_current_docs() -> No
         assert "Slovenská pošta" in text, path
         assert "ŠÚ SR" in text, path
         assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in text, path
-        assert "MANUAL_SOURCE_FILES_REQUIRED" in text, path
+        if path.parent == RESEARCH:  # retained pre-capture checkpoints
+            assert "MANUAL_SOURCE_FILES_REQUIRED" in text, path
+        else:
+            assert "SUSR_TECHNICAL_FULL_REPLACEMENT_READY" in text, path
+            assert "RIGHTS_CONFIRMATION_PENDING" in text, path
         assert "NO_GO_SUCCESSOR_PSC" in text, path
         # Preserve the evidence boundary, not execution-diary phrasing in guides.
         assert "maintainer" in text.lower() and "manually sent" in text.lower(), path
@@ -161,7 +178,10 @@ def test_both_source_owner_dispatches_are_consistent_across_current_docs() -> No
 
 
 def test_geography_outbound_scope_does_not_reopen_research_or_add_a_gate() -> None:
-    text = " ".join((RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8").split())
+    # These are explicitly historical 0.23.15 dispatch assertions, not current
+    # claims that no geography reply has arrived or that exact-file reuse cleared.
+    text = (RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8")
+    text = " ".join(text.split("<!-- BEGIN PRESERVED 0.23.15 RECORD -->", 1)[1].split())
     for scope in (
         "exact authoritative municipality and district classifiers",
         "CC BY 4.0 applicability", "local storage", "CSV/XML → JSON",

@@ -1,6 +1,6 @@
 # Research index
 
-Navigation for **OpenSK 0.23.15**. Research notes preserve what was known at
+Navigation for **OpenSK 0.23.16**. Research notes preserve what was known at
 their stated dates; a historical GO, pending reply, proposed route or test count
 is not a current production/compliance claim. Follow the decision entry points
 below rather than copying current facts into every earlier spike.
@@ -10,7 +10,7 @@ below rather than copying current facts into every earlier spike.
 | Topic | Decision/evidence to use |
 | --- | --- |
 | Source rights and outreach | [Dispatch/reply record](source-licence-outreach.md), [retained source evidence](source-verification-evidence.md), [compliance matrix](../source-compliance.md) |
-| Geography source ownership and replacement gate | [0.23.15 ownership/replacement decision](source-ownership-resolution.md) |
+| Geography source ownership and replacement gate | [Current reconciliation/handoff](susr-geography-reconciliation.md), [reply](susr-geography-clarification.md), [rights](susr-geography-rights.md), [non-content manifest](susr-geography-acquisition.json); [historical 0.23.15](source-ownership-resolution.md) |
 | Banks | [NBS clarification and 0.23.8 production refresh](nbs-bank-reuse-clarification.md) |
 | Holidays/business days | [Statutory correctness and supported horizon](holiday-calendar-correctness.md) |
 | Procurement expansion | [Final 0.23.13 coverage decision](existing-dataset-coverage-audit.md#finalization--2026-10-28), supported by the [buyer-privacy evidence checkpoint](procurement-buyer-privacy.md) |
