@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **0.23.16-dev (blocked, not finalized):** record the maintainer-confirmed ŠÚ SR reply received 2026-11-20 and follow-up sent 2026-11-27. LSUJ1/0024 and LSUJ2/0025 source identity is confirmed; exact-classifier reuse remains pending specialist determination despite supportive general terms updated 2026-10-13. Added non-content acquisition requirements, offline reconciliation tooling and synthetic safeguards. Exact manual files are absent (`MANUAL_SOURCE_FILES_REQUIRED`), so no technical verdict or successful milestone is claimed. Production geography/PSC, all other served datasets/freshness, 42 GETs, operation IDs and `v1` are unchanged; only district/municipality registry evidence advances. [Handoff and red team](docs/research/susr-geography-reconciliation.md).
 - Hardened ASCII numeric parsing, Slovak IBAN structure validation and conditional caching (weak ETags and validator precedence). IBAN responses are now `no-store` with no ETag/Last-Modified; supplied server commands disable access logging. Existing route IDs, envelope versions and production datasets are unchanged.
 - Made dataset validation and offline writes fail closed; rejected contradictory PSC promotion/dry-run modes, added atomic PSC writes, bounded archive/worksheet/download/decimal processing, and hardened XML and research-company privacy checks.
 - Removed repeated filter scans and unused internal helpers, indexed geography lookups, and isolated preview-writing tests from existing developer artifacts. Added regression tests for the audited failure paths.
