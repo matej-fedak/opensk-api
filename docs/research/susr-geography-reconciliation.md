@@ -127,8 +127,10 @@ and manifest metadata; do not edit hashes to bypass review. No production mode.
 Production is still the PortalVS-derived local snapshot with unchanged source,
 freshness and licence posture. All served dataset bytes and 42 GET operations,
 operation IDs, `/v1` and `metadata.version: v1` are preserved by the reconciliation.
-Only the previously authorized registry evidence differs from the pre-milestone
-base. PSC is separate, unchanged and `NO_GO_SUCCESSOR_PSC`. No runtime upstream.
+Only the district and municipality evidence in the internal source registry
+differs from the pre-milestone base. The registry records the completed technical
+comparison and the pending rights escalation, not a change of production source.
+PSC is separate, unchanged and `NO_GO_SUCCESSOR_PSC`. No runtime upstream.
 
 The remaining production blocker is **exact-classifier rights applicability**
 (including transformation, commercial use, attribution and acquisition).
@@ -147,9 +149,9 @@ Exact capture URL/version remain unknown; later exports need renewed verificatio
 - **46 local HTTP smoke checks passed**. Dataset validation passed with zero
   errors and 35 retained warnings; referential integrity, documentation links,
   lint, compilation and whitespace checks passed.
-- All 15 dataset files remained byte-identical to the prior draft. The 14
-  protected files also matched the raw-byte pre-milestone baseline; the sole
-  base-to-branch dataset difference is the earlier source-registry evidence.
+- All 14 production dataset files matched the raw-byte pre-milestone baseline.
+  Only the district and municipality evidence in the source registry differs;
+  the public source catalogue responses are unchanged.
   The operation inventory matched the exact pre-milestone 42 GET tuples.
 
 ## Red team

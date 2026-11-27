@@ -6,13 +6,14 @@ identify **ciselniky2** county/town as current production sources, with
 dataset publication date is provided). `/v1/sources/psc` intentionally retains
 historical **legacy classifier 42**, partial coverage and its old freshness.
 This mixed provenance is truthful, not a catalogue inconsistency. All three
-remain licence **pending**. In 0.23.15 their limitations record PortalVS's
-2026-11-02 source-owner redirect without treating it as redistribution rights;
-district/municipality replacement remains blocked by missing exact manual ŠÚ SR
-source files and deterministic reconciliation. The maintainer manually sent
-both the ŠÚ SR classifier and Slovenská pošta PSC clarification requests on
-2026-11-05; both are `SENT_AWAITING_REPLY`, with no permission inferred. PSC
-additionally retains `NO_GO_SUCCESSOR_PSC`.
+remain licence **pending**. Their limitations record PortalVS's 2026-11-02
+source-owner redirect without treating it as redistribution rights. The
+[0.23.16 reconciliation](research/susr-geography-reconciliation.md) established
+technical readiness from manually acquired ŠÚ SR files, and the internal
+registry records that evidence. The public catalogue still describes the
+served PortalVS snapshots. The 2026-11-27 classifier rights escalation remains
+`SENT_AWAITING_REPLY`; PSC separately retains `NO_GO_SUCCESSOR_PSC` while the
+2026-11-05 Slovenská pošta request awaits a reply.
 
 Since 0.23.8, `banks` is aligned with NBS v226 / effective 2026-10-08 / downloaded
 2026-10-15T16:23:00Z. Rights remain NBS Terms of Use + the 2026-10-14 clarification,

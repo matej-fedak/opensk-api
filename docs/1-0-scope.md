@@ -70,7 +70,7 @@ If PortalVS source rights are not resolved before final `1.0.0`, these routes mu
 Only included candidate endpoints create must-fix blockers:
 
 - Resolve or exclude PortalVS-backed districts, municipalities, and PSC.
-- PortalVS's 2026-11-02 redirect is not permission. The ŠÚ SR geography and Slovenská pošta PSC requests sent 2026-11-05 await replies. Verified candidate classifier terms alone do not replace production provenance: exact manual files and reconciliation remain required.
+- PortalVS's 2026-11-02 redirect is not permission. The [0.23.16 geography reconciliation](research/susr-geography-reconciliation.md) established technical readiness; classifier-specific reuse remains `RIGHTS_CONFIRMATION_PENDING` and the 2026-11-27 escalation awaits a reply. The separate Slovenská pošta PSC request sent 2026-11-05 also awaits a reply. Production provenance remains PortalVS-derived.
 - Retain exact source licence and attribution evidence for included Yellow datasets.
 - Keep company/IČO docs clearly seed-backed with no national coverage implication.
 - Preserve explicit limitations for PSC partial coverage, vehicle historical/reference scope, school aggregate-only scope, and TED_PARTIAL procurement scope.

@@ -68,24 +68,29 @@ def test_telecom_resolution_does_not_refresh_or_rehash_production() -> None:
 
 def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
     registry = _registry()
-    for source_id in ("districts", "municipalities"):
+    for source_id, confirmed_classifier, matched in (
+        ("districts", "LSUJ1 / 0024", "79/79 district"),
+        ("municipalities", "LSUJ2 / 0025", "2927/2927 municipality"),
+    ):
         internal = registry[source_id]
         assert internal["licenceStatus"] == "pending verification"
         assert internal["termsUrl"] == "pending"
         assert internal["sourceUrl"].startswith("https://ciselniky2.portalvs.sk/")
         assert "REPLY_RECEIVED_REDIRECTED_TO_SOURCE_OWNER" in internal["notes"]
-        assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in internal["notes"]
-        assert "MANUAL_SOURCE_FILES_REQUIRED" in internal["nextAction"]
+        assert "Production remains PortalVS-derived" in internal["notes"]
+        assert f"reply received 2026-11-20 confirmed {confirmed_classifier}" in internal["notes"]
+        assert "manually acquired the official LSUJ1 / 0024 and LSUJ2 / 0025 CSVs on 2026-11-27" in internal["notes"]
+        assert "SUSR_TECHNICAL_FULL_REPLACEMENT_READY" in internal["notes"]
+        assert f"{matched} records reproduced exactly" in internal["notes"]
+        assert "zero material PortalVS dependency for rebuilding the reviewed snapshot" in internal["notes"]
+        assert "MANUAL_SOURCE_FILES_REQUIRED" not in internal["nextAction"] + internal["notes"]
+        assert "RIGHTS_CONFIRMATION_PENDING" in internal["nextAction"]
         assert "SENT_AWAITING_REPLY" in internal["nextAction"]
-        assert "maintainer manually sent" in internal["nextAction"]
-        assert "on 2026-11-05" in internal["nextAction"]
-        assert "recipient/competent-unit routing unverified and no permission inferred" in internal["nextAction"]
-        assert "reply received 2026-11-20" in internal["nextAction"]
-        assert "2026-11-27" in internal["nextAction"]
+        assert "maintainer manually sent the rights escalation on 2026-11-27" in internal["nextAction"]
+        assert "Competent-unit routing is unverified; no permission is inferred" in internal["nextAction"]
         assert "CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING" in internal["notes"]
         assert "SUSR_REUSE_VERIFIED" not in internal["notes"]
         assert internal["lastChecked"] == "2026-11-27"
-        assert "does not replace the manual source-file/reconciliation gate" in internal["nextAction"]
         public = client.get(f"/v1/sources/{source_id}").json()["data"]
         assert public["licence"]["status"] == "pending"
         assert public["lastUpdated"] == "2026-10-16"
