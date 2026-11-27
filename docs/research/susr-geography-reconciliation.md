@@ -196,3 +196,19 @@ comparison independently of Windows/Linux checkout line endings. Source-registry
 fixture changes must be limited to the two intentional evidence updates. Local
 validation and CI results are reported in the PR; no CI success is inferred before
 it runs. No merge, tag or release is authorized.
+
+Local checkpoint **2026-11-27**, Python **3.14.5**:
+
+- Dataset validation: **15 datasets, zero errors**, 35 retained compliance/coverage
+  warnings; referential integrity passed.
+- Full pytest: **1,548 passed**; focused reconciliation/evidence/ownership tests:
+  **55 passed**. These do not establish actual classifier reproduction.
+- Local uvicorn HTTP smoke: **46 passed, zero failed**; server stopped afterward.
+- Ruff, compilation, changed Markdown local-link targets and whitespace: passed.
+- All **14 protected raw-byte hashes** and the exact **42-operation inventory**
+  match the pre-work baseline. Registry delta is only `lastChecked`, `nextAction`,
+  `notes` for districts/municipalities. Preserved 0.23.15 record matches the base
+  exactly. No public-response digest fixture needed updating.
+
+GitHub CI is a separate check; local success is not a claim that remote CI ran or
+passed, nor grounds for clearing the manual-input or rights gates.
