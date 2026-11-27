@@ -1,6 +1,6 @@
 # Research index
 
-Navigation for **OpenSK 0.23.16-dev**. Research notes preserve what was known at
+Navigation for **OpenSK 0.23.16**. Research notes preserve what was known at
 their stated dates; a historical GO, pending reply, proposed route or test count
 is not a current production/compliance claim. Follow the decision entry points
 below rather than copying current facts into every earlier spike.

@@ -1,214 +1,185 @@
-# 0.23.16-dev — ŠÚ SR Geography Reconciliation & Rights Escalation
+# 0.23.16 — ŠÚ SR Geography Reconciliation & Rights Escalation
 
-## Current result: blocked acquisition, not a technical verdict
+**Technical verdict: `SUSR_TECHNICAL_FULL_REPLACEMENT_READY`.** Both manually
+acquired captures reproduce every field of all **79 districts and 2,927
+municipalities**, with zero material PortalVS dependency for rebuilding that
+surface. This is snapshot-scoped technical evidence, not a migration decision.
 
-**`MANUAL_SOURCE_FILES_REQUIRED`**. No exact official LSUJ1/0024 or LSUJ2/0025
-CSV/XML has been supplied. Actual source hashes, schema, row counts, special-row
-counts, relationship differences and remaining PortalVS dependencies are
-**unknown**, not zero. `technicalVerdict` is **null**. Neither synthetic examples,
-the catalogue page nor the generic format PDF establish real reproduction of
-the **79 districts / 2,927 municipalities**. The version stays **`0.23.16-dev`**;
-this draft does not claim successful milestone completion.
+**Production gate: `RIGHTS_CONFIRMATION_PENDING`.** The [2026-11-20 reply](susr-geography-clarification.md)
+confirms LSUJ1/0024 and LSUJ2/0025, but the responding unit declined to decide
+questions 2–6. General terms updated **2026-10-13**, rechecked **2026-11-27**, support
+CC BY 4.0; **`CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING`** remains. The maintainer
+sent the follow-up **2026-11-27** in the existing thread: `SENT_AWAITING_REPLY`;
+competent-unit routing is unverified. See the [rights review](susr-geography-rights.md).
 
-Source identity is confirmed by the [reply received 2026-11-20](susr-geography-clarification.md).
-Separately, **`GENERAL_SUSR_TERMS_SUPPORT_CC_BY_4_0`** is supporting evidence;
-**`CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING`** and **`RIGHTS_CONFIRMATION_PENDING`**
-remain. The responding unit explicitly declined questions 2–6. Follow-up was
-manually sent **2026-11-27** in the existing thread, **`SENT_AWAITING_REPLY`**;
-competent-unit routing is unverified. [Rights analysis](susr-geography-rights.md).
+## Manual capture and verification
 
-Production remains the PortalVS snapshot; no source, licence or freshness upgrade
-and no geography/PSC promotion. All 14 other served JSON datasets are protected;
-only district/municipality evidence in `data/sources.json` changes. No runtime
-upstream, route, SDK, DB or Redis is introduced. PSC remains
-**`NO_GO_SUCCESSOR_PSC`**, independent of geography.
+The maintainer supplied the original official catalogue downloads, confirmed
+**2026-11-27**, day precision only. No time of day, exact download URL, publisher
+signature or export version was supplied. The files do not embed classifier
+numbers; identity is based on the direct institutional reply, the maintainer's
+catalogue handoff, and consistency of the two files' distinct coded content.
+No new `CL000024`/`CL000025` crosswalk is asserted. Nothing was downloaded by the
+tool or substituted for the captures. The earlier missing-file checkpoint is in
+branch history.
 
-## Manual handoff and observation
+| Capture | Bytes | SHA-256 | Data rows |
+| --- | ---: | --- | ---: |
+| LSUJ1 / 0024 | 16,123 | `8de949f0b3a5cf3981a4459bbf40c6ae93d3c890376e689054c8aa177f70a3fe` | 81 |
+| LSUJ2 / 0025 | 564,546 | `ef5be6d9dccfdc24e2c0cf50790818344fe3118b3cf2763be5bae430b1a664bf` | 2,930 |
 
-1. The maintainer manually opens the [official catalogue](https://zber.statistics.sk/metaudaje/ciselniky),
-   searches **0024 / LSUJ1** and **0025 / LSUJ2**, verifies the official titles,
-   and downloads CSV. Optional XML may clarify metadata; it is not yet parsed by
-   this tool. No requests/httpx/curl/wget/PowerShell download, browser automation,
-   scraper, cached web substitute or PortalVS substitute is permitted.
-2. Keep exact bytes in a private directory **outside the repository**. Record the
-   genuine acquisition date/time, precision and timezone if known; exact download
-   URL if observed; source version/validity/metadata date if present. Do not use
-   filesystem mtime, inspection time or guessed precision as acquisition time.
-3. Run local observation, replacing the relative placeholders with private paths:
+Both are UTF-8 without BOM, comma-delimited, LF, with the same 25-column header
+and `DD.MM.YYYY` date fields. Exact order and header hash are in the [manifest](susr-geography-acquisition.json).
+The reviewed profile rejects header/dialect drift, duplicate published codes,
+invalid dates, reversal of validity/metadata dates and checksum mismatch.
+Earliest `validFrom` is **2004-08-01** for both; `validTo` is populated on **1 / 2**
+rows respectively. All `dateModified` values are **2019-12-27**: a row metadata
+date, not acquisition, an export version, or evidence of freshness in 2026.
+Open-ended validity is interpreted as published, not a guarantee of legal or
+administrative currency outside this comparison. The generic format PDF did not
+establish the actual header; the two captures did.
 
-   ```powershell
-   python scripts/reconcile_susr_geography.py --inspect-files --districts-file PRIVATE/0024.csv --municipalities-file PRIVATE/0025.csv --delimiter ";"
-   ```
+## Rebuild from official codes, then compare
 
-   Observation prints only non-content file metadata and leaves acquisition
-   claims/timestamps null. Exit **2** is expected: it is not reconciliation or
-   profile approval. Comma is also supported explicitly. No file is written by
-   default; no network is used. Do not commit terminal output containing private
-   paths or unreviewed source metadata.
-4. Review the actual header/dialect/validity and coded parent semantics. The
-   generic official PDF documents an attribute vocabulary, **not these CSVs' exact
-   schema**. The provisional profile requires `code`, `officialTitle`, `validFrom`,
-   strict UTF-8 with correctly recorded optional BOM and comma/semicolon. It
-   rejects unknown columns, duplicate codes, row-width drift and invalid dates.
-   A mismatch means **stop and adapt the reviewed profile/tests**, not strip an
-   unknown field, guess an encoding or pretend that the source is unusable.
-5. Only after genuine manual origin/schema review, fill the non-content
-   [acquisition manifest](susr-geography-acquisition.json): every required file
-   field, real bytes/SHA-256/encoding/delimiter/rowCount/headers/headerSha256,
-   actual acquisition metadata and reviewed transformation/relationship evidence.
-   Unknown version/validity/date/download URL may be null, not invented. Never
-   put local paths or raw rows in the manifest. Header hash is SHA-256 of the
-   compact UTF-8 JSON header array, preserving spelling and order.
-6. Reviewed states are `acquisitionStatus: MANUAL_FILES_SUPPLIED`,
-   `sourceProfileStatus: REVIEWED_MANUAL_FILES`; each transformation profile uses
-   `id: susr-geography-csv-v1`, `reviewStatus: REVIEWED_MANUAL_SOURCE`, an explicitly
-   selected source name field and reviewed transforms. These are human evidence
-   assertions, not permissions or publisher signatures.
+- **Districts (LSUJ1):** preserve original string `code` and three-digit
+  numeric `note`. Keep the 67 already decimal public codes; convert the last
+  `A`–`D` to `10`–`13` for the 12 OpenSK compatibility IDs. Every domestic row is
+  independently checked against its numeric `note`, including the region
+  digit. E.g. `SK031A` / `510` → `SK03110`. The complete mappings are `SK031A/B`
+  → `SK03110/11`, `SK032A–D` → `SK03210–13`, `SK041A–D` → `SK04110–13`, and
+  `SK042A/B` → `SK04210/11`. Strip literal `Okres ` from `officialTitle` and
+  verify equality to `mediumTitle` on all 79 records. The source text is preserved.
+- **Municipalities (LSUJ2):** preserve full published `code`, take the original
+  six-digit `note` as the public code (verified to be the exact suffix), and
+  strip that suffix for an exact join to the published LSUJ1 `code`. No separate
+  parent column; do not interpret `info`/`additionalInfo` as one. Normalize
+  whitespace in `officialTitle`, then add ` (okres DISTRICT)` only for repeated
+  names among active domestic rows. There are **95** duplicate-title groups
+  covering **205** displays. Both corrections, **504173** (Vozokany, Galanta)
+  and **504742** (Radošovce, Skalica), reproduce through the rule, without manual
+  overrides or name-based identity inference.
+- **Regions and parent links:** the first five characters of the district code
+  identify one of the eight region codes; municipalities inherit the region
+  through the exact district join. The [official ŠÚ SR 2019 coded table](https://volby.statistics.sk/opendata/eup/2019/EP_2019_SK_tab0c.csv)
+  shows separate RŠÚJ3, LŠÚJ1, LŠÚJ2 and numeric IDs, corroborating their roles
+  (e.g. `SK010` → `SK0101` → `SK0101528595`, numeric `528595`). It is a semantic
+  cross-check, not a replacement input or current coverage claim. All domestic
+  code decompositions, district references, eight region codes and transformed
+  fields were checked against the actual captures and the served surface. These
+  links are **OpenSK deterministic derivations from official codes**, not separate
+  authoritative relationships. **559** municipality parent IDs receive the
+  decimal compatibility transform. `country: SK` is the OpenSK domestic constant.
 
-The tool currently supports parent relationships only when an actual retained
-source field has verified coded semantics (`DIRECT_SOURCE_CODE_FIELD`, field,
-official evidence URL, description, `verified: true`). Generic `info`/`additionalInfo`
-are **not assumed** to be relationship columns. Absent evidence leaves candidate
-fields null. If the source instead needs a documented hierarchy or another
-cleared source, extend and test that explicit evidence profile; do not fill
-candidate parents from production or names. Such extensions are not implemented
-or established by this blocked draft.
+The build does not read baseline records to fill candidates or determine duplicate
+names; the baseline is used only for comparison. `SOURCE_NAME` remains separate
+from `OPEN_SK_DISPLAY_NAME`. Source-derived values, deterministic derived links,
+and OpenSK compatibility/presentation values are classified separately.
 
-## Reconciliation and review policy
+## Exhaustive results
+
+| Measure | Districts | Municipalities |
+| --- | ---: | ---: |
+| Source rows | 81 | 2,930 |
+| Full current record matches | 79 | 2,927 |
+| Unmatched current records / conflicts | 0 / 0 | 0 / 0 |
+| Raw official title vs public name differences | 79 | 205 |
+| Explained by presentation transform | 79 | 205 |
+| Remaining name-only / relationship differences | 0 / 0 | 0 / 0 |
+| Material PortalVS-only dependencies | 0 | 0 |
+
+All **17 Bratislava** and **22 Košice** boroughs reproduce with their full
+official titles, as do military units **500267**, **518581**, and **518638**
+(Valaškovce). All **five source-only rows** remain in local diagnostics:
+
+| Capture | Published code | Classification | Evidence |
+| --- | --- | --- | --- |
+| LSUJ1 | `SKZZZ` | `FOREIGN_PSEUDO` | Foreign title, blank numeric note; ended 2014-09-22. |
+| LSUJ1 | `SKZZZZ` | `FOREIGN_PSEUDO` | Successor foreign code, blank numeric note; open-ended since 2014-09-23. |
+| LSUJ2 | `SKZZZZ` | `FOREIGN_PSEUDO` | Foreign title, blank numeric note; ended 2014-09-22. |
+| LSUJ2 | `SKZZZZZZZZZZ` | `FOREIGN_PSEUDO` | Successor foreign code, blank numeric note; open-ended since 2014-09-23. |
+| LSUJ2 | `SK0413523551` | `INACTIVE` | Javorina military unit, numeric `523551`; ended 2010-12-31. |
+
+No active domestic row was dropped or filled from PortalVS. Source rows and
+original attributes are kept out of Git. Unknown future active source-only rows
+block a verdict pending review.
+
+## Reproduce offline
+
+Manually acquire the identified exports from the [official catalogue](https://zber.statistics.sk/metaudaje/ciselniky)
+and keep the original bytes outside the repository. No automated downloads,
+browser automation, cached replacements or PortalVS substitute. For these exact
+captures (replace placeholders with private paths):
 
 ```powershell
-python scripts/reconcile_susr_geography.py --districts-file PRIVATE/0024.csv --municipalities-file PRIVATE/0025.csv
-python scripts/reconcile_susr_geography.py --districts-file PRIVATE/0024.csv --municipalities-file PRIVATE/0025.csv --write-diagnostics
+python scripts/reconcile_susr_geography.py --inspect-files --districts-file PRIVATE/LSUJ1.csv --municipalities-file PRIVATE/LSUJ2.csv --delimiter ','
+python scripts/reconcile_susr_geography.py --districts-file PRIVATE/LSUJ1.csv --municipalities-file PRIVATE/LSUJ2.csv --write-diagnostics
 ```
 
-Dry-run is the default. The second command writes only ignored
-`data/generated/susr-geography-reconciliation.json`; it cannot promote production.
-Generated diagnostics retain source attributes locally and must not be committed
-as a raw dump. Without files, `--write-diagnostics` can record the honest blocked
-status with null result counts. Exit codes: **0** full candidate reproduction,
-**1** partial/no-go comparison, **2** missing evidence, review needed or input error.
-Rights remain pending even on exit 0.
+Inspection is observation only (exit 2), never a manual-origin attestation.
+Comparison is dry-run by default; `--write-diagnostics` writes only ignored
+`data/generated/susr-geography-reconciliation.json`. Detailed stdout and the
+report contain source attributes; keep them private. Missing files or schema
+drift block execution, not a technical no-go. Fresh files require fresh review
+and manifest metadata; do not edit hashes to bypass review. No production mode.
 
-- Codes remain strings; municipality identity joins only on original six-digit
-  code. Duplicate names are allowed. No fuzzy/name-only identity inference.
-- `SOURCE_NAME`, `OPEN_SK_DISPLAY_NAME`, candidate fields and actual production
-  values remain distinct. Every compared field is classified as `DIRECT_SUSR`,
-  `DETERMINISTIC_DERIVATION_FROM_SUSR`, `OPEN_SK_COMPATIBILITY_VALUE`,
-  `OTHER_VERIFIED_SOURCE` (reserved for an evidenced future profile), or
-  `PORTALVS_ONLY` (not independently reproduced in this comparison).
-- The provisional district formatter maps a three-digit source code's first
-  digit to the explicit OpenSK region namespace and decimal suffix. This is an
-  **OpenSK compatibility transform**, not a confirmed source-code hierarchy or
-  authoritative relationship. Capture loading requires a reviewed
-  `districtIdDerivation` with id `opensk-district-namespace-v1`, `verified: true`,
-  official evidence URL and description. It must be checked against genuine codes and
-  independent coded parents before real readiness is accepted. Its synthetic
-  success does not prove PortalVS-free reproduction of official identifiers.
-- All 12 historical/public ID pairs are explicitly audited:
+## Production and remaining blockers
 
-  | Historical aliases | Current public IDs |
-  | --- | --- |
-  | `SK031A`, `SK031B` | `SK03110`, `SK03111` |
-  | `SK032A`, `SK032B`, `SK032C`, `SK032D` | `SK03210`, `SK03211`, `SK03212`, `SK03213` |
-  | `SK041A`, `SK041B`, `SK041C`, `SK041D` | `SK04110`, `SK04111`, `SK04112`, `SK04113` |
-  | `SK042A`, `SK042B` | `SK04210`, `SK04211` |
+Production is still the PortalVS-derived local snapshot with unchanged source,
+freshness and licence posture. All served dataset bytes and 42 GET operations,
+operation IDs, `/v1` and `metadata.version: v1` are preserved by the reconciliation.
+Only the previously authorized registry evidence differs from the pre-milestone
+base. PSC is separate, unchanged and `NO_GO_SUCCESSOR_PSC`. No runtime upstream.
 
-- For duplicate source names within the represented production surface, the
-  candidate formatter adds ` (okres DISTRICT)` from candidate source-derived
-  parents, never the production parent. All **205** current suffixes must be
-  checked, not assumed reproduced. Codes **504173 / 504742** are separately
-  exposed for review; no hardcoded name override asserts that they already match.
-- All source rows/attributes are retained in local diagnostics. Source-only rows
-  need `FOREIGN_PSEUDO`, `TECHNICAL`, `INACTIVE`, `OUT_OF_SCOPE`,
-  `MISSING_FROM_OPEN_SK` or `OTHER`, with reviewed reasons and retained evidence
-  fields. Unreviewed source-only rows block the verdict. Explicit validity may
-  establish an inactive row as of acquisition; no silent filtering to force counts.
-- Current special-unit presence is audited by codes: **17 Bratislava boroughs**,
-  **22 Košice boroughs**, military units **500267**, **518581**, **518638**
-  (Valaškovce). Actual official special attributes/extra units remain uninspected.
-- Diagnostics include source/matched/unmatched/conflict counts, per-field
-  differences, displays, relationships, compatibility categories and unreproduced
-  fields. The remaining-dependency counter counts unresolved fields plus missing
-  records; it does not measure legal provenance of unchanged production bytes.
-- No `0024 ↔ CL000024` or `0025 ↔ CL000025` crosswalk is newly asserted from the
-  reply; older MetaIS findings remain historical unless directly reverified.
+The remaining production blocker is **exact-classifier rights applicability**
+(including transformation, commercial use, attribution and acquisition).
+A favourable specialist response or equivalent authoritative evidence would
+only trigger consideration of a separate migration, not automatic promotion.
+Exact capture URL/version remain unknown; later exports need renewed verification.
 
-## Completion gates
+## Validation — 2026-11-27
 
-With genuine reviewed files, select exactly one final technical verdict:
+- The two original byte hashes matched on re-read. Repeated offline runs
+  produced identical reports. An independent check using the numeric district
+  note and `mediumTitle` also reproduced both complete served record sets.
+- **1,561 pytest tests passed** locally, including the opt-in exact-capture test
+  (`OPENSK_LSUJ1_CSV` and `OPENSK_LSUJ2_CSV`). Without those private inputs, CI
+  skips that test and exercises the reviewed profile with synthetic fixtures.
+- **46 local HTTP smoke checks passed**. Dataset validation passed with zero
+  errors and 35 retained warnings; referential integrity, documentation links,
+  lint, compilation and whitespace checks passed.
+- All 15 dataset files remained byte-identical to the prior draft. The 14
+  protected files also matched the raw-byte pre-milestone baseline; the sole
+  base-to-branch dataset difference is the earlier source-registry evidence.
+  The operation inventory matched the exact pre-milestone 42 GET tuples.
 
-- **`SUSR_TECHNICAL_FULL_REPLACEMENT_READY`**: all 79/2,927 current records/fields
-  reproduced, all special rows classified, all 12 IDs/205 displays/corrections
-  checked and zero material unresolved PortalVS dependency.
-- **`SUSR_TECHNICAL_PARTIAL_REPLACEMENT_READY`**: substantial reproduction with
-  specific unresolved fields/parents/identifiers. Review the actual extent;
-  the tool's preliminary partial label is not proof of substantial coverage.
-- **`NO_GO_SUSR_TECHNICAL_REPLACEMENT`**: inspected source semantics cannot
-  deterministically reproduce the surface; record the exact blocker.
-
-Do not select any of these merely because files are missing. Lock real aggregate
-invariants only after actual reconciliation, rerun validators/full tests/smoke and
-raw-byte safety checks, then finalize `0.23.16` if the milestone is complete.
-Even a full technical result leaves production **`RIGHTS_CONFIRMATION_PENDING`**.
-Only exact-classifier rights confirmation can trigger consideration of a separate
-small migration; none is queued automatically. If technically unsuitable, park
-the exact blocker. The external-developer pilot is independent.
-
-## Red team — explicit answers at this checkpoint
+## Red team
 
 | # | Question | Answer |
 | --- | --- | --- |
-| 1 | ŠÚ SR directly confirmed LSUJ1/0024? | **Yes**, maintainer-supplied reply received 2026-11-20. |
-| 2 | Directly confirmed LSUJ2/0025? | **Yes**, same reply. |
-| 3 | Explicit CC BY 4.0 applicability to exact files? | **No**; declined competence, specialist determination pending. |
-| 4 | Explicit transformation authorization? | **No**, not in this reply. |
-| 5 | Explicit commercial reuse authorization? | **No**, not for exact classifiers in this reply. |
-| 6 | Explicit automated-acquisition authorization? | **No**; milestone remains manual only. |
-| 7 | General terms distinguished from classifier confirmation? | **Yes**, separate supporting-evidence and applicability states. |
-| 8 | Current 2026-10-13 wording accurately retained? | **Yes**, rechecked 2026-11-27, including qualified automation restriction. |
-| 9 | Exact source files manually supplied? | **No**: `MANUAL_SOURCE_FILES_REQUIRED`. |
-| 10 | Raw source files kept out of Git? | **Yes**; none supplied or committed; private inputs only. |
-| 11 | Municipality joins code-based? | **Yes** in tooling; actual-file join not yet executed. |
-| 12 | Duplicate names without fuzzy identity inference? | **Yes** in synthetic safeguards; names are presentation only. |
-| 13 | Special records retained/classified? | Tool retains every row and gates unreviewed extras; **actual rows not inspected**. |
-| 14 | All 79 districts reproducible? | **Unknown**, no manual files. |
-| 15 | All 2,927 municipalities reproducible? | **Unknown**, no manual files. |
-| 16 | District IDs generated without PortalVS? | **Not established**; provisional compatibility formatter is not actual-source proof. |
-| 17 | Municipality→district without PortalVS? | **Not established**; verified coded source relationship required. |
-| 18 | District→region without PortalVS? | **Not established**; verified field/hierarchy evidence required. |
-| 19 | OpenSK display suffixes distinct from source names? | **Yes**; 205 baseline suffixes, never represented as ŠÚ SR source text. |
-| 20 | Any material field still requires PortalVS? | Current production is PortalVS-derived; independent candidate dependency count **unknown**, not zero. |
-| 21 | Production geography unchanged? | **Yes**, protected hashes; no promotion. |
-| 22 | PSC unchanged? | **Yes**, bytes/freshness/source and `NO_GO_SUCCESSOR_PSC` preserved. |
-| 23 | Exactly 42 GET operations? | **Yes**, inventory guarded. |
-| 24 | All operation IDs unchanged? | **Yes**, exact baseline inventory guarded. |
-| 25 | `/v1` unchanged? | **Yes**, no router/runtime changes. |
-| 26 | `metadata.version` still `v1`? | **Yes**, response checks retained. |
-| 27 | Agent sent any email? | **NO**. Only maintainer-confirmed dispatch is recorded. |
-
-## Validation evidence boundary
-
-Synthetic tests establish parser/join/write/no-network safeguards only. They are
-not official captures, rights evidence or a real technical replacement verdict.
-The acquisition manifest pins the pre-work protected LF hashes and operation
-inventory; an additional private pre-work record permits exact working-tree-byte
-comparison independently of Windows/Linux checkout line endings. Source-registry
-fixture changes must be limited to the two intentional evidence updates. Local
-validation and CI results are reported in the PR; no CI success is inferred before
-it runs. No merge, tag or release is authorized.
-
-Local checkpoint **2026-11-27**, Python **3.14.5**:
-
-- Dataset validation: **15 datasets, zero errors**, 35 retained compliance/coverage
-  warnings; referential integrity passed.
-- Full pytest: **1,548 passed**; focused reconciliation/evidence/ownership tests:
-  **55 passed**. These do not establish actual classifier reproduction.
-- Local uvicorn HTTP smoke: **46 passed, zero failed**; server stopped afterward.
-- Ruff, compilation, changed Markdown local-link targets and whitespace: passed.
-- All **14 protected raw-byte hashes** and the exact **42-operation inventory**
-  match the pre-work baseline. Registry delta is only `lastChecked`, `nextAction`,
-  `notes` for districts/municipalities. Preserved 0.23.15 record matches the base
-  exactly. No public-response digest fixture needed updating.
-
-GitHub CI is a separate check; local success is not a claim that remote CI ran or
-passed, nor grounds for clearing the manual-input or rights gates.
+| 1 | ŠÚ SR confirmed LSUJ1/0024? | Yes, 2026-11-20 reply. |
+| 2 | Confirmed LSUJ2/0025? | Yes, same reply. |
+| 3 | Confirmed exact-file CC BY 4.0? | No. |
+| 4 | Authorized transformation? | No, not in that reply. |
+| 5 | Authorized commercial reuse? | No, not for these files in that reply. |
+| 6 | Authorized automated acquisition? | No; manual only here. |
+| 7 | General terms distinguished from exact-file rights? | Yes. |
+| 8 | Current 2026-10-13 wording retained? | Yes, including the load/stability/availability qualification. |
+| 9 | Exact files supplied manually? | Yes, 2026-11-27, day precision. |
+| 10 | Raw files out of Git? | Yes. |
+| 11 | Municipality joins code-based? | Yes, exact six-digit note and coded district reference. |
+| 12 | Duplicate names without fuzzy identity inference? | Yes, names only drive display formatting. |
+| 13 | Special rows retained/classified? | Yes, five source-only rows classified, all 42 served borough/military records reproduced. |
+| 14 | All 79 districts reproducible? | Yes, all fields match. |
+| 15 | All 2,927 municipalities reproducible? | Yes, all fields match. |
+| 16 | District IDs without PortalVS? | Yes, 67 direct plus 12 deterministic compatibility IDs. |
+| 17 | Municipality→district without PortalVS? | Yes, checked prefix join. |
+| 18 | District→region without PortalVS? | Yes, checked region prefix. |
+| 19 | Display suffixes distinct from source text? | Yes, all 205 reproduced as OpenSK display changes. |
+| 20 | Material PortalVS dependency for reproduction? | None; existing bytes are still PortalVS-derived. |
+| 21 | Production geography unchanged? | Yes. |
+| 22 | PSC unchanged? | Yes, still frozen. |
+| 23 | 42 GET operations? | Yes. |
+| 24 | Exact operation IDs unchanged? | Yes. |
+| 25 | `/v1` unchanged? | Yes. |
+| 26 | `metadata.version` still `v1`? | Yes. |
+| 27 | Agent sent any email? | **NO**. |

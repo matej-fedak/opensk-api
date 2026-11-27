@@ -2,12 +2,16 @@
 
 ## Unreleased
 
-- **0.23.16-dev (blocked, not finalized):** record the maintainer-confirmed ŠÚ SR reply received 2026-11-20 and follow-up sent 2026-11-27. LSUJ1/0024 and LSUJ2/0025 source identity is confirmed; exact-classifier reuse remains pending specialist determination despite supportive general terms updated 2026-10-13. Added non-content acquisition requirements, offline reconciliation tooling and synthetic safeguards. Exact manual files are absent (`MANUAL_SOURCE_FILES_REQUIRED`), so no technical verdict or successful milestone is claimed. Production geography/PSC, all other served datasets/freshness, 42 GETs, operation IDs and `v1` are unchanged; only district/municipality registry evidence advances. [Handoff and red team](docs/research/susr-geography-reconciliation.md).
 - Hardened ASCII numeric parsing, Slovak IBAN structure validation and conditional caching (weak ETags and validator precedence). IBAN responses are now `no-store` with no ETag/Last-Modified; supplied server commands disable access logging. Existing route IDs, envelope versions and production datasets are unchanged.
 - Made dataset validation and offline writes fail closed; rejected contradictory PSC promotion/dry-run modes, added atomic PSC writes, bounded archive/worksheet/download/decimal processing, and hardened XML and research-company privacy checks.
 - Removed repeated filter scans and unused internal helpers, indexed geography lookups, and isolated preview-writing tests from existing developer artifacts. Added regression tests for the audited failure paths.
 - Added hash-locked runtime/development dependency sets, patched dependency resolution, synchronized Python declarations, focused linting and dependency auditing in CI, immutable action references, committed-range whitespace checking and checks-passed Render deployment configuration.
 - Reworked onboarding/contribution/security guidance, reconciled current developer documentation, indexed historical research, restored missing milestone notes and documented the legacy stable-looking tag without modifying it. Source rights/privacy gates remain unchanged.
+
+## 0.23.16
+
+- **`SUSR_TECHNICAL_FULL_REPLACEMENT_READY`**: the exact manually acquired ŠÚ SR LSUJ1/0024 and LSUJ2/0025 exports (81 / 2,930 rows) reproduce every field of 79 districts and 2,927 municipalities with no material PortalVS dependency. All 12 compatibility IDs, 205 display suffixes, boroughs and active military units reproduce; four foreign pseudo rows and one inactive military unit are classified and retained locally. Offline evidence only; no raw exports in Git. [Reconciliation and red team](docs/research/susr-geography-reconciliation.md).
+- **`RIGHTS_CONFIRMATION_PENDING`**: the ŠÚ SR reply received 2026-11-20 confirms source identity, not exact-file reuse. The maintainer's 2026-11-27 follow-up is awaiting reply; general CC BY 4.0 terms do not clear the classifiers. No migration or changes to served datasets, freshness, PSC (`NO_GO_SUCCESSOR_PSC`), 42 GETs, operation IDs or `v1`.
 
 ## 0.23.15
 

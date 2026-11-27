@@ -61,9 +61,9 @@ recording it as a current relationship.
 - Keep `SOURCE_NAME` separate from `OPEN_SK_DISPLAY_NAME`. OpenSK's existing
   district suffixes and reviewed presentation corrections are not ŠÚ SR text.
 
-These invariants govern the offline reconciliation tooling and synthetic tests.
-They do not establish the actual CSV schema, source row counts, coded hierarchy
-or technical replacement verdict before the exact manual files are inspected.
+These reply invariants are not themselves evidence of CSV schema, row counts,
+or technical replacement. Those were established separately from the later
+[manual capture and comparison](susr-geography-reconciliation.md).
 
 ## Questions the unit explicitly declined to decide
 

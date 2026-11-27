@@ -161,7 +161,11 @@ def test_both_source_owner_dispatches_are_consistent_across_current_docs() -> No
         assert "Slovenská pošta" in text, path
         assert "ŠÚ SR" in text, path
         assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in text, path
-        assert "MANUAL_SOURCE_FILES_REQUIRED" in text, path
+        if path.parent == RESEARCH:  # retained pre-capture checkpoints
+            assert "MANUAL_SOURCE_FILES_REQUIRED" in text, path
+        else:
+            assert "SUSR_TECHNICAL_FULL_REPLACEMENT_READY" in text, path
+            assert "RIGHTS_CONFIRMATION_PENDING" in text, path
         assert "NO_GO_SUCCESSOR_PSC" in text, path
         # Preserve the evidence boundary, not execution-diary phrasing in guides.
         assert "maintainer" in text.lower() and "manually sent" in text.lower(), path

@@ -2,7 +2,20 @@
 
 This log records evidence checked for source and licence decisions. It is intentionally conservative and does not create legal certainty by itself.
 
-## 2026-11-27 geography follow-up and current terms; 2026-11-20 technical reply
+## 2026-11-27 manual capture and completed technical comparison
+
+- Both exact official CSVs were manually acquired on **2026-11-27** (maintainer
+  confirmed, day precision). Hashes, observed schema and validity are recorded
+  in the [non-content manifest](susr-geography-acquisition.json); no raw exports
+  are committed. The earlier missing-input checkpoint below is superseded.
+- **`SUSR_TECHNICAL_FULL_REPLACEMENT_READY`**: 81 / 2,930 source rows, exact
+  reproduction of all 79 / 2,927 served records with no material PortalVS-only
+  dependencies. Five source-only rows classified, 12 compatibility IDs and
+  205 display suffixes reproduced. [Technical evidence](susr-geography-reconciliation.md).
+- **`RIGHTS_CONFIRMATION_PENDING`** independently. No migration, rights upgrade,
+  production source/freshness change, or new postal/outreach evidence.
+
+## 2026-11-27 geography follow-up and current terms; 2026-11-20 technical reply (pre-capture checkpoint)
 
 - Original ŠÚ SR geography request manually sent **2026-11-05**; reply received
   **2026-11-20**, both dates confirmed by the maintainer at day precision.

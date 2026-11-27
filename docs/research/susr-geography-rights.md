@@ -67,8 +67,8 @@ the [official catalogue](https://zber.statistics.sk/metaudaje/ciselniky) and sup
 the exact files and actual acquisition metadata privately. Hashes prove capture
 integrity, not permission or a cryptographic publisher signature.
 
-A future `SUSR_TECHNICAL_FULL_REPLACEMENT_READY` result would establish technical
-reproducibility only. Production remains `RIGHTS_CONFIRMATION_PENDING` until
+The [completed `SUSR_TECHNICAL_FULL_REPLACEMENT_READY` comparison](susr-geography-reconciliation.md)
+establishes technical reproducibility only. Production remains `RIGHTS_CONFIRMATION_PENDING` until
 classifier-specific applicability is directly resolved by a competent unit or
 equivalent authoritative evidence is established. Then a separate, deliberately
 scoped migration can be considered; it is not queued automatically. Technical

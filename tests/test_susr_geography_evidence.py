@@ -1,12 +1,15 @@
 """Milestone-wide frozen surface and honest missing-evidence guards."""
 
+from collections import Counter
 import hashlib
 import json
+import os
 import re
 import socket
 from pathlib import Path
 
 from fastapi.testclient import TestClient
+import pytest
 
 from main import app
 from schemas.common import DISTRICTS_LAST_UPDATED, MUNICIPALITIES_LAST_UPDATED, PSC_LAST_UPDATED
@@ -75,15 +78,61 @@ def test_absent_files_are_not_invented_source_evidence_or_a_final_verdict(monkey
         raise AssertionError("no network allowed")
 
     monkeypatch.setattr(socket.socket, "connect", denied)
-    assert MANIFEST["files"] == []
-    assert MANIFEST["acquisitionStatus"] == "MANUAL_SOURCE_FILES_REQUIRED"
-    assert MANIFEST["technicalVerdict"] is None
     report = tool.run_reconciliation()
+    assert report["acquisitionStatus"] == "MANUAL_SOURCE_FILES_REQUIRED"
     assert report["technicalVerdict"] is None
     assert report["sourceRows"] is None
     assert report["districtsReconciled"] is report["municipalitiesReconciled"] is None
     assert report["remainingPortalVSOnlyDependencies"] is None
     assert report["rightsVerdict"] == "RIGHTS_CONFIRMATION_PENDING"
+
+
+def test_retained_capture_metadata_and_reconciliation_aggregates():
+    assert MANIFEST["acquisitionStatus"] == "MANUAL_FILES_SUPPLIED"
+    assert MANIFEST["sourceProfileStatus"] == "REVIEWED_MANUAL_FILES"
+    assert MANIFEST["technicalVerdict"] == "SUSR_TECHNICAL_FULL_REPLACEMENT_READY"
+    assert [(entry["classifierCode"], entry["bytes"], entry["rowCount"]) for entry in MANIFEST["files"]] == [
+        ("0024", 16123, 81), ("0025", 564546, 2930)]
+    for entry in MANIFEST["files"]:
+        assert entry["manuallyAcquired"] is True
+        assert (entry["manuallyAcquiredAt"], entry["timePrecision"], entry["downloadUrl"]) == ("2026-11-27", "day", None)
+        assert tuple(entry["headers"]) == tool.CATALOGUE_HEADERS
+        assert entry["headerSha256"] == tool.header_hash(entry["headers"])
+        assert entry["metadataDate"] == "2019-12-27"
+    evidence = MANIFEST["reconciliation"]
+    for kind, source, matched, extras in (("districts", 81, 79, 2), ("municipalities", 2930, 2927, 3)):
+        assert evidence[kind] == {"sourceRows": source, "matched": matched, "sourceOnly": extras,
+            "unmatched": 0, "conflicts": 0, "sourceTitleVsPublicDifferences": 79 if kind == "districts" else 205,
+            "displayOnlyOpenSKChanges": 79 if kind == "districts" else 205, "nameOnlyDifferences": 0, "relationshipDifferences": 0}
+    assert evidence["sourceOnlyCategories"] == {"FOREIGN_PSEUDO": 4, "INACTIVE": 1}
+    assert evidence["districtCompatibilityIds"] == 12
+    assert evidence["municipalityParentCompatibilityTransforms"] == 559
+    assert evidence["remainingPortalVSOnlyDependencies"] == 0
+
+
+def test_private_real_captures_reproduce_recorded_aggregates():
+    districts = os.getenv("OPENSK_LSUJ1_CSV")
+    municipalities = os.getenv("OPENSK_LSUJ2_CSV")
+    if not districts and not municipalities:
+        pytest.skip("exact private LSUJ captures not supplied to this test run")
+    assert districts and municipalities, "use both private LSUJ capture variables"
+    report = tool.run_reconciliation(districts_file=districts, municipalities_file=municipalities)
+    assert report["technicalVerdict"] == MANIFEST["technicalVerdict"]
+    evidence = MANIFEST["reconciliation"]
+    special = Counter()
+    for kind, dataset in report["datasets"].items():
+        actual = {key: dataset[key] for key in evidence[kind].keys() - {"sourceOnly", "unmatched"}}
+        actual.update(sourceOnly=len(dataset["sourceOnlyRows"]), unmatched=len(dataset["unmatchedProductionCodes"]))
+        assert actual == evidence[kind]
+        special.update(row["classification"] for row in dataset["sourceOnlyRows"])
+    assert special == evidence["sourceOnlyCategories"]
+    assert len(report["compatibilityMappings"]) == evidence["districtCompatibilityIds"]
+    assert all(item["reproducedFromOfficialCode"] for item in report["compatibilityMappings"])
+    assert report["municipalityParentCompatibilityTransforms"] == evidence["municipalityParentCompatibilityTransforms"]
+    assert report["remainingPortalVSOnlyDependencies"] == evidence["remainingPortalVSOnlyDependencies"]
+    assert report["specialUnitRetention"] == {"Bratislava boroughs": 17, "Košice boroughs": 22,
+        "military units": {"500267": True, "518581": True, "518638": True}}
+    assert all(item is not None and not item["differences"] for item in report["reviewedPresentationCodes"].values())
 
 
 def test_reply_followup_and_rights_have_separate_honest_states():

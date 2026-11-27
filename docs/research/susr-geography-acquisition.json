@@ -1,8 +1,8 @@
 {
   "profile": "susr-geography-manual-acquisition-v1",
-  "acquisitionStatus": "MANUAL_SOURCE_FILES_REQUIRED",
-  "sourceProfileStatus": "MANUAL_FILES_AND_SCHEMA_REVIEW_REQUIRED",
-  "technicalVerdict": null,
+  "acquisitionStatus": "MANUAL_FILES_SUPPLIED",
+  "sourceProfileStatus": "REVIEWED_MANUAL_FILES",
+  "technicalVerdict": "SUSR_TECHNICAL_FULL_REPLACEMENT_READY",
   "rightsVerdict": "RIGHTS_CONFIRMATION_PENDING",
   "classifierSpecificApplicability": "CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING",
   "sourcePage": "https://zber.statistics.sk/metaudaje/ciselniky",
@@ -42,7 +42,69 @@
     "sha256": "e9fd208d799fee13145ee2cdfb32fce51375d29ef13d3c900ce943df737f6bdd",
     "scope": "attribute vocabulary only; does not establish exact CSV headers, dialect, file counts or coded hierarchy"
   },
-  "files": [],
+  "manualAcquisitionBasis": "Maintainer confirmed both official catalogue downloads on 2026-11-27, day precision. Exact URLs and export version were not supplied. No filesystem timestamps used.",
+  "files": [
+    {
+      "classifierCode": "0024",
+      "acronym": "LSUJ1",
+      "officialName": "Lokálna štatistická územná jednotka 1 – okres",
+      "sourcePage": "https://zber.statistics.sk/metaudaje/ciselniky",
+      "downloadUrl": null,
+      "manuallyAcquired": true,
+      "manuallyAcquiredAt": "2026-11-27",
+      "timePrecision": "day",
+      "bytes": 16123,
+      "sha256": "8de949f0b3a5cf3981a4459bbf40c6ae93d3c890376e689054c8aa177f70a3fe",
+      "encoding": "utf-8",
+      "delimiter": ",",
+      "rowCount": 81,
+      "headers": ["sortNumber", "code", "officialTitle", "mediumTitle", "shortTitle", "officialTitleEn", "mediumTitleEn", "shortTitleEn", "note", "noteEn", "includes", "includesEn", "includesAlso", "includesAlsoEn", "excludes", "excludesEn", "info", "additionalInfo", "infoEn", "additionalInfoEn", "unitOfMeasure", "validFrom", "validTo", "dateCreated", "dateModified"],
+      "headerSha256": "d31ed0e560dba2633aafa87ce535a3c4858e8e746652aae14213a6d5d1ff9ca2",
+      "sourceVersion": null,
+      "sourceValidity": {"earliestValidFrom": "2004-08-01", "openEndedRows": 80, "explicitValidToRows": 1},
+      "metadataDate": "2019-12-27",
+      "transformationProfile": {
+        "id": "susr-lsuj-catalogue-csv-v2",
+        "reviewStatus": "REVIEWED_MANUAL_SOURCE",
+        "sourceNameField": "officialTitle",
+        "dateFormat": "DD.MM.YYYY",
+        "publicIdRule": "LSUJ1 decimal suffix checked against note",
+        "relationshipRule": "first five LSUJ1 code characters",
+        "relationshipEvidenceUrl": "https://volby.statistics.sk/opendata/eup/2019/EP_2019_SK_tab0c.csv",
+        "nameRule": "remove literal Okres prefix and check mediumTitle"
+      }
+    },
+    {
+      "classifierCode": "0025",
+      "acronym": "LSUJ2",
+      "officialName": "Lokálna štatistická územná jednotka 2 – obec",
+      "sourcePage": "https://zber.statistics.sk/metaudaje/ciselniky",
+      "downloadUrl": null,
+      "manuallyAcquired": true,
+      "manuallyAcquiredAt": "2026-11-27",
+      "timePrecision": "day",
+      "bytes": 564546,
+      "sha256": "ef5be6d9dccfdc24e2c0cf50790818344fe3118b3cf2763be5bae430b1a664bf",
+      "encoding": "utf-8",
+      "delimiter": ",",
+      "rowCount": 2930,
+      "headers": ["sortNumber", "code", "officialTitle", "mediumTitle", "shortTitle", "officialTitleEn", "mediumTitleEn", "shortTitleEn", "note", "noteEn", "includes", "includesEn", "includesAlso", "includesAlsoEn", "excludes", "excludesEn", "info", "additionalInfo", "infoEn", "additionalInfoEn", "unitOfMeasure", "validFrom", "validTo", "dateCreated", "dateModified"],
+      "headerSha256": "d31ed0e560dba2633aafa87ce535a3c4858e8e746652aae14213a6d5d1ff9ca2",
+      "sourceVersion": null,
+      "sourceValidity": {"earliestValidFrom": "2004-08-01", "openEndedRows": 2928, "explicitValidToRows": 2},
+      "metadataDate": "2019-12-27",
+      "transformationProfile": {
+        "id": "susr-lsuj-catalogue-csv-v2",
+        "reviewStatus": "REVIEWED_MANUAL_SOURCE",
+        "sourceNameField": "officialTitle",
+        "dateFormat": "DD.MM.YYYY",
+        "publicIdRule": "six-digit note checked against LSUJ2 suffix",
+        "relationshipRule": "remove six-digit note suffix and join exact LSUJ1 code",
+        "relationshipEvidenceUrl": "https://volby.statistics.sk/opendata/eup/2019/EP_2019_SK_tab0c.csv",
+        "nameRule": "OpenSK duplicate-title disambiguation"
+      }
+    }
+  ],
   "fileRecordRequirements": [
     "classifierCode", "acronym", "officialName", "sourcePage", "downloadUrl",
     "manuallyAcquired", "manuallyAcquiredAt", "timePrecision", "bytes", "sha256",
@@ -50,13 +112,14 @@
     "sourceVersion", "sourceValidity", "metadataDate", "transformationProfile"
   ],
   "headerHashMethod": "SHA-256 of compact UTF-8 JSON header array; original header spelling/order preserved",
-  "missingEvidence": [
-    "Exact official CSV files manually supplied by the maintainer",
-    "Actual acquisition dates/times, precision and download URLs if known",
-    "Exact source schema, encoding and delimiter review",
-    "Official coded relationship fields or verified hierarchy evidence",
-    "Complete source-row and special-record reconciliation"
-  ],
+  "reconciliation": {
+    "districts": {"sourceRows": 81, "matched": 79, "sourceOnly": 2, "unmatched": 0, "conflicts": 0, "sourceTitleVsPublicDifferences": 79, "displayOnlyOpenSKChanges": 79, "nameOnlyDifferences": 0, "relationshipDifferences": 0},
+    "municipalities": {"sourceRows": 2930, "matched": 2927, "sourceOnly": 3, "unmatched": 0, "conflicts": 0, "sourceTitleVsPublicDifferences": 205, "displayOnlyOpenSKChanges": 205, "nameOnlyDifferences": 0, "relationshipDifferences": 0},
+    "sourceOnlyCategories": {"FOREIGN_PSEUDO": 4, "INACTIVE": 1},
+    "districtCompatibilityIds": 12,
+    "municipalityParentCompatibilityTransforms": 559,
+    "remainingPortalVSOnlyDependencies": 0
+  },
   "baseline": {
     "baseCommit": "216677933a258dda69eb856151b4fdba36cf51bd",
     "projectVersion": "0.23.15",
