@@ -335,3 +335,87 @@ def test_raw_classifier_files_are_not_tracked():
     tracked = subprocess.check_output(["git", "ls-files"], cwd=tool.ROOT, text=True).splitlines()
     assert not [name for name in tracked if Path(name).suffix.lower() in {".csv", ".xml", ".zip"}
                 and any(token in name.lower() for token in ("lsuj", "susr-geography", "0024", "0025"))]
+
+
+def catalogue_example():
+    def item(code, note, title, *, medium="", to=""):
+        return {"code": code, "note": note, "officialTitle": title, "mediumTitle": medium,
+                "validFrom": "01.08.2004", "validTo": to, "dateCreated": "13.08.2004", "dateModified": "27.12.2019"}
+
+    districts = [item("SK0101", "101", "Okres Alpha", medium="Alpha"), item("SK031A", "510", "Okres Beta", medium="Beta")]
+    municipalities = [item("SK0101500001", "500001", "Same"), item("SK031A500002", "500002", "Same"),
+                      item("SK031A500003", "500003", "Retired", to="31.12.2010"), item("SKZZZZZZZZZZ", "", "Zahraničie")]
+    sources = {kind: {"rows": rows, "profile": tool.catalogue_profile(kind), "day": date(2026, 11, 27)}
+               for kind, rows in (("districts", districts), ("municipalities", municipalities))}
+    return sources, synthetic()[1]
+
+
+def test_reviewed_catalogue_reads_exact_header_and_preserves_validity_cells(tmp_path):
+    sources, _ = catalogue_example()
+    path = write_csv(tmp_path / "synthetic.csv", sources["municipalities"]["rows"],
+                     delimiter=",", headers=tool.CATALOGUE_HEADERS)
+    rows, metadata = tool.observe_csv(path, delimiter=",", profile=tool.CATALOGUE_PROFILE)
+    assert rows[1]["code"] == "SK031A500002"
+    assert rows[1]["validFrom"] == "01.08.2004"
+    assert metadata["rowCount"] == 4
+    assert tool.catalogue_metadata(rows)["sourceValidity"]["explicitValidToRows"] == 1
+    assert tool.catalogue_metadata(rows)["metadataDate"] == "2019-12-27"
+
+
+@pytest.mark.parametrize("mutation", ["header", "date", "bom"])
+def test_reviewed_catalogue_rejects_export_profile_drift(tmp_path, mutation):
+    sources, _ = catalogue_example()
+    rows = sources["municipalities"]["rows"]
+    headers = list(tool.CATALOGUE_HEADERS)
+    if mutation == "header":
+        headers.reverse()
+    elif mutation == "date":
+        rows[0]["validFrom"] = "2004-08-01"
+    encoding = "utf-8-sig" if mutation == "bom" else "utf-8"
+    path = write_csv(tmp_path / "synthetic.csv", rows, delimiter=",", headers=headers, encoding=encoding)
+    with pytest.raises(ValueError):
+        tool.observe_csv(path, delimiter=",", encoding=encoding, profile=tool.CATALOGUE_PROFILE)
+
+
+@pytest.mark.parametrize("mutation,error", [("district_note", "numeric note"), ("suffix", "suffix mismatch"),
+    ("parent", "active LSUJ1"), ("duplicate_note", "duplicate derived"), ("foreign", "pseudo-row")])
+def test_catalogue_refuses_guessing_id_or_parent(mutation, error):
+    sources, baseline = catalogue_example()
+    municipalities = sources["municipalities"]["rows"]
+    if mutation == "district_note":
+        sources["districts"]["rows"][0]["note"] = "301"
+    elif mutation == "suffix":
+        municipalities[0]["note"] = "500011"
+    elif mutation == "parent":
+        municipalities[0]["code"] = "SK0102500001"
+    elif mutation == "duplicate_note":
+        municipalities[0].update(code="SK0101500002", note="500002")
+    else:
+        municipalities[-1]["note"] = "500099"
+    with pytest.raises(ValueError, match=error):
+        tool.reconcile(sources, baseline)
+
+
+def test_catalogue_candidates_reproduce_without_reading_baseline_values():
+    sources, baseline = catalogue_example()
+    result = tool.reconcile(sources, baseline)
+    assert result["technicalVerdict"] == "SUSR_TECHNICAL_FULL_REPLACEMENT_READY"
+    assert result["municipalityParentCompatibilityTransforms"] == 1
+    municipal = result["datasets"]["municipalities"]
+    assert {item["classification"] for item in municipal["sourceOnlyRows"]} == {"INACTIVE", "FOREIGN_PSEUDO"}
+    assert municipal["sourceTitleVsPublicDifferences"] == 2
+    baseline["municipalities"][0]["name"] = "Incorrect baseline name"
+    baseline["municipalities"][0]["districtCode"] = "Incorrect parent"
+    after = tool.reconcile(sources, baseline)
+    assert after["remainingPortalVSOnlyDependencies"] == 2
+    assert after["technicalVerdict"] == "SUSR_TECHNICAL_PARTIAL_REPLACEMENT_READY"
+    assert after["datasets"]["municipalities"]["records"][0]["candidate"] == municipal["records"][0]["candidate"]
+
+
+def test_unrepresented_active_domestic_row_blocks_verdict_and_remains_in_report():
+    sources, baseline = catalogue_example()
+    sources["municipalities"]["rows"][2]["validTo"] = ""
+    result = tool.reconcile(sources, baseline)
+    assert result["technicalVerdict"] is None
+    assert result["reconciliationStatus"] == "SPECIAL_RECORD_REVIEW_REQUIRED"
+    assert any(item["classification"] == "MISSING_FROM_OPEN_SK" for item in result["datasets"]["municipalities"]["sourceOnlyRows"])

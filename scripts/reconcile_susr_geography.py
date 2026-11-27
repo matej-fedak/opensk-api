@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Offline LSUJ research only: manual inputs, default dry-run, never promotion.
 
-The generic official attribute vocabulary is documented, but an exact CSV profile
-must be reviewed against manually supplied files. No source schema, relationship
-or successful replacement is inferred from a catalogue page or synthetic tests.
+The reviewed catalogue CSV profile preserves published codes and source cells.
+The provisional profile remains available for synthetic regression tests.
 """
 
 from __future__ import annotations
@@ -33,6 +32,13 @@ MANIFEST = ROOT / "docs/research/susr-geography-acquisition.json"
 GENERATED = ROOT / "data/generated"
 DEFAULT_REPORT = GENERATED / "susr-geography-reconciliation.json"
 PROFILE = "susr-geography-csv-v1"
+CATALOGUE_PROFILE = "susr-lsuj-catalogue-csv-v2"
+CATALOGUE_HEADERS = tuple(
+    "sortNumber code officialTitle mediumTitle shortTitle officialTitleEn mediumTitleEn shortTitleEn "
+    "note noteEn includes includesEn includesAlso includesAlsoEn excludes excludesEn info additionalInfo "
+    "infoEn additionalInfoEn unitOfMeasure validFrom validTo dateCreated dateModified".split()
+)
+HIERARCHY_EVIDENCE = "https://volby.statistics.sk/opendata/eup/2019/EP_2019_SK_tab0c.csv"
 CLASSIFIERS = {
     "0024": ("LSUJ1", "Lokálna štatistická územná jednotka 1 – okres", "districts"),
     "0025": ("LSUJ2", "Lokálna štatistická územná jednotka 2 – obec", "municipalities"),
@@ -107,7 +113,12 @@ def acquisition_day(entry):
     return result
 
 
-def observe_csv(path, *, encoding="utf-8", delimiter=";"):
+def catalogue_date(value):
+    require(re.fullmatch(r"[0-9]{2}\.[0-9]{2}\.[0-9]{4}", value), "expected DD.MM.YYYY source date")
+    return datetime.strptime(value, "%d.%m.%Y").date()
+
+
+def observe_csv(path, *, encoding="utf-8", delimiter=";", profile=None):
     """Strict, non-coercing reader; shared read_csv strips values and fixes comma.
 
     Return all attributes/rows locally. Observation is not manual-origin proof or
@@ -127,8 +138,14 @@ def observe_csv(path, *, encoding="utf-8", delimiter=";"):
     require("\x00" not in text, "NUL byte in classifier CSV")
     reader = csv.reader(io.StringIO(text, newline=""), delimiter=delimiter, strict=True)
     headers = next(reader, [])
-    require(len(headers) == len(set(headers)) and {"code", "officialTitle", "validFrom"} <= set(headers)
-            and set(headers) <= COLUMNS, "unexpected CSV schema; manual source profile review required")
+    catalogue = profile == CATALOGUE_PROFILE or (profile is None and tuple(headers) == CATALOGUE_HEADERS)
+    if catalogue:
+        require(tuple(headers) == CATALOGUE_HEADERS and encoding == "utf-8" and delimiter == ",",
+                "unexpected reviewed catalogue CSV schema or dialect")
+    else:
+        require(len(headers) == len(set(headers)) and {"code", "officialTitle", "validFrom"} <= set(headers)
+                and set(headers) <= COLUMNS, "unexpected CSV schema; manual source profile review required")
+    parse_date = catalogue_date if catalogue else iso_date
     rows, seen = [], set()
     for values in reader:
         require(len(values) == len(headers), "unexpected CSV row width")
@@ -136,9 +153,11 @@ def observe_csv(path, *, encoding="utf-8", delimiter=";"):
         require(re.fullmatch(r"[A-Za-z0-9_.-]{1,64}", row["code"]), "invalid/unreviewed official code")
         require(row["code"] not in seen, "duplicate official code")
         require(bool(row["officialTitle"].strip()), "missing required officialTitle")
-        start = iso_date(row["validFrom"])
+        start = parse_date(row["validFrom"])
         if row.get("validTo"):
-            require(start <= iso_date(row["validTo"]), "reversed source validity")
+            require(start <= parse_date(row["validTo"]), "reversed source validity")
+        if catalogue:
+            require(parse_date(row["dateCreated"]) <= parse_date(row["dateModified"]), "reversed source metadata dates")
         seen.add(row["code"])
         rows.append(row)
         require(len(rows) <= 100_000, "classifier row limit exceeded")
@@ -175,11 +194,18 @@ def load_capture(manifest, paths):
             official_url(entry["downloadUrl"])
         require(all(key in entry for key in ("sourceVersion", "sourceValidity", "metadataDate")), "missing version/validity metadata (use null when unknown)")
         require(paths.get(code) is not None and Path(paths[code]).is_file(), "MANUAL_SOURCE_FILES_REQUIRED")
-        rows, observed = observe_csv(paths[code], encoding=entry.get("encoding"), delimiter=entry.get("delimiter"))
-        require(all(entry.get(key) == value for key, value in observed.items()), "source bytes/schema differ from acquisition manifest")
         profile = entry.get("transformationProfile", {})
-        require(profile.get("id") == PROFILE and profile.get("reviewStatus") == "REVIEWED_MANUAL_SOURCE",
+        require(profile.get("id") in {PROFILE, CATALOGUE_PROFILE} and profile.get("reviewStatus") == "REVIEWED_MANUAL_SOURCE",
                 "unreviewed transformation profile")
+        rows, observed = observe_csv(paths[code], encoding=entry.get("encoding"), delimiter=entry.get("delimiter"), profile=profile["id"])
+        require(all(entry.get(key) == value for key, value in observed.items()), "source bytes/schema differ from acquisition manifest")
+        if profile["id"] == CATALOGUE_PROFILE:
+            require(profile == catalogue_profile(kind), "unreviewed catalogue transformation or hierarchy evidence")
+            require(entry["metadataDate"] == catalogue_metadata(rows)["metadataDate"]
+                    and entry["sourceValidity"] == catalogue_metadata(rows)["sourceValidity"], "source date metadata mismatch")
+            sources[kind] = {"rows": rows, "profile": profile, "day": day}
+            observations[kind] = dict(entry)
+            continue
         require(set(profile) <= {"id", "reviewStatus", "sourceNameField", "districtRelationship",
                 "regionRelationship", "specialRows", "stripDistrictPrefix", "districtIdDerivation"},
                 "unexpected transformation profile attributes")
@@ -210,6 +236,150 @@ def load_capture(manifest, paths):
     return sources, observations
 
 
+def catalogue_metadata(rows):
+    return {
+        "metadataDate": max(catalogue_date(row["dateModified"]) for row in rows).isoformat(),
+        "sourceValidity": {
+            "earliestValidFrom": min(catalogue_date(row["validFrom"]) for row in rows).isoformat(),
+            "openEndedRows": sum(not row["validTo"] for row in rows),
+            "explicitValidToRows": sum(bool(row["validTo"]) for row in rows),
+        },
+    }
+
+
+def catalogue_profile(kind):
+    district = kind == "districts"
+    return {"id": CATALOGUE_PROFILE, "reviewStatus": "REVIEWED_MANUAL_SOURCE",
+            "sourceNameField": "officialTitle", "dateFormat": "DD.MM.YYYY",
+            "publicIdRule": "LSUJ1 decimal suffix checked against note" if district else "six-digit note checked against LSUJ2 suffix",
+            "relationshipRule": "first five LSUJ1 code characters" if district else "remove six-digit note suffix and join exact LSUJ1 code",
+            "relationshipEvidenceUrl": HIERARCHY_EVIDENCE,
+            "nameRule": "remove literal Okres prefix and check mediumTitle" if district else "OpenSK duplicate-title disambiguation"}
+
+
+def catalogue_district(row):
+    code, note = row["code"], row["note"]
+    require(re.fullmatch(r"SK0[1-4][0-3][1-9A-D]", code) and code[:5] in REGION_NAMESPACE.values(),
+            "unexpected domestic LSUJ1 code")
+    suffix = int(code[-1], 16)
+    require(note == next(key for key, region in REGION_NAMESPACE.items() if region == code[:5]) + f"{suffix:02d}",
+            "LSUJ1 published code disagrees with numeric note")
+    name = row["officialTitle"].removeprefix("Okres ")
+    require(name != row["officialTitle"] and name == row["mediumTitle"], "unexpected LSUJ1 title presentation")
+    return {"code": code[:5] + str(suffix), "name": name, "regionCode": code[:5], "country": "SK"}
+
+
+def catalogue_candidates(sources):
+    """Build and validate candidates without consulting the production baseline."""
+    results = {kind: [] for kind in sources}
+    extras = {kind: [] for kind in sources}
+    retained = {}
+    for kind in ("districts", "municipalities"):
+        source = sources[kind]
+        day = source["day"]
+        foreign = ({"SKZZZ", "SKZZZZ"} if kind == "districts" else {"SKZZZZ", "SKZZZZZZZZZZ"})
+        identifiers = set()
+        for row in sorted(source["rows"], key=lambda item: item["code"]):
+            code = row["code"]
+            is_active = catalogue_date(row["validFrom"]) <= day and (not row["validTo"] or day <= catalogue_date(row["validTo"]))
+            if code in foreign:
+                require(not row["note"] and row["officialTitle"] == "Zahraničie", "unexpected foreign pseudo-row attributes")
+                extras[kind].append({"code": code, "classification": "FOREIGN_PSEUDO", "reviewed": True, "active": is_active,
+                                     "reason": "Foreign pseudo code and title, with no domestic numeric note", "sourceAttributes": row})
+                continue
+            if kind == "districts":
+                candidate = catalogue_district(row)
+                categories = {"code": "DIRECT_SUSR" if candidate["code"] == code else "OPEN_SK_COMPATIBILITY_VALUE",
+                              "name": "OPEN_SK_COMPATIBILITY_VALUE", "regionCode": "DETERMINISTIC_DERIVATION_FROM_SUSR"}
+                source_district = code
+                if is_active:
+                    retained[code] = candidate
+            else:
+                note = row["note"]
+                require(re.fullmatch(r"[0-9]{6}", note) and code.endswith(note), "LSUJ2 code/note suffix mismatch")
+                source_district = code[:-6]
+                parent = retained.get(source_district)
+                require(parent is not None, "LSUJ2 prefix does not identify an active LSUJ1 district")
+                candidate = {"code": note, "name": normalize_whitespace(row["officialTitle"]), "districtCode": parent["code"],
+                             "regionCode": parent["regionCode"], "country": "SK"}
+                categories = {"code": "DIRECT_SUSR", "name": "DIRECT_SUSR" if candidate["name"] == row["officialTitle"] else "DETERMINISTIC_DERIVATION_FROM_SUSR",
+                              "districtCode": "DETERMINISTIC_DERIVATION_FROM_SUSR", "regionCode": "DETERMINISTIC_DERIVATION_FROM_SUSR"}
+            if not is_active:
+                extras[kind].append({"code": code, "classification": "INACTIVE", "reviewed": True, "active": False,
+                                     "reason": "Explicit validity excludes the capture date", "sourceAttributes": row})
+                continue
+            require(candidate["code"] not in identifiers, "duplicate derived current public ID")
+            identifiers.add(candidate["code"])
+            results[kind].append({"officialCode": code, "sourceDistrictCode": source_district,
+                                  "SOURCE_NAME": row["officialTitle"], "candidate": candidate, "sourceAttributes": row,
+                                  "active": True, "fieldCategories": {**categories, "country": "OPEN_SK_COMPATIBILITY_VALUE"}})
+    names = Counter(item["candidate"]["name"] for item in results["municipalities"])
+    for item in results["municipalities"]:
+        candidate = item["candidate"]
+        if names[candidate["name"]] > 1:
+            district_name = retained[item["sourceDistrictCode"]]["name"]
+            candidate["name"] += f" (okres {district_name})"
+            item["fieldCategories"]["name"] = "OPEN_SK_COMPATIBILITY_VALUE"
+    return results, extras
+
+
+def reconcile_catalogue(sources, baseline):
+    results, extras = catalogue_candidates(sources)
+    report = {"rightsVerdict": RIGHTS, "productionWrites": False, "datasets": {}, "reconciliationStatus": "COMPARED",
+              "remainingPortalVSOnlyDependencies": 0,
+              "provenanceBoundary": "Candidate reproduction only; existing production bytes remain PortalVS-derived."}
+    for kind, candidates in results.items():
+        current = {row["code"]: row for row in baseline[kind]}
+        require(len(current) == len(baseline[kind]), "duplicate production baseline code")
+        matches = []
+        for item in candidates:
+            candidate = item["candidate"]
+            before = current.get(candidate["code"])
+            if before is None:
+                extras[kind].append({"code": item["officialCode"], "classification": "MISSING_FROM_OPEN_SK", "reviewed": False,
+                                     "active": True, "reason": "Active domestic identity is not in production", "sourceAttributes": item["sourceAttributes"]})
+                continue
+            item["OPEN_SK_DISPLAY_NAME"] = before["name"]
+            item["differences"] = sorted(key for key in candidate.keys() | before.keys() if candidate.get(key) != before.get(key))
+            matches.append(item)
+        missing = sorted(current.keys() - {item["candidate"]["code"] for item in matches})
+        unresolved = len(missing) + sum(len(item["differences"]) for item in matches)
+        report["remainingPortalVSOnlyDependencies"] += unresolved
+        require(len(matches) + len(extras[kind]) == len(sources[kind]["rows"]), "source row was lost")
+        report["datasets"][kind] = {
+            "sourceRows": len(sources[kind]["rows"]), "baselineRows": len(current), "matched": len(matches),
+            "unmatchedProductionCodes": missing, "sourceOnlyRows": extras[kind], "conflicts": sum(bool(item["differences"]) for item in matches),
+            "sourceTitleVsPublicDifferences": sum(item["SOURCE_NAME"] != item["OPEN_SK_DISPLAY_NAME"] for item in matches),
+            "nameOnlyDifferences": sum(item["differences"] == ["name"] for item in matches),
+            "relationshipDifferences": sum(key in {"districtCode", "regionCode"} for item in matches for key in item["differences"]),
+            "displayOnlyOpenSKChanges": sum(item["candidate"]["name"] != item["SOURCE_NAME"] and not item["differences"] for item in matches),
+            "idDerivationCategories": dict(Counter(item["fieldCategories"]["code"] for item in matches)),
+            "records": matches,
+        }
+    districts = {item["officialCode"]: item for item in report["datasets"]["districts"]["records"]}
+    municipalities = {item["candidate"]["code"]: item for item in report["datasets"]["municipalities"]["records"]}
+    report["compatibilityMappings"] = [{"officialCode": alias, "publicCode": public,
+        "reproducedFromOfficialCode": alias in districts and districts[alias]["candidate"]["code"] == public}
+        for alias, public in COMPATIBILITY.values()]
+    report["municipalityParentCompatibilityTransforms"] = sum(
+        item["sourceDistrictCode"] != item["candidate"]["districtCode"] for item in municipalities.values())
+    report["reviewedPresentationCodes"] = {code: municipalities.get(code) for code in ("504173", "504742")}
+    report["specialUnitRetention"] = {
+        "Bratislava boroughs": sum(item["sourceDistrictCode"] in {"SK0101", "SK0102", "SK0103", "SK0104", "SK0105"} for item in municipalities.values()),
+        "Košice boroughs": sum(item["sourceDistrictCode"] in {"SK0422", "SK0423", "SK0424", "SK0425"} for item in municipalities.values()),
+        "military units": {code: code in municipalities for code in ("500267", "518581", "518638")},
+    }
+    if any(not row["reviewed"] for rows in extras.values() for row in rows):
+        report.update(technicalVerdict=None, reconciliationStatus="SPECIAL_RECORD_REVIEW_REQUIRED")
+    elif report["remainingPortalVSOnlyDependencies"] == 0:
+        report["technicalVerdict"] = "SUSR_TECHNICAL_FULL_REPLACEMENT_READY"
+    elif all(dataset["matched"] * 2 > dataset["baselineRows"] for dataset in report["datasets"].values()):
+        report["technicalVerdict"] = "SUSR_TECHNICAL_PARTIAL_REPLACEMENT_READY"
+    else:
+        report["technicalVerdict"] = "NO_GO_SUSR_TECHNICAL_REPLACEMENT"
+    return report
+
+
 def region_relationship(row, profile):
     evidence = profile.get("regionRelationship")
     if evidence is None:
@@ -238,6 +408,10 @@ def source_only(row, profile, day):
 
 def reconcile(sources, baseline):
     """Code-based comparison. Baseline values never fill candidate fields."""
+    catalogue = [source["profile"].get("id") == CATALOGUE_PROFILE for source in sources.values()]
+    if any(catalogue):
+        require(all(catalogue), "mixed catalogue and provisional profiles")
+        return reconcile_catalogue(sources, baseline)
     current = {kind: {row["code"]: row for row in baseline[kind]} for kind in ("districts", "municipalities")}
     require(all(len(current[kind]) == len(baseline[kind]) for kind in current), "duplicate production baseline code")
     for source in sources.values():
@@ -391,12 +565,14 @@ def inspect_files(paths, *, delimiter):
         path = Path(paths[code])
         with path.open("rb") as source:
             encoding = "utf-8-sig" if source.read(3) == b"\xef\xbb\xbf" else "utf-8"
-        _, observed = observe_csv(path, encoding=encoding, delimiter=delimiter)
+        rows, observed = observe_csv(path, encoding=encoding, delimiter=delimiter)
+        catalogue = tuple(observed["headers"]) == CATALOGUE_HEADERS
+        dates = catalogue_metadata(rows) if catalogue else {"sourceValidity": None, "metadataDate": None}
         report["files"].append({"classifierCode": code, "acronym": acronym, "officialName": name,
             "sourcePage": SOURCE_PAGE, "downloadUrl": None, "manuallyAcquired": None,
             "manuallyAcquiredAt": None, "timePrecision": None, **observed,
-            "sourceVersion": None, "sourceValidity": None, "metadataDate": None,
-            "transformationProfile": {"id": PROFILE, "reviewStatus": "MANUAL_SOURCE_PROFILE_REQUIRED"}})
+            "sourceVersion": None, **dates,
+            "transformationProfile": {"id": CATALOGUE_PROFILE if catalogue else PROFILE, "reviewStatus": "MANUAL_SOURCE_PROFILE_REQUIRED"}})
     return report
 
 
