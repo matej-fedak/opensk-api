@@ -32,6 +32,8 @@ def relationship(field):
 
 def profile(kind):
     return {"id": tool.PROFILE, "reviewStatus": "REVIEWED_MANUAL_SOURCE",
+            "districtIdDerivation": {"id": "opensk-district-namespace-v1", "verified": True,
+                "evidenceUrl": tool.SOURCE_PAGE, "description": "SYNTHETIC TEST ONLY: invented reviewed code namespace"},
             "sourceNameField": "officialTitle",
             "regionRelationship": relationship("additionalInfo") if kind == "districts" else None,
             "districtRelationship": relationship("info") if kind == "municipalities" else None,
@@ -85,6 +87,7 @@ def offline(monkeypatch):
     def denied(*args, **kwargs):
         raise AssertionError("reconciliation must not perform network I/O")
     monkeypatch.setattr(socket, "create_connection", denied)
+    monkeypatch.setattr(socket.socket, "connect", denied)
 
 
 @pytest.mark.parametrize("classifier", ["0024", "0025"])
@@ -164,6 +167,20 @@ def test_capture_metadata_or_unreviewed_semantics_cannot_bypass_gates(tmp_path, 
     elif mutation == "path":
         entry["localPath"] = str(paths["0024"])
     with pytest.raises(ValueError):
+        tool.load_capture(manifest, paths)
+
+
+def test_capture_requires_review_of_compatibility_derivation_not_just_matching_names(tmp_path):
+    manifest, paths = capture(tmp_path)
+    manifest["files"][0]["transformationProfile"].pop("districtIdDerivation")
+    with pytest.raises(ValueError, match="derivation requires independent source review"):
+        tool.load_capture(manifest, paths)
+
+
+def test_unknown_profile_transform_cannot_be_silently_ignored(tmp_path):
+    manifest, paths = capture(tmp_path)
+    manifest["files"][0]["transformationProfile"]["nameOverride"] = "not supported"
+    with pytest.raises(ValueError, match="unexpected transformation"):
         tool.load_capture(manifest, paths)
 
 

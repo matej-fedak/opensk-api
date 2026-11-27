@@ -180,6 +180,15 @@ def load_capture(manifest, paths):
         profile = entry.get("transformationProfile", {})
         require(profile.get("id") == PROFILE and profile.get("reviewStatus") == "REVIEWED_MANUAL_SOURCE",
                 "unreviewed transformation profile")
+        require(set(profile) <= {"id", "reviewStatus", "sourceNameField", "districtRelationship",
+                "regionRelationship", "specialRows", "stripDistrictPrefix", "districtIdDerivation"},
+                "unexpected transformation profile attributes")
+        require(type(profile.get("stripDistrictPrefix", False)) is bool, "district prefix policy must be boolean")
+        if kind == "districts":
+            derivation = profile.get("districtIdDerivation", {})
+            require(derivation.get("id") == "opensk-district-namespace-v1" and derivation.get("verified") is True
+                    and bool(derivation.get("description")), "district compatibility derivation requires independent source review")
+            official_url(derivation.get("evidenceUrl"))
         require(profile.get("sourceNameField") in {"officialTitle", "mediumTitle", "shortTitle"}
                 and profile["sourceNameField"] in observed["headers"], "source name field is absent/unreviewed")
         require(all(row[profile["sourceNameField"]].strip() for row in rows), "missing required source name")
@@ -231,6 +240,8 @@ def reconcile(sources, baseline):
     """Code-based comparison. Baseline values never fill candidate fields."""
     current = {kind: {row["code"]: row for row in baseline[kind]} for kind in ("districts", "municipalities")}
     require(all(len(current[kind]) == len(baseline[kind]) for kind in current), "duplicate production baseline code")
+    for source in sources.values():
+        require(len({row["code"] for row in source["rows"]}) == len(source["rows"]), "duplicate official code")
     results = {kind: [] for kind in current}
     extras = {kind: [] for kind in current}
     district_candidates = {}

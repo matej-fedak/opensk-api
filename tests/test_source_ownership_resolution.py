@@ -79,7 +79,12 @@ def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
         assert "SENT_AWAITING_REPLY" in internal["nextAction"]
         assert "maintainer manually sent" in internal["nextAction"]
         assert "on 2026-11-05" in internal["nextAction"]
-        assert "reply pending and no permission inferred" in internal["nextAction"]
+        assert "recipient/competent-unit routing unverified and no permission inferred" in internal["nextAction"]
+        assert "reply received 2026-11-20" in internal["nextAction"]
+        assert "2026-11-27" in internal["nextAction"]
+        assert "CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING" in internal["notes"]
+        assert "SUSR_REUSE_VERIFIED" not in internal["notes"]
+        assert internal["lastChecked"] == "2026-11-27"
         assert "does not replace the manual source-file/reconciliation gate" in internal["nextAction"]
         public = client.get(f"/v1/sources/{source_id}").json()["data"]
         assert public["licence"]["status"] == "pending"
@@ -105,6 +110,9 @@ def test_portalvs_redirect_does_not_upgrade_current_geography_or_psc() -> None:
 
 def test_geography_verdict_is_single_and_acquisition_gate_is_explicit() -> None:
     text = (RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8")
+    banner, text = text.split("<!-- BEGIN PRESERVED 0.23.15 RECORD -->", 1)
+    assert "Historical 0.23.15 record" in banner
+    assert "CLASSIFIER_SPECIFIC_APPLICABILITY_PENDING" in banner
     assert "NO_GO_SUSR_GEOGRAPHY_REPLACEMENT" in text
     assert "SUSR_GEOGRAPHY_FULL_REPLACEMENT" not in text
     assert "SUSR_GEOGRAPHY_PARTIAL_REPLACEMENT" not in text
@@ -161,7 +169,10 @@ def test_both_source_owner_dispatches_are_consistent_across_current_docs() -> No
 
 
 def test_geography_outbound_scope_does_not_reopen_research_or_add_a_gate() -> None:
-    text = " ".join((RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8").split())
+    # These are explicitly historical 0.23.15 dispatch assertions, not current
+    # claims that no geography reply has arrived or that exact-file reuse cleared.
+    text = (RESEARCH / "source-ownership-resolution.md").read_text(encoding="utf-8")
+    text = " ".join(text.split("<!-- BEGIN PRESERVED 0.23.15 RECORD -->", 1)[1].split())
     for scope in (
         "exact authoritative municipality and district classifiers",
         "CC BY 4.0 applicability", "local storage", "CSV/XML → JSON",
